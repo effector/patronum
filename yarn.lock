@@ -1821,6 +1821,11 @@ effector-debounce@^1.1.0:
   resolved "https://registry.yarnpkg.com/effector-debounce/-/effector-debounce-1.1.0.tgz#e6aa74efd302d480f57b2e945e71ab34772ba360"
   integrity sha512-UfJLUQx2fIjNIGx9kmPvmCjClInXvJP+jmREpVMamLQkEoMw3PqdnzoLUqFPJQI/tXGD9LQ1OYrL9eANVpIAtg==
 
+effector-throttle@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/effector-throttle/-/effector-throttle-1.1.0.tgz#8d3b4b7c24ed60be746fdfdfc2bf627f0c9f6983"
+  integrity sha512-hkFwr8W6QZMnvxb8XIqwFyQQCT4kwzHV2eaoVCGfRSixwPs0GrTcZIrXTg03pTHRLXn+4x2owRD/OXoAfTQTYQ==
+
 effector@^20.7.0:
   version "20.14.0"
   resolved "https://registry.yarnpkg.com/effector/-/effector-20.14.0.tgz#890ca40f2a7cf9041e6f22b7baf8c4273042dbcb"

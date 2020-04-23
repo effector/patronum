@@ -60,16 +60,16 @@ trigger(4);
 // => debounced 4
 ```
 
-## ⏺ Throttle
+## [🧁 Throttle](/throttle 'Documentation')
 
 ```ts
 import { createEvent } from 'effector';
-import { createThrottle } from 'patronum/throttle';
+import { throttle } from 'patronum/throttle';
 
 // You should call this event
 const trigger = createEvent<number>();
 
-const target = createThrottle(trigger, 200);
+const target = throttle(trigger, 200);
 
 target.watch((payload) => console.info('throttled', payload));
 

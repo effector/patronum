@@ -50,6 +50,7 @@
     }
   },
   "dependencies": {
-    "effector-debounce": "^1.1.0"
+    "effector-debounce": "^1.1.0",
+    "effector-throttle": "^1.1.0"
   }
 }
