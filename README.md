@@ -4,7 +4,7 @@
 
 ☄️ Effector utility library delivering modularity and convenience
 
-## [✅ Condition](/condition)
+## [🧁 Condition](/condition)
 
 ```ts
 import { createEvent } from 'effector';
@@ -23,7 +23,7 @@ condition({
 });
 ```
 
-## 🧁 Debounce
+## ⏺ Debounce
 
 ```ts
 import { createEvent } from 'effector';
@@ -44,7 +44,7 @@ trigger(4);
 // => debounced 4
 ```
 
-## 🧁 Throttle
+## ⏺ Throttle
 
 ```ts
 import { createEvent } from 'effector';
@@ -65,7 +65,7 @@ trigger(4);
 // => throttled 1
 ```
 
-## 🧁 Reshape
+## ⏺ Reshape
 
 ```ts
 import { createStore } from 'effector';
@@ -84,7 +84,7 @@ parts.first.watch(console.log); // "Hello"
 parts.second.watch(console.log); // "Second"
 ```
 
-## 🧁 Spread
+## ⏺ Spread
 
 ```ts
 import { createEvent, createStore } from 'effector';
@@ -106,7 +106,7 @@ $first.getState(); // "Hello"
 $second.getState(); // "World"
 ```
 
-## 🧁 SplitMap
+## ⏺ SplitMap
 
 ```ts
 import { createEvent } from 'effector';
