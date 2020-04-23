@@ -129,3 +129,25 @@ nameReceived('Sergey Sova');
 // firstname received "Sergey"
 // lastname received "Sova"
 ```
+
+## ⏺ EffectStatus
+
+```ts
+import { createEffect } from 'effector';
+import { effectStatus } from 'patronum/effect-status';
+
+const loadList = createEffect<boolean, null>({
+  handler: (isError) => {
+    if (isError) {
+      throw new Error();
+    }
+    return null;
+  };
+});
+
+const $status = effectStatus(loadlist); // default: null
+
+run(false); // $status: null -> "pending" -> "done"
+
+run(true); // $status: null -> "pending" -> "fail"
+```
