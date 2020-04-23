@@ -4,7 +4,7 @@
 
 ☄️ Effector utility library delivering modularity and convenience
 
-## [🧁 Condition](/condition)
+## [🧁 Condition](/condition 'Documentation')
 
 ```ts
 import { createEvent } from 'effector';
@@ -21,6 +21,22 @@ condition({
   then: longString,
   else: shortString,
 });
+```
+
+## [🧁 Delay](/delay 'Documentation')
+
+```ts
+import { createEvent } from 'effector';
+import { delay } from 'patronum/delay';
+
+const trigger = createEvent<string>(); // createStore or createEffect
+const delayed = delay(trigger, 300);
+
+delayed.watch((payload) => console.info('triggered', payload));
+
+trigger('hello');
+// after 300ms
+// => triggered hello
 ```
 
 ## ⏺ Debounce
