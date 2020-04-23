@@ -39,16 +39,16 @@ trigger('hello');
 // => triggered hello
 ```
 
-## ⏺ Debounce
+## [🧁 Debounce](/debounce 'Documentation')
 
 ```ts
 import { createEvent } from 'effector';
-import { createDebounce } from 'patronum/debounce';
+import { debounce } from 'patronum/debounce';
 
 // You should call this event
 const trigger = createEvent<number>();
 
-const target = createDebounce(trigger, 200);
+const target = debounce(trigger, 200);
 
 target.watch((payload) => console.info('debounced', payload));
 
