@@ -1,6 +1,6 @@
 {
   "name": "patronum",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "☄️ Effector utility library delivering modularity and convenience",
   "scripts": {
     "test": "jest",
@@ -8,6 +8,7 @@
     "format": "prettier --write \"./src/**/**.{ts,tsx,js,jsx,json}\"",
     "lint": "eslint ./"
   },
+  "files": ["condition"],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/sergeysova/patronum.git"
