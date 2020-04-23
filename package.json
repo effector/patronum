@@ -48,5 +48,8 @@
     "commitizen": {
       "path": "cz-conventional-changelog"
     }
+  },
+  "dependencies": {
+    "effector-debounce": "^1.1.0"
   }
 }

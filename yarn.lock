@@ -1816,7 +1816,12 @@ ecc-jsbn@~0.1.1:
     jsbn "~0.1.0"
     safer-buffer "^2.1.0"
 
-effector@^20.14.0:
+effector-debounce@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/effector-debounce/-/effector-debounce-1.1.0.tgz#e6aa74efd302d480f57b2e945e71ab34772ba360"
+  integrity sha512-UfJLUQx2fIjNIGx9kmPvmCjClInXvJP+jmREpVMamLQkEoMw3PqdnzoLUqFPJQI/tXGD9LQ1OYrL9eANVpIAtg==
+
+effector@^20.7.0:
   version "20.14.0"
   resolved "https://registry.yarnpkg.com/effector/-/effector-20.14.0.tgz#890ca40f2a7cf9041e6f22b7baf8c4273042dbcb"
   integrity sha512-O5mAIO3jxzy6BaL572CE0QRfLSZ1qAAE7Is7wiv2MwYOzkU51tT7npEcRdD1RGF3KLNMzYA0uIzAt822jVaqsA==
