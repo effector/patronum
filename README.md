@@ -4,6 +4,13 @@
 
 ☄️ Effector utility library delivering modularity and convenience
 
+## Table of contents
+
+- [Condition](#-condition)
+- [Delay](#-delay)
+- [Debounce](#-debounce)
+- [Throttle](#-throttle)
+
 ## [🧁 Condition](/condition 'Documentation')
 
 ```ts
