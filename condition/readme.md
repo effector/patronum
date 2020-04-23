@@ -1,10 +1,10 @@
-## Patronum/Condition
+# Patronum/Condition
 
 ```ts
 import { condition } from 'patronum/condition';
 ```
 
-### Formulae
+## Formulae
 
 ```ts
 condition({
@@ -19,16 +19,16 @@ condition({
 - If `if` is **truthy**, trigger `then` unit
 - If `if` is **falsy**, trigger `else` unit
 
-### Arguments
+## Arguments
 
 1. `source` _(`Event<T>` | `Store<T>` | `Effect<T>`)_ — Data from this unit should be passed to `if`, `then` and `else`
 1. `if` _(`(payload: T) => boolean` | `Store<boolean>` | `T`)_ — Checker, if truthy trigger `then` branch, if falsy trigger `else` branch
 1. `then` _(`Event<T>` | `Store<T>` | `Effect<T>`)_ — Optional unit
 1. `else` _(`Event<T>` | `Store<T>` | `Effect<T>`)_ — Optional unit
 
-### Example
+## Example
 
-#### Checker is function
+### Checker is function
 
 ```ts
 const change = createEvent();
@@ -51,7 +51,7 @@ change('old');
 // => condition else: old
 ```
 
-#### Checker is Store
+### Checker is Store
 
 ```ts
 const change = createEvent();
@@ -80,7 +80,7 @@ change('data');
 // => enabled - data
 ```
 
-#### Checker is literal
+### Checker is literal
 
 ```ts
 const increment = createEvent();
@@ -107,7 +107,7 @@ increment(); // => FAKE RUN EFFECT 4
 increment(); // => LOG ABOUT IT 5
 ```
 
-#### Source is event
+### Source is event
 
 ```ts
 const inputChanged = createEvent();
