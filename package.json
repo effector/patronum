@@ -1,6 +1,6 @@
 {
   "name": "patronum",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "☄️ Effector utility library delivering modularity and convenience",
   "scripts": {
     "test": "jest",
