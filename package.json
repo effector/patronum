@@ -8,7 +8,7 @@
     "format": "prettier --write \"./src/**/**.{ts,tsx,js,jsx,json}\"",
     "lint": "eslint ./"
   },
-  "files": ["condition"],
+  "files": ["*/*.js", "*/*.d.ts", "!*.test.js"],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/sergeysova/patronum.git"
