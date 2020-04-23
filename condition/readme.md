@@ -40,6 +40,7 @@ condition({
   source: $source,
   if: (source) => source.length > 3,
   then: target,
+  else: another,
 });
 target.watch((payload) => console.log('triggered', payload));
 another.watch((payload) => console.log('condition else:', payload));
