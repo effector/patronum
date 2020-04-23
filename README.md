@@ -4,7 +4,26 @@
 
 ☄️ Effector utility library delivering modularity and convenience
 
-## Debounce
+## [✅ Condition](/condition)
+
+```ts
+import { createEvent } from 'effector';
+import { condition } from 'patronum/condition';
+
+const trigger = createEvent<string>();
+
+const longString = createEvent<string>();
+const shortString = createEvent<string>();
+
+condition({
+  source: trigger,
+  if: (string) => string.length > 8,
+  then: longString,
+  else: shortString,
+});
+```
+
+## 🧁 Debounce
 
 ```ts
 import { createEvent } from 'effector';
@@ -25,7 +44,7 @@ trigger(4);
 // => debounced 4
 ```
 
-## Throttle
+## 🧁 Throttle
 
 ```ts
 import { createEvent } from 'effector';
@@ -46,7 +65,7 @@ trigger(4);
 // => throttled 1
 ```
 
-## Reshape
+## 🧁 Reshape
 
 ```ts
 import { createStore } from 'effector';
@@ -65,7 +84,7 @@ parts.first.watch(console.log); // "Hello"
 parts.second.watch(console.log); // "Second"
 ```
 
-## Spread
+## 🧁 Spread
 
 ```ts
 import { createEvent, createStore } from 'effector';
@@ -87,7 +106,7 @@ $first.getState(); // "Hello"
 $second.getState(); // "World"
 ```
 
-## SplitMap
+## 🧁 SplitMap
 
 ```ts
 import { createEvent } from 'effector';
@@ -109,23 +128,4 @@ nameReceived('Sergey');
 nameReceived('Sergey Sova');
 // firstname received "Sergey"
 // lastname received "Sova"
-```
-
-## Condition
-
-```ts
-import { createEvent } from 'effector';
-import { condition } from 'patronum/condition';
-
-const trigger = createEvent<string>();
-
-const longString = createEvent<string>();
-const shortString = createEvent<string>();
-
-condition({
-  source: trigger,
-  if: (string) => string.length > 8,
-  then: longString,
-  else: shortString,
-});
 ```
