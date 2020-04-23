@@ -10,6 +10,7 @@
 - [Delay](#-delay)
 - [Debounce](#-debounce)
 - [Throttle](#-throttle)
+- [Reshape](#-reshape)
 
 ## [🧁 Condition](/condition 'Documentation')
 
@@ -88,7 +89,7 @@ trigger(4);
 // => throttled 1
 ```
 
-## ⏺ Reshape
+## [🧁 Reshape](/reshape 'Documentation')
 
 ```ts
 import { createStore } from 'effector';
