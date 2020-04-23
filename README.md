@@ -11,6 +11,8 @@
 - [Debounce](#-debounce)
 - [Throttle](#-throttle)
 - [Reshape](#-reshape)
+- [Spread](#-spread)
+- [SplitMap](#-splitmap)
 
 ## [🧁 Condition](/condition 'Documentation')
 
@@ -89,7 +91,9 @@ trigger(4);
 // => throttled 1
 ```
 
-## [🧁 Reshape](/reshape 'Documentation')
+## [🍰 Reshape](/reshape 'Documentation')
+
+> No tests yet
 
 ```ts
 import { createStore } from 'effector';
@@ -108,7 +112,11 @@ parts.first.watch(console.log); // "Hello"
 parts.second.watch(console.log); // "Second"
 ```
 
-## ⏺ Spread
+## [🍰 Spread](/spread 'Documentation')
+
+> No tests yet
+
+> No readme yet
 
 ```ts
 import { createEvent, createStore } from 'effector';
@@ -130,7 +138,9 @@ $first.getState(); // "Hello"
 $second.getState(); // "World"
 ```
 
-## ⏺ SplitMap
+## [🍰 SplitMap](/splitmap 'Documentation')
+
+> No tests yet
 
 ```ts
 import { createEvent } from 'effector';

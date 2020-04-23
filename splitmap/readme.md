@@ -4,6 +4,10 @@
 import { splitMap } from 'patronum/splitmap';
 ```
 
+> No formulae yet
+
+> No arguments yet
+
 ## Example
 
 ```ts

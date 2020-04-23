@@ -12,6 +12,8 @@ shape = reshape(store, cases);
 
 - Call each function in `cases` object with data from `store`, and create store with the same name as key in `cases`
 
+> No arguments yet
+
 ## Example
 
 ```ts
