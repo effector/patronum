@@ -1,0 +1,39 @@
+{
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["@typescript-eslint/eslint-plugin"],
+  "extends": ["@atomix/eslint-config", "plugin:prettier/recommended"],
+  "overrides": [
+    {
+      "files": ["**/*.test.ts", "**/*.test.tsx"],
+      "env": { "jest": true },
+      "rules": {
+        "import/no-extraneous-dependencies": "off"
+      }
+    },
+    {
+      "files": ["**/*.ts", "**/*.tsx"],
+      "extends": [
+        "plugin:@typescript-eslint/eslint-plugin/recommended",
+        "plugin:@typescript-eslint/eslint-plugin/eslint-recommended"
+      ],
+      "rules": {
+        "no-unused-vars": "off",
+        "@typescript-eslint/explicit-function-return-type": "off",
+        "@typescript-eslint/no-explicit-any": "off"
+      }
+    },
+    {
+      "files": ["**/*.test.js"],
+      "env": {
+        "jest": true
+      },
+      "rules": {
+        "no-magic-numbers": "off"
+      }
+    }
+  ],
+  "rules": {
+    "import/extensions": ["error", "ignorePackages"],
+    "@typescript-eslint/no-use-before-define": "off"
+  }
+}
