@@ -213,3 +213,35 @@ nameReceived('Sergey Sova');
 // firstname received "Sergey"
 // lastname received "Sova"
 ```
+
+## ⏺ StatusEffect
+
+```ts
+import { createEffect, createEvent } from 'effector';
+import { statusEffect } from 'patronum/status-effect';
+
+const loadList = createEffect<boolean, null>({
+  handler: (isError) => {
+    if (isError) {
+      throw new Error();
+    }
+    return null;
+  };
+});
+
+const run = createEvent();
+
+const $status = statusEffect(loadlist); // default: 'initital'
+
+forward({ from: run, to: loadList });
+
+$status.watch((value) => console.log(`status: ${value}`));
+
+run(false);
+// status: pending
+// status: done
+
+run(true);
+// status: pending
+// status: fail
+```
