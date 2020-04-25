@@ -2,11 +2,13 @@
   "name": "patronum",
   "version": "0.7.0",
   "description": "☄️ Effector utility library delivering modularity and convenience",
+  "main": "index.js",
   "scripts": {
     "test": "jest",
     "commit": "git-cz",
     "format": "prettier --write \"./src/**/**.{ts,tsx,js,jsx,json}\"",
-    "lint": "eslint ./"
+    "lint": "eslint ./",
+    "prepublishOnly": "node ./_/build.js"
   },
   "files": ["*/*.js", "*/*.d.ts", "!*.test.js"],
   "repository": {
@@ -35,6 +37,7 @@
     "eslint-plugin-import": "^2.19.1",
     "eslint-plugin-prettier": "^3.1.2",
     "eslint-plugin-unicorn": "^14.0.1",
+    "globby": "^11.0.0",
     "husky": "3.1.0",
     "jest": "^25.4.0",
     "lint-staged": "^9.5.0",

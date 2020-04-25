@@ -1,3 +1,4 @@
+// @ts-nocheck
 const { is, guard, createEvent } = require('effector');
 
 /**
