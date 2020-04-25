@@ -12,6 +12,7 @@ Just pass any effector's unit to `debug`.
 
 ```ts
 import { createStore, createEvent, createEffect } from 'effector';
+import { debug } from 'patronum/debug';
 
 const event = createEvent();
 const effect = createEffect().use((payload) =>
