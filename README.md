@@ -130,11 +130,11 @@ nameReceived('Sergey Sova');
 // lastname received "Sova"
 ```
 
-## ⏺ EffectStatus
+## ⏺ StatusEffect
 
 ```ts
-import { createEffect } from 'effector';
-import { effectStatus } from 'patronum/effect-status';
+import { createEffect, createEvent } from 'effector';
+import { statusEffect } from 'patronum/status-effect';
 
 const loadList = createEffect<boolean, null>({
   handler: (isError) => {
@@ -145,9 +145,19 @@ const loadList = createEffect<boolean, null>({
   };
 });
 
-const $status = effectStatus(loadlist); // default: null
+const run = createEvent();
 
-run(false); // $status: null -> "pending" -> "done"
+const $status = statusEffect(loadlist); // default: 'initital'
 
-run(true); // $status: null -> "pending" -> "fail"
+forward({ from: run, to: loadList });
+
+$status.watch((value) => console.log(`status: ${value}`));
+
+run(false);
+// status: pending
+// status: done
+
+run(true);
+// status: pending
+// status: fail
 ```
