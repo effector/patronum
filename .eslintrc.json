@@ -28,12 +28,16 @@
         "jest": true
       },
       "rules": {
-        "no-magic-numbers": "off"
+        "no-magic-numbers": "off",
+        "no-multi-assign": "off",
+        "prefer-template": "off"
       }
     }
   ],
   "rules": {
     "import/extensions": ["error", "ignorePackages"],
-    "@typescript-eslint/no-use-before-define": "off"
+    "@typescript-eslint/no-use-before-define": "off",
+    "unicorn/prefer-spread": "off",
+    "prefer-rest-params": "off"
   }
 }
