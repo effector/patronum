@@ -39,7 +39,7 @@ test('double delay event with number', async () => {
   trigger(2);
   await wait(50);
   expect(fn).toBeCalledTimes(1);
-  await wait(50);
+  await wait(55);
   expect(fn).toBeCalledTimes(2);
 
   expect(fn.mock.calls).toMatchInlineSnapshot(`
