@@ -15,6 +15,28 @@
 - [Spread](#-spread)
 - [SplitMap](#-splitmap)
 
+## Usage
+
+```bash
+npm install patronum
+# or
+yarn add patronum
+```
+
+Import function by its name from `patronum`:
+
+```ts
+import { delay } from 'patronum/delay';
+```
+
+Also use can import it from index:
+
+> Be careful, with this method, all functions will be at your bundle
+
+```ts
+import { delay } from 'patronum';
+```
+
 ## [🧁 Condition](/condition 'Documentation')
 
 ```ts
