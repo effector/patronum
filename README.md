@@ -6,18 +6,18 @@
 
 ## Table of contents
 
-- [Condition](#-condition)
-- [Debounce](#-debounce)
-- [Debug](#-debug)
-- [Delay](#-delay)
-- [Spread](#-spread)
-- [Status](#-status)
-- [Throttle](#-throttle)
+- [Condition](#condition)
+- [Debounce](#debounce)
+- [Debug](#debug)
+- [Delay](#delay)
+- [Spread](#spread)
+- [Status](#status)
+- [Throttle](#throttle)
 
 ---
 
-- [Reshape](#-reshape)
-- [SplitMap](#-splitmap)
+- [Reshape](#reshape)
+- [SplitMap](#splitmap)
 
 ## Usage
 
@@ -41,7 +41,7 @@ Also use can import it from index:
 import { delay } from 'patronum';
 ```
 
-## [🧁 Condition](/condition 'Documentation')
+## [Condition](/condition 'Documentation')
 
 ```ts
 import { createEvent } from 'effector';
@@ -60,7 +60,7 @@ condition({
 });
 ```
 
-## [🧁 Delay](/delay 'Documentation')
+## [Delay](/delay 'Documentation')
 
 ```ts
 import { createEvent } from 'effector';
@@ -76,7 +76,7 @@ trigger('hello');
 // => triggered hello
 ```
 
-## [🧁 Debounce](/debounce 'Documentation')
+## [Debounce](/debounce 'Documentation')
 
 ```ts
 import { createEvent } from 'effector';
@@ -97,7 +97,7 @@ trigger(4);
 // => debounced 4
 ```
 
-## [🧁 Throttle](/throttle 'Documentation')
+## [Throttle](/throttle 'Documentation')
 
 ```ts
 import { createEvent } from 'effector';
@@ -118,7 +118,7 @@ trigger(4);
 // => throttled 1
 ```
 
-## [🧁 Debug](/debug 'Documentation')
+## [Debug](/debug 'Documentation')
 
 ```ts
 import { createStore, createEvent, createEffect } from 'effector';
@@ -145,7 +145,7 @@ effect('demo');
 // => [store] $store 60
 ```
 
-## [🧁 Status](/status 'Documentation')
+## [Status](/status 'Documentation')
 
 ```ts
 import { createEvent, createEffect } from 'effector';
@@ -162,7 +162,7 @@ effect();
 // => status: "done"
 ```
 
-## [🧁 Spread](/spread 'Documentation')
+## [Spread](/spread 'Documentation')
 
 ```ts
 import { createEvent, createStore } from 'effector';
@@ -186,7 +186,7 @@ $second.getState(); // "World"
 
 ---
 
-## [🍰 Reshape](/reshape 'Documentation')
+## [Reshape](/reshape 'Documentation')
 
 > No tests yet
 
@@ -207,7 +207,7 @@ parts.first.watch(console.log); // "Hello"
 parts.second.watch(console.log); // "Second"
 ```
 
-## [🍰 SplitMap](/splitmap 'Documentation')
+## [SplitMap](/splitmap 'Documentation')
 
 > No tests yet
 
