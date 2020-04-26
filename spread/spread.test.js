@@ -203,23 +203,117 @@ describe('spread(targets)', () => {
   });
 });
 
-test('no field in source', () => {
-  const source = createEvent();
-  const targetA = createEvent();
-  const targetB = createEvent();
+describe('edge', () => {
+  test('array in source', () => {
+    const source = createEvent();
+    const targetA = createEvent();
+    const targetB = createEvent();
 
-  const fnA = jest.fn();
-  const fnB = jest.fn();
-  targetA.watch(fnA);
-  targetB.watch(fnB);
+    const fnA = jest.fn();
+    const fnB = jest.fn();
+    targetA.watch(fnA);
+    targetB.watch(fnB);
 
-  spread(source, {
-    first: targetA,
-    second: targetB,
+    spread(source, {
+      0: targetA,
+      1: targetB,
+    });
+
+    source(['Hello', 200]);
+
+    expect(fnA).toBeCalledWith('Hello');
+    expect(fnB).toBeCalledWith(200);
+  });
+});
+
+describe('invalid', () => {
+  test('no field in source', () => {
+    const source = createEvent();
+    const targetA = createEvent();
+    const targetB = createEvent();
+
+    const fnA = jest.fn();
+    const fnB = jest.fn();
+    targetA.watch(fnA);
+    targetB.watch(fnB);
+
+    spread(source, {
+      first: targetA,
+      second: targetB,
+    });
+
+    source({ second: 200 });
+
+    expect(fnA).toBeCalledTimes(0);
+    expect(fnB).toBeCalledWith(200);
   });
 
-  source({ second: 200 });
+  test('empty object in source', () => {
+    const source = createEvent();
+    const targetA = createEvent();
+    const targetB = createEvent();
 
-  expect(fnA).toBeCalledTimes(0);
-  expect(fnB).toBeCalledWith(200);
+    const fnA = jest.fn();
+    const fnB = jest.fn();
+    targetA.watch(fnA);
+    targetB.watch(fnB);
+
+    spread(source, {
+      first: targetA,
+      second: targetB,
+    });
+
+    source({});
+
+    expect(fnA).toBeCalledTimes(0);
+    expect(fnB).toBeCalledTimes(0);
+  });
+
+  test('null/undefined in source', () => {
+    const source = createEvent();
+    const targetA = createEvent();
+    const targetB = createEvent();
+
+    const fnA = jest.fn();
+    const fnB = jest.fn();
+    targetA.watch(fnA);
+    targetB.watch(fnB);
+
+    spread(source, {
+      first: targetA,
+      second: targetB,
+    });
+
+    source(null);
+    source(undefined);
+
+    expect(fnA).toBeCalledTimes(0);
+    expect(fnB).toBeCalledTimes(0);
+  });
+
+  test('no object in source', () => {
+    const source = createEvent();
+    const targetA = createEvent();
+    const targetB = createEvent();
+
+    const fnA = jest.fn();
+    const fnB = jest.fn();
+    targetA.watch(fnA);
+    targetB.watch(fnB);
+
+    spread(source, {
+      first: targetA,
+      second: targetB,
+    });
+
+    source();
+    source(1);
+    source('');
+    source(false);
+    source(() => {});
+    source(Symbol(1));
+
+    expect(fnA).toBeCalledTimes(0);
+    expect(fnB).toBeCalledTimes(0);
+  });
 });

@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign */
-const { createEvent, sample } = require('effector');
+const { createEvent, sample, guard } = require('effector');
 
 /**
  * @examle
@@ -15,8 +15,13 @@ function spread(source, targetCases) {
   }
   for (const key in targetCases) {
     if (key in targetCases) {
+      const correctKey = guard(source, {
+        filter: (data) =>
+          typeof data === 'object' && data !== null && key in data,
+      });
+
       sample({
-        source,
+        source: correctKey,
         fn: (data) => data[key],
         target: targetCases[key],
       });
