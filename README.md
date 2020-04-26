@@ -184,6 +184,8 @@ $first.getState(); // "Hello"
 $second.getState(); // "World"
 ```
 
+---
+
 ## [🍰 Reshape](/reshape 'Documentation')
 
 > No tests yet
