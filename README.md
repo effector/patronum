@@ -7,10 +7,14 @@
 ## Table of contents
 
 - [Condition](#-condition)
-- [Delay](#-delay)
 - [Debounce](#-debounce)
-- [Throttle](#-throttle)
 - [Debug](#-debug)
+- [Delay](#-delay)
+- [Status](#-status)
+- [Throttle](#-throttle)
+
+---
+
 - [Reshape](#-reshape)
 - [Spread](#-spread)
 - [SplitMap](#-splitmap)
@@ -141,6 +145,23 @@ effect('demo');
 // => [store] $store 60
 ```
 
+## [🧁 Status](/status 'Documentation')
+
+```ts
+import { createEvent, createEffect } from 'effector';
+import { status } from 'patronum/status';
+
+const effect = createEffect().use(() => Promise.resolve(null));
+const $status = status(effect);
+
+$status.watch((value) => console.log(`status: ${value}`));
+// => status: "initial"
+
+effect();
+// => status: "pending"
+// => status: "done"
+```
+
 ## [🍰 Reshape](/reshape 'Documentation')
 
 > No tests yet
@@ -212,36 +233,4 @@ nameReceived('Sergey');
 nameReceived('Sergey Sova');
 // firstname received "Sergey"
 // lastname received "Sova"
-```
-
-## ⏺ StatusEffect
-
-```ts
-import { createEffect, createEvent } from 'effector';
-import { statusEffect } from 'patronum/status-effect';
-
-const loadList = createEffect<boolean, null>({
-  handler: (isError) => {
-    if (isError) {
-      throw new Error();
-    }
-    return null;
-  };
-});
-
-const run = createEvent();
-
-const $status = statusEffect(loadlist); // default: 'initital'
-
-forward({ from: run, to: loadList });
-
-$status.watch((value) => console.log(`status: ${value}`));
-
-run(false);
-// status: pending
-// status: done
-
-run(true);
-// status: pending
-// status: fail
 ```
