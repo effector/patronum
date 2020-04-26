@@ -1,6 +1,5 @@
 // @ts-nocheck
 const { createEvent, createStore, forward } = require('effector');
-const { argumentHistory } = require('../test-library');
 const { spread } = require('./index');
 
 describe('spread(source, targets)', () => {
@@ -223,6 +222,40 @@ describe('edge', () => {
 
     expect(fnA).toBeCalledWith('Hello');
     expect(fnB).toBeCalledWith(200);
+  });
+
+  test('nested targets', () => {
+    const source = createEvent();
+    const targetA = createEvent();
+    const targetB = createEvent();
+    const targetC = createEvent();
+
+    const fnA = jest.fn();
+    const fnB = jest.fn();
+    const fnC = jest.fn();
+    targetA.watch(fnA);
+    targetB.watch(fnB);
+    targetC.watch(fnC);
+
+    spread(source, {
+      first: targetA,
+      second: spread({
+        foo: targetB,
+        bar: targetC,
+      }),
+    });
+
+    source({
+      first: 'Hello',
+      second: {
+        foo: 200,
+        bar: true,
+      },
+    });
+
+    expect(fnA).toBeCalledWith('Hello');
+    expect(fnB).toBeCalledWith(200);
+    expect(fnC).toBeCalledWith(true);
   });
 });
 

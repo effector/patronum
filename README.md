@@ -10,13 +10,13 @@
 - [Debounce](#-debounce)
 - [Debug](#-debug)
 - [Delay](#-delay)
+- [Spread](#-spread)
 - [Status](#-status)
 - [Throttle](#-throttle)
 
 ---
 
 - [Reshape](#-reshape)
-- [Spread](#-spread)
 - [SplitMap](#-splitmap)
 
 ## Usage
@@ -162,32 +162,7 @@ effect();
 // => status: "done"
 ```
 
-## [🍰 Reshape](/reshape 'Documentation')
-
-> No tests yet
-
-```ts
-import { createStore } from 'effector';
-import { reshape } from 'patronum/reshape';
-
-const $original = createStore<string>('Hello world');
-
-const parts = reshape($original, {
-  length: (string) => string.length,
-  first: (string) => string.split(' ')[0] || '',
-  second: (string) => string.split(' ')[1] || '',
-});
-
-parts.length.watch(console.info); // 11
-parts.first.watch(console.log); // "Hello"
-parts.second.watch(console.log); // "Second"
-```
-
-## [🍰 Spread](/spread 'Documentation')
-
-> No tests yet
-
-> No readme yet
+## [🧁 Spread](/spread 'Documentation')
 
 ```ts
 import { createEvent, createStore } from 'effector';
@@ -207,6 +182,27 @@ trigger({ first: 'Hello', second: 'World' });
 
 $first.getState(); // "Hello"
 $second.getState(); // "World"
+```
+
+## [🍰 Reshape](/reshape 'Documentation')
+
+> No tests yet
+
+```ts
+import { createStore } from 'effector';
+import { reshape } from 'patronum/reshape';
+
+const $original = createStore<string>('Hello world');
+
+const parts = reshape($original, {
+  length: (string) => string.length,
+  first: (string) => string.split(' ')[0] || '',
+  second: (string) => string.split(' ')[1] || '',
+});
+
+parts.length.watch(console.info); // 11
+parts.first.watch(console.log); // "Hello"
+parts.second.watch(console.log); // "Second"
 ```
 
 ## [🍰 SplitMap](/splitmap 'Documentation')
