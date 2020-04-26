@@ -3,6 +3,7 @@
   "version": "0.11.0",
   "description": "☄️ Effector utility library delivering modularity and convenience",
   "main": "index.js",
+  "types": "index.d.ts",
   "scripts": {
     "test": "jest",
     "commit": "git-cz",
