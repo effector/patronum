@@ -10,6 +10,8 @@ const { delay } = require('./index');
 
 expect.extend({ toBeCloseWithThreshold });
 
+const TIMER_THRESHOLD = 10;
+
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 test('delay event with number', async () => {
@@ -23,7 +25,7 @@ test('delay event with number', async () => {
   expect(fn).toBeCalledTimes(0);
 
   await waitFor(delayed);
-  expect(start.diff()).toBeCloseWithThreshold(100, 30);
+  expect(start.diff()).toBeCloseWithThreshold(100, TIMER_THRESHOLD);
   expect(fn).toBeCalledTimes(1);
 
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
@@ -44,7 +46,7 @@ test('double delay event with number', async () => {
   expect(fn).toBeCalledTimes(0);
 
   await waitFor(delayed);
-  expect(startA.diff()).toBeCloseWithThreshold(100, 30);
+  expect(startA.diff()).toBeCloseWithThreshold(100, TIMER_THRESHOLD);
   expect(fn).toBeCalledTimes(1);
 
   const startB = time();
@@ -52,7 +54,7 @@ test('double delay event with number', async () => {
   expect(fn).toBeCalledTimes(1);
 
   await waitFor(delayed);
-  expect(startB.diff()).toBeCloseWithThreshold(100, 30);
+  expect(startB.diff()).toBeCloseWithThreshold(100, TIMER_THRESHOLD);
   expect(fn).toBeCalledTimes(2);
 
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
@@ -73,7 +75,7 @@ test('delay event with function', async () => {
   trigger(1);
 
   await waitFor(delayed);
-  expect(start.diff()).toBeCloseWithThreshold(100, 30);
+  expect(start.diff()).toBeCloseWithThreshold(100, TIMER_THRESHOLD);
   expect(fn).toBeCalledTimes(1);
 
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
@@ -94,14 +96,14 @@ test('delay event with function of argument', async () => {
   expect(fn).toBeCalledTimes(0);
 
   await waitFor(delayed);
-  expect(start1.diff()).toBeCloseWithThreshold(100, 30);
+  expect(start1.diff()).toBeCloseWithThreshold(100, TIMER_THRESHOLD);
   expect(fn).toBeCalledTimes(1);
 
   const start2 = time();
   trigger(2); // 200ms delay
 
   await waitFor(delayed);
-  expect(start2.diff()).toBeCloseWithThreshold(200, 30);
+  expect(start2.diff()).toBeCloseWithThreshold(200, TIMER_THRESHOLD);
   expect(fn).toBeCalledTimes(2);
 
   await wait(100);
@@ -127,7 +129,7 @@ test('delay store', async () => {
   expect(fn).toBeCalledTimes(0);
 
   await waitFor(delayed);
-  expect(start1.diff()).toBeCloseWithThreshold(100, 30);
+  expect(start1.diff()).toBeCloseWithThreshold(100, TIMER_THRESHOLD);
   expect(fn).toBeCalledTimes(1);
 
   const start2 = time();
@@ -135,7 +137,7 @@ test('delay store', async () => {
   expect(fn).toBeCalledTimes(1);
 
   await waitFor(delayed);
-  expect(start2.diff()).toBeCloseWithThreshold(100, 30);
+  expect(start2.diff()).toBeCloseWithThreshold(100, TIMER_THRESHOLD);
   expect(fn).toBeCalledTimes(2);
 
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
@@ -157,14 +159,14 @@ test('double delay effect', async () => {
   expect(fn).toBeCalledTimes(0);
 
   await waitFor(delayed);
-  expect(start1.diff()).toBeCloseWithThreshold(100, 30);
+  expect(start1.diff()).toBeCloseWithThreshold(100, TIMER_THRESHOLD);
   expect(fn).toBeCalledTimes(1);
 
   const start2 = time();
   effect(2);
 
   await waitFor(delayed);
-  expect(start2.diff()).toBeCloseWithThreshold(100, 30);
+  expect(start2.diff()).toBeCloseWithThreshold(100, TIMER_THRESHOLD);
   expect(fn).toBeCalledTimes(2);
 
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
