@@ -13,7 +13,7 @@ function mergeEffects(list) {
     list.map((fx) => fx.inFlight),
     (counters) => counters.reduce((all, current) => all + current, 0),
   );
-  const fxFinally = merge(list.map((fx) => fx.finally));
+  const anyway = merge(list.map((fx) => fx.finally));
 
   return {
     done,
@@ -22,7 +22,7 @@ function mergeEffects(list) {
     failData,
     doneData,
     pending,
-    finally: fxFinally,
+    finally: anyway,
   };
 }
 
