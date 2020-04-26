@@ -1,4 +1,5 @@
 const { createStore, createEvent, restore } = require('effector');
+const { argumentHistory } = require('../test-library');
 const { condition } = require('./index');
 
 test('source: event, if: store, then: event', () => {
@@ -15,15 +16,13 @@ test('source: event, if: store, then: event', () => {
   });
 
   source('bar');
-  expect(fn.mock.calls).toMatchInlineSnapshot(`Array []`);
+  expect(argumentHistory(fn)).toMatchInlineSnapshot(`Array []`);
 
   $if.setState(true);
   source('foo');
-  expect(fn.mock.calls).toMatchInlineSnapshot(`
+  expect(argumentHistory(fn)).toMatchInlineSnapshot(`
     Array [
-      Array [
-        "foo",
-      ],
+      "foo",
     ]
   `);
 });
@@ -43,24 +42,18 @@ test('source: event, if: store, then: event, else: event', () => {
   });
 
   source('bar');
-  expect(fn.mock.calls).toMatchInlineSnapshot(`
+  expect(argumentHistory(fn)).toMatchInlineSnapshot(`
     Array [
-      Array [
-        "else: bar",
-      ],
+      "else: bar",
     ]
   `);
 
   $if.setState(true);
   source('foo');
-  expect(fn.mock.calls).toMatchInlineSnapshot(`
+  expect(argumentHistory(fn)).toMatchInlineSnapshot(`
     Array [
-      Array [
-        "else: bar",
-      ],
-      Array [
-        "then: foo",
-      ],
+      "else: bar",
+      "then: foo",
     ]
   `);
 });
@@ -84,24 +77,18 @@ test('source: store, if: store, then: event, else: event', () => {
   });
 
   change(1);
-  expect(fn.mock.calls).toMatchInlineSnapshot(`
+  expect(argumentHistory(fn)).toMatchInlineSnapshot(`
     Array [
-      Array [
-        "else: 1",
-      ],
+      "else: 1",
     ]
   `);
 
   setCond(true);
   change(2);
-  expect(fn.mock.calls).toMatchInlineSnapshot(`
+  expect(argumentHistory(fn)).toMatchInlineSnapshot(`
     Array [
-      Array [
-        "else: 1",
-      ],
-      Array [
-        "then: 2",
-      ],
+      "else: 1",
+      "then: 2",
     ]
   `);
 });
@@ -122,23 +109,17 @@ test('source: store, if: function, then: event, else: event', () => {
   });
 
   change(1);
-  expect(fn.mock.calls).toMatchInlineSnapshot(`
+  expect(argumentHistory(fn)).toMatchInlineSnapshot(`
     Array [
-      Array [
-        "else: 1",
-      ],
+      "else: 1",
     ]
   `);
 
   change(3);
-  expect(fn.mock.calls).toMatchInlineSnapshot(`
+  expect(argumentHistory(fn)).toMatchInlineSnapshot(`
     Array [
-      Array [
-        "else: 1",
-      ],
-      Array [
-        "then: 3",
-      ],
+      "else: 1",
+      "then: 3",
     ]
   `);
 });
@@ -159,23 +140,17 @@ test('source: store, if: literal, then: event, else: event', () => {
   });
 
   change(1);
-  expect(fn.mock.calls).toMatchInlineSnapshot(`
+  expect(argumentHistory(fn)).toMatchInlineSnapshot(`
     Array [
-      Array [
-        "else: 1",
-      ],
+      "else: 1",
     ]
   `);
 
   change(2);
-  expect(fn.mock.calls).toMatchInlineSnapshot(`
+  expect(argumentHistory(fn)).toMatchInlineSnapshot(`
     Array [
-      Array [
-        "else: 1",
-      ],
-      Array [
-        "then: 2",
-      ],
+      "else: 1",
+      "then: 2",
     ]
   `);
 });
