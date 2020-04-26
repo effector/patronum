@@ -1,3 +1,5 @@
+const { performance } = require('perf_hooks');
+
 function waitFor(unit) {
   return new Promise((resolve) => {
     const unsubscribe = unit.watch((payload) => {
@@ -13,4 +15,16 @@ function argumentHistory(ƒ) {
   );
 }
 
-module.exports = { argumentHistory, waitFor };
+function time() {
+  const start = performance.now();
+
+  return {
+    diff: () => {
+      const end = performance.now();
+
+      return end - start;
+    },
+  };
+}
+
+module.exports = { argumentHistory, waitFor, time };
