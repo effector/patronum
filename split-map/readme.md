@@ -1,7 +1,7 @@
 # Patronum/SplitMap
 
 ```ts
-import { splitMap } from 'patronum/splitmap';
+import { splitMap } from 'patronum/split-map';
 ```
 
 > No formulae yet
@@ -12,7 +12,7 @@ import { splitMap } from 'patronum/splitmap';
 
 ```ts
 import { createEvent } from 'effector';
-import { splitMap } from 'patronum/splitmap';
+import { splitMap } from 'patronum/split-map';
 
 const event = createEvent<object>();
 

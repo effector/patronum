@@ -1,7 +1,8 @@
-/* eslint-disable unicorn/no-process-exit */
+/* eslint-disable unicorn/no-process-exit, prefer-template */
 const fs = require('fs');
 const { promisify } = require('util');
 const globby = require('globby');
+const { camelCase } = require('camel-case');
 
 const writeFile = promisify(fs.writeFile);
 
@@ -12,11 +13,17 @@ async function main() {
 
   const names = found.map((name) => name.replace(`/${packageMarker}`, ''));
 
-  const imports = names
-    .sort()
-    .map((name) => `module.exports.${name} = require('./${name}');`);
+  const imports = names.sort().map((name) => {
+    const camel = camelCase(name);
+    return `module.exports.${camel} = require('./${name}').${camel};`;
+  });
 
-  await writeFile('./index.js', imports.join('\n'));
+  const types = names
+    .sort()
+    .map((name) => `export { ${camelCase(name)} } from './${name}';`);
+
+  await writeFile('./index.js', imports.join('\n') + '\n');
+  await writeFile('./index.d.ts', types.join('\n') + '\n');
 }
 
 main().catch((error) => {

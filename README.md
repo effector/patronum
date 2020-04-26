@@ -207,13 +207,13 @@ parts.first.watch(console.log); // "Hello"
 parts.second.watch(console.log); // "Second"
 ```
 
-## [SplitMap](/splitmap 'Documentation')
+## [SplitMap](/split-map 'Documentation')
 
 > No tests yet
 
 ```ts
 import { createEvent } from 'effector';
-import { splitMap } from 'patronum/splitmap';
+import { splitMap } from 'patronum/split-map';
 
 const nameReceived = createEvent<string>();
 
