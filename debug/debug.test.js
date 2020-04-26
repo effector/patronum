@@ -5,6 +5,7 @@ const {
   createStore,
   createDomain,
 } = require('effector');
+const { argumentHistory } = require('../test-library');
 const { debug } = require('./index');
 
 const original = global.console.info;
@@ -116,9 +117,3 @@ test('debug domain', async () => {
     ]
   `);
 });
-
-function argumentHistory(ƒ) {
-  return ƒ.mock.calls.map((value) =>
-    value.map((a) => (typeof a === 'object' ? JSON.stringify(a) : a)).join(' '),
-  );
-}
