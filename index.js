@@ -5,4 +5,5 @@ module.exports.delay = require('./delay');
 module.exports.reshape = require('./reshape');
 module.exports.splitmap = require('./splitmap');
 module.exports.spread = require('./spread');
+module.exports.status = require('./status');
 module.exports.throttle = require('./throttle');

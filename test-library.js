@@ -18,13 +18,38 @@ function argumentHistory(ƒ) {
 function time() {
   const start = performance.now();
 
-  return {
+  const result = {
     diff: () => {
       const end = performance.now();
 
       return end - start;
     },
   };
+  return result;
 }
 
-module.exports = { argumentHistory, waitFor, time };
+function toBeCloseWithThreshold(received, expected, threshold) {
+  const minimum = expected - threshold;
+  const maximum = expected + threshold;
+
+  if (received < minimum) {
+    return {
+      pass: false,
+      message: () =>
+        `expected ${received} to be close to ${expected}, but it is smaller that minimum ${minimum} with threshold ${threshold}`,
+    };
+  }
+  if (received > maximum) {
+    return {
+      pass: false,
+      message: () =>
+        `expected ${received} to be close to ${expected}, but it is bigger that maximum ${maximum} with threshold ${threshold}`,
+    };
+  }
+  return {
+    pass: true,
+    message: () => `expected ${received} to be close to ${expected}, it is ok`,
+  };
+}
+
+module.exports = { argumentHistory, waitFor, time, toBeCloseWithThreshold };
