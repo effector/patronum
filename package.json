@@ -11,7 +11,7 @@
     "lint": "eslint ./",
     "prepublishOnly": "node ./_/build.js"
   },
-  "files": ["*/*.js", "*/*.d.ts", "!*.test.js"],
+  "files": ["*/*.js", "*/*.d.ts", "!*.test.js", "!_", "index.js", "index.d.ts"],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/sergeysova/patronum.git"
