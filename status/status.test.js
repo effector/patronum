@@ -1,4 +1,4 @@
-const { createEvent, createEffect, forward } = require('effector');
+const { createEvent, createEffect } = require('effector');
 const { argumentHistory, waitFor } = require('../test-library');
 const { status } = require('./index');
 
