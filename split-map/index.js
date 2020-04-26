@@ -1,8 +1,10 @@
+const { is } = require('effector');
+
 function splitMap(source, cases) {
   const result = {};
 
-  // let current: Event<S> = is.store(unit) ? (unit: any).updates : unit
-  let current = source;
+  let current = is.store(source) ? source.updates : source;
+
   for (const key in cases) {
     if (key in cases) {
       const fn = cases[key];
