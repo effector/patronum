@@ -1,4 +1,4 @@
-# Patronum/Reshape
+# Patronum/Merge Effects
 
 ```ts
 import { mergeEffects } from 'patronum/merge-effects';
