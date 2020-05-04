@@ -1,3 +1,3 @@
 import { Unit } from 'effector';
 
-export function debug(...units: Unit<any>): void;
+export function debug(...units: Unit<any>[]): void;
