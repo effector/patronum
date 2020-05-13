@@ -1,6 +1,6 @@
 const { is, sample, guard } = require('effector');
 
-function reduce({ source, filter, fn, clock, target }) {
+function filterMap({ source, filter, fn, clock, target }) {
   let clockValue;
   if (clock) {
     // eslint-disable-next-line no-param-reassign
@@ -41,7 +41,7 @@ function variant({ source, key, cases, clock, fn }) {
       // eslint-disable-next-line no-continue
       continue;
     }
-    reduce({
+    filterMap({
       source,
       clock,
       filter: (value) => String(keyReader(value)) === caseName,
@@ -51,7 +51,7 @@ function variant({ source, key, cases, clock, fn }) {
   }
   if (defaultCase) {
     const namedCases = Object.keys(cases);
-    reduce({
+    filterMap({
       source,
       clock,
       filter: (value) => !namedCases.includes(String(keyReader(value))),
