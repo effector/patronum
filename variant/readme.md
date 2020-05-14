@@ -2,51 +2,31 @@
 
 Redirects data from `source` to one of the `cases` using a `key`
 
-### Arguments
-
-`source` - the source of data
-*string* `key` - gets the case by this key from source data
-*function* `key` - receives source data and returns a case
-*store* `key` - gets a case from store state (not from data)
-*object* `key` - gets a key of the first function in object that returns true (as in split)
-`clock` - a trigger for getting data from source (upon the request)
-`fn` - receives source data and returns a value that will be sent to the target
-`cases` - an object from which on of the targets will be triggered
+#### Explanation
 
 When the `source` data is received (by itself or using a `clock`) the `key` value is used
-to determine one of the `cases` to trigger the corresponding target. The data can be processed
-using the `fn` function before sending to the target. You can get the `key` to match a case from
+to determine one of the `cases` for triggering the target. You can get the `key` for matching from
 the source data or from a particular store. You can omit the `key` to use source data itself for
-determining a case. You can use `__` (two underscores) case to specify a target that will be
-triggered when the `key` doesn't match any of the `cases` (a default case or a fallback)
+determining a case. The data can be processed with the `fn` function (before sending to the target).
+You can use `__` (two underscores) case to specify a target that will be triggered when the `key`
+doesn't match any of the `cases` (a default case / fallback)
+
+#### Arguments
+
+`source` - get the source of data from this unit
+*string* `key` - get the case by this key from source data
+*function* `key` - use source data in the function to return a case
+*store* `key` - use the store state as a case (not from data)
+*object* `key` - use a key of the first function in object that returns true (as in split)
+`clock` - trigger getting data from source (upon the request)
+`fn` - use the source data and return a value that will be sent to the target
+`cases` - use an object from which one of the targets will be triggered
 
 ### Returns
 
 Variant call returns `undefined` (void)
 
 ## Examples
-
-Select a target event by value from a store or event.
-
-```js
-const $move = createStore("left");
-const moveLeft = createEvent();
-const moveRight = createEvent();
-
-variant({
-  source: $move,
-  cases: {
-    left: moveLeft,
-    right: moveRight,
-  }
-})
-```
-
-When the value of the store will be `left`, event `moveLeft` will be triggered. If `right` — `moveRight`.
-
-Variant itself returns `undefined` (void)
-
----
 
 Select a property from a source object by key:
 
@@ -64,6 +44,8 @@ variant({
   }
 })
 ```
+
+When the position the store will be `left`, event `moveLeft` will be triggered. If `right` — `moveRight`.
 
 ---
 
@@ -127,6 +109,24 @@ variant({
 
 ---
 
+Omit the key to use value from a store or event
+
+```js
+const $move = createStore("left");
+const moveLeft = createEvent();
+const moveRight = createEvent();
+
+variant({
+  source: $move,
+  cases: {
+    left: moveLeft,
+    right: moveRight,
+  }
+})
+```
+
+---
+
 There can be a default case (`__`), if the key is not found in the target object
 
 ```js
@@ -158,6 +158,8 @@ variant({
 
 ---
 
+You can use object in key with predicates to select the case (the first returning true will be used)
+
 ```js
 const updateData = createEvent();
 const $data = restore(updateData, { value: 0 });
@@ -185,7 +187,7 @@ updateData({ value: 7 }); // greater is triggered with 7
 
 ---
 
-Check this example of `nextPage`
+Here is an example of switching store value
 
 ```js
 variant({
