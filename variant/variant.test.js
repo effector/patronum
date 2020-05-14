@@ -261,4 +261,39 @@ describe('variant', () => {
     nextPage();
     expect(pageFn).toBeCalledWith('/intro');
   });
+
+  test('{source: store, key: object}', () => {
+    const $data = createStore({ value: 0 });
+    const greater = createEvent();
+    const less = createEvent();
+    const equal = createEvent();
+
+    const greaterFn = jest.fn();
+    const lessFn = jest.fn();
+    const equalFn = jest.fn();
+
+    greater.watch(greaterFn);
+    less.watch(lessFn);
+    equal.watch(equalFn);
+
+    variant({
+      source: $data,
+      key: {
+        greater: ({ value }) => value > 5,
+        less: ({ value }) => value < 5,
+        equal: ({ value }) => value === 5,
+      },
+      cases: {
+        greater,
+        less,
+        equal,
+      },
+    });
+
+    $data.setState({ value: 7 });
+
+    expect(greaterFn).toBeCalledWith({ value: 7 });
+    expect(lessFn).toBeCalledTimes(0);
+    expect(equalFn).toBeCalledTimes(0);
+  });
 });

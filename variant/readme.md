@@ -8,6 +8,7 @@ Redirects data from `source` to one of the `cases` using a `key`
 *string* `key` - gets the case by this key from source data
 *function* `key` - receives source data and returns a case
 *store* `key` - gets a case from store state (not from data)
+*object* `key` - gets a key of the first function in object that returns true (as in split)
 `clock` - a trigger for getting data from source (upon the request)
 `fn` - receives source data and returns a value that will be sent to the target
 `cases` - an object from which on of the targets will be triggered
@@ -142,21 +143,6 @@ variant({
 
 ---
 
-Check this example of `nextPage`
-
-```js
-variant({
-  source: sample(page, nextPage),
-  cases: createApi(page, {
-    '/intro': () => '/article',
-    '/article': () => '/pricing',
-    '/pricing': () => '/signup',
-  })
-})
-```
-
----
-
 You can use boolean values for a key
 
 ```js
@@ -167,5 +153,47 @@ variant({
     true: $uploadResult,
     false: showNotification,
   }
+})
+```
+
+---
+
+```js
+const updateData = createEvent();
+const $data = restore(updateData, { value: 0 });
+const greater = createEvent();
+const less = createEvent();
+const equal = createEvent();
+
+variant({
+  source: $data,
+  key: {
+    greater: ({ value }) => value > 5,
+    less: ({ value }) => value < 5,
+    equal: ({ value }) => value === 5,
+  },
+  fn: ({ value }) => value,
+  cases: {
+    greater,
+    less,
+    equal,
+  },
+});
+
+updateData({ value: 7 }); // greater is triggered with 7
+```
+
+---
+
+Check this example of `nextPage`
+
+```js
+variant({
+  source: sample(page, nextPage),
+  cases: createApi(page, {
+    '/intro': () => '/article',
+    '/article': () => '/pricing',
+    '/pricing': () => '/signup',
+  })
 })
 ```

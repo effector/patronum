@@ -32,6 +32,12 @@ function variant({ source, key, cases, clock, fn }) {
       undefined: (value) => value,
       function: key,
       store: () => key.getState(),
+      // eslint-disable-next-line consistent-return
+      object: (value) => {
+        for (const keyName in key) {
+          if (key[keyName](value)) return keyName;
+        }
+      },
     }[keyType] || defaultKeyReader;
   let defaultCase = false;
   // eslint-disable-next-line guard-for-in
