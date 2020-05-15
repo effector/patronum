@@ -4,21 +4,15 @@ Redirects data from `source` to one of the `cases` using a `key`
 
 #### Explanation
 
-When the `source` data is received (by itself or using a `clock`) the `key` value is used
-to determine one of the `cases` for triggering the target. You can get the `key` for matching from
-the source data or from a particular store. You can omit the `key` to use source data itself for
-determining a case. The data can be processed with the `fn` function (before sending to the target).
-You can use `__` (two underscores) case to specify a target that will be triggered when the `key`
-doesn't match any of the `cases` (a default case / fallback)
+When the `source` data is received the `key` value is used to determine one of the `cases` for triggering the target. You can get the `key` for matching from the source data or from a particular store. You can omit the `key` to use source data itself for determining a case. The data can be processed with the `fn` function (before sending to the target). You can use `__` (two underscores) case to specify a target that will be triggered when the `key` doesn't match any of the `cases` (a default case / fallback)
 
 #### Arguments
 
-`source` - get the source of data from this unit
-*string* `key` - get the case by this key from source data
-*function* `key` - use source data in the function to return a case
-*store* `key` - use the store state as a case (not from data)
-*object* `key` - use a key of the first function in object that returns true (as in split)
-`clock` - trigger getting data from source (upon the request)
+`source` - get the source of data from given unit
+*string* `key` - get case value by this key from source data
+*function* `key` - use a function to get a case value from source data
+*store* `key` - use a case value from the store state (not from data)
+*object* `key` - use a key of the first function in the object that returns true (as in split)
 `fn` - use the source data and return a value that will be sent to the target
 `cases` - use an object from which one of the targets will be triggered
 

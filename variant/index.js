@@ -1,22 +1,10 @@
 const { is, sample, guard } = require('effector');
 
-function filterMap({ source, filter, fn, clock, target }) {
-  let clockValue;
-  if (clock) {
-    // eslint-disable-next-line no-param-reassign
-    source = sample({
-      source,
-      clock,
-      fn: (state, parameter) => {
-        clockValue = parameter;
-        return state;
-      },
-    });
-  }
+function filterMap({ source, filter, fn, target }) {
   if (fn) {
     sample({
       source: guard({ source, filter }),
-      fn: (state) => fn(state, clockValue),
+      fn: (state) => fn(state),
       target,
     });
   } else {
@@ -24,7 +12,7 @@ function filterMap({ source, filter, fn, clock, target }) {
   }
 }
 
-function variant({ source, key, cases, clock, fn }) {
+function variant({ source, key, fn, cases }) {
   const keyType = is.store(key) ? 'store' : typeof key;
   const defaultKeyReader = (value) => value[key];
   const keyReader =
@@ -49,7 +37,6 @@ function variant({ source, key, cases, clock, fn }) {
     }
     filterMap({
       source,
-      clock,
       filter: (value) => String(keyReader(value)) === caseName,
       fn,
       target: cases[caseName],
@@ -59,7 +46,6 @@ function variant({ source, key, cases, clock, fn }) {
     const namedCases = Object.keys(cases);
     filterMap({
       source,
-      clock,
       filter: (value) => !namedCases.includes(String(keyReader(value))),
       fn,
       // eslint-disable-next-line no-underscore-dangle

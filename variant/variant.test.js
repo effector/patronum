@@ -1,5 +1,5 @@
 // @ts-nocheck
-const { createEvent, createStore, createApi } = require('effector');
+const { createEvent, createStore, createApi, sample } = require('effector');
 const { variant } = require('./index');
 
 describe('variant', () => {
@@ -120,11 +120,10 @@ describe('variant', () => {
     expect(moveRightFn).toBeCalledWith(5);
   });
 
-  test('{source: combine, key: store, clock}', () => {
+  test('{source: combine, key: store}', () => {
     const $position = createStore('right');
-    const $value = createStore(1);
+    const $value = createStore(0);
 
-    const move = createEvent();
     const moveLeft = createEvent();
     const moveRight = createEvent();
 
@@ -138,28 +137,77 @@ describe('variant', () => {
       source: {
         value: $value,
       },
-      clock: move,
       key: $position,
-      fn: ({ value }, parameter) => value + parameter,
+      fn: ({ value }) => value + 1,
       cases: {
         left: moveLeft,
         right: moveRight,
       },
     });
 
-    move(1);
+    $value.setState(1);
 
     expect(moveRightFn).toBeCalledWith(2);
     expect(moveLeftFn).toBeCalledTimes(0);
 
     $position.setState('left');
 
-    move(2);
+    $value.setState(2);
 
     expect(moveLeftFn).toBeCalledWith(3);
   });
 
-  test('{source: combine, key: string, clock}', () => {
+  test('{source: combine, key: fn} - default case', () => {
+    const $position = createStore('left');
+    const $value = createStore(1);
+
+    const move = createEvent();
+    const moveLeft = createEvent();
+    const moveRight = createEvent();
+    const moveDefault = createEvent();
+
+    const moveLeftFn = jest.fn();
+    const moveRightFn = jest.fn();
+    const moveDefaultFn = jest.fn();
+
+    moveLeft.watch(moveLeftFn);
+    moveRight.watch(moveRightFn);
+    moveDefault.watch(moveDefaultFn);
+
+    const movedData = sample({
+      source: {
+        value: $value,
+        position: $position,
+      },
+      clock: move,
+    });
+
+    variant({
+      source: movedData,
+      key: ({ position }) => position,
+      fn: ({ value }, parameter) => ({ value, parameter }),
+      cases: {
+        left: moveLeft,
+        right: moveRight,
+        __: moveDefault,
+      },
+    });
+
+    move(5);
+
+    expect(moveLeftFn).toBeCalledWith({ value: 1, parameter: undefined });
+    expect(moveRightFn).toBeCalledTimes(0);
+    expect(moveDefaultFn).toBeCalledTimes(0);
+
+    $position.setState('up');
+    $value.setState(3);
+
+    move(10);
+
+    expect(moveDefaultFn).toBeCalledWith({ value: 3, parameter: undefined });
+  });
+
+  test('{source: combine, key: store} - no clock', () => {
     const $position = createStore('left');
     const $value = createStore(1);
 
@@ -181,9 +229,10 @@ describe('variant', () => {
         value: $value,
         position: $position,
       },
-      clock: move,
       key: ({ position }) => position,
-      fn: ({ value }, parameter) => value + parameter,
+      // Clock is not supported (clock is for sampling, use sample instead)
+      clock: move,
+      fn: ({ value }, parameter) => ({ value, parameter }),
       cases: {
         left: moveLeft,
         right: moveRight,
@@ -191,17 +240,20 @@ describe('variant', () => {
       },
     });
 
-    move(1);
+    move(5);
 
-    expect(moveLeftFn).toBeCalledWith(2);
+    // Nothing happens
+    expect(moveLeftFn).toBeCalledTimes(0);
     expect(moveRightFn).toBeCalledTimes(0);
     expect(moveDefaultFn).toBeCalledTimes(0);
 
-    $position.setState('up');
+    $position.setState('right');
+    $value.setState(3);
 
-    move(2);
+    move(10);
 
-    expect(moveDefaultFn).toBeCalledWith(3);
+    // No second parameter, because we don't use clock
+    expect(moveRightFn).toBeCalledWith({ value: 3, parameter: undefined });
   });
 
   test('{source: store, key: fn => boolean}', () => {
@@ -238,9 +290,9 @@ describe('variant', () => {
 
     $page.watch(pageFn);
 
+    // Use sample if you need a clock
     variant({
-      source: $page,
-      clock: nextPage,
+      source: sample($page, nextPage),
       cases: createApi($page, {
         '/intro': () => '/article',
         '/article': () => '/pricing',
