@@ -13,20 +13,23 @@ function filterMap({ source, filter, fn, target }) {
 }
 
 function variant({ source, key, fn, cases }) {
-  const keyType = is.store(key) ? 'store' : typeof key;
-  const defaultKeyReader = (value) => value[key];
-  const keyReader =
-    {
-      undefined: (value) => value,
-      function: key,
-      store: () => key.getState(),
-      // eslint-disable-next-line consistent-return
-      object: (value) => {
-        for (const keyName in key) {
-          if (key[keyName](value)) return keyName;
-        }
-      },
-    }[keyType] || defaultKeyReader;
+  const keyReader = {
+    undefined: (value) => value,
+    function: key,
+    string: (value) => value[key],
+    store: () => key.getState(),
+    // eslint-disable-next-line consistent-return
+    object: (value) => {
+      for (const keyName in key) {
+        if (key[keyName](value)) return keyName;
+      }
+    },
+  }[is.store(key) ? 'store' : typeof key];
+  // eslint-disable-next-line eqeqeq
+  if (keyReader == undefined) {
+    // or null
+    throw new Error('Invalid key type!');
+  }
   let defaultCase = false;
   // eslint-disable-next-line guard-for-in
   for (const caseName in cases) {
