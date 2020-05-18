@@ -4,11 +4,11 @@ Redirects data from `source` to one of the `cases` by using a `filter`
 
 #### Usage
 
-`variant` is like `guard` but with many cases, not just `true` case. Use `variant` instead of `guard` when you need more cases (or branches) and you don't want to duplicate guards. For example, when you have one `source` of data, and you need to trigger different `cases` (targets) based on that data. You can also use `variant` if you need a `true` and `false` case in `guard`, a fallback (default case `__`), a function (`fn`) transforming the data before sending to the target, or you just want to use falsy value from store (`cases: { false: target }`). You can also use it instead of `split` if you already have targets defined.
+`variant` is like `guard` but with many cases, not just `true` case. Use `variant` instead of `guard` when you need more cases (or branches) and you don't want to duplicate guards. For example, when you have one `source` of data, and you need to trigger different `cases` (targets) based on that data. You can also use `variant` if you need a `true` and `false` case in `guard`, a fallback (default case `__`), a function (`fn`) transforming the data before sending to the target, or you just want to use falsy value in filter (not truthy). You can also use `variant` instead of `split` if you already have targets defined.
 
 #### Explanation
 
-When the `source` data is received, the `filter` value is used to determine one of the `cases` for triggering the target. You can use a key of source data, a function or a separate store to get the filter value from. You can omit the `filter` to use source data itself for determining a case. The data can be processed with the `fn` function (before sending to the target). You can use `__` (two underscores) case to specify a target that will be triggered when the `filter` value doesn't match any of the `cases` (a default case / fallback)
+When the `source` data is received, the `filter` value is used to determine one of the `cases` for triggering the target. You can use a key of source data, a function or a separate store to get the filter value from. You can omit the `filter` to use source data itself for determining a case. The filter value is used to match one of the keys in the cases object to determine a target. The data can be processed with the `fn` function (before sending to the target). You can use `__` (two underscores) case to specify a target that will be triggered when the `filter` value doesn't match any of the `cases` (a default case / fallback)
 
 #### Arguments
 
