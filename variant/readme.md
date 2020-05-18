@@ -1,20 +1,24 @@
 ## Variant
 
-Redirects data from `source` to one of the `cases` using a `key`
+Redirects data from `source` to one of the `cases` by using a `filter`
+
+#### Usage
+
+`variant` is like `guard` but with many cases, not just `true` case. Use `variant` instead of `guard` when you need more cases (or branches) and you don't want to duplicate guards. For example, when you have one `source` of data, and you need to trigger different `cases` (targets) based on that data. You can also use `variant` if you need a `true` and `false` case in `guard`, a fallback (default case `__`), a function (`fn`) transforming the data before sending to the target, or you just want to use falsy value from store (`cases: { false: target }`). You can also use it instead of `split` if you already have targets defined.
 
 #### Explanation
 
-When the `source` data is received the `key` value is used to determine one of the `cases` for triggering the target. You can get the `key` for matching from the source data or from a particular store. You can omit the `key` to use source data itself for determining a case. The data can be processed with the `fn` function (before sending to the target). You can use `__` (two underscores) case to specify a target that will be triggered when the `key` doesn't match any of the `cases` (a default case / fallback)
+When the `source` data is received, the `filter` value is used to determine one of the `cases` for triggering the target. You can use a key of source data, a function or a separate store to get the filter value from. You can omit the `filter` to use source data itself for determining a case. The data can be processed with the `fn` function (before sending to the target). You can use `__` (two underscores) case to specify a target that will be triggered when the `filter` value doesn't match any of the `cases` (a default case / fallback)
 
 #### Arguments
 
-`source` - get the source of data from given unit
-*string* `key` - get case value by this key from source data
-*function* `key` - use a function to get a case value from source data
-*store* `key` - use a case value from the store state (not from data)
-*object* `key` - use a key of the first function in the object that returns true (as in split)
-`fn` - use the source data and return a value that will be sent to the target
-`cases` - use an object from which one of the targets will be triggered
+`source` - a source of data (any unit)
+*string* `filter` - a key to get the filter value (from source data object)
+*function* `filter` - a function to get a filter value (from source data)
+*store* `filter` - a store which state will be used as a filter value (not source data)
+*object* `filter` - an object with predicates to determine a filter value (the first one is used as in split)
+`fn` - a function that receives the source data and returns processed data that will be sent to the target
+`cases` - an object with targets (only one target which key equals to filter value will be triggered)
 
 ### Returns
 
@@ -22,7 +26,7 @@ Variant call returns `undefined` (void)
 
 ## Examples
 
-Select a property from a source object by key:
+Use `position` field from source object as a filter value:
 
 ```js
 const $move = createStore({ position: "left" });
@@ -31,7 +35,7 @@ const moveRight = createEvent();
 
 variant({
   source: $move,
-  key: "position",
+  filter: "position",
   cases: {
     left: moveLeft,
     right: moveRight,
@@ -39,11 +43,11 @@ variant({
 })
 ```
 
-When the position the store will be `left`, event `moveLeft` will be triggered. If `right` — `moveRight`.
+When the position of the updated store will be `left`, event `moveLeft` will be triggered. If `right` — `moveRight`.
 
 ---
 
-Transform value before triggering a target:
+Use an `fn` function to transform data before triggering one of the targets:
 
 ```js
 const $move = createStore({ position: "left" });
@@ -52,7 +56,7 @@ const moveRight = createEvent();
 
 variant({
   source: $move,
-  key: "position",
+  filter: "position",
   fn: (state) => state.position.length,
   cases: {
     left: moveLeft, // triggered with 4
@@ -63,7 +67,7 @@ variant({
 
 ---
 
-Get key using function:
+Use a value from the `filter` function as a case for triggering the target:
 
 ```js
 const $move = createStore({ position: "left" });
@@ -72,7 +76,7 @@ const moveRight = createEvent();
 
 variant({
   source: $move,
-  key: (state) => state.position === 'left',
+  filter: (state) => state.position === 'left',
   cases: {
     true: moveLeft,
     false: moveRight,
@@ -82,7 +86,7 @@ variant({
 
 ---
 
-Get key from store:
+Use a *store* as a `filter` to determine a case:
 
 ```js
 const $move = createStore({ distance: 0 });
@@ -93,7 +97,7 @@ const moveRight = createEvent();
 
 variant({
   source: $move,
-  key: $direction,
+  filter: $direction,
   cases: {
     left: moveLeft,
     right: moveRight,
@@ -103,7 +107,7 @@ variant({
 
 ---
 
-Omit the key to use value from a store or event
+Skip the `filter` to use the source data as a filter value:
 
 ```js
 const $move = createStore("left");
@@ -121,12 +125,12 @@ variant({
 
 ---
 
-There can be a default case (`__`), if the key is not found in the target object
+There can be a default case (`__`), if the filter value doesn't match any named case in the target object:
 
 ```js
 variant({
   source: $account,
-  key: 'kind',
+  filter: 'kind',
   cases: {
     admin: adminAccount,
     user: userAccount,
@@ -137,14 +141,13 @@ variant({
 
 ---
 
-You can use boolean values for a key
+You can use boolean values as cases:
 
 ```js
 variant({
   source: uploadFx.done,
-  key: gate.status,
+  filter: gate.status,
   cases: {
-    true: $uploadResult,
     false: showNotification,
   }
 })
@@ -152,7 +155,7 @@ variant({
 
 ---
 
-You can use object in key with predicates to select the case (the first returning true will be used)
+You can use an object with predicates in `filter` to select the case (the first returning true will be used):
 
 ```js
 const updateData = createEvent();
@@ -163,7 +166,7 @@ const equal = createEvent();
 
 variant({
   source: $data,
-  key: {
+  filter: {
     greater: ({ value }) => value > 5,
     less: ({ value }) => value < 5,
     equal: ({ value }) => value === 5,
@@ -181,7 +184,7 @@ updateData({ value: 7 }); // greater is triggered with 7
 
 ---
 
-Here is an example of switching store value
+And here is an example of switching the store value with `variant` by triggering `nextPage`:
 
 ```js
 variant({

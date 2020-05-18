@@ -12,23 +12,23 @@ function filterMap({ source, filter, fn, target }) {
   }
 }
 
-function variant({ source, key, fn, cases }) {
-  const keyReader = {
+function variant({ source, filter, fn, cases }) {
+  const caseReader = {
     undefined: (value) => value,
-    function: key,
-    string: (value) => value[key],
-    store: () => key.getState(),
+    function: filter,
+    string: (value) => value[filter],
+    store: () => filter.getState(),
     // eslint-disable-next-line consistent-return
     object: (value) => {
-      for (const keyName in key) {
-        if (key[keyName](value)) return keyName;
+      for (const caseName in filter) {
+        if (filter[caseName](value)) return caseName;
       }
     },
-  }[is.store(key) ? 'store' : typeof key];
+  }[is.store(filter) ? 'store' : typeof filter];
   // eslint-disable-next-line eqeqeq
-  if (keyReader == undefined) {
+  if (caseReader == undefined) {
     // or null
-    throw new Error('Invalid key type!');
+    throw new Error('Invalid filter type!');
   }
   let defaultCase = false;
   // eslint-disable-next-line guard-for-in
@@ -40,7 +40,7 @@ function variant({ source, key, fn, cases }) {
     }
     filterMap({
       source,
-      filter: (value) => String(keyReader(value)) === caseName,
+      filter: (value) => String(caseReader(value)) === caseName,
       fn,
       target: cases[caseName],
     });
@@ -49,7 +49,7 @@ function variant({ source, key, fn, cases }) {
     const namedCases = Object.keys(cases);
     filterMap({
       source,
-      filter: (value) => !namedCases.includes(String(keyReader(value))),
+      filter: (value) => !namedCases.includes(String(caseReader(value))),
       fn,
       // eslint-disable-next-line no-underscore-dangle
       target: cases.__,
