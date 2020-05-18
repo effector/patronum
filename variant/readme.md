@@ -8,7 +8,7 @@ Redirects data from `source` to one of the `cases` by using a `filter`
 
 #### Explanation
 
-When the `source` data is received, the `filter` value is used to determine one of the `cases` for triggering the target. You can use a key of source data, a function or a separate store to get the filter value from. You can omit the `filter` to use source data itself for determining a case. The filter value is used to match one of the keys in the cases object to determine a target. The data can be processed with the `fn` function (before sending to the target). You can use `__` (two underscores) case to specify a target that will be triggered when the `filter` value doesn't match any of the `cases` (a default case / fallback)
+When the `source` data is received, the `filter` value is used to determine one of the `cases` for triggering the target. You can use a key of source data, a function or a separate store to get the filter value from. You can omit the `filter` to use source data itself for determining a case. The `filter` value is used to match one of the keys in the `cases` object to determine a target. The data can be processed with the `fn` function (before sending to the target). You can use `__` (two underscores) case to specify a target that will be triggered when the `filter` value doesn't match any of the `cases` (a default case / fallback)
 
 #### Arguments
 
