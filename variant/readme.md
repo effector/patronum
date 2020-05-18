@@ -1,10 +1,10 @@
 ## Variant
 
-Redirects data from `source` to one of the `cases` by using a `filter`
+Redirects data from `source` to one of the `cases` by using a `filter` value (boolean or string)
 
 #### Usage
 
-`variant` is like `guard` but with many cases, not just `true` case. Use `variant` instead of `guard` when you need more cases (or branches) and you don't want to duplicate guards. For example, when you have one `source` of data, and you need to trigger different `cases` (targets) based on that data. You can also use `variant` if you need a `true` and `false` case in `guard`, a fallback (default case `__`), a function (`fn`) transforming the data before sending to the target, or you just want to use falsy value in filter (not truthy). You can also use `variant` instead of `split` if you already have targets defined.
+`variant` is like `guard` but with many cases, not just `true` case. A `filter` in `variant` can return a string value to switch between targets (`cases`). Use `variant` instead of `guard` when you need more cases (or branches) and you don't want to duplicate guards. For example, when you have one `source` of data, and you need to trigger different `cases` (targets) based on that data. You can also use `variant` if you need a `true` and `false` case in `guard`, a fallback (default case `__`), a function (`fn`) transforming the data before sending to the target, or you just want to use falsy value in filter (not truthy). You can also use `variant` instead of `split` if you already have targets defined.
 
 #### Explanation
 
