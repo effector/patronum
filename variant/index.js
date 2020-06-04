@@ -12,23 +12,23 @@ function filterMap({ source, filter, fn, target }) {
   }
 }
 
-function variant({ source, filter, fn, cases }) {
+function variant({ source, key, fn, cases }) {
   const caseReader = {
     undefined: (value) => value,
-    function: filter,
-    string: (value) => value[filter],
-    store: () => filter.getState(),
+    function: key,
+    string: (value) => value[key],
+    store: () => key.getState(),
     // eslint-disable-next-line consistent-return
     object: (value) => {
-      for (const caseName in filter) {
-        if (filter[caseName](value)) return caseName;
+      for (const caseName in key) {
+        if (key[caseName](value)) return caseName;
       }
     },
-  }[is.store(filter) ? 'store' : typeof filter];
+  }[is.store(key) ? 'store' : typeof key];
   // eslint-disable-next-line eqeqeq
   if (caseReader == undefined) {
     // or null
-    throw new Error('Invalid filter type!');
+    throw new Error('Invalid key type!');
   }
   let defaultCase = false;
   // eslint-disable-next-line guard-for-in

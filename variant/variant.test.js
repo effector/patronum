@@ -28,7 +28,7 @@ describe('variant', () => {
     expect(moveLeftFn).toBeCalledTimes(0);
   });
 
-  test('{source: store, filter: string}', () => {
+  test('{source: store, key: string}', () => {
     const $move = createStore({ position: 'left' });
     const moveLeft = createEvent();
     const moveRight = createEvent();
@@ -41,7 +41,7 @@ describe('variant', () => {
 
     variant({
       source: $move,
-      filter: 'position',
+      key: 'position',
       cases: {
         left: moveLeft,
         right: moveRight,
@@ -58,7 +58,7 @@ describe('variant', () => {
     expect(moveLeftFn).toBeCalledWith({ position: 'left' });
   });
 
-  test('{source: store, filter: string, fn}', () => {
+  test('{source: store, key: string, fn}', () => {
     const $move = createStore({ position: '' });
     const moveLeft = createEvent();
     const moveRight = createEvent();
@@ -71,7 +71,7 @@ describe('variant', () => {
 
     variant({
       source: $move,
-      filter: 'position',
+      key: 'position',
       fn: ({ position }) => position.length,
       cases: {
         left: moveLeft, // triggered with 4
@@ -89,7 +89,7 @@ describe('variant', () => {
     expect(moveRightFn).toBeCalledWith(5);
   });
 
-  test('{source: event, filter: fn, fn}', () => {
+  test('{source: event, key: fn, fn}', () => {
     const move = createEvent();
     const moveLeft = createEvent();
     const moveRight = createEvent();
@@ -102,7 +102,7 @@ describe('variant', () => {
 
     variant({
       source: move,
-      filter: (data) => data.position,
+      key: (data) => data.position,
       fn: (state) => state.position.length,
       cases: {
         left: moveLeft, // triggered with 4
@@ -120,7 +120,7 @@ describe('variant', () => {
     expect(moveRightFn).toBeCalledWith(5);
   });
 
-  test('{source: combine, filter: store}', () => {
+  test('{source: combine, key: store}', () => {
     const $position = createStore('right');
     const $value = createStore(0);
 
@@ -137,7 +137,7 @@ describe('variant', () => {
       source: {
         value: $value,
       },
-      filter: $position,
+      key: $position,
       fn: ({ value }) => value + 1,
       cases: {
         left: moveLeft,
@@ -157,7 +157,7 @@ describe('variant', () => {
     expect(moveLeftFn).toBeCalledWith(3);
   });
 
-  test('{source: combine, filter: fn} - default case', () => {
+  test('{source: combine, key: fn} - default case', () => {
     const $position = createStore('left');
     const $value = createStore(1);
 
@@ -184,7 +184,7 @@ describe('variant', () => {
 
     variant({
       source: movedData,
-      filter: ({ position }) => position,
+      key: ({ position }) => position,
       fn: ({ value }, parameter) => ({ value, parameter }),
       cases: {
         left: moveLeft,
@@ -207,7 +207,7 @@ describe('variant', () => {
     expect(moveDefaultFn).toBeCalledWith({ value: 3, parameter: undefined });
   });
 
-  test('{source: combine, filter: store} - no clock', () => {
+  test('{source: combine, key: store} - no clock', () => {
     const $position = createStore('left');
     const $value = createStore(1);
 
@@ -229,7 +229,7 @@ describe('variant', () => {
         value: $value,
         position: $position,
       },
-      filter: ({ position }) => position,
+      key: ({ position }) => position,
       // Clock is not supported (clock is for sampling, use sample instead)
       clock: move,
       fn: ({ value }, parameter) => ({ value, parameter }),
@@ -256,7 +256,7 @@ describe('variant', () => {
     expect(moveRightFn).toBeCalledWith({ value: 3, parameter: undefined });
   });
 
-  test('{source: store, filter: fn => boolean}', () => {
+  test('{source: store, key: fn => boolean}', () => {
     const $move = createStore({ position: '' });
     const moveLeft = createEvent();
     const moveRight = createEvent();
@@ -269,7 +269,7 @@ describe('variant', () => {
 
     variant({
       source: $move,
-      filter: (state) => state.position === 'left',
+      key: (state) => state.position === 'left',
       cases: {
         true: moveLeft,
         false: moveRight,
@@ -330,7 +330,7 @@ describe('variant', () => {
 
     variant({
       source: $data,
-      filter: {
+      key: {
         greater: ({ value }) => value > 5,
         less: ({ value }) => value < 5,
         equal: ({ value }) => value === 5,

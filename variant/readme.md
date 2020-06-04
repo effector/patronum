@@ -1,24 +1,24 @@
 ## Variant
 
-Redirects data from `source` to one of the `cases` by using a `filter` value (boolean or string)
+Redirects data from `source` to one of the `cases` by using a `key` value (boolean or string)
 
 #### Usage
 
-`variant` is like `guard` but with many cases, not just `true` case. A `filter` in `variant` can return a string value to switch between targets (`cases`). Use `variant` instead of `guard` when you need more cases (or branches) and you don't want to duplicate guards. For example, when you have one `source` of data, and you need to trigger different `cases` (targets) based on that data. You can also use `variant` if you need a `true` and `false` case in `guard`, a fallback (default case `__`), a function (`fn`) transforming the data before sending to the target, or you just want to use falsy value in filter (not truthy). You can also use `variant` instead of `split` if you already have targets defined.
+`variant` is like `guard` but with many cases, not just `true` case. A `key` in `variant` can return a string value to switch between targets (`cases`). Use `variant` instead of `guard` when you need more cases (or branches) and you don't want to duplicate guards. For example, when you have one `source` of data, and you need to trigger different `cases` (targets) based on that data. You can also use `variant` if you need a `true` and `false` case in `guard`, a fallback (default case `__`), a function (`fn`) transforming the data before sending to the target, or you just want to use falsy value in filter (not truthy as by default). You can also use `variant` instead of `split` if you already have targets defined.
 
 #### Explanation
 
-When the `source` data is received, the `filter` value is used to determine one of the `cases` for triggering the target. You can use a key of source data, a function or a separate store to get the filter value from. You can omit the `filter` to use source data itself for determining a case. The `filter` value is used to match one of the keys in the `cases` object to determine a target. The data can be processed with the `fn` function (before sending to the target). You can use `__` (two underscores) case to specify a target that will be triggered when the `filter` value doesn't match any of the `cases` (a default case / fallback)
+When the `source` data is received, the `key` value is used to determine one of the `cases` for triggering the target. You can use a key of source data, a function or a separate store to get the `key` value from. You can omit the `key` to use source data itself for determining a case. The `key` value is used to match one of the keys in the `cases` object to determine a target. The data can be processed with the `fn` function (before sending to the target). You can use `__` (two underscores) case to specify a target that will be triggered when the `key` value doesn't match any of the `cases` (a default case / fallback)
 
 #### Arguments
 
 `source` - a source of data (any unit)
-*string* `filter` - a key to get the filter value (from source data object)
-*function* `filter` - a function to get a filter value (from source data)
-*store* `filter` - a store which state will be used as a filter value (not source data)
-*object* `filter` - an object with predicates to determine a filter value (the first one is used as in split)
+*string* `key` - a key of source data to get the target key value
+*function* `key` - a function to get a key value (from source data)
+*store* `key` - a store which state will be used as a key value (not source data)
+*object* `key` - an object with predicates to determine a key value (the first one returning `true` is used as in split)
 `fn` - a function that receives the source data and returns processed data that will be sent to the target
-`cases` - an object with targets (only one target which key equals to filter value will be triggered)
+`cases` - an object with targets (only one target which name equals to the key value will be triggered)
 
 ### Returns
 
@@ -26,7 +26,7 @@ Variant call returns `undefined` (void)
 
 ## Examples
 
-Use `position` field from source object as a filter value:
+Use `position` field from source object as a key value:
 
 ```js
 const $move = createStore({ position: "left" });
@@ -35,7 +35,7 @@ const moveRight = createEvent();
 
 variant({
   source: $move,
-  filter: "position",
+  key: "position",
   cases: {
     left: moveLeft,
     right: moveRight,
@@ -56,7 +56,7 @@ const moveRight = createEvent();
 
 variant({
   source: $move,
-  filter: "position",
+  key: "position",
   fn: (state) => state.position.length,
   cases: {
     left: moveLeft, // triggered with 4
@@ -67,7 +67,7 @@ variant({
 
 ---
 
-Use a value from the `filter` function as a case for triggering the target:
+Use a value from the `key` function as a case for triggering the target:
 
 ```js
 const $move = createStore({ position: "left" });
@@ -76,7 +76,7 @@ const moveRight = createEvent();
 
 variant({
   source: $move,
-  filter: (state) => state.position === 'left',
+  key: (state) => state.position === 'left',
   cases: {
     true: moveLeft,
     false: moveRight,
@@ -86,7 +86,7 @@ variant({
 
 ---
 
-Use a *store* as a `filter` to determine a case:
+Use a *store* as a `key` to determine a case:
 
 ```js
 const $move = createStore({ distance: 0 });
@@ -97,7 +97,7 @@ const moveRight = createEvent();
 
 variant({
   source: $move,
-  filter: $direction,
+  key: $direction,
   cases: {
     left: moveLeft,
     right: moveRight,
@@ -107,7 +107,7 @@ variant({
 
 ---
 
-Skip the `filter` to use the source data as a filter value:
+Skip the `key` to use the source data as a key value:
 
 ```js
 const $move = createStore("left");
@@ -125,12 +125,12 @@ variant({
 
 ---
 
-There can be a default case (`__`), if the filter value doesn't match any named case in the target object:
+There can be a default case (`__`), if the key value doesn't match any named case in the target object:
 
 ```js
 variant({
   source: $account,
-  filter: 'kind',
+  key: 'kind',
   cases: {
     admin: adminAccount,
     user: userAccount,
@@ -146,7 +146,7 @@ You can use boolean values as cases:
 ```js
 variant({
   source: uploadFx.done,
-  filter: gate.status,
+  key: gate.status,
   cases: {
     false: showNotification,
   }
@@ -155,7 +155,7 @@ variant({
 
 ---
 
-You can use an object with predicates in `filter` to select the case (the first returning true will be used):
+You can use an object with predicates in `key` to select the case (the first returning true will be used):
 
 ```js
 const updateData = createEvent();
@@ -166,7 +166,7 @@ const equal = createEvent();
 
 variant({
   source: $data,
-  filter: {
+  key: {
     greater: ({ value }) => value > 5,
     less: ({ value }) => value < 5,
     equal: ({ value }) => value === 5,
