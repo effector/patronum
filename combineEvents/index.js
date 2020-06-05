@@ -13,9 +13,9 @@ function combineEvents(events) {
       .reset(target);
     counter.on(done, (value) => value - 1);
     results.on(events[key], (shape, payload) => {
-      // eslint-disable-next-line no-param-reassign
-      shape[key] = payload;
-      return isArray ? [...shape] : { ...shape };
+      const newShape = isArray ? [...shape] : { ...shape };
+      newShape[key] = payload;
+      return newShape;
     });
   }
 
