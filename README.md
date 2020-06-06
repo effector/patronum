@@ -6,6 +6,7 @@
 
 ## Table of contents
 
+- [CombineEvents](#combineevents)
 - [Condition](#condition)
 - [Debounce](#debounce)
 - [Debug](#debug)
@@ -182,6 +183,31 @@ trigger({ first: 'Hello', second: 'World' });
 
 $first.getState(); // "Hello"
 $second.getState(); // "World"
+```
+
+## [CombineEvents](/combine-events 'Documentation')
+
+Call target event when all event from object/array is triggered
+
+```ts
+import { createEvent } from 'effector';
+import { combineEvents } from 'patronum/combine-events';
+
+const event1 = createEvent();
+const event2 = createEvent();
+const event3 = createEvent();
+
+const event = combineEvents({
+  event1,
+  event2,
+  event3,
+});
+
+event.watch((object) => console.log('triggered', object));
+
+event1(true); // nothing
+event2('demo'); // nothing
+event3(5); // triggered { event1: true, event2: "demo", event3: 5 }
 ```
 
 ---
