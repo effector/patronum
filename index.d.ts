@@ -1,3 +1,4 @@
+export { combineEvents } from './combine-events';
 export { condition } from './condition';
 export { debounce } from './debounce';
 export { debug } from './debug';
