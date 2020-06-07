@@ -25,6 +25,8 @@
   "homepage": "https://github.com/sergeysova/patronum#readme",
   "devDependencies": {
     "@atomix/eslint-config": "^8.0.0",
+    "@babel/preset-env": "^7.10.2",
+    "@babel/preset-typescript": "^7.10.1",
     "@commitlint/cli": "8.2.0",
     "@commitlint/config-conventional": "8.2.0",
     "@types/jest": "^25.2.1",
