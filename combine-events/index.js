@@ -14,7 +14,8 @@ function combineEvents(events) {
     const isArray = Array.isArray(events);
     const keys = Object.keys(events);
     const counter = createStore(keys.length).reset(sample(target));
-    const results = createStore(isArray ? [] : {}).reset(target);
+    const defaultShape = isArray ? [...keys].fill() : {};
+    const results = createStore(defaultShape).reset(target);
 
     for (const key of keys) {
       const done = createStore(false)
