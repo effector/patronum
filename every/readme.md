@@ -38,7 +38,7 @@ console.assert(true === $fitsSquare.getState());
 $result = every(value, stores);
 ```
 
-- `$result` will be `true` if each value if `stores` equals `values`, otherwise it will be `false`
+- `$result` will be `true` if each value in `stores` equals `values`, otherwise it will be `false`
 
 ### Arguments
 
