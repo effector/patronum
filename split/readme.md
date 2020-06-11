@@ -1,10 +1,12 @@
-## Variant
+## Split (with config)
 
 Redirects data from `source` to one of the `cases` by using a `key` value (boolean or string)
 
+It can also be used as normal split (with 2 arguments). See: https://effector.now.sh/docs/api/effector/split
+
 #### Usage
 
-`variant` is like `guard` but with many cases, not just `true` case. A `key` in `variant` can return a string value to switch between targets (`cases`). Use `variant` instead of `guard` when you need more cases (or branches) and you don't want to duplicate guards. For example, when you have one `source` of data, and you need to trigger different `cases` (targets) based on that data. You can also use `variant` if you need a `true` and `false` case in `guard`, a fallback (default case `__`), a function (`fn`) transforming the data before sending to the target, or you just want to use falsy value in filter (not truthy as by default). You can also use `variant` instead of `split` if you already have targets defined.
+`split` with config is like `guard` but with many cases, not just `true` case. A `key` in `split` can return a string value to switch between targets (`cases`). You can use `split` instead of `guard` when you need more cases (or branches) and you don't want to duplicate guards. For example, when you have one `source` of data, and you need to trigger different `cases` (targets) based on that data. You can also use `split` if you need a `true` and `false` case in `guard`, a fallback (default case `__`), a function (`fn`) transforming the data before sending to the target, or you just want to use falsy value in filter (not truthy as by default). You can also use `split` instead of `split` if you already have targets defined.
 
 #### Explanation
 
@@ -22,7 +24,7 @@ When the `source` data is received, the `key` value is used to determine one of 
 
 ### Returns
 
-Variant call returns `undefined` (void)
+Split call returns `undefined` (void)
 
 ## Examples
 
@@ -33,7 +35,7 @@ const $move = createStore({ position: "left" });
 const moveLeft = createEvent();
 const moveRight = createEvent();
 
-variant({
+split({
   source: $move,
   key: "position",
   cases: {
@@ -54,7 +56,7 @@ const $move = createStore({ position: "left" });
 const moveLeft = createEvent();
 const moveRight = createEvent();
 
-variant({
+split({
   source: $move,
   key: "position",
   fn: (state) => state.position.length,
@@ -74,7 +76,7 @@ const $move = createStore({ position: "left" });
 const moveLeft = createEvent();
 const moveRight = createEvent();
 
-variant({
+split({
   source: $move,
   key: (state) => state.position === 'left',
   cases: {
@@ -95,7 +97,7 @@ const $direction = createStore('left')
 const moveLeft = createEvent();
 const moveRight = createEvent();
 
-variant({
+split({
   source: $move,
   key: $direction,
   cases: {
@@ -114,7 +116,7 @@ const $move = createStore("left");
 const moveLeft = createEvent();
 const moveRight = createEvent();
 
-variant({
+split({
   source: $move,
   cases: {
     left: moveLeft,
@@ -128,7 +130,7 @@ variant({
 There can be a default case (`__`), if the key value doesn't match any named case in the target object:
 
 ```js
-variant({
+split({
   source: $account,
   key: 'kind',
   cases: {
@@ -144,7 +146,7 @@ variant({
 You can use boolean values as cases:
 
 ```js
-variant({
+split({
   source: uploadFx.done,
   key: gate.status,
   cases: {
@@ -164,7 +166,7 @@ const greater = createEvent();
 const less = createEvent();
 const equal = createEvent();
 
-variant({
+split({
   source: $data,
   key: {
     greater: ({ value }) => value > 5,
@@ -184,10 +186,10 @@ updateData({ value: 7 }); // greater is triggered with 7
 
 ---
 
-And here is an example of switching the store value with `variant` by triggering `nextPage`:
+And here is an example of switching the store value with `split` by triggering `nextPage`:
 
 ```js
-variant({
+split({
   source: sample(page, nextPage),
   cases: createApi(page, {
     '/intro': () => '/article',

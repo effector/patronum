@@ -1,8 +1,51 @@
 // @ts-nocheck
 const { createEvent, createStore, createApi, sample } = require('effector');
-const { variant } = require('./index');
+const { split } = require('./index');
 
-describe('variant', () => {
+describe('split', () => {
+  test('split event by matching conditions', () => {
+    const fn1 = jest.fn();
+    const fn2 = jest.fn();
+    const source = createEvent();
+    const { emptyList, oneElement, commonList } = split(source, {
+      emptyList: (list) => list.length === 0,
+      oneElement: (list) => list.length === 1,
+      commonList: (list) => list.length > 1,
+    });
+    emptyList.watch((list) => fn1(list));
+    commonList.watch((list) => fn2(list));
+    source([]);
+    expect(fn1).toBeCalledTimes(1);
+    expect(fn2).not.toBeCalled();
+    source(['1']);
+    expect(fn1).toBeCalledTimes(1);
+    expect(fn2).not.toBeCalled();
+    source(['foo', 'bar']);
+    expect(fn1).toBeCalledTimes(1);
+    expect(fn2).toBeCalledTimes(1);
+  });
+
+  test('has default case __', () => {
+    const fn1 = jest.fn();
+    const fn2 = jest.fn();
+    const source = createEvent();
+    const { emptyList, oneElement, __: commonList } = split(source, {
+      emptyList: (list) => list.length === 0,
+      oneElement: (list) => list.length === 1,
+    });
+    emptyList.watch((list) => fn1(list));
+    commonList.watch((list) => fn2(list));
+    source([]);
+    expect(fn1).toBeCalledTimes(1);
+    expect(fn2).not.toBeCalled();
+    source(['1']);
+    expect(fn1).toBeCalledTimes(1);
+    expect(fn2).not.toBeCalled();
+    source(['foo', 'bar']);
+    expect(fn1).toBeCalledTimes(1);
+    expect(fn2).toBeCalledTimes(1);
+  });
+
   test('{source: store}', () => {
     const $move = createStore('left');
     const moveLeft = createEvent();
@@ -14,7 +57,7 @@ describe('variant', () => {
     moveLeft.watch(moveLeftFn);
     moveRight.watch(moveRightFn);
 
-    variant({
+    split({
       source: $move,
       cases: {
         left: moveLeft,
@@ -39,7 +82,7 @@ describe('variant', () => {
     moveLeft.watch(moveLeftFn);
     moveRight.watch(moveRightFn);
 
-    variant({
+    split({
       source: $move,
       key: 'position',
       cases: {
@@ -69,7 +112,7 @@ describe('variant', () => {
     moveLeft.watch(moveLeftFn);
     moveRight.watch(moveRightFn);
 
-    variant({
+    split({
       source: $move,
       key: 'position',
       fn: ({ position }) => position.length,
@@ -100,7 +143,7 @@ describe('variant', () => {
     moveLeft.watch(moveLeftFn);
     moveRight.watch(moveRightFn);
 
-    variant({
+    split({
       source: move,
       key: (data) => data.position,
       fn: (state) => state.position.length,
@@ -133,7 +176,7 @@ describe('variant', () => {
     moveLeft.watch(moveLeftFn);
     moveRight.watch(moveRightFn);
 
-    variant({
+    split({
       source: {
         value: $value,
       },
@@ -182,7 +225,7 @@ describe('variant', () => {
       clock: move,
     });
 
-    variant({
+    split({
       source: movedData,
       key: ({ position }) => position,
       fn: ({ value }, parameter) => ({ value, parameter }),
@@ -224,7 +267,7 @@ describe('variant', () => {
     moveRight.watch(moveRightFn);
     moveDefault.watch(moveDefaultFn);
 
-    variant({
+    split({
       source: {
         value: $value,
         position: $position,
@@ -267,7 +310,7 @@ describe('variant', () => {
     moveLeft.watch(moveLeftFn);
     moveRight.watch(moveRightFn);
 
-    variant({
+    split({
       source: $move,
       key: (state) => state.position === 'left',
       cases: {
@@ -291,7 +334,7 @@ describe('variant', () => {
     $page.watch(pageFn);
 
     // Use sample if you need a clock
-    variant({
+    split({
       source: sample($page, nextPage),
       cases: createApi($page, {
         '/intro': () => '/article',
@@ -328,7 +371,7 @@ describe('variant', () => {
     less.watch(lessFn);
     equal.watch(equalFn);
 
-    variant({
+    split({
       source: $data,
       key: {
         greater: ({ value }) => value > 5,

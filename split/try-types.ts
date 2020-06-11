@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/ban-ts-ignore */
 import { createEvent, createStore, sample, createApi } from 'effector';
-import { variant } from './index';
+import { split } from './index';
 
-describe('variant', () => {
+describe('split', () => {
   test('{source: store}', () => {
     const $move = createStore('left');
     const moveLeft = createEvent<string>();
@@ -14,7 +14,7 @@ describe('variant', () => {
     moveLeft.watch(moveLeftFn);
     moveRight.watch(moveRightFn);
 
-    variant({
+    split({
       source: $move,
       cases: {
         left: moveLeft,
@@ -40,7 +40,7 @@ describe('variant', () => {
     moveLeft.watch(moveLeftFn);
     moveRight.watch(moveRightFn);
 
-    variant({
+    split({
       source: $move,
       key: 'position',
       cases: {
@@ -72,7 +72,7 @@ describe('variant', () => {
     moveLeft.watch(moveLeftFn);
     moveRight.watch(moveRightFn);
 
-    variant({
+    split({
       source: $move,
       key: 'position',
       fn: ({ position }) => position.length,
@@ -105,7 +105,7 @@ describe('variant', () => {
     moveLeft.watch(moveLeftFn);
     moveRight.watch(moveRightFn);
 
-    variant({
+    split({
       source: move,
       key: (data) => data.position,
       fn: (state) => state.position.length,
@@ -138,7 +138,7 @@ describe('variant', () => {
     moveLeft.watch(moveLeftFn);
     moveRight.watch(moveRightFn);
 
-    variant({
+    split({
       source: {
         value: $value,
       },
@@ -190,7 +190,7 @@ describe('variant', () => {
       clock: move,
     });
 
-    variant({
+    split({
       source: movedData,
       key: ({ position }) => position,
       fn: ({ value }) => ({ value, parameter: undefined }),
@@ -235,7 +235,7 @@ describe('variant', () => {
     moveRight.watch(moveRightFn);
     moveDefault.watch(moveDefaultFn);
 
-    variant({
+    split({
       source: {
         value: $value,
         position: $position,
@@ -281,7 +281,7 @@ describe('variant', () => {
     moveLeft.watch(moveLeftFn);
     moveRight.watch(moveRightFn);
 
-    variant({
+    split({
       source: $move,
       key: (state) => String(state.position === 'left'),
       cases: {
@@ -306,7 +306,7 @@ describe('variant', () => {
     $page.watch(pageFn);
 
     // Use sample if you need a clock
-    variant({
+    split({
       source: sample($page, nextPage),
       cases: createApi<string, any>($page, {
         '/intro': () => '/article',
@@ -343,7 +343,7 @@ describe('variant', () => {
     less.watch(lessFn);
     equal.watch(equalFn);
 
-    variant({
+    split({
       source: $data,
       key: {
         greater: ({ value }) => value > 5,
