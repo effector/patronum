@@ -154,3 +154,45 @@ test('source: store, if: literal, then: event, else: event', () => {
     ]
   `);
 });
+
+test('source: event, if: store, then: event, else: condition', () => {
+  const source = createEvent();
+  const target = createEvent();
+  const fn = jest.fn();
+  target.watch(fn);
+
+  condition({
+    source,
+    if: (value) => value < 2,
+    then: target.prepend((value) => `${value} < 2`),
+    else: condition({
+      if: (value) => value < 4,
+      then: target.prepend((value) => `2 <= ${value} < 4`),
+      else: target.prepend((value) => `4 <= ${value}`),
+    }),
+  });
+
+  source(1);
+  expect(argumentHistory(fn)).toMatchInlineSnapshot(`
+    Array [
+      "1 < 2",
+    ]
+  `);
+
+  source(3);
+  expect(argumentHistory(fn)).toMatchInlineSnapshot(`
+    Array [
+      "1 < 2",
+      "2 <= 3 < 4",
+    ]
+  `);
+
+  source(5);
+  expect(argumentHistory(fn)).toMatchInlineSnapshot(`
+    Array [
+      "1 < 2",
+      "2 <= 3 < 4",
+      "4 <= 5",
+    ]
+  `);
+});

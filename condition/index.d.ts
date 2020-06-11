@@ -5,4 +5,4 @@ export function condition<State>(options: {
   if: Store<boolean> | ((payload: State) => boolean) | State;
   then?: Unit<State>;
   else?: Unit<State>;
-}): void;
+}): Unit<State>;

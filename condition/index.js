@@ -7,7 +7,7 @@ const { is, guard, createEvent } = require('effector');
  * if — T
  */
 function condition({
-  source,
+  source = createEvent(),
   if: test,
   then: thenBranch = createEvent(),
   else: elseBranch = createEvent(),
@@ -26,6 +26,8 @@ function condition({
     filter: inverse(checker),
     target: elseBranch,
   });
+
+  return source;
 }
 
 function isFunction(value) {
