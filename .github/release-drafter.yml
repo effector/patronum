@@ -3,13 +3,25 @@ categories:
     labels:
       - 'feature'
       - 'enhancement'
+
   - title: '🐛 Bug Fixes'
     labels:
       - 'fix'
       - 'bugfix'
       - 'bug'
+
   - title: '🧰 Maintenance'
     label: 'chore'
+
+  - title: '📚 Documentation'
+    label: 'documentation'
+
+  - title: '🧪 Tests'
+    label: 'tests'
+
+  - title: '🏎 Optimizations'
+    label: 'optimizations'
+
 change-template: '- $TITLE #$NUMBER (@$AUTHOR)'
 template: |
   $CHANGES
