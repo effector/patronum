@@ -12,6 +12,7 @@
 - [Debug](#debug)
 - [Delay](#delay)
 - [Every](#every)
+- [Some](#some)
 - [Spread](#spread)
 - [Status](#status)
 - [Throttle](#throttle)
@@ -219,6 +220,17 @@ const $isEmailCorrect = createStore(true);
 
 const $isFormCorrect = every(true, [$isPasswordCorrect, $isEmailCorrect]);
 // true
+```
+
+## [Some](/some 'Documentation')
+
+```ts
+const $width = createStore(440);
+const $height = createStore(820);
+
+const $tooBig = some((size) => size > 800, [$width, $height]);
+
+console.assert(true === $tooBig.getState());
 ```
 
 ---
