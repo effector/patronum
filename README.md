@@ -11,6 +11,7 @@
 - [Debounce](#debounce)
 - [Debug](#debug)
 - [Delay](#delay)
+- [Every](#every)
 - [Spread](#spread)
 - [Status](#status)
 - [Throttle](#throttle)
@@ -208,6 +209,16 @@ event.watch((object) => console.log('triggered', object));
 event1(true); // nothing
 event2('demo'); // nothing
 event3(5); // triggered { event1: true, event2: "demo", event3: 5 }
+```
+
+## [Every](/every 'Documentation')
+
+```ts
+const $isPasswordCorrect = createStore(true);
+const $isEmailCorrect = createStore(true);
+
+const $isFormCorrect = every(true, [$isPasswordCorrect, $isEmailCorrect]);
+// true
 ```
 
 ---

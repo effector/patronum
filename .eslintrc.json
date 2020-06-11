@@ -11,6 +11,13 @@
       }
     },
     {
+      "files": ["test-d/*.ts"],
+      "rules": {
+        "@typescript-eslint/no-unused-vars": "off",
+        "import/no-extraneous-dependencies": "off"
+      }
+    },
+    {
       "files": ["**/*.ts", "**/*.tsx"],
       "extends": [
         "plugin:@typescript-eslint/eslint-plugin/recommended",

@@ -3,6 +3,7 @@ export { condition } from './condition';
 export { debounce } from './debounce';
 export { debug } from './debug';
 export { delay } from './delay';
+export { every } from './every';
 export { reshape } from './reshape';
 export { splitMap } from './split-map';
 export { spread } from './spread';
