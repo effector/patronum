@@ -12,15 +12,12 @@
 - [Debug](#debug)
 - [Delay](#delay)
 - [Every](#every)
+- [Reshape](#reshape)
 - [Some](#some)
+- [SplitMap](#splitmap)
 - [Spread](#spread)
 - [Status](#status)
 - [Throttle](#throttle)
-
----
-
-- [Reshape](#reshape)
-- [SplitMap](#splitmap)
 
 ## Usage
 
@@ -233,11 +230,7 @@ const $tooBig = some((size) => size > 800, [$width, $height]);
 console.assert(true === $tooBig.getState());
 ```
 
----
-
 ## [Reshape](/reshape 'Documentation')
-
-> No tests yet
 
 ```ts
 import { createStore } from 'effector';
@@ -257,8 +250,6 @@ parts.second.watch(console.log); // "Second"
 ```
 
 ## [SplitMap](/split-map 'Documentation')
-
-> No tests yet
 
 ```ts
 import { createEvent } from 'effector';
