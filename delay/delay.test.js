@@ -10,7 +10,7 @@ const { delay } = require('./index');
 
 expect.extend({ toBeCloseWithThreshold });
 
-const TIMER_THRESHOLD = 10;
+const TIMER_THRESHOLD = 20;
 
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
