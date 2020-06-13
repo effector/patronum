@@ -1,4 +1,4 @@
-const { is, createEffect, forward, createEvent, guard } = require('effector');
+const { createEffect, createEvent, guard, is, sample } = require('effector');
 const { readConfig } = require('../library');
 
 function throttle(argument) {
@@ -40,9 +40,10 @@ function throttle(argument) {
     target: timer,
   });
 
-  forward({
-    from: timer.done.map(({ result }) => result),
-    to: tick,
+  sample({
+    source,
+    clock: timer.done.map(({ result }) => result),
+    target: tick,
   });
 
   return tick;

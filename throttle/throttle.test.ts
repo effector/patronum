@@ -53,7 +53,7 @@ describe('event', () => {
     expect(watcher).toBeCalledTimes(2);
   });
 
-  test('throttled event triggered with first value', async () => {
+  test('throttled event triggered with latest value', async () => {
     const watcher = jest.fn();
 
     const trigger = createEvent<number>();
@@ -72,7 +72,7 @@ describe('event', () => {
     expect(watcher.mock.calls).toMatchInlineSnapshot(`
       Array [
         Array [
-          0,
+          2,
         ],
       ]
     `);
@@ -97,7 +97,7 @@ describe('event', () => {
     expect(watcher.mock.calls).toMatchInlineSnapshot(`
       Array [
         Array [
-          0,
+          2,
         ],
       ]
     `);
@@ -110,10 +110,10 @@ describe('event', () => {
     expect(watcher.mock.calls).toMatchInlineSnapshot(`
       Array [
         Array [
-          0,
+          2,
         ],
         Array [
-          3,
+          4,
         ],
       ]
     `);
@@ -200,7 +200,7 @@ describe('effect', () => {
     expect(watcher).toBeCalledTimes(2);
   });
 
-  test('throttle effect triggered with last value', async () => {
+  test('throttle effect triggered with latest value', async () => {
     const watcher = jest.fn();
 
     const trigger = createEffect<number, void>().use(() => undefined);
@@ -220,7 +220,7 @@ describe('effect', () => {
     expect(watcher.mock.calls).toMatchInlineSnapshot(`
       Array [
         Array [
-          0,
+          2,
         ],
       ]
     `);
@@ -243,7 +243,7 @@ describe('effect', () => {
     await wait(40);
 
     expect(watcher).toBeCalledTimes(1);
-    expect(watcher).toBeCalledWith(0);
+    expect(watcher).toBeCalledWith(2);
 
     trigger(3);
     await wait(30);
@@ -255,10 +255,10 @@ describe('effect', () => {
     expect(watcher.mock.calls).toMatchInlineSnapshot(`
       Array [
         Array [
-          0,
+          2,
         ],
         Array [
-          3,
+          4,
         ],
       ]
     `);
@@ -286,7 +286,7 @@ describe('effect', () => {
     expect(watcher.mock.calls).toMatchInlineSnapshot(`
       Array [
         Array [
-          0,
+          2,
         ],
       ]
     `);
@@ -314,7 +314,7 @@ describe('effect', () => {
     expect(watcher.mock.calls).toMatchInlineSnapshot(`
       Array [
         Array [
-          0,
+          2,
         ],
       ]
     `);
@@ -369,7 +369,7 @@ describe('store', () => {
     expect(watcher.mock.calls).toMatchInlineSnapshot(`
       Array [
         Array [
-          1,
+          2,
         ],
       ]
     `);
@@ -401,7 +401,7 @@ describe('store', () => {
           0,
         ],
         Array [
-          1,
+          3,
         ],
       ]
     `);
@@ -529,12 +529,12 @@ test('source event, target effect', async () => {
 
   expect(watcher).toBeCalledTimes(1);
   expect(watcher.mock.calls).toMatchInlineSnapshot(`
+    Array [
       Array [
-        Array [
-          0,
-        ],
-      ]
-    `);
+        2,
+      ],
+    ]
+  `);
 });
 
 test('source store, target effect', async () => {
@@ -558,10 +558,10 @@ test('source store, target effect', async () => {
 
   expect(watcher).toBeCalledTimes(1);
   expect(watcher.mock.calls).toMatchInlineSnapshot(`
+    Array [
       Array [
-        Array [
-          1,
-        ],
-      ]
-    `);
+        3,
+      ],
+    ]
+  `);
 });

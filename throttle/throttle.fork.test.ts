@@ -5,24 +5,24 @@ import { throttle } from '.';
 
 test('throttle works in forked scope', async () => {
   const app = createDomain();
+  const source = app.createEvent();
+
   const $counter = app.createStore(0);
 
-  const trigger = app.createEvent();
-
-  const throttled = throttle({ source: trigger, timeout: 40 });
+  const throttled = throttle({ source, timeout: 40 });
 
   $counter.on(throttled, (value) => value + 1);
 
   const scope = fork(app);
 
-  await allSettled(trigger, {
+  await allSettled(source, {
     scope,
     params: undefined,
   });
 
   expect(serialize(scope)).toMatchInlineSnapshot(`
     Object {
-      "9tnuk9": 1,
+      "-983uum": 1,
     }
   `);
 });

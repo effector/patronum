@@ -46,6 +46,9 @@ someHappened(1);
 someHappened(2);
 someHappened(3);
 someHappened(4);
+
+// after 200 ms after first call
+// => someHappened now 4
 ```
 
 Also you can use `Effect` and `Store` as trigger. `throttle` always returns `Event`:
@@ -84,4 +87,10 @@ $dumped.watch((payload) => {
 });
 
 throttle({ source: $source, timeout: 40, target: $dumped });
+
+change();
+change();
+change();
+
+// after 40ms after first call, 3 will be saved to localStorage
 ```
