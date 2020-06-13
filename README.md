@@ -106,7 +106,7 @@ import { throttle } from 'patronum/throttle';
 // You should call this event
 const trigger = createEvent<number>();
 
-const target = throttle(trigger, 200);
+const target = throttle({ source: trigger, timeout: 200 });
 
 target.watch((payload) => console.info('throttled', payload));
 
