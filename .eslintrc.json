@@ -40,6 +40,14 @@
         "no-multi-assign": "off",
         "prefer-template": "off"
       }
+    },
+    {
+      "files": ["test-d/*.ts"],
+      "rules": {
+        "no-lone-blocks": "off",
+        "@typescript-eslint/no-empty-function": "off",
+        "symbol-description": "off"
+      }
     }
   ],
   "rules": {
