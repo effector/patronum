@@ -26,7 +26,7 @@ function throttle(argument) {
       loc,
     });
 
-  const timer = createEffect({
+  const timerFx = createEffect({
     name: `${actualName}ThrottleTimer`,
     sid,
     loc,
@@ -36,13 +36,13 @@ function throttle(argument) {
 
   guard({
     source,
-    filter: timer.pending.map((pending) => !pending),
-    target: timer,
+    filter: timerFx.pending.map((pending) => !pending),
+    target: timerFx,
   });
 
   sample({
     source,
-    clock: timer.done.map(({ result }) => result),
+    clock: timerFx.done,
     target: tick,
   });
 
