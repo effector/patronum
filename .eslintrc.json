@@ -46,6 +46,7 @@
     "import/extensions": ["error", "ignorePackages"],
     "@typescript-eslint/no-use-before-define": "off",
     "unicorn/prefer-spread": "off",
-    "prefer-rest-params": "off"
+    "prefer-rest-params": "off",
+    "no-param-reassign": "off"
   }
 }
