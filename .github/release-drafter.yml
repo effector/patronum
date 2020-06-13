@@ -1,4 +1,7 @@
 categories:
+  - title: '⚠️ Breaking changes'
+    label: 'BREAKING CHANGES'
+
   - title: '🚀 Features'
     labels:
       - 'feature'
