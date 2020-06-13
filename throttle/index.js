@@ -30,8 +30,7 @@ function throttle(argument) {
     name: `${actualName}ThrottleTimer`,
     sid,
     loc,
-    handler: (payload) =>
-      new Promise((resolve) => setTimeout(resolve, timeout, payload)),
+    handler: () => new Promise((resolve) => setTimeout(resolve, timeout)),
   });
 
   guard({
