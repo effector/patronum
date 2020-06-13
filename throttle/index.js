@@ -2,17 +2,13 @@ const { is, createEffect, forward, createEvent, guard } = require('effector');
 const { readConfig } = require('../library');
 
 function throttle(argument) {
-  const { source, timeout, sid, loc, name } = readConfig(
-    argument,
-    (part, target) => {
-      if (part.source) target.source = part.source;
-      if (part.timeout) target.timeout = part.timeout;
-
-      if (part.loc) target.loc = part.loc;
-      if (part.name) target.name = part.name;
-      if (part.sid) target.sid = part.sid;
-    },
-  );
+  const { source, timeout, sid, loc, name } = readConfig(argument, [
+    'source',
+    'timeout',
+    'loc',
+    'name',
+    'sid',
+  ]);
 
   if (!is.unit(source))
     throw new TypeError('callee must be unit from effector');
