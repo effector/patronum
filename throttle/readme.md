@@ -17,7 +17,7 @@ const someHappened = createEvent<number>();
 Create throttled event from it:
 
 ```ts
-import { throttle } from 'effector-throttle';
+import { throttle } from 'patronum/throttle';
 
 const THROTTLE_TIMEOUT_IN_MS = 200;
 
@@ -44,13 +44,13 @@ Also you can use `Effect` and `Store` as trigger. `throttle` always returns `Eve
 
 ```ts
 const event = createEvent<number>();
-const debouncedEvent: Event<number> = throttle({ source: event, timeout: 100 });
+const throttledEvent: Event<number> = throttle({ source: event, timeout: 100 });
 
 const fx = createEffect<number, void>();
-const debouncedEffect: Event<number> = throttle({ source: fx, timeout: 100 });
+const throttledEffect: Event<number> = throttle({ source: fx, timeout: 100 });
 
 const $store = createStore<number>(0);
-const debouncedStore: Event<number> = throttle({
+const throttledStore: Event<number> = throttle({
   source: $store,
   timeout: 100,
 });
