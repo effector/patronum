@@ -1,3 +1,13 @@
-import { createThrottle } from 'effector-throttle';
+import { Unit, Event } from 'effector';
 
-export const throttle = createThrottle;
+export function throttle<T>(_: {
+  source: Unit<T>;
+  timeout: number;
+  name?: string;
+}): Event<T>;
+export function throttle<T, R extends Unit<T>>(_: {
+  source: Unit<T>;
+  timeout: number;
+  target: R;
+  name?: string;
+}): R;
