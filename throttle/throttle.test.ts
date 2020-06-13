@@ -279,7 +279,7 @@ describe('store', () => {
   });
 });
 
-test('debounce do not affect another instance', async () => {
+test('throttle do not affect another instance', async () => {
   const watcherFirst = jest.fn();
   const triggerFirst = createEvent<number>();
   const throttledFirst = throttle({ source: triggerFirst, timeout: 20 });
