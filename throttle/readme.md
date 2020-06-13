@@ -4,7 +4,15 @@
 import { throttle } from 'patronum/throttle';
 ```
 
-## Usage
+## `throttle({ source, timeout })`
+
+### Formulae
+
+```ts
+result = throttle({ source, timeout });
+```
+
+### Usage
 
 Create event that should be throttled:
 
@@ -54,4 +62,26 @@ const throttledStore: Event<number> = throttle({
   source: $store,
   timeout: 100,
 });
+```
+
+## `throttle({ source, timeout, target })`
+
+### Formulae
+
+```ts
+throttle({ source, timeout, target });
+```
+
+### Usage
+
+```ts
+const change = createEvent();
+const $source = createStore(0).on(change, (state) => state + 1);
+
+const $dumped = createStore(0);
+$dumped.watch((payload) => {
+  localStorage.setItem('dump', JSON.stringify(payload));
+});
+
+throttle({ source: $source, timeout: 40, target: $dumped });
 ```

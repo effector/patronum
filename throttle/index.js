@@ -2,9 +2,11 @@ const { is, createEffect, forward, createEvent, guard } = require('effector');
 const { readConfig } = require('../library');
 
 function throttle(argument) {
-  const { source, timeout, sid, loc, name } = readConfig(argument, [
+  const { source, timeout, target, sid, loc, name } = readConfig(argument, [
     'source',
     'timeout',
+    'target',
+
     'loc',
     'name',
     'sid',
@@ -17,10 +19,12 @@ function throttle(argument) {
 
   const actualName = name || source.shortName || 'unknown';
 
-  const tick = createEvent({
-    name: `${actualName}ThrottleTick`,
-    loc,
-  });
+  const tick =
+    target ||
+    createEvent({
+      name: `${actualName}ThrottleTick`,
+      loc,
+    });
 
   const timer = createEffect({
     name: `${actualName}ThrottleTimer`,
