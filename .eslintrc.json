@@ -55,6 +55,7 @@
     "@typescript-eslint/no-use-before-define": "off",
     "unicorn/prefer-spread": "off",
     "prefer-rest-params": "off",
-    "no-param-reassign": "off"
+    "no-param-reassign": "off",
+    "no-underscore-dangle": "off"
   }
 }
