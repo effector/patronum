@@ -52,4 +52,12 @@ function toBeCloseWithThreshold(received, expected, threshold) {
   };
 }
 
-module.exports = { argumentHistory, waitFor, time, toBeCloseWithThreshold };
+const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+module.exports = {
+  argumentHistory,
+  time,
+  toBeCloseWithThreshold,
+  wait,
+  waitFor,
+};

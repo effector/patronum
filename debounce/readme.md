@@ -13,7 +13,10 @@ import { debounce } from 'patronum/debounce';
 const DEBOUNCE_TIMEOUT_IN_MS = 200;
 
 const someHappened = createEvent<number>();
-const debounced = debounce(someHappened, DEBOUNCE_TIMEOUT_IN_MS);
+const debounced = debounce({
+  source: someHappened,
+  timeout: DEBOUNCE_TIMEOUT_IN_MS,
+});
 
 debounced.watch((payload) => {
   console.info('someHappened now', payload);

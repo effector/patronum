@@ -13,7 +13,7 @@ function throttle(argument) {
   ]);
 
   if (!is.unit(source))
-    throw new TypeError('callee must be unit from effector');
+    throw new TypeError('source must be unit from effector');
   if (typeof timeout !== 'number' || timeout < 0)
     throw new Error('timeout must be positive number or zero');
 
