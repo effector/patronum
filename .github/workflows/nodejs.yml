@@ -14,12 +14,21 @@ jobs:
         node-version: [10.x, 12.x, 14.x]
 
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v2
+
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - run: yarn install --frozen-lockfile
-      - run: yarn test
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Test code
+        run: yarn test:code
         env:
           CI: true
+
+      - name: Test types
+        run: yarn test:types

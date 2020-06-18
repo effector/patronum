@@ -6,6 +6,8 @@
   "types": "index.d.ts",
   "scripts": {
     "test": "jest && tsd",
+    "test:code": "jest",
+    "test:types": "tsd",
     "commit": "git-cz",
     "format": "prettier --write \"./src/**/**.{ts,tsx,js,jsx,json}\"",
     "lint": "eslint ./",
