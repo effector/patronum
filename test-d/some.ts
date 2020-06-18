@@ -8,9 +8,9 @@ import { some } from '../some';
   const $b = createStore(1);
   const $invalid = createStore('');
 
-  expectType<Store<boolean>>(some(0, [$a, $b]));
+  expectType<Store<boolean>>(some({ predicate: 0, stores: [$a, $b] }));
 
-  expectError(some(0, [$a, $invalid]));
+  expectError(some({ predicate: 0, stores: [$a, $invalid] }));
 }
 
 // Check types for string enum
@@ -22,9 +22,9 @@ import { some } from '../some';
 
   const value: Enum = 'c';
 
-  expectType<Store<boolean>>(some(value, [$a, $b]));
-  expectError(some(value, [$a, $invalid]));
-  expectError(some('demo', [$a, $b]));
+  expectType<Store<boolean>>(some({ predicate: value, stores: [$a, $b] }));
+  expectError(some({ predicate: value, stores: [$a, $invalid] }));
+  expectError(some({ predicate: 'demo', stores: [$a, $b] }));
 }
 
 // Check function predicate
@@ -34,6 +34,6 @@ import { some } from '../some';
   const $b = createStore(1);
   const $invalid = createStore('');
 
-  expectType<Store<boolean>>(some(predicate, [$a, $b]));
-  expectError(some(predicate, [$a, $invalid]));
+  expectType<Store<boolean>>(some({ predicate, stores: [$a, $b] }));
+  expectError(some({ predicate, stores: [$a, $invalid] }));
 }

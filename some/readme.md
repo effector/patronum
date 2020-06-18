@@ -4,12 +4,13 @@
 import { some } from 'patronum/some';
 ```
 
-## `some(predicate, stores)`
+## `some({ predicate: Function, stores })`
 
 ```ts
-$result = some(predicate, stores);
+$result = some({ predicate: (value) => true, stores });
 ```
 
+- read it as: has some predicate at at least one store
 - `$result` will be `true` if each at least `predicate` on each store value from `values` returns `true`, otherwise it will be `false`
 
 ### Arguments
@@ -27,24 +28,27 @@ $result = some(predicate, stores);
 const $width = createStore(440);
 const $height = createStore(820);
 
-const $tooBig = some((size) => size > 800, [$width, $height]);
+const $tooBig = some({
+  predicate: (size) => size > 800,
+  stores: [$width, $height],
+});
 
 console.assert(true === $tooBig.getState());
 ```
 
-## `some(value, stores)`
+## `some({ predicate: value, stores })`
 
 ```ts
-$result = some(value, stores);
+$result = some({ predicate: value, stores });
 ```
 
-- `$result` will be `true` if at least one value in `stores` equals `values`, otherwise it will be `false`
+- `$result` will be `true` if at least one value in `stores` equals `value`, otherwise it will be `false`
 
 ### Arguments
 
-1. `value` _(`T`)_ — Data to compare stores values with
+1. `predicate` _(`T`)_ — Data to compare stores values with
 1. `stores` _(`Array<Store<T>>`)_ — List of stores to compare with `value`
-1. type of `value` and `stores` should should be the same
+1. type of `predicate` and `stores` should should be the same
 
 ### Return
 
@@ -56,7 +60,10 @@ $result = some(value, stores);
 const $isPasswordCorrect = createStore(true);
 const $isEmailCorrect = createStore(true);
 
-const $isFormFailed = some(false, [$isPasswordCorrect, $isEmailCorrect]);
+const $isFormFailed = some({
+  predicate: false,
+  stores: [$isPasswordCorrect, $isEmailCorrect],
+});
 
 console.assert(false === $isFormFailed.getState());
 ```

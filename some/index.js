@@ -1,11 +1,14 @@
 const { combine } = require('effector');
+const { readConfig } = require('../library');
 
-function some(predicate, list) {
+function some(argument) {
+  const { predicate, stores } = readConfig(argument, ['predicate', 'stores']);
+
   const checker = isFunction(predicate)
     ? predicate
     : (value) => value === predicate;
 
-  return combine(list, (values) => values.some(checker));
+  return combine(stores, (values) => values.some(checker));
 }
 
 module.exports = { some };
