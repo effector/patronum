@@ -18,8 +18,7 @@ function debounce(argument) {
 
   const actualName = name || source.shortName || 'unknown';
 
-  // eslint-disable-next-line unicorn/consistent-function-scoping
-  let rejectPromise = () => undefined;
+  let rejectPromise;
   let timeoutId;
 
   const tick =
@@ -33,16 +32,14 @@ function debounce(argument) {
     name: `${actualName}ThrottleTimer`,
     sid,
     loc,
-    handler: (parameter) =>
-      new Promise((resolve, reject) => {
+    handler: (parameter) => {
+      clearTimeout(timeoutId);
+      if (rejectPromise) rejectPromise();
+      return new Promise((resolve, reject) => {
         rejectPromise = reject;
         timeoutId = setTimeout(resolve, timeout, parameter);
-      }),
-  });
-
-  timerFx.watch(() => {
-    clearTimeout(timeoutId);
-    rejectPromise();
+      });
+    },
   });
 
   forward({
