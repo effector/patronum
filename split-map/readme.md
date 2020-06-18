@@ -16,9 +16,12 @@ import { splitMap } from 'patronum/split-map';
 
 const event = createEvent<object>();
 
-const extractors = splitMap(event, {
-  getType: (input) => input.type,
-  getDemo: (input) => input.demo,
+const extractors = splitMap({
+  source: event,
+  cases: {
+    getType: (input) => input.type,
+    getDemo: (input) => input.demo,
+  },
 });
 
 extractors.getType.watch((type) => console.log('TYPE', type));

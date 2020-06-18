@@ -1,13 +1,14 @@
-// @ts-nocheck
-/* eslint-disable no-underscore-dangle */
-const { createEvent, createStore, is } = require('effector');
-const { argumentHistory } = require('../test-library');
-const { splitMap } = require('./index');
+import { createEvent, createStore, is } from 'effector';
+import { argumentHistory } from '../test-library';
+import { splitMap } from './index';
 
 test('map from event', () => {
-  const source = createEvent();
-  const out = splitMap(source, {
-    first: (payload) => payload.first,
+  const source = createEvent<{ first?: string; another?: boolean }>();
+  const out = splitMap({
+    source,
+    cases: {
+      first: (payload) => payload.first,
+    },
   });
   expect(is.event(out.first)).toBe(true);
 
@@ -23,15 +24,19 @@ test('map from event', () => {
 });
 
 test('default case from event', () => {
-  const source = createEvent();
-  const out = splitMap(source, {
-    first: (payload) => payload.first,
+  const source = createEvent<{ first?: string; another?: string }>();
+  const out = splitMap({
+    source,
+    cases: {
+      first: (payload) => payload.first,
+    },
   });
   expect(is.event(out.first)).toBe(true);
 
   const fnFirst = jest.fn();
   out.first.watch(fnFirst);
   const fnDefault = jest.fn();
+  // eslint-disable-next-line no-underscore-dangle
   out.__.watch(fnDefault);
 
   source({ another: 'Demo' });
@@ -46,16 +51,24 @@ test('default case from event', () => {
 });
 
 test('fall through from event', () => {
-  const source = createEvent();
-  const out = splitMap(source, {
-    first: (payload) => (payload.first ? 'first' : undefined),
-    second: (payload) => (payload.second ? 'second' : undefined),
+  const source = createEvent<{
+    first?: string;
+    second?: boolean;
+    default?: number;
+  }>();
+  const out = splitMap({
+    source,
+    cases: {
+      first: (payload) => (payload.first ? 'first' : undefined),
+      second: (payload) => (payload.second ? 'second' : undefined),
+    },
   });
   expect(is.event(out.first)).toBe(true);
 
   const fn = jest.fn();
   out.first.watch(fn);
   out.second.watch(fn);
+  // eslint-disable-next-line no-underscore-dangle
   out.__.watch(fn);
 
   source({ first: 'Demo' });
@@ -84,15 +97,18 @@ test('fall through from event', () => {
 });
 
 test('map from store', () => {
-  const change = createEvent();
+  const change = createEvent<string>();
   const $source = createStore('').on(change, (_, value) => value);
 
-  const out = splitMap($source, {
-    twoWords: (payload) => {
-      const pair = payload.split(' ');
-      return pair.length === 2 ? pair : undefined;
+  const out = splitMap({
+    source: $source,
+    cases: {
+      twoWords: (payload) => {
+        const pair = payload.split(' ');
+        return pair.length === 2 ? pair : undefined;
+      },
+      word: (payload) => (payload.match(/\w+/gim) ? payload : undefined),
     },
-    word: (payload) => (payload.match(/\w+/gim) ? payload : undefined),
   });
   expect(is.event(out.twoWords)).toBe(true);
   expect(is.event(out.word)).toBe(true);

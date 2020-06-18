@@ -257,9 +257,12 @@ import { splitMap } from 'patronum/split-map';
 
 const nameReceived = createEvent<string>();
 
-const received = splitMap(nameReceived, {
-  firstName: (string) => string.split(' ')[0], // string | undefined
-  lastName: (string) => string.split(' ')[1], // string | undefined
+const received = splitMap({
+  source: nameReceived,
+  cases: {
+    firstName: (string) => string.split(' ')[0], // string | undefined
+    lastName: (string) => string.split(' ')[1], // string | undefined
+  },
 });
 
 received.firstName.watch((first) => console.info('firstname received', first));
