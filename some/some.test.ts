@@ -1,6 +1,6 @@
-const { createStore, createEvent } = require('effector');
-const { argumentHistory } = require('../test-library');
-const { some } = require('./index');
+import { createStore, createEvent } from 'effector';
+import { argumentHistory } from '../test-library';
+import { some } from './index';
 
 test('boolean predicate', () => {
   const fn = jest.fn();
@@ -11,7 +11,7 @@ test('boolean predicate', () => {
   const $second = createStore(false).on(changeOne, () => true);
   const $third = createStore(false).on(changeAnother, () => true);
 
-  const $result = some(true, [$first, $second, $third]);
+  const $result = some({ predicate: true, stores: [$first, $second, $third] });
 
   $result.watch(fn);
   expect(fn).toHaveBeenCalledWith(false);
@@ -46,7 +46,7 @@ test('number predicate', () => {
   const $second = createStore(2).on(change, () => 4);
   const $third = createStore(4);
 
-  const $result = some(2, [$first, $second, $third]);
+  const $result = some({ predicate: 2, stores: [$first, $second, $third] });
 
   $result.watch(fn);
   expect(fn).toHaveBeenCalledWith(true);
@@ -68,7 +68,10 @@ test('function predicate', () => {
   const $second = createStore(0).on(change, () => 5);
   const $third = createStore(0);
 
-  const $result = some((value) => value > 0, [$first, $second, $third]);
+  const $result = some({
+    predicate: (value) => value > 0,
+    stores: [$first, $second, $third],
+  });
 
   $result.watch(fn);
   expect(fn).toHaveBeenCalledWith(false);
@@ -89,7 +92,10 @@ test('initially true', () => {
   const $second = createStore(2);
   const $third = createStore(0);
 
-  const $result = some((value) => value > 0, [$first, $second, $third]);
+  const $result = some({
+    predicate: (value) => value > 0,
+    stores: [$first, $second, $third],
+  });
 
   $result.watch(fn);
   expect(fn).toHaveBeenCalledWith(true);
@@ -102,7 +108,10 @@ test('initially false', () => {
   const $second = createStore(0);
   const $third = createStore(0);
 
-  const $result = some((value) => value > 0, [$first, $second, $third]);
+  const $result = some({
+    predicate: (value) => value > 0,
+    stores: [$first, $second, $third],
+  });
 
   $result.watch(fn);
   expect(fn).toHaveBeenCalledWith(false);
