@@ -8,9 +8,9 @@ import { every } from '../every';
   const $b = createStore(1);
   const $invalid = createStore('');
 
-  expectType<Store<boolean>>(every(0, [$a, $b]));
+  expectType<Store<boolean>>(every({ predicate: 0, stores: [$a, $b] }));
 
-  expectError(every(0, [$a, $invalid]));
+  expectError(every({ predicate: 0, stores: [$a, $invalid] }));
 }
 
 // Check types for string enum
@@ -22,9 +22,9 @@ import { every } from '../every';
 
   const value: Enum = 'c';
 
-  expectType<Store<boolean>>(every(value, [$a, $b]));
-  expectError(every(value, [$a, $invalid]));
-  expectError(every('demo', [$a, $b]));
+  expectType<Store<boolean>>(every({ predicate: value, stores: [$a, $b] }));
+  expectError(every({ predicate: value, stores: [$a, $invalid] }));
+  expectError(every({ predicate: 'demo', stores: [$a, $b] }));
 }
 
 // Check function predicate
@@ -34,6 +34,6 @@ import { every } from '../every';
   const $b = createStore(1);
   const $invalid = createStore('');
 
-  expectType<Store<boolean>>(every(predicate, [$a, $b]));
-  expectError(every(predicate, [$a, $invalid]));
+  expectType<Store<boolean>>(every({ predicate, stores: [$a, $b] }));
+  expectError(every({ predicate, stores: [$a, $invalid] }));
 }
