@@ -1,7 +1,10 @@
-import { Unit, Event } from 'effector';
+import { Unit, Event, Store } from 'effector';
 
-export function delay<T>(unit: Unit<T>, time: number): Event<T>;
-export function delay<T>(
-  unit: Unit<T>,
-  options: { time: (payload: T) => number },
-): Event<T>;
+export function delay<T>(_: {
+  source: Unit<T>;
+  timeout: (payload: T) => number;
+}): Event<T>;
+export function delay<T>(_: {
+  source: Unit<T>;
+  timeout: Store<number> | number;
+}): Event<T>;

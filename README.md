@@ -67,7 +67,9 @@ import { createEvent } from 'effector';
 import { delay } from 'patronum/delay';
 
 const trigger = createEvent<string>(); // createStore or createEffect
-const delayed = delay(trigger, 300);
+
+// `timeout` also supports (payload) => number and Store<number>
+const delayed = delay({ source: trigger, timeout: 300 });
 
 delayed.watch((payload) => console.info('triggered', payload));
 

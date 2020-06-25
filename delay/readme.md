@@ -4,20 +4,20 @@
 import { delay } from 'patronum/delay';
 ```
 
-## `delay(trigger, time)`
+## `delay({ source, timeout: number })`
 
 ### Formulae
 
 ```ts
-event = delay(trigger, time);
+event = delay({ source, timeout: number });
 ```
 
-- When `trigger` is triggered, wait for `time`, then trigger `event` with payload of the `trigger`
+- When `source` is triggered, wait for `timeout`, then trigger `event` with payload of the `source`
 
 ### Arguments
 
-1. `trigger` _(`Event<T>` | `Store<T>` | `Effect<T>`)_ — Source unit, data from this unit used to trigger `event` with.
-2. `time` _(`number`)_ — time to wait before trigger `event`
+1. `source` _(`Event<T>` | `Store<T>` | `Effect<T>`)_ — Source unit, data from this unit used to trigger `event` with.
+1. `timeout` _(`number`)_ — time to wait before trigger `event`
 
 ### Returns
 
@@ -30,7 +30,7 @@ import { createEvent } from 'effector';
 import { delay } from 'patronum/delay';
 
 const trigger = createEvent<string>(); // createStore or createEffect
-const delayed = delay(trigger, 300);
+const delayed = delay({ source: trigger, timeout: 300 });
 
 delayed.watch((payload) => console.info('triggered', payload));
 
@@ -39,21 +39,20 @@ trigger('hello');
 // => triggered hello
 ```
 
-## `delay(trigger, { time: fn })`
+## `delay({ source, timeout: Function })`
 
 ### Formulae
 
 ```ts
-event = delay(trigger, { time: fn });
+event = delay({ source, timeout: Function });
 ```
 
-- When `trigger` is triggered, call `time` with payload to get the timeout for delay, then trigger `event` with payload of the `trigger`
+- When `source` is triggered, call `timeout` with payload to get the timeout for delay, then trigger `event` with payload of the `source`
 
 ### Arguments
 
-1. `trigger` _(`Event<T>` | `Store<T>` | `Effect<T>`)_ — Source unit, data from this unit used to trigger `event` with.
-2. `options` _(`{ time: (payload: T) => number }`)_ — Setup delay options
-   - `time` _(`(payload: T) => number`)_ — Calculate delay for each `trigger` call. Receives the payload of `trigger` as argument. Should return `number` — delay in milliseconds.
+1. `source` _(`Event<T>` | `Store<T>` | `Effect<T>`)_ — Source unit, data from this unit used to trigger `event` with.
+1. `timeout` _(`(payload: T) => number`)_ — Calculate delay for each `source` call. Receives the payload of `source` as argument. Should return `number` — delay in milliseconds.
 
 ### Example
 
@@ -64,7 +63,10 @@ import { delay } from 'patronum/delay';
 const update = createEvent<string>();
 const $data = createStore('');
 
-const logDelayed = delay($data, { time: (string) => string.length * 100 });
+const logDelayed = delay({
+  source: $data,
+  timeout: (string) => string.length * 100,
+});
 
 logDelayed.watch((data) => console.log('log', data));
 
@@ -75,4 +77,41 @@ update('Hello');
 update('!');
 // after 100ms
 // => log !
+```
+
+## `delay({ source, timeout: Store })`
+
+### Formulae
+
+```ts
+event = delay({ source, timeout: $store });
+```
+
+- When `source` is triggered, read timeout from `timeout` store, then trigger `event` with payload of the `source`
+
+### Arguments
+
+1. `source` _(`Event<T>` | `Store<T>` | `Effect<T>`)_ — Source unit, data from this unit used to trigger `event` with.
+1. `timeout` _(`Store<number>`)_ — Store with number — delay in milliseconds.
+
+### Example
+
+```ts
+import { createEvent, createStore } from 'effector';
+import { delay } from 'patronum/delay';
+
+const update = createEvent<string>();
+const $data = createStore('');
+const $timeout = createStore(500);
+
+const logDelayed = delay({
+  source: $data,
+  timeout: $timeout,
+});
+
+logDelayed.watch((data) => console.log('log', data));
+
+update('Hello');
+// after 500ms
+// => log Hello
 ```
