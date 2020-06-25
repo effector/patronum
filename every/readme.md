@@ -4,10 +4,10 @@
 import { every } from 'patronum/every';
 ```
 
-## `every(predicate, stores)`
+## `every({ predicate: Function, stores })`
 
 ```ts
-$result = every(predicate, stores);
+$result = every({ predicate: fn, stores });
 ```
 
 - `$result` will be `true` if each call `predicate` on each store value from `values` returns `true`, otherwise it will be `false`
@@ -27,22 +27,25 @@ $result = every(predicate, stores);
 const $width = createStore(440);
 const $height = createStore(780);
 
-const $fitsSquare = every((size) => size < 800, [$width, $height]);
+const $fitsSquare = every({
+  predicate: (size) => size < 800,
+  stores: [$width, $height],
+});
 
 console.assert(true === $fitsSquare.getState());
 ```
 
-## `every(value, stores)`
+## `every({ predicate: value, stores })`
 
 ```ts
-$result = every(value, stores);
+$result = every({ predicate: value, stores });
 ```
 
 - `$result` will be `true` if each value in `stores` equals `values`, otherwise it will be `false`
 
 ### Arguments
 
-1. `value` _(`T`)_ — Data to compare stores values with
+1. `predicate` _(`T`)_ — Data to compare stores values with
 1. `stores` _(`Array<Store<T>>`)_ — List of stores to compare with `value`
 1. type of `value` and `stores` should should be the same
 
@@ -56,7 +59,10 @@ $result = every(value, stores);
 const $isPasswordCorrect = createStore(true);
 const $isEmailCorrect = createStore(true);
 
-const $isFormCorrect = every(true, [$isPasswordCorrect, $isEmailCorrect]);
+const $isFormCorrect = every({
+  predicate: true,
+  stores: [$isPasswordCorrect, $isEmailCorrect],
+});
 
 console.assert(true === $isFormCorrect.getState());
 ```

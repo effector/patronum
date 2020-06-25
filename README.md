@@ -215,7 +215,10 @@ event3(5); // triggered { event1: true, event2: "demo", event3: 5 }
 const $isPasswordCorrect = createStore(true);
 const $isEmailCorrect = createStore(true);
 
-const $isFormCorrect = every(true, [$isPasswordCorrect, $isEmailCorrect]);
+const $isFormCorrect = every({
+  predicate: true,
+  stores: [$isPasswordCorrect, $isEmailCorrect],
+});
 // true
 ```
 

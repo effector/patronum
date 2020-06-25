@@ -10,7 +10,7 @@ test('boolean predicate', () => {
   const $second = createStore(false).on(change, () => true);
   const $third = createStore(true);
 
-  const $result = every(true, [$first, $second, $third]);
+  const $result = every({ predicate: true, stores: [$first, $second, $third] });
 
   $result.watch(fn);
   expect(fn).toHaveBeenCalledWith(false);
@@ -32,7 +32,7 @@ test('number predicate', () => {
   const $second = createStore(2).on(change, () => 4);
   const $third = createStore(4);
 
-  const $result = every(4, [$first, $second, $third]);
+  const $result = every({ predicate: 4, stores: [$first, $second, $third] });
 
   $result.watch(fn);
   expect(fn).toHaveBeenCalledWith(false);
@@ -54,7 +54,10 @@ test('function predicate', () => {
   const $second = createStore(0).on(change, () => 5);
   const $third = createStore(3);
 
-  const $result = every((value) => value > 0, [$first, $second, $third]);
+  const $result = every({
+    predicate: (value) => value > 0,
+    stores: [$first, $second, $third],
+  });
 
   $result.watch(fn);
   expect(fn).toHaveBeenCalledWith(false);
@@ -75,7 +78,10 @@ test('initially true', () => {
   const $second = createStore(2);
   const $third = createStore(3);
 
-  const $result = every((value) => value > 0, [$first, $second, $third]);
+  const $result = every({
+    predicate: (value) => value > 0,
+    stores: [$first, $second, $third],
+  });
 
   $result.watch(fn);
   expect(fn).toHaveBeenCalledWith(true);
