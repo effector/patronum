@@ -1,26 +1,26 @@
 // @ts-nocheck
-const { createStore, createEvent, createEffect } = require('effector');
-const {
+import { createStore, createEvent, createEffect } from 'effector';
+import {
   argumentHistory,
   time,
   toBeCloseWithThreshold,
   waitFor,
-} = require('../test-library');
-const { delay } = require('./index');
+} from '../test-library';
+import { delay } from './index';
 
 expect.extend({ toBeCloseWithThreshold });
 
-const TIMER_THRESHOLD = 20;
+const TIMER_THRESHOLD = 70;
 
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 test('delay event with number', async () => {
-  const trigger = createEvent();
-  const delayed = delay(trigger, 100);
+  const source = createEvent();
+  const delayed = delay({ source, timeout: 100 });
   const fn = jest.fn();
   delayed.watch(fn);
 
-  trigger(1);
+  source(1);
   const start = time();
   expect(fn).toBeCalledTimes(0);
 
@@ -36,13 +36,13 @@ test('delay event with number', async () => {
 });
 
 test('double delay event with number', async () => {
-  const trigger = createEvent();
-  const delayed = delay(trigger, 100);
+  const source = createEvent();
+  const delayed = delay({ source, timeout: 100 });
   const fn = jest.fn();
   delayed.watch(fn);
 
   const startA = time();
-  trigger(1);
+  source(1);
   expect(fn).toBeCalledTimes(0);
 
   await waitFor(delayed);
@@ -50,7 +50,7 @@ test('double delay event with number', async () => {
   expect(fn).toBeCalledTimes(1);
 
   const startB = time();
-  trigger(2);
+  source(2);
   expect(fn).toBeCalledTimes(1);
 
   await waitFor(delayed);
@@ -66,13 +66,13 @@ test('double delay event with number', async () => {
 });
 
 test('delay event with function', async () => {
-  const trigger = createEvent();
-  const delayed = delay(trigger, { time: () => 100 });
+  const source = createEvent();
+  const delayed = delay({ source, timeout: () => 100 });
   const fn = jest.fn();
   delayed.watch(fn);
 
   const start = time();
-  trigger(1);
+  source(1);
 
   await waitFor(delayed);
   expect(start.diff()).toBeCloseWithThreshold(100, TIMER_THRESHOLD);
@@ -86,13 +86,13 @@ test('delay event with function', async () => {
 });
 
 test('delay event with function of argument', async () => {
-  const trigger = createEvent();
-  const delayed = delay(trigger, { time: (number) => number * 100 });
+  const source = createEvent();
+  const delayed = delay({ source, timeout: (number) => number * 100 });
   const fn = jest.fn();
   delayed.watch(fn);
 
   const start1 = time();
-  trigger(1); // 100ms delay
+  source(1); // 100ms delay
   expect(fn).toBeCalledTimes(0);
 
   await waitFor(delayed);
@@ -100,7 +100,7 @@ test('delay event with function of argument', async () => {
   expect(fn).toBeCalledTimes(1);
 
   const start2 = time();
-  trigger(2); // 200ms delay
+  source(2); // 200ms delay
 
   await waitFor(delayed);
   expect(start2.diff()).toBeCloseWithThreshold(200, TIMER_THRESHOLD);
@@ -117,10 +117,46 @@ test('delay event with function of argument', async () => {
   `);
 });
 
+test('delay event with store as timeout', async () => {
+  const source = createEvent();
+  const timeout = createStore(0).on(
+    source,
+    (current, count) => current + count * 100,
+  );
+  const delayed = delay({ source, timeout });
+  const fn = jest.fn();
+  delayed.watch(fn);
+
+  const start1 = time();
+  source(1); // 100ms delay
+  expect(fn).toBeCalledTimes(0);
+
+  await waitFor(delayed);
+  expect(start1.diff()).toBeCloseWithThreshold(100, TIMER_THRESHOLD);
+  expect(fn).toBeCalledTimes(1);
+
+  const start2 = time();
+  source(2); // 200ms delay
+
+  await waitFor(delayed);
+  expect(start2.diff()).toBeCloseWithThreshold(300, TIMER_THRESHOLD);
+  expect(fn).toBeCalledTimes(2);
+
+  await wait(100);
+  expect(fn).toBeCalledTimes(2);
+
+  expect(argumentHistory(fn)).toMatchInlineSnapshot(`
+    Array [
+      "1",
+      "2",
+    ]
+  `);
+});
+
 test('delay store', async () => {
   const change = createEvent();
   const $source = createStore(0).on(change, (_, value) => value);
-  const delayed = delay($source, 100);
+  const delayed = delay({ source: $source, timeout: 100 });
   const fn = jest.fn();
   delayed.watch(fn);
 
@@ -149,8 +185,8 @@ test('delay store', async () => {
 });
 
 test('double delay effect', async () => {
-  const effect = createEffect().use(() => 0);
-  const delayed = delay(effect, 100);
+  const effect = createEffect().use(() => 1000);
+  const delayed = delay({ source: effect, timeout: 100 });
   const fn = jest.fn();
   delayed.watch(fn);
 

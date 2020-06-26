@@ -1,28 +1,62 @@
-const { createEffect, forward } = require('effector');
+const { createEffect, createEvent, forward, is, sample } = require('effector');
+const { readConfig } = require('../library');
 
-function delay(unit, options) {
-  const timer =
-    typeof options === 'object'
-      ? toFunction(options.time)
-      : toFunction(options);
+function delay(argument) {
+  const { source, timeout, loc, name = 'unknown', sid } = readConfig(argument, [
+    'source',
+    'timeout',
 
-  const timeout = createEffect({
-    handler: (data) =>
+    'loc',
+    'sid',
+    'name',
+  ]);
+
+  if (!is.unit(source))
+    throw new TypeError('source must be a unit from effector');
+  const ms = validateTimeout(timeout);
+
+  const tick = createEvent({ name: `${name}Delayed`, sid, loc });
+  const timerFx = createEffect({
+    config: { name: `${name}DelayTimer`, loc },
+    handler: ({ payload, milliseconds }) =>
       new Promise((resolve) => {
-        setTimeout(resolve, timer(data), data);
+        setTimeout(resolve, milliseconds, payload);
       }),
   });
 
-  forward({
-    from: unit,
-    to: timeout,
+  sample({
+    source: { milliseconds: ms },
+    clock: source,
+    fn: ({ milliseconds }, payload) => ({
+      payload,
+      milliseconds:
+        typeof milliseconds === 'function'
+          ? milliseconds(payload)
+          : milliseconds,
+    }),
+    target: timerFx,
   });
 
-  return timeout.done.map(({ result }) => result);
-}
+  forward({
+    from: timerFx.done.map((payload) => payload.result),
+    to: tick,
+  });
 
-function toFunction(time) {
-  return typeof time === 'function' ? time : () => time;
+  return tick;
 }
 
 module.exports = { delay };
+
+function validateTimeout(timeout) {
+  if (
+    is.store(timeout) ||
+    typeof timeout === 'function' ||
+    typeof timeout === 'number'
+  ) {
+    return timeout;
+  }
+
+  throw new TypeError(
+    `'timeout' argument must be a function, Store, or a number. Passed "${typeof timeout}"`,
+  );
+}
