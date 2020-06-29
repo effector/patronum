@@ -1,12 +1,17 @@
-import { Event, Tuple } from 'effector';
+/* eslint-disable prettier/prettier */
+import { Unit, Event } from 'effector';
 
-export function combineEvents<Shape extends Tuple>(_: {
-  events: Shape;
-}): Event<
-  { [Key in keyof Shape]: Shape[Key] extends Event<infer U> ? U : Shape[Key] }
->;
-export function combineEvents<Shape>(_: {
-  events: Shape;
-}): Event<
-  { [Key in keyof Shape]: Shape[Key] extends Event<infer U> ? U : Shape[Key] }
->;
+type Tuple<T = unknown> = [T] | T[];
+type Shape = { [key: string]: Event<any> } | Tuple<Event<any>>;
+
+export function combineEvents<Events extends Shape, Target>(_: {
+  events: Events;
+  reset?: Unit<any>;
+  target?: Target;
+}): Target extends Unit<infer T>
+  ? Target
+  : Event<
+      {
+        [K in keyof Events]: Events[K] extends Event<infer U> ? U : never;
+      }
+    >;
