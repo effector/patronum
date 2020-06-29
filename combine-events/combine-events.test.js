@@ -13,11 +13,13 @@ test('source: shape', () => {
   const event5 = createEvent();
 
   const event = combineEvents({
-    event1,
-    event2,
-    event3,
-    event4,
-    event5,
+    events: {
+      event1,
+      event2,
+      event3,
+      event4,
+      event5,
+    },
   });
 
   event.watch(fn);
@@ -145,7 +147,9 @@ test('source: array', () => {
   const event4 = createEvent();
   const event5 = createEvent();
 
-  const event = combineEvents([event1, event2, event3, event4, event5]);
+  const event = combineEvents({
+    events: [event1, event2, event3, event4, event5],
+  });
 
   event.watch(fn);
 
@@ -213,9 +217,11 @@ test('example from readme', () => {
   const event3 = createEvent();
 
   const event = combineEvents({
-    event1,
-    event2,
-    event3,
+    events: {
+      event1,
+      event2,
+      event3,
+    },
   });
 
   event.watch(fn);

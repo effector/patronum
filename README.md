@@ -199,9 +199,11 @@ const event2 = createEvent();
 const event3 = createEvent();
 
 const event = combineEvents({
-  event1,
-  event2,
-  event3,
+  events: {
+    event1,
+    event2,
+    event3,
+  },
 });
 
 event.watch((object) => console.log('triggered', object));
