@@ -15,12 +15,12 @@ const throwError = (message) => {
 
 function combineEvents(argument) {
   const {
+    loc,
+    name = 'unknown',
     events,
     reset,
     target: givenTarget,
-    loc,
-    name = 'unknown',
-  } = readConfig(argument, ['events', 'reset', 'target', 'sid', 'loc', 'name']);
+  } = readConfig(argument, ['sid', 'loc', 'name', 'events', 'reset', 'target']);
 
   const target = givenTarget || createEvent();
 
