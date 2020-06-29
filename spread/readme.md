@@ -4,12 +4,12 @@
 import { spread } from 'patronum/spread';
 ```
 
-## `spread(source, targets)`
+## `spread({ source, targets })`
 
 ### Formulae
 
 ```ts
-spread(source, { field: target, ... })
+spread({ source, targets: { field: target, ... } })
 ```
 
 - When `source` is triggered with **object**, extract `field` from data, and trigger `target`
@@ -35,9 +35,12 @@ const $last = createStore('');
 
 const formReceived = createEvent();
 
-spread(formReceived, {
-  first: $first,
-  last: $last,
+spread({
+  source: formReceived,
+  targets: {
+    first: $first,
+    last: $last,
+  },
 });
 
 $first.watch((first) => console.log('First name', first));
@@ -63,9 +66,12 @@ const $form = createStore(null).on(save, (_, form) => form);
 const firstNameChanged = createEvent();
 const lastNameChanged = createEvent();
 
-spread($form, {
-  first: firstNameChanged,
-  last: lastNameChanged,
+spread({
+  source: $form,
+  targets: {
+    first: firstNameChanged,
+    last: lastNameChanged,
+  },
 });
 
 firstNameChanged.watch((first) => console.log('First name', first));
@@ -79,10 +85,10 @@ save(null);
 // Nothing, because store is null
 ```
 
-## `spread(targets)`
+## `spread({ targets })`
 
 ```ts
-source = spread({ field: target, ... })
+source = spread({ targets: { field: target, ... } })
 ```
 
 - When `source` is triggered with **object**, extract `field` from data, and trigger `target`
@@ -115,8 +121,10 @@ guard({
   source: formReceived,
   filter: (form) => form.first.length > 0 && form.last.length > 0,
   target: spread({
-    first: $first,
-    last: $last,
+    targets: {
+      first: $first,
+      last: $last,
+    },
   }),
 });
 
@@ -140,12 +148,17 @@ const $targetA = createStore('');
 const $targetB = createStore(0);
 const $targetC = createStore(false);
 
-spread(trigger, {
-  first: $targetA,
-  second: spread({
-    foo: $targetB,
-    bar: $targetC,
-  }),
+spread({
+  source: trigger,
+  targets: {
+    first: $targetA,
+    second: spread({
+      targets: {
+        foo: $targetB,
+        bar: $targetC,
+      },
+    }),
+  },
 });
 
 $targetA.watch((payload) => console.log('targetA', payload));
