@@ -1,17 +1,19 @@
-// @ts-nocheck
 const { is, guard, createEvent } = require('effector');
+const { readConfig } = require('../library');
 
 /**
  * if — (payload: T) => boolean,
  * if — Store<boolean>
  * if — T
  */
-function condition({
-  source = createEvent(),
-  if: test,
-  then: thenBranch = createEvent(),
-  else: elseBranch = createEvent(),
-}) {
+function condition(argument) {
+  const {
+    source = createEvent(),
+    if: test,
+    then: thenBranch = createEvent(),
+    else: elseBranch = createEvent(),
+  } = readConfig(argument, ['source', 'if', 'then', 'else']);
+
   const checker =
     is.unit(test) || isFunction(test) ? test : (value) => value === test;
 
