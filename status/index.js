@@ -1,7 +1,12 @@
 const { createStore } = require('effector');
+const { readConfig } = require('../library');
 
-function status(effect, initialValue = 'initial') {
-  const $status = createStore(initialValue);
+function status(argument) {
+  const { effect, defaultValue = 'initial' } = readConfig(argument, [
+    'effect',
+    'defaultValue',
+  ]);
+  const $status = createStore(defaultValue);
 
   $status
     .on(effect, () => 'pending')

@@ -154,7 +154,7 @@ import { createEvent, createEffect } from 'effector';
 import { status } from 'patronum/status';
 
 const effect = createEffect().use(() => Promise.resolve(null));
-const $status = status(effect);
+const $status = status({ effect });
 
 $status.watch((value) => console.log(`status: ${value}`));
 // => status: "initial"

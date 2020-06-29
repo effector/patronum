@@ -2,7 +2,7 @@ import { Store, Effect } from 'effector';
 
 type Status = 'initial' | 'pending' | 'done' | 'fail';
 
-export function status<Params, Result>(
-  effect: Effect<Params, Result>,
-  initialValue?: Status,
-): Store<Status>;
+export function status<Params, Result>(_: {
+  effect: Effect<Params, Result>;
+  defaultValue?: Status;
+}): Store<Status>;

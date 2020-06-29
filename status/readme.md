@@ -7,10 +7,10 @@ import { status } from 'patronum/status';
 ## Formulae
 
 ```ts
-$status = status(effect, initial);
+$status = status({ effect, defaultValue });
 ```
 
-- When `status` is run, set `initial` value to `$status`
+- When `status` is run, set `defaultValue` value to `$status`
 - When `effect` is called, set `pending` status.
 - When `effect` is succeeded, set `done` status.
 - When `effect` is failed, set `fail` status.
@@ -18,7 +18,7 @@ $status = status(effect, initial);
 ## Arguments
 
 1. `effect` _(Effect<P, R>)_ — any effect, that you need to watch status
-2. `initial` _('initial' | 'pending' | 'done' | 'fail')_ _optional_ — when `$status` initializes, set initial value for it. By default value is `"initial"`
+2. `defaultValue` _('initial' | 'pending' | 'done' | 'fail')_ _optional_ — when `$status` initializes, set initial value for it. By default value is `"initial"`
 
 ## Returns
 
@@ -35,7 +35,7 @@ import { createEvent, createEffect } from 'effector';
 import { status } from 'patronum/status';
 
 const effect = createEffect().use(() => Promise.resolve(null));
-const $status = status(effect);
+const $status = status({ effect });
 
 $status.watch((value) => console.log(`status: ${value}`));
 // => status: "initial"
@@ -52,7 +52,7 @@ import { createEvent, createEffect } from 'effector';
 import { status } from 'patronum/status';
 
 const effect = createEffect().use(() => Promise.resolve(null));
-const $status = status(effect, 'pending');
+const $status = status({ effect, defaultValue: 'pending' });
 
 $status.watch((value) => console.log(`status: ${value}`));
 // => status: "pending"
@@ -73,7 +73,7 @@ const effect = createEffect().use(
   () => new Promise((resolve) => setTimeout(resolve, 100)),
 );
 
-const $status = status(effect);
+const $status = status({ effect });
 $status.reset(reset);
 
 $status.watch((value) => console.log(`status: ${value}`));
