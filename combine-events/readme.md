@@ -4,14 +4,16 @@
 import { combineEvents } from 'patronum/combine-events';
 ```
 
-## `combineEvents(object)`
+## `combineEvents({ events: Record<key, Event<T>> })`
 
 ### Formulae
 
 ```ts
 const target = combineEvents({
-  key1: event1,
-  key2: event2,
+  events: {
+    key1: event1,
+    key2: event2,
+  },
 });
 ```
 
@@ -25,9 +27,11 @@ const second = createEvent<string>();
 const third = createEvent<boolean>();
 
 const target = combineEvents({
-  a: first,
-  second,
-  another: third,
+  events: {
+    a: first,
+    second,
+    another: third,
+  },
 });
 
 target.watch((object) => {
@@ -41,12 +45,12 @@ second('wow'); // nothing
 third(false); // target triggered with object
 ```
 
-## `combineEvents(array)`
+## `combineEvents({ events: Array<Event<T>> })`
 
 ### Formulae
 
 ```ts
-const target = combineEvents([event1, event2]);
+const target = combineEvents({ events: [event1, event2] });
 ```
 
 - When all events (`event1` and `event2` from example) is triggered, trigger `target` with array from events with the same order as events
@@ -58,7 +62,7 @@ const first = createEvent<number>();
 const second = createEvent<string>();
 const third = createEvent<boolean>();
 
-const target = combineEvents([first, second, third]);
+const target = combineEvents({ events: [first, second, third] });
 
 target.watch((list) => {
   console.log('first event data', list[0]);

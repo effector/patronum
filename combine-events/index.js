@@ -6,23 +6,40 @@ const {
   sample,
   withRegion,
 } = require('effector');
+const { readConfig } = require('../library');
 
-function combineEvents(events) {
+function combineEvents(argument) {
+  const { events, loc, name = 'unknown' } = readConfig(argument, [
+    'events',
+
+    'sid',
+    'loc',
+    'name',
+  ]);
+
   const target = createEvent();
 
   withRegion(target, () => {
     const isArray = Array.isArray(events);
     const keys = Object.keys(events);
-    const counter = createStore(keys.length).reset(sample(target));
     const defaultShape = isArray ? [...keys].fill() : {};
-    const results = createStore(defaultShape).reset(target);
+
+    const $counter = createStore(keys.length, { name: `${name}Counter`, loc });
+    const $results = createStore(defaultShape, {
+      name: `${name}Results`,
+      loc,
+    });
+
+    $counter.reset(sample(target));
+    $results.reset(sample(target));
 
     for (const key of keys) {
-      const done = createStore(false)
+      const $isDone = createStore(false)
         .on(events[key], () => true)
         .reset(target);
-      counter.on(done, (value) => value - 1);
-      results.on(events[key], (shape, payload) => {
+
+      $counter.on($isDone, (value) => value - 1);
+      $results.on(events[key], (shape, payload) => {
         const newShape = isArray ? [...shape] : { ...shape };
         newShape[key] = payload;
         return newShape;
@@ -30,8 +47,8 @@ function combineEvents(events) {
     }
 
     guard({
-      source: sample(results, merge(Object.values(events))),
-      filter: counter.map((value) => value === 0),
+      source: sample($results, merge(Object.values(events))),
+      filter: $counter.map((value) => value === 0),
       target,
     });
   });
