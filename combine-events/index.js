@@ -5,19 +5,27 @@ const {
   merge,
   sample,
   withRegion,
+  is,
 } = require('effector');
 const { readConfig } = require('../library');
 
+const throwError = (message) => {
+  throw new Error(message);
+};
+
 function combineEvents(argument) {
-  const { events, loc, name = 'unknown' } = readConfig(argument, [
-    'events',
+  const {
+    events,
+    reset,
+    target: givenTarget,
+    loc,
+    name = 'unknown',
+  } = readConfig(argument, ['events', 'reset', 'target', 'sid', 'loc', 'name']);
 
-    'sid',
-    'loc',
-    'name',
-  ]);
+  const target = givenTarget || createEvent();
 
-  const target = createEvent();
+  if (!is.unit(target)) throwError('target should be a unit');
+  if (reset && !is.unit(reset)) throwError('reset should be a unit');
 
   withRegion(target, () => {
     const isArray = Array.isArray(events);
@@ -31,12 +39,21 @@ function combineEvents(argument) {
     });
 
     $counter.reset(sample(target));
-    $results.reset(sample(target));
+    $results.reset(target);
+
+    if (reset) {
+      $counter.reset(sample(reset));
+      $results.reset(reset);
+    }
 
     for (const key of keys) {
       const $isDone = createStore(false)
         .on(events[key], () => true)
         .reset(target);
+
+      if (reset) {
+        $isDone.reset(reset);
+      }
 
       $counter.on($isDone, (value) => value - 1);
       $results.on(events[key], (shape, payload) => {
