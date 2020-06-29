@@ -1,5 +1,13 @@
 # Migration guide from `v0.14+`
 
+```shell
+npm install patronum@next
+```
+
+```shell
+yarn add patronum@next
+```
+
 <details>
 <summary><strong><code>throttle</code></strong></summary>
 
