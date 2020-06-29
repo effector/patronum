@@ -35,11 +35,17 @@ import { delay } from 'patronum/delay';
 
 Also use can import it from index:
 
-> Be careful, with this method, all functions will be at your bundle
+> Be careful, with this import method, all functions will be at your bundle
 
 ```ts
 import { delay } from 'patronum';
 ```
+
+## Migration guide
+
+From `v0.100.0` patronum introduced object arguments form with **BREAKING CHANGES**. Please, review [migration guide](./MIGRATION.md) before upgrade from `v0.14.x` on your project.
+
+---
 
 ## [Condition](/condition 'Documentation')
 
