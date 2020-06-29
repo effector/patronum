@@ -243,10 +243,13 @@ import { reshape } from 'patronum/reshape';
 
 const $original = createStore<string>('Hello world');
 
-const parts = reshape($original, {
-  length: (string) => string.length,
-  first: (string) => string.split(' ')[0] || '',
-  second: (string) => string.split(' ')[1] || '',
+const parts = reshape({
+  source: $original,
+  shape: {
+    length: (string) => string.length,
+    first: (string) => string.split(' ')[0] || '',
+    second: (string) => string.split(' ')[1] || '',
+  },
 });
 
 parts.length.watch(console.info); // 11

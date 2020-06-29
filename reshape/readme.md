@@ -7,10 +7,10 @@ import { reshape } from 'patronum/reshape';
 ## Formulae
 
 ```ts
-shape = reshape(store, cases);
+result = reshape(source, shape);
 ```
 
-- Call each function in `cases` object with data from `store`, and create store with the same name as key in `cases`
+- Call each function in `shape` object with data from `source`, and create store with the same name as key in `shape`
 
 > No arguments yet
 
@@ -22,16 +22,19 @@ import { reshape } from 'patronum/reshape';
 
 const $original = createStore<string>('Example');
 
-const shape = reshape($original, {
-  length: (string) => string.length,
-  lowercase: (string) => string.toLowerCase(),
-  uppercase: (string) => string.toUpperCase(),
+const result = reshape({
+  source: $original,
+  shape: {
+    length: (string) => string.length,
+    lowercase: (string) => string.toLowerCase(),
+    uppercase: (string) => string.toUpperCase(),
+  },
 });
 
-// shape.length: Store<number>;
-// shape.lowercase: Store<string>;
-// shape.uppercase: Store<string>;
+// result.length: Store<number>;
+// result.lowercase: Store<string>;
+// result.uppercase: Store<string>;
 
-shape.length.watch((length) => console.log('String length:', length));
-shape.lowercase.watch((lowercase) => console.log('lowercase:', lowercase));
+result.length.watch((length) => console.log('String length:', length));
+result.lowercase.watch((lowercase) => console.log('lowercase:', lowercase));
 ```

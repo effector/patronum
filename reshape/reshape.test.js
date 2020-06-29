@@ -4,10 +4,13 @@ const { reshape } = require('./index');
 test('reshape from string to different types', () => {
   const $original = createStore('some long value');
 
-  const shape = reshape($original, {
-    length: (original) => original.length,
-    uppercase: (original) => original.toUpperCase(),
-    hasSpace: (original) => original.includes(' '),
+  const shape = reshape({
+    source: $original,
+    shape: {
+      length: (original) => original.length,
+      uppercase: (original) => original.toUpperCase(),
+      hasSpace: (original) => original.includes(' '),
+    },
   });
 
   expect(shape.length.getState()).toBe(15);
@@ -20,10 +23,13 @@ test('reshaped stores updates correctly', () => {
   const update = createEvent();
   $original.on(update, (_, v) => v);
 
-  const shape = reshape($original, {
-    length: (original) => original.length,
-    uppercase: (original) => original.toUpperCase(),
-    hasSpace: (original) => original.includes(' '),
+  const shape = reshape({
+    source: $original,
+    shape: {
+      length: (original) => original.length,
+      uppercase: (original) => original.toUpperCase(),
+      hasSpace: (original) => original.includes(' '),
+    },
   });
 
   expect(shape.length.getState()).toBe(15);
@@ -40,10 +46,13 @@ test('reshaped stores updates correctly', () => {
 test('reshape ejects values from object', () => {
   const $user = createStore({ id: 1, name: 'Sergey', surname: 'Sova' });
 
-  const shape = reshape($user, {
-    id: (user) => user.id,
-    name: (user) => user.name,
-    surname: (user) => user.surname,
+  const shape = reshape({
+    source: $user,
+    shape: {
+      id: (user) => user.id,
+      name: (user) => user.name,
+      surname: (user) => user.surname,
+    },
   });
 
   expect(shape.id.getState()).toBe(1);
