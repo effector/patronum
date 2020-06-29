@@ -15,13 +15,13 @@ yarn add patronum@next
 import { throttle } from 'patronum/throttle';
 ```
 
-### Previous version
+### Previous version `v0.14.x`
 
 ```ts
 const throttled = throttle(source, timeout);
 ```
 
-### Current version
+### Current version `v0.102.x`
 
 ```ts
 const throttled = throttle({ source, timeout });
@@ -45,13 +45,13 @@ https://github.com/sergeysova/patronum/pull/31
 import { debounce } from 'patronum/debounce';
 ```
 
-### Previous version
+### Previous version `v0.14.x`
 
 ```ts
 const debounced = debounce(source, timeout);
 ```
 
-### Current version
+### Current version `v0.102.x`
 
 ```ts
 const debounced = debounce({ source, timeout });
@@ -75,7 +75,7 @@ https://github.com/sergeysova/patronum/pull/38
 import { splitMap } from 'patronum/split-map';
 ```
 
-### Previous version
+### Previous version `v0.14.x`
 
 ```ts
 const received = splitMap(nameReceived, {
@@ -84,7 +84,7 @@ const received = splitMap(nameReceived, {
 });
 ```
 
-### Current version
+### Current version `v0.102.x`
 
 ```ts
 const received = splitMap({
@@ -109,13 +109,13 @@ https://github.com/sergeysova/patronum/pull/41
 import { some } from 'patronum/some';
 ```
 
-### Previous version
+### Previous version `v0.14.x`
 
 ```ts
 const $tooBig = some((size) => size > 800, [$width, $height]);
 ```
 
-### Current version
+### Current version `v0.102.x`
 
 ```ts
 const $tooBig = some({
@@ -138,14 +138,14 @@ https://github.com/sergeysova/patronum/pull/43
 import { every } from 'patronum/every';
 ```
 
-### Previous version
+### Previous version `v0.14.x`
 
 ```ts
 const $result = every(true, [$a, $b, $c]);
 const $result = every(() => true, [$a, $b, $c]);
 ```
 
-### Current version
+### Current version `v0.102.x`
 
 ```ts
 const $result = every({ predicate: true, stores: [$a, $b, $c] });
@@ -166,14 +166,14 @@ https://github.com/sergeysova/patronum/pull/50
 import { delay } from 'patronum/delay';
 ```
 
-### Previous version
+### Previous version `v0.14.x`
 
 ```ts
 const delayed = delay(unit, 100);
 const logDelayed = delay(unit, { time: (payload) => 100 });
 ```
 
-### Current version
+### Current version `v0.102.x`
 
 ```ts
 const delayed = delay({
@@ -208,13 +208,13 @@ https://github.com/sergeysova/patronum/pull/51
 import { status } from 'patronum/status';
 ```
 
-### Previous version
+### Previous version `v0.14.x`
 
 ```ts
 const $status = status(effect, 'initial');
 ```
 
-### Current version
+### Current version `v0.102.x`
 
 ```ts
 const $status = status({ effect, defaultValue: 'initial' });
@@ -234,7 +234,7 @@ https://github.com/sergeysova/patronum/pull/55
 import { reshape } from 'patronum/reshape';
 ```
 
-### Previous version
+### Previous version `v0.14.x`
 
 ```ts
 const parts = reshape($original, {
@@ -244,7 +244,7 @@ const parts = reshape($original, {
 });
 ```
 
-### Current version
+### Current version `v0.102.x`
 
 ```ts
 const parts = reshape({
@@ -271,7 +271,7 @@ https://github.com/sergeysova/patronum/pull/57
 import { combineEvents } from 'patronum/combine-events';
 ```
 
-### Previous version
+### Previous version `v0.14.x`
 
 ```ts
 const target = combineEvents([first, second, third]);
@@ -281,7 +281,7 @@ const target = combineEvents({
 });
 ```
 
-### Current version
+### Current version `v0.102.x`
 
 ```ts
 const target = combineEvents({ events: [first, second, third] });
@@ -306,7 +306,7 @@ https://github.com/sergeysova/patronum/pull/58
 import { spread } from 'patronum/spread';
 ```
 
-### Previous version
+### Previous version `v0.14.x`
 
 ```ts
 spread(formReceived, {
@@ -320,7 +320,7 @@ const source = spread({
 });
 ```
 
-### Current version
+### Current version `v0.102.x`
 
 ```ts
 spread({
