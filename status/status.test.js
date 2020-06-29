@@ -6,7 +6,7 @@ test('change status: initial -> pending -> done', async () => {
   const effect = createEffect({
     handler: () => new Promise((resolve) => setTimeout(resolve, 100)),
   });
-  const $status = status(effect);
+  const $status = status({ effect });
   const fn = jest.fn();
 
   $status.watch(fn);
@@ -39,7 +39,7 @@ test('change status: initial -> pending -> fail', async () => {
     handler: () => new Promise((_, reject) => setTimeout(reject, 100)),
   });
   const fn = jest.fn();
-  const $status = status(effect);
+  const $status = status({ effect });
   $status.watch(fn);
 
   effect();
@@ -65,7 +65,7 @@ test('change status: initial -> pending -> fail -> initial (clear)', async () =>
   const effect = createEffect({
     handler: () => new Promise((resolve) => setTimeout(resolve, 100)),
   });
-  const $status = status(effect);
+  const $status = status({ effect });
   const fn = jest.fn();
 
   $status.watch(fn);
@@ -89,7 +89,7 @@ test('set default status effect', async () => {
   const effect = createEffect({
     handler: () => new Promise((resolve) => setTimeout(resolve, 100)),
   });
-  const $status = status(effect, 'pending');
+  const $status = status({ effect, defaultValue: 'pending' });
   const fn = jest.fn();
 
   $status.watch(fn);
