@@ -13,9 +13,12 @@ describe('spread(source, targets)', () => {
     targetA.watch(fnA);
     targetB.watch(fnB);
 
-    spread(source, {
-      first: targetA,
-      second: targetB,
+    spread({
+      source,
+      targets: {
+        first: targetA,
+        second: targetB,
+      },
     });
 
     source({ first: 'Hello', second: 200 });
@@ -34,9 +37,12 @@ describe('spread(source, targets)', () => {
     targetA.watch(fnA);
     targetB.watch(fnB);
 
-    spread(source, {
-      first: targetA,
-      second: targetB,
+    spread({
+      source,
+      targets: {
+        first: targetA,
+        second: targetB,
+      },
     });
 
     source({ first: 'Hello', second: 200 });
@@ -59,9 +65,12 @@ describe('spread(source, targets)', () => {
     targetA.watch(fnA);
     targetB.watch(fnB);
 
-    spread(source, {
-      first: targetA,
-      second: targetB,
+    spread({
+      source,
+      targets: {
+        first: targetA,
+        second: targetB,
+      },
     });
 
     change({ first: 'Hello', second: 200 });
@@ -84,9 +93,12 @@ describe('spread(source, targets)', () => {
     targetA.watch(fnA);
     targetB.watch(fnB);
 
-    spread(source, {
-      first: targetA,
-      second: targetB,
+    spread({
+      source,
+      targets: {
+        first: targetA,
+        second: targetB,
+      },
     });
 
     change({ first: 'Hello', second: 200 });
@@ -110,8 +122,10 @@ describe('spread(targets)', () => {
     forward({
       from: source,
       to: spread({
-        first: targetA,
-        second: targetB,
+        targets: {
+          first: targetA,
+          second: targetB,
+        },
       }),
     });
 
@@ -134,8 +148,10 @@ describe('spread(targets)', () => {
     forward({
       from: source,
       to: spread({
-        first: targetA,
-        second: targetB,
+        targets: {
+          first: targetA,
+          second: targetB,
+        },
       }),
     });
 
@@ -162,8 +178,10 @@ describe('spread(targets)', () => {
     forward({
       from: source,
       to: spread({
-        first: targetA,
-        second: targetB,
+        targets: {
+          first: targetA,
+          second: targetB,
+        },
       }),
     });
 
@@ -190,8 +208,10 @@ describe('spread(targets)', () => {
     forward({
       from: source,
       to: spread({
-        first: targetA,
-        second: targetB,
+        targets: {
+          first: targetA,
+          second: targetB,
+        },
       }),
     });
 
@@ -213,9 +233,12 @@ describe('edge', () => {
     targetA.watch(fnA);
     targetB.watch(fnB);
 
-    spread(source, {
-      0: targetA,
-      1: targetB,
+    spread({
+      source,
+      targets: {
+        0: targetA,
+        1: targetB,
+      },
     });
 
     source(['Hello', 200]);
@@ -237,12 +260,17 @@ describe('edge', () => {
     targetB.watch(fnB);
     targetC.watch(fnC);
 
-    spread(source, {
-      first: targetA,
-      second: spread({
-        foo: targetB,
-        bar: targetC,
-      }),
+    spread({
+      source,
+      targets: {
+        first: targetA,
+        second: spread({
+          targets: {
+            foo: targetB,
+            bar: targetC,
+          },
+        }),
+      },
     });
 
     source({
@@ -270,9 +298,12 @@ describe('invalid', () => {
     targetA.watch(fnA);
     targetB.watch(fnB);
 
-    spread(source, {
-      first: targetA,
-      second: targetB,
+    spread({
+      source,
+      targets: {
+        first: targetA,
+        second: targetB,
+      },
     });
 
     source({ second: 200 });
@@ -291,9 +322,12 @@ describe('invalid', () => {
     targetA.watch(fnA);
     targetB.watch(fnB);
 
-    spread(source, {
-      first: targetA,
-      second: targetB,
+    spread({
+      source,
+      targets: {
+        first: targetA,
+        second: targetB,
+      },
     });
 
     source({});
@@ -312,9 +346,12 @@ describe('invalid', () => {
     targetA.watch(fnA);
     targetB.watch(fnB);
 
-    spread(source, {
-      first: targetA,
-      second: targetB,
+    spread({
+      source,
+      targets: {
+        first: targetA,
+        second: targetB,
+      },
     });
 
     source(null);
@@ -334,9 +371,12 @@ describe('invalid', () => {
     targetA.watch(fnA);
     targetB.watch(fnB);
 
-    spread(source, {
-      first: targetA,
-      second: targetB,
+    spread({
+      source,
+      targets: {
+        first: targetA,
+        second: targetB,
+      },
     });
 
     source();

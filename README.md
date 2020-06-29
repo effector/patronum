@@ -175,9 +175,12 @@ const trigger = createEvent<{ first: string; second: string }>();
 const $first = createStore('');
 const $second = createStore('');
 
-spread(trigger, {
-  first: $first,
-  second: $second,
+spread({
+  source: trigger,
+  targets: {
+    first: $first,
+    second: $second,
+  },
 });
 
 trigger({ first: 'Hello', second: 'World' });
