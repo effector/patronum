@@ -539,24 +539,26 @@ test('target', () => {
 
   const reset = createEvent();
 
-  type Target = Event<
-    | [
-        string | void,
-        string | void,
-        string | void,
-        string | void,
-        string | void,
-      ]
-    | {
-        a: { x: number };
-        b: () => boolean;
-        c: void;
-      }
-  >;
+  type Target5XData = [
+    string | void,
+    string | void,
+    string | void,
+    string | void,
+    string | void,
+  ];
 
-  const target: Target = createEvent();
+  type TargetAbcData = {
+    a: { x: number };
+    b: () => boolean;
+    c: void;
+  };
 
-  const target5X: Target = combineEvents({
+  type Target = Event<Target5XData | TargetAbcData>;
+
+  const target = createEvent<Target>();
+
+  // Inferred, but checked
+  const target5X: Event<Target5XData> = combineEvents({
     events: [event1, event2, event3, event4, event5],
     reset,
     target,
@@ -671,7 +673,8 @@ test('target', () => {
   const renew = createEvent<number>();
   const store = restore(renew, null);
 
-  const abcTarget: Target = combineEvents({
+  // Inferred, but checked
+  const targetAbc: Event<TargetAbcData> = combineEvents({
     events: { a, b, c },
     reset: store,
     target,
