@@ -63,21 +63,21 @@ import { condition } from '../condition';
   expectType<Store<number>>(
     condition({
       source: $source,
-      if: createStore(false),
+      if: createStore<boolean>(false),
       then: createEvent<number>(),
     }),
   );
   expectType<Store<number>>(
     condition({
       source: $source,
-      if: createStore(false),
+      if: createStore<boolean>(false),
       else: createEvent<number>(),
     }),
   );
   expectType<Store<number>>(
     condition({
       source: $source,
-      if: createStore(false),
+      if: createStore<boolean>(false),
       then: createEvent<number>(),
       else: createEvent<number>(),
     }),
@@ -172,7 +172,7 @@ import { condition } from '../condition';
   expectType<Store<number>>(
     condition({
       source: createStore(0),
-      if: createStore(true),
+      if: createStore<boolean>(true),
       then: createEvent<number>(),
     }),
   );
