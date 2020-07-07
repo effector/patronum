@@ -10,9 +10,11 @@ function waitFor(unit) {
 }
 
 function argumentHistory(ƒ) {
-  return ƒ.mock.calls.map((value) =>
-    value.map((a) => (typeof a === 'object' ? JSON.stringify(a) : a)).join(' '),
-  );
+  return ƒ.mock.calls.map(([value]) => value);
+}
+
+function argumentsHistory(ƒ) {
+  return ƒ.mock.calls;
 }
 
 function time() {
@@ -56,6 +58,7 @@ const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 module.exports = {
   argumentHistory,
+  argumentsHistory,
   time,
   toBeCloseWithThreshold,
   wait,

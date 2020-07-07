@@ -45,7 +45,9 @@ test('default case from event', () => {
   expect(fnDefault).toBeCalledTimes(1);
   expect(argumentHistory(fnDefault)).toMatchInlineSnapshot(`
     Array [
-      "{\\"another\\":\\"Demo\\"}",
+      Object {
+        "another": "Demo",
+      },
     ]
   `);
 });
@@ -91,7 +93,9 @@ test('fall through from event', () => {
     Array [
       "first",
       "second",
-      "{\\"default\\":1000}",
+      Object {
+        "default": 1000,
+      },
     ]
   `);
 });
@@ -128,7 +132,10 @@ test('map from store', () => {
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
     Array [
       "Demo",
-      "[\\"Hello\\",\\"World\\"]",
+      Array [
+        "Hello",
+        "World",
+      ],
     ]
   `);
 });

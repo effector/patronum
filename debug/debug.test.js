@@ -5,8 +5,13 @@ const {
   createStore,
   createDomain,
 } = require('effector');
-const { argumentHistory } = require('../test-library');
+const { argumentsHistory } = require('../test-library');
 const { debug } = require('./index');
+
+const stringArguments = (ƒ) =>
+  argumentsHistory(ƒ).map((value) =>
+    value.map((a) => (typeof a === 'object' ? JSON.stringify(a) : a)).join(' '),
+  );
 
 const original = global.console.info;
 let fn;
@@ -29,14 +34,14 @@ test('debug event, store, effect simultaneously', async () => {
 
   debug($store, event, effect);
 
-  expect(argumentHistory(fn)).toMatchInlineSnapshot(`
+  expect(stringArguments(fn)).toMatchInlineSnapshot(`
     Array [
       "[store] $store 0",
     ]
   `);
 
   event(5);
-  expect(argumentHistory(fn)).toMatchInlineSnapshot(`
+  expect(stringArguments(fn)).toMatchInlineSnapshot(`
     Array [
       "[store] $store 0",
       "[event] event 5",
@@ -45,7 +50,7 @@ test('debug event, store, effect simultaneously', async () => {
   `);
 
   effect('demo');
-  expect(argumentHistory(fn)).toMatchInlineSnapshot(`
+  expect(stringArguments(fn)).toMatchInlineSnapshot(`
     Array [
       "[store] $store 0",
       "[event] event 5",
@@ -56,7 +61,7 @@ test('debug event, store, effect simultaneously', async () => {
 
   await 1;
 
-  expect(argumentHistory(fn)).toMatchInlineSnapshot(`
+  expect(stringArguments(fn)).toMatchInlineSnapshot(`
     Array [
       "[store] $store 0",
       "[event] event 5",
@@ -81,14 +86,14 @@ test('debug domain', async () => {
 
   debug(domain);
 
-  expect(argumentHistory(fn)).toMatchInlineSnapshot(`
+  expect(stringArguments(fn)).toMatchInlineSnapshot(`
     Array [
       "[store] domain/$store 0",
     ]
   `);
 
   event(5);
-  expect(argumentHistory(fn)).toMatchInlineSnapshot(`
+  expect(stringArguments(fn)).toMatchInlineSnapshot(`
     Array [
       "[store] domain/$store 0",
       "[event] domain/event 5",
@@ -97,7 +102,7 @@ test('debug domain', async () => {
   `);
 
   effect('demo');
-  expect(argumentHistory(fn)).toMatchInlineSnapshot(`
+  expect(stringArguments(fn)).toMatchInlineSnapshot(`
     Array [
       "[store] domain/$store 0",
       "[event] domain/event 5",
@@ -107,7 +112,7 @@ test('debug domain', async () => {
 
   await 1;
 
-  expect(argumentHistory(fn)).toMatchInlineSnapshot(`
+  expect(stringArguments(fn)).toMatchInlineSnapshot(`
     Array [
       "[store] domain/$store 0",
       "[event] domain/event 5",

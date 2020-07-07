@@ -17,23 +17,23 @@ test('boolean predicate', () => {
   expect(fn).toHaveBeenCalledWith(false);
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
     Array [
-      "false",
+      false,
     ]
   `);
 
   changeOne();
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
     Array [
-      "false",
-      "true",
+      false,
+      true,
     ]
   `);
 
   changeAnother();
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
     Array [
-      "false",
-      "true",
+      false,
+      true,
     ]
   `);
 });
@@ -54,8 +54,8 @@ test('number predicate', () => {
   change();
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
     Array [
-      "true",
-      "false",
+      true,
+      false,
     ]
   `);
 });
@@ -79,8 +79,8 @@ test('function predicate', () => {
   change();
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
     Array [
-      "false",
-      "true",
+      false,
+      true,
     ]
   `);
 });
