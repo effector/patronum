@@ -30,7 +30,7 @@ test('delay event with number', async () => {
 
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
     Array [
-      "1",
+      1,
     ]
   `);
 });
@@ -59,8 +59,8 @@ test('double delay event with number', async () => {
 
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
     Array [
-      "1",
-      "2",
+      1,
+      2,
     ]
   `);
 });
@@ -80,7 +80,7 @@ test('delay event with function', async () => {
 
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
     Array [
-      "1",
+      1,
     ]
   `);
 });
@@ -111,8 +111,8 @@ test('delay event with function of argument', async () => {
 
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
     Array [
-      "1",
-      "2",
+      1,
+      2,
     ]
   `);
 });
@@ -147,8 +147,8 @@ test('delay event with store as timeout', async () => {
 
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
     Array [
-      "1",
-      "2",
+      1,
+      2,
     ]
   `);
 });
@@ -178,8 +178,8 @@ test('delay store', async () => {
 
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
     Array [
-      "1",
-      "2",
+      1,
+      2,
     ]
   `);
 });
@@ -207,8 +207,8 @@ test('double delay effect', async () => {
 
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
     Array [
-      "1",
-      "2",
+      1,
+      2,
     ]
   `);
 });
