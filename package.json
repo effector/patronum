@@ -14,19 +14,20 @@
     "prepublishOnly": "node ./.scripts/build.js"
   },
   "files": [
-    "*/*.js",
-    "*/*.d.ts",
-    "!*.test.js",
     "!.scripts",
-    "index.js",
+    "!*.test.js",
+    "*/*.d.ts",
+    "*/*.js",
+    "babel-preset.json",
     "index.d.ts",
+    "index.js",
     "library.js"
   ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/sergeysova/patronum.git"
   },
-  "keywords": ["effector", "lib", "modules", "stdlib", "util"],
+  "keywords": ["babel-preset", "effector", "lib", "modules", "stdlib", "util"],
   "author": "Sergey Sova <mail@sergeysova.com> (https://sergeysova.com/)",
   "license": "MIT",
   "bugs": {
