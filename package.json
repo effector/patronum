@@ -11,28 +11,29 @@
     "commit": "git-cz",
     "format": "prettier --write \"./src/**/**.{ts,tsx,js,jsx,json}\"",
     "lint": "eslint ./",
-    "prepublishOnly": "node ./_/build.js"
+    "prepublishOnly": "node ./.scripts/build.js"
   },
   "files": [
-    "*/*.js",
-    "*/*.d.ts",
+    "!.scripts",
     "!*.test.js",
-    "!_",
-    "index.js",
+    "*/*.d.ts",
+    "*/*.js",
+    "babel-preset.json",
     "index.d.ts",
+    "index.js",
     "library.js"
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/sergeysova/patronum.git"
+    "url": "git+https://github.com/effector/patronum.git"
   },
-  "keywords": ["effector", "lib", "modules", "stdlib", "util"],
+  "keywords": ["babel-preset", "effector", "lib", "modules", "stdlib", "util"],
   "author": "Sergey Sova <mail@sergeysova.com> (https://sergeysova.com/)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/sergeysova/patronum/issues"
+    "url": "https://github.com/effector/patronum/issues"
   },
-  "homepage": "https://github.com/sergeysova/patronum#readme",
+  "homepage": "https://github.com/effector/patronum#readme",
   "devDependencies": {
     "@atomix/eslint-config": "^8.0.0",
     "@babel/core": "^7.10.2",

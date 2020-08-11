@@ -13,17 +13,54 @@ async function main() {
 
   const names = found.map((name) => name.replace(`/${packageMarker}`, ''));
 
+  await createIndex(names);
+  await createTypings(names);
+  await createPreset(names);
+}
+
+async function createIndex(names) {
   const imports = names.sort().map((name) => {
     const camel = camelCase(name);
     return `module.exports.${camel} = require('./${name}').${camel};`;
   });
 
+  await writeFile('./index.js', imports.join('\n') + '\n');
+}
+
+async function createTypings(names) {
   const types = names
     .sort()
     .map((name) => `export { ${camelCase(name)} } from './${name}';`);
 
-  await writeFile('./index.js', imports.join('\n') + '\n');
   await writeFile('./index.d.ts', types.join('\n') + '\n');
+}
+
+async function createPreset(names) {
+  const patronum = [
+    'effector/babel-plugin',
+    {
+      importName: 'patronum',
+      storeCreators: names.sort().map(camelCase),
+      noDefaults: true,
+    },
+    'patronum',
+  ];
+
+  const methods = names.sort().map((method) => [
+    'effector/babel-plugin',
+    {
+      importName: `patronum/${method}`,
+      storeCreators: [camelCase(method)],
+      noDefaults: true,
+    },
+    `patronum/${method}`,
+  ]);
+
+  const preset = {
+    plugins: [...patronum, ...methods],
+  };
+
+  await writeFile('./babel-preset.json', JSON.stringify(preset, null, 2));
 }
 
 main().catch((error) => {
