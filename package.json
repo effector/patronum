@@ -14,10 +14,10 @@
     "prepublishOnly": "node ./.scripts/build.js"
   },
   "files": [
-    "!.scripts",
-    "!*.test.js",
     "*/*.d.ts",
     "*/*.js",
+    "!.scripts",
+    "!*.test.js",
     "babel-preset.json",
     "index.d.ts",
     "index.js",
