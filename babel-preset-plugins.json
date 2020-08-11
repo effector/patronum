@@ -1,0 +1,130 @@
+[
+  "effector/babel-plugin",
+  {
+    "importName": "patronum",
+    "storeCreators": [
+      "combineEvents",
+      "condition",
+      "debounce",
+      "debug",
+      "delay",
+      "every",
+      "reshape",
+      "some",
+      "splitMap",
+      "spread",
+      "status",
+      "throttle"
+    ],
+    "noDefaults": true
+  },
+  "patronum",
+  [
+    "effector/babel-plugin",
+    {
+      "importName": "patronum/combine-events",
+      "storeCreators": ["combineEvents"],
+      "noDefaults": true
+    },
+    "patronum/combine-events"
+  ],
+  [
+    "effector/babel-plugin",
+    {
+      "importName": "patronum/condition",
+      "storeCreators": ["condition"],
+      "noDefaults": true
+    },
+    "patronum/condition"
+  ],
+  [
+    "effector/babel-plugin",
+    {
+      "importName": "patronum/debounce",
+      "storeCreators": ["debounce"],
+      "noDefaults": true
+    },
+    "patronum/debounce"
+  ],
+  [
+    "effector/babel-plugin",
+    {
+      "importName": "patronum/debug",
+      "storeCreators": ["debug"],
+      "noDefaults": true
+    },
+    "patronum/debug"
+  ],
+  [
+    "effector/babel-plugin",
+    {
+      "importName": "patronum/delay",
+      "storeCreators": ["delay"],
+      "noDefaults": true
+    },
+    "patronum/delay"
+  ],
+  [
+    "effector/babel-plugin",
+    {
+      "importName": "patronum/every",
+      "storeCreators": ["every"],
+      "noDefaults": true
+    },
+    "patronum/every"
+  ],
+  [
+    "effector/babel-plugin",
+    {
+      "importName": "patronum/reshape",
+      "storeCreators": ["reshape"],
+      "noDefaults": true
+    },
+    "patronum/reshape"
+  ],
+  [
+    "effector/babel-plugin",
+    {
+      "importName": "patronum/some",
+      "storeCreators": ["some"],
+      "noDefaults": true
+    },
+    "patronum/some"
+  ],
+  [
+    "effector/babel-plugin",
+    {
+      "importName": "patronum/split-map",
+      "storeCreators": ["splitMap"],
+      "noDefaults": true
+    },
+    "patronum/split-map"
+  ],
+  [
+    "effector/babel-plugin",
+    {
+      "importName": "patronum/spread",
+      "storeCreators": ["spread"],
+      "noDefaults": true
+    },
+    "patronum/spread"
+  ],
+  [
+    "effector/babel-plugin",
+    {
+      "importName": "patronum/status",
+      "storeCreators": ["status"],
+      "noDefaults": true
+    },
+    "patronum/status"
+  ],
+  [
+    "effector/babel-plugin",
+    {
+      "importName": "patronum/throttle",
+      "storeCreators": ["throttle"],
+      "noDefaults": true
+    },
+    "patronum/throttle"
+  ]
+]

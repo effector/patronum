@@ -15,7 +15,7 @@ async function main() {
 
   await createIndex(names);
   await createTypings(names);
-  await createPreset(names);
+  await createPresetPlugins(names);
 }
 
 async function createIndex(names) {
@@ -35,7 +35,7 @@ async function createTypings(names) {
   await writeFile('./index.d.ts', types.join('\n') + '\n');
 }
 
-async function createPreset(names) {
+async function createPresetPlugins(names) {
   const patronum = [
     'effector/babel-plugin',
     {
@@ -56,11 +56,12 @@ async function createPreset(names) {
     `patronum/${method}`,
   ]);
 
-  const preset = {
-    plugins: [...patronum, ...methods],
-  };
+  const plugins = [...patronum, ...methods];
 
-  await writeFile('./babel-preset.json', JSON.stringify(preset, null, 2));
+  await writeFile(
+    './babel-preset-plugins.json',
+    JSON.stringify(plugins, null, 2),
+  );
 }
 
 main().catch((error) => {
