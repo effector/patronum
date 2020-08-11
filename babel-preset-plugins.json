@@ -1,24 +1,26 @@
 [
-  "effector/babel-plugin",
-  {
-    "importName": "patronum",
-    "storeCreators": [
-      "combineEvents",
-      "condition",
-      "debounce",
-      "debug",
-      "delay",
-      "every",
-      "reshape",
-      "some",
-      "splitMap",
-      "spread",
-      "status",
-      "throttle"
-    ],
-    "noDefaults": true
-  },
-  "patronum",
+  [
+    "effector/babel-plugin",
+    {
+      "importName": "patronum",
+      "storeCreators": [
+        "combineEvents",
+        "condition",
+        "debounce",
+        "debug",
+        "delay",
+        "every",
+        "reshape",
+        "some",
+        "splitMap",
+        "spread",
+        "status",
+        "throttle"
+      ],
+      "noDefaults": true
+    },
+    "patronum"
+  ],
   [
     "effector/babel-plugin",
     {

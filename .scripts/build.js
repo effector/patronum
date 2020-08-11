@@ -56,7 +56,7 @@ async function createPresetPlugins(names) {
     `patronum/${method}`,
   ]);
 
-  const plugins = [...patronum, ...methods];
+  const plugins = [patronum, ...methods];
 
   await writeFile(
     './babel-preset-plugins.json',
