@@ -7,7 +7,6 @@
         "combineEvents",
         "condition",
         "debounce",
-        "debug",
         "delay",
         "every",
         "reshape",
@@ -47,15 +46,6 @@
       "noDefaults": true
     },
     "patronum/debounce"
-  ],
-  [
-    "effector/babel-plugin",
-    {
-      "importName": "patronum/debug",
-      "attachCreators": ["debug"],
-      "noDefaults": true
-    },
-    "patronum/debug"
   ],
   [
     "effector/babel-plugin",

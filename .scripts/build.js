@@ -15,7 +15,7 @@ async function main() {
 
   await createIndex(names);
   await createTypings(names);
-  await createPresetPlugins(names);
+  await createPresetPlugins(names.filter((method) => method !== 'debug'));
 }
 
 async function createIndex(names) {
