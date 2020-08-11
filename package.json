@@ -11,14 +11,15 @@
     "commit": "git-cz",
     "format": "prettier --write \"./src/**/**.{ts,tsx,js,jsx,json}\"",
     "lint": "eslint ./",
-    "prepublishOnly": "node ./.scripts/build.js && prettier --write ./babel-preset.json"
+    "prepublishOnly": "node ./.scripts/build.js && prettier --write ./babel-preset-plugins.json"
   },
   "files": [
     "*/*.d.ts",
     "*/*.js",
     "!.scripts",
     "!*.test.js",
-    "babel-preset.json",
+    "babel-preset-plugins.json",
+    "babel-preset.js",
     "index.d.ts",
     "index.js",
     "library.js"
@@ -62,7 +63,7 @@
     "typescript": "^3.9.7"
   },
   "peerDependencies": {
-    "effector": "^20.7.0"
+    "effector": "^20.7.0 || ^21.0.0"
   },
   "config": {
     "commitizen": {
