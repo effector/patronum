@@ -20,9 +20,9 @@ function combineEvents(argument) {
     events,
     reset,
     target: givenTarget,
-  } = readConfig(argument, ['sid', 'loc', 'name', 'events', 'reset', 'target']);
+  } = readConfig(argument, ['loc', 'name', 'events', 'reset', 'target']);
 
-  const target = givenTarget || createEvent();
+  const target = givenTarget || createEvent({ name });
 
   if (!is.unit(target)) throwError('target should be a unit');
   if (reset && !is.unit(reset)) throwError('reset should be a unit');
