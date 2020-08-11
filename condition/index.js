@@ -8,26 +8,31 @@ const { readConfig } = require('../library');
  */
 function condition(argument) {
   const {
-    source = createEvent(),
+    name = 'unknown',
+    source = createEvent({ name: `${name}Source` }),
     if: test,
-    then: thenBranch = createEvent(),
-    else: elseBranch = createEvent(),
-  } = readConfig(argument, ['source', 'if', 'then', 'else']);
+    then: thenBranch,
+    else: elseBranch,
+  } = readConfig(argument, ['name', 'source', 'if', 'then', 'else']);
 
   const checker =
     is.unit(test) || isFunction(test) ? test : (value) => value === test;
 
-  guard({
-    source,
-    filter: checker,
-    target: thenBranch,
-  });
+  if (thenBranch) {
+    guard({
+      source,
+      filter: checker,
+      target: thenBranch,
+    });
+  }
 
-  guard({
-    source,
-    filter: inverse(checker),
-    target: elseBranch,
-  });
+  if (elseBranch) {
+    guard({
+      source,
+      filter: inverse(checker),
+      target: elseBranch,
+    });
+  }
 
   return source;
 }

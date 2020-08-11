@@ -25,6 +25,8 @@ function delay(argument) {
   });
 
   sample({
+    // ms can be Store<number> | number
+    // sample calls combine() on source to convert object of stores or object of values to store
     source: { milliseconds: ms },
     clock: source,
     fn: ({ milliseconds }, payload) => ({

@@ -15,7 +15,7 @@ async function main() {
 
   await createIndex(names);
   await createTypings(names);
-  await createPresetPlugins(names);
+  await createPresetPlugins(names.filter((method) => method !== 'debug'));
 }
 
 async function createIndex(names) {
@@ -40,7 +40,7 @@ async function createPresetPlugins(names) {
     'effector/babel-plugin',
     {
       importName: 'patronum',
-      storeCreators: names.sort().map(camelCase),
+      attachCreators: names.sort().map(camelCase),
       noDefaults: true,
     },
     'patronum',
@@ -50,7 +50,7 @@ async function createPresetPlugins(names) {
     'effector/babel-plugin',
     {
       importName: `patronum/${method}`,
-      storeCreators: [camelCase(method)],
+      attachCreators: [camelCase(method)],
       noDefaults: true,
     },
     `patronum/${method}`,

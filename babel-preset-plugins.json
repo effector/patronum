@@ -3,11 +3,10 @@
     "effector/babel-plugin",
     {
       "importName": "patronum",
-      "storeCreators": [
+      "attachCreators": [
         "combineEvents",
         "condition",
         "debounce",
-        "debug",
         "delay",
         "every",
         "reshape",
@@ -25,7 +24,7 @@
     "effector/babel-plugin",
     {
       "importName": "patronum/combine-events",
-      "storeCreators": ["combineEvents"],
+      "attachCreators": ["combineEvents"],
       "noDefaults": true
     },
     "patronum/combine-events"
@@ -34,7 +33,7 @@
     "effector/babel-plugin",
     {
       "importName": "patronum/condition",
-      "storeCreators": ["condition"],
+      "attachCreators": ["condition"],
       "noDefaults": true
     },
     "patronum/condition"
@@ -43,7 +42,7 @@
     "effector/babel-plugin",
     {
       "importName": "patronum/debounce",
-      "storeCreators": ["debounce"],
+      "attachCreators": ["debounce"],
       "noDefaults": true
     },
     "patronum/debounce"
@@ -51,17 +50,8 @@
   [
     "effector/babel-plugin",
     {
-      "importName": "patronum/debug",
-      "storeCreators": ["debug"],
-      "noDefaults": true
-    },
-    "patronum/debug"
-  ],
-  [
-    "effector/babel-plugin",
-    {
       "importName": "patronum/delay",
-      "storeCreators": ["delay"],
+      "attachCreators": ["delay"],
       "noDefaults": true
     },
     "patronum/delay"
@@ -70,7 +60,7 @@
     "effector/babel-plugin",
     {
       "importName": "patronum/every",
-      "storeCreators": ["every"],
+      "attachCreators": ["every"],
       "noDefaults": true
     },
     "patronum/every"
@@ -79,7 +69,7 @@
     "effector/babel-plugin",
     {
       "importName": "patronum/reshape",
-      "storeCreators": ["reshape"],
+      "attachCreators": ["reshape"],
       "noDefaults": true
     },
     "patronum/reshape"
@@ -88,7 +78,7 @@
     "effector/babel-plugin",
     {
       "importName": "patronum/some",
-      "storeCreators": ["some"],
+      "attachCreators": ["some"],
       "noDefaults": true
     },
     "patronum/some"
@@ -97,7 +87,7 @@
     "effector/babel-plugin",
     {
       "importName": "patronum/split-map",
-      "storeCreators": ["splitMap"],
+      "attachCreators": ["splitMap"],
       "noDefaults": true
     },
     "patronum/split-map"
@@ -106,7 +96,7 @@
     "effector/babel-plugin",
     {
       "importName": "patronum/spread",
-      "storeCreators": ["spread"],
+      "attachCreators": ["spread"],
       "noDefaults": true
     },
     "patronum/spread"
@@ -115,7 +105,7 @@
     "effector/babel-plugin",
     {
       "importName": "patronum/status",
-      "storeCreators": ["status"],
+      "attachCreators": ["status"],
       "noDefaults": true
     },
     "patronum/status"
@@ -124,7 +114,7 @@
     "effector/babel-plugin",
     {
       "importName": "patronum/throttle",
-      "storeCreators": ["throttle"],
+      "attachCreators": ["throttle"],
       "noDefaults": true
     },
     "patronum/throttle"

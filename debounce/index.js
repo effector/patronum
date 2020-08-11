@@ -29,7 +29,7 @@ function debounce(argument) {
     });
 
   const timerFx = createEffect({
-    name: `${actualName}ThrottleTimer`,
+    name: `${actualName}DebounceTimer`,
     sid,
     loc,
     handler: (parameter) => {
