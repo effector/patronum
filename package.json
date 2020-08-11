@@ -11,13 +11,13 @@
     "commit": "git-cz",
     "format": "prettier --write \"./src/**/**.{ts,tsx,js,jsx,json}\"",
     "lint": "eslint ./",
-    "prepublishOnly": "node ./_/build.js"
+    "prepublishOnly": "node ./.scripts/build.js"
   },
   "files": [
     "*/*.js",
     "*/*.d.ts",
     "!*.test.js",
-    "!_",
+    "!.scripts",
     "index.js",
     "index.d.ts",
     "library.js"
