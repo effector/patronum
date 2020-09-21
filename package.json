@@ -48,7 +48,7 @@
     "camel-case": "^4.1.1",
     "commitizen": "4.0.3",
     "cz-conventional-changelog": "3.0.2",
-    "effector": "^20.7.0",
+    "effector": "^21.3.0",
     "eslint": "^6.7.2",
     "eslint-config-prettier": "^3.1.2",
     "eslint-plugin-import": "^2.19.1",

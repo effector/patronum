@@ -2786,12 +2786,10 @@ ecc-jsbn@~0.1.1:
     jsbn "~0.1.0"
     safer-buffer "^2.1.0"
 
-effector@^20.7.0:
-  version "20.15.9"
-  resolved "https://registry.yarnpkg.com/effector/-/effector-20.15.9.tgz#488a738c5d02653808f160ab99a29f8ce9afb869"
-  integrity sha512-3NHrYNu+g/tGMAIShGKux+CiAtW/gAelZbYUmRXhYNRfepFddlby48laP+uNSYu/4UrKqjifKu3Xjy5WOZGBJA==
-  dependencies:
-    symbol-observable "^1.2.0"
+effector@^21.3.0:
+  version "21.3.0"
+  resolved "https://registry.yarnpkg.com/effector/-/effector-21.3.0.tgz#378a990cd570a9f86c0f14fb29ff912ecfe93f58"
+  integrity sha512-EeiFe43tUDsSvTH06Na4xYG2A7xj9uCGpPsz5D51bl/oTq1AiBMtQiE6u+qgmR+OeR6G2c8vhBBrovPqQCN2yg==
 
 electron-to-chromium@^1.3.413:
   version "1.3.463"
@@ -6877,7 +6875,7 @@ supports-hyperlinks@^2.0.0:
     has-flag "^4.0.0"
     supports-color "^7.0.0"
 
-symbol-observable@^1.1.0, symbol-observable@^1.2.0:
+symbol-observable@^1.1.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/symbol-observable/-/symbol-observable-1.2.0.tgz#c22688aed4eab3cdc2dfeacbb561660560a00804"
   integrity sha512-e900nM8RRtGhlV36KGEU9k65K3mPb1WV70OdjfxlG2EAuM1noi/E/BaW/uMhL7bPEssK8QV57vN3esixjUvcXQ==
