@@ -210,3 +210,19 @@ import { condition } from '../condition';
     then: createEvent(),
   });
 }
+
+// Check source: void and if: Store<bool>
+// https://github.com/effector/patronum/issues/81
+{
+  const fxVoid = createEffect<void, void, void>();
+  const fxOtherVoid = createEffect<void, void, void>();
+  const someEvent = createEvent<void>();
+  const boolStore = createStore<boolean>(true);
+
+  condition({
+    source: someEvent,
+    if: boolStore,
+    then: fxVoid,
+    else: fxOtherVoid,
+  });
+}
