@@ -12,6 +12,7 @@
 - [Debug](#debug)
 - [Delay](#delay)
 - [Every](#every)
+- [InFlight](#inflight)
 - [Reshape](#reshape)
 - [Some](#some)
 - [SplitMap](#splitmap)
@@ -233,6 +234,21 @@ const $isFormCorrect = every({
   stores: [$isPasswordCorrect, $isEmailCorrect],
 });
 // true
+```
+
+## [InFlight](/in-flight 'Documentation')
+
+```ts
+const firstFx = createEffect();
+const secondFx = createEffect();
+
+const $allInFlight = inFlight({ effects: [firstFx, secondFx] });
+
+firstFx();
+secondFx();
+firstFx();
+
+$allInFlight.watch(console.log); // 3
 ```
 
 ## [Some](/some 'Documentation')
