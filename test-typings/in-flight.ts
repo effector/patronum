@@ -26,3 +26,13 @@ import { inFlight } from '../in-flight';
   // @ts-expect-error
   inFlight({ effects: [event, store, domain] });
 }
+
+// Check receive domain
+{
+  const app = createDomain();
+  const fx1 = app.createEffect<void, void>();
+  const fx2 = app.createEffect<number, boolean>();
+  const fx3 = app.createEffect<string, number>();
+
+  expectType<Store<number>>(inFlight({ domain: app }));
+}
