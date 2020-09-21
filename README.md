@@ -33,6 +33,7 @@ Import function by its name from `patronum`:
 
 ```ts
 import { delay } from 'patronum/delay';
+import { inFlight } from 'patronum/in-flight';
 ```
 
 Also use can import it from index:
@@ -40,7 +41,7 @@ Also use can import it from index:
 > Be careful, with this import method, all functions will be at your bundle
 
 ```ts
-import { delay } from 'patronum';
+import { delay, inFlight } from 'patronum';
 ```
 
 ## Migration guide
