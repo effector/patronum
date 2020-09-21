@@ -132,3 +132,19 @@ function isValid(value) {
   return value.trim().length > 0;
 }
 ```
+
+### Condition can be nested
+
+```ts
+const $value = createStore('hello@world');
+const updateEmail = createEvent<string>();
+
+condition({
+  source: $value,
+  if: (length) => length > 0,
+  then: condition({
+    if: (string) => string.includes('@'),
+    then: updateEmail,
+  }),
+});
+```
