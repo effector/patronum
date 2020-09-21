@@ -9,6 +9,7 @@
         "debounce",
         "delay",
         "every",
+        "inFlight",
         "pending",
         "reshape",
         "some",
@@ -65,6 +66,15 @@
       "noDefaults": true
     },
     "patronum/every"
+  ],
+  [
+    "effector/babel-plugin",
+    {
+      "importName": "patronum/in-flight",
+      "attachCreators": ["inFlight"],
+      "noDefaults": true
+    },
+    "patronum/in-flight"
   ],
   [
     "effector/babel-plugin",

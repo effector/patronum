@@ -4,6 +4,7 @@ export { debounce } from './debounce';
 export { debug } from './debug';
 export { delay } from './delay';
 export { every } from './every';
+export { inFlight } from './in-flight';
 export { pending } from './pending';
 export { reshape } from './reshape';
 export { some } from './some';
