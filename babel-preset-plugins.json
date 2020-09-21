@@ -9,6 +9,7 @@
         "debounce",
         "delay",
         "every",
+        "pending",
         "reshape",
         "some",
         "splitMap",
@@ -64,6 +65,15 @@
       "noDefaults": true
     },
     "patronum/every"
+  ],
+  [
+    "effector/babel-plugin",
+    {
+      "importName": "patronum/pending",
+      "attachCreators": ["pending"],
+      "noDefaults": true
+    },
+    "patronum/pending"
   ],
   [
     "effector/babel-plugin",
