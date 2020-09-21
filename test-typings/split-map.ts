@@ -1,4 +1,4 @@
-// import { expectType, expectError } from 'tsd';
+// import { expectType } from 'tsd';
 // import { Store, Event, createStore, createEvent, createEffect } from 'effector';
 // import { splitMap } from '../split-map';
 
