@@ -1,0 +1,9 @@
+{
+  "rules": {
+    "@typescript-eslint/no-unused-vars": "off",
+    "import/no-extraneous-dependencies": "off",
+    "no-lone-blocks": "off",
+    "symbol-description": "off",
+    "@typescript-eslint/no-empty-function": "off"
+  }
+}

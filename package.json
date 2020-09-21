@@ -5,9 +5,9 @@
   "main": "index.js",
   "types": "index.d.ts",
   "scripts": {
-    "test": "jest && tsd",
+    "test": "yarn test:code && yarn test:types",
     "test:code": "jest",
-    "test:types": "tsd",
+    "test:types": "tsc -p ./test-typings",
     "commit": "git-cz",
     "format": "prettier --write \"./src/**/**.{ts,tsx,js,jsx,json}\"",
     "lint": "eslint ./",
@@ -60,7 +60,7 @@
     "lint-staged": "^9.5.0",
     "prettier": "^1.19.1",
     "tsd": "^0.11.0",
-    "typescript": "^3.9.7"
+    "typescript": "^4.0.3"
   },
   "peerDependencies": {
     "effector": "^20.7.0 || ^21.0.0"

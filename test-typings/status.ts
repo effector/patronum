@@ -1,6 +1,5 @@
-import { expectType, expectError } from 'tsd';
+import { expectType } from 'tsd';
 import {
-  Effect,
   Store,
   createEffect,
   createStore,
@@ -14,10 +13,13 @@ import { status, EffectState } from '../status';
   expectType<Store<EffectState>>(
     status({ effect: createEffect<number, string>() }),
   );
-  // Disabled because tsd cannot correctly handle errors inside expression
-  // > Expected an error, but found none.
-  /* expectError(status({ effect: createEvent() }));
-  expectError(status({ effect: createStore(0) })); */
+
+  // @ts-expect-error
+  status({ effect: createEvent() });
+  // @ts-expect-error
+  status({ effect: createStore(0) });
+  // @ts-expect-error
+  status({ effect: createDomain() });
 }
 
 // Check that accept effect with fail type

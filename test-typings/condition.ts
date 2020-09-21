@@ -1,4 +1,4 @@
-import { expectType, expectError } from 'tsd';
+import { expectType } from 'tsd';
 import {
   Store,
   Event,
@@ -196,19 +196,17 @@ import { condition } from '../condition';
 
 // Disallow pass invalid type to then/else
 {
-  expectError(
-    condition({
-      source: createStore(0),
-      if: 0,
-      then: createEvent<string>(),
-    }),
-  );
+  condition({
+    // @ts-expect-error
+    source: createStore(0),
+    if: 0,
+    then: createEvent<string>(),
+  });
 
-  expectError(
-    condition({
-      source: createStore<boolean>(false),
-      if: console,
-      then: createEvent(),
-    }),
-  );
+  condition({
+    // @ts-expect-error
+    source: createStore<boolean>(false),
+    if: console,
+    then: createEvent(),
+  });
 }
