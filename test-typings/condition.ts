@@ -17,21 +17,21 @@ import { condition } from '../condition';
   expectType<Store<number>>(
     condition({
       source: $source,
-      if: 1,
+      if: (a) => a === 1,
       then: createEvent<number>(),
     }),
   );
   expectType<Store<number>>(
     condition({
       source: $source,
-      if: 1,
+      if: (a) => a === 1,
       else: createEvent<number>(),
     }),
   );
   expectType<Store<number>>(
     condition({
       source: $source,
-      if: 1,
+      if: (a) => a === 1,
       then: createEvent<number>(),
       else: createEvent<number>(),
     }),
@@ -89,21 +89,21 @@ import { condition } from '../condition';
   expectType<Store<string>>(
     condition({
       source: createStore(''),
-      if: '',
+      if: (a) => a === '',
       then: createEvent<string>(),
     }),
   );
   expectType<Event<string>>(
     condition({
       source: createEvent<string>(),
-      if: '',
+      if: (a) => a === '',
       then: createEvent<string>(),
     }),
   );
   expectType<Effect<string, number, boolean>>(
     condition({
       source: createEffect<string, number, boolean>(),
-      if: '',
+      if: (a) => a === '',
       then: createEvent<string>(),
     }),
   );
@@ -114,7 +114,7 @@ import { condition } from '../condition';
   expectType<Event<string>>(
     condition({
       source: createEvent<string>(),
-      if: '',
+      if: (a) => a === '',
       then: createEvent<void>(),
     }),
   );
@@ -122,7 +122,7 @@ import { condition } from '../condition';
   expectType<Event<string>>(
     condition({
       source: createEvent<string>(),
-      if: '',
+      if: (a) => a === '',
       else: createEvent<void>(),
     }),
   );
@@ -130,7 +130,7 @@ import { condition } from '../condition';
   expectType<Event<string>>(
     condition({
       source: createEvent<string>(),
-      if: '',
+      if: (a) => a === '',
       then: createEvent<string>(),
       else: createEvent<void>(),
     }),
@@ -139,7 +139,7 @@ import { condition } from '../condition';
   expectType<Event<string>>(
     condition({
       source: createEvent<string>(),
-      if: '',
+      if: (a) => a === '',
       then: createEvent<void>(),
       else: createEvent<void>(),
     }),
@@ -151,9 +151,9 @@ import { condition } from '../condition';
   expectType<Store<string>>(
     condition({
       source: createStore(''),
-      if: '',
+      if: (a: string) => true,
       then: condition({
-        if: '',
+        if: (a) => typeof a === 'string',
         then: createEvent(),
       }),
     }),
@@ -165,7 +165,7 @@ import { condition } from '../condition';
   expectType<Store<number>>(
     condition({
       source: createStore(0),
-      if: 1,
+      if: (v) => v === 1,
       then: createEvent<number>(),
     }),
   );
@@ -197,16 +197,23 @@ import { condition } from '../condition';
 // Disallow pass invalid type to then/else
 {
   condition({
-    // @ts-expect-error
     source: createStore(0),
+    // @ts-expect-error
     if: 0,
     then: createEvent<string>(),
   });
 
   condition({
-    // @ts-expect-error
     source: createStore<boolean>(false),
+    // @ts-expect-error
     if: console,
+    then: createEvent(),
+  });
+
+  condition({
+    source: createStore<string>(''),
+    // @ts-expect-error
+    if: (a) => 1,
     then: createEvent(),
   });
 }
