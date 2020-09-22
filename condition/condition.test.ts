@@ -1,11 +1,11 @@
-const { createStore, createEvent, restore } = require('effector');
-const { argumentHistory } = require('../test-library');
-const { condition } = require('./index');
+import { createStore, createEvent, restore } from 'effector';
+import { argumentHistory } from '../test-library';
+import { condition } from './index';
 
 test('source: event, if: store, then: event', () => {
-  const source = createEvent();
+  const source = createEvent<string>();
   const $if = createStore(false);
-  const target = createEvent();
+  const target = createEvent<string>();
   const fn = jest.fn();
   target.watch(fn);
 
@@ -18,6 +18,7 @@ test('source: event, if: store, then: event', () => {
   source('bar');
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`Array []`);
 
+  // @ts-expect-error setState is internal
   $if.setState(true);
   source('foo');
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
@@ -28,9 +29,9 @@ test('source: event, if: store, then: event', () => {
 });
 
 test('source: event, if: store, then: event, else: event', () => {
-  const source = createEvent();
+  const source = createEvent<string>();
   const $if = createStore(false);
-  const target = createEvent();
+  const target = createEvent<string>();
   const fn = jest.fn();
   target.watch(fn);
 
@@ -48,6 +49,7 @@ test('source: event, if: store, then: event, else: event', () => {
     ]
   `);
 
+  // @ts-expect-error setState is internal
   $if.setState(true);
   source('foo');
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
@@ -59,10 +61,10 @@ test('source: event, if: store, then: event, else: event', () => {
 });
 
 test('source: store, if: store, then: event, else: event', () => {
-  const change = createEvent();
+  const change = createEvent<number>();
   const $source = restore(change, 0);
 
-  const setCond = createEvent();
+  const setCond = createEvent<boolean>();
   const $if = restore(setCond, false);
 
   const target = createEvent();
@@ -94,10 +96,10 @@ test('source: store, if: store, then: event, else: event', () => {
 });
 
 test('source: store, if: function, then: event, else: event', () => {
-  const change = createEvent();
+  const change = createEvent<number>();
   const $source = restore(change, 0);
 
-  const target = createEvent();
+  const target = createEvent<string>();
   const fn = jest.fn();
   target.watch(fn);
 
@@ -125,16 +127,16 @@ test('source: store, if: function, then: event, else: event', () => {
 });
 
 test('source: store, if: literal, then: event, else: event', () => {
-  const change = createEvent();
+  const change = createEvent<number>();
   const $source = restore(change, 0);
 
-  const target = createEvent();
+  const target = createEvent<string>();
   const fn = jest.fn();
   target.watch(fn);
 
   condition({
     source: $source,
-    if: 2,
+    if: (a) => a === 2,
     then: target.prepend((value) => `then: ${value}`),
     else: target.prepend((value) => `else: ${value}`),
   });
@@ -156,8 +158,8 @@ test('source: store, if: literal, then: event, else: event', () => {
 });
 
 test('source: event, if: store, then: event, else: condition', () => {
-  const source = createEvent();
-  const target = createEvent();
+  const source = createEvent<number>();
+  const target = createEvent<string>();
   const fn = jest.fn();
   target.watch(fn);
 
