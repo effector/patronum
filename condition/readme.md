@@ -4,55 +4,34 @@
 import { condition } from 'patronum/condition';
 ```
 
-## Formulae
+## `condition({ source: Unit, if: Store, then?: Unit, else?: Unit })`
+
+### Formulae
 
 ```ts
-condition({
+result = condition({
   source,
-  if: condition,
-  then: unit,
-  else: unit,
+  if: $checker,
+  then,
+  else,
 });
 ```
 
-- When `source` triggered, check `if` condition
-- If `if` is **truthy**, trigger `then` unit
-- If `if` is **falsy**, trigger `else` unit
+- When `source` is triggered, check value of `$checker`, if it equals `true`, trigger `then` with value from `source`, otherwise trigger `else` with value from `source`
+- `result` is the same unit as `source` allows to nest `condition` to another `condition` or `sample`
 
-## Arguments
+### Arguments
 
-1. `source` _(`Event<T>` | `Store<T>` | `Effect<T>`)_ — Data from this unit should be passed to `if`, `then` and `else`
-1. `if` _(`(payload: T) => boolean` | `Store<boolean>` | `T`)_ — Checker, if truthy trigger `then` branch, if falsy trigger `else` branch
-1. `then` _(`Event<T>` | `Store<T>` | `Effect<T>`)_ — Optional unit
-1. `else` _(`Event<T>` | `Store<T>` | `Effect<T>`)_ — Optional unit
+1. `source` _(`Unit<T>`)_ — Data from this unit will be passed to `then` or `else`
+1. `if` _(`Store<boolean>`)_ — Updates of this store will not trigger `then` and `else`
+1. `then` _(`Unit<T>`)_ — This unit will be triggered with data from `source` if `$checker` contains `true`. Required if `else` is not provided
+1. `else` _(`Unit<T>`)_ — This unit will be triggered with data from `source` if `$checker` contains `false`. Required if `then` is not provided
 
-## Example
+### Returns
 
-### Checker is function
+1. _(`Unit<T>`)_ — The same unit type that passed to `source`
 
-```ts
-const change = createEvent();
-const $source = createStore('data').on(change, (_, payload) => payload);
-const target = createEvent();
-const another = createEvent();
-
-condition({
-  source: $source,
-  if: (source) => source.length > 3,
-  then: target,
-  else: another,
-});
-target.watch((payload) => console.log('triggered', payload));
-another.watch((payload) => console.log('condition else:', payload));
-
-change('newdata');
-// => triggered newdata
-
-change('old');
-// => condition else: old
-```
-
-### Checker is Store
+### Example
 
 ```ts
 const change = createEvent();
@@ -81,7 +60,34 @@ change('data');
 // => enabled - data
 ```
 
-### Checker is literal
+## `condition({ source: Unit<T>, if: T, then?: Unit, else?: Unit })`
+
+### Formulae
+
+```ts
+result = condition({
+  source,
+  if: value,
+  then,
+  else,
+});
+```
+
+- When `source` is triggered, compare `value` literal with `source` payload, if it equals trigger `then` with value from `source`, otherwise trigger `else` with value from `source`
+- `result` is the same unit as `source` allows to nest `condition` to another `condition` or `sample`
+
+### Arguments
+
+1. `source` _(`Unit<T>`)_ — Data from this unit will be passed to `then` or `else`
+1. `if` _(`T`)_ — Just value to compare with `source` payload. _Note: objects will be compared by reference_
+1. `then` _(`Unit<T>`)_ — This unit will be triggered with data from `source` if `$checker` contains `true`. Required if `else` is not provided
+1. `else` _(`Unit<T>`)_ — This unit will be triggered with data from `source` if `$checker` contains `false`. Required if `then` is not provided
+
+### Returns
+
+1. _(`Unit<T>`)_ — The same unit type that passed to `source`
+
+### Example
 
 ```ts
 const increment = createEvent();
@@ -107,6 +113,59 @@ increment(); // => LOG ABOUT IT 3
 increment(); // => FAKE RUN EFFECT 4
 increment(); // => LOG ABOUT IT 5
 ```
+
+## `condition({ source: Unit<T>, if: Function, then?: Unit, else?: Unit })`
+
+### Formulae
+
+```ts
+result = condition({
+  source,
+  if: (payload) => boolean,
+  then,
+  else,
+});
+```
+
+- When `source` is triggered, call `if` with `source` payload, if it returns `true` trigger `then` with value from `source`, otherwise trigger `else` with value from `source`
+- `result` is the same unit as `source` allows to nest `condition` to another `condition` or `sample`
+
+### Arguments
+
+1. `source` _(`Unit<T>`)_ — Data from this unit will be passed to `then` or `else`
+1. `if` _(`(payload: T) => boolean`)_ — Function comparator. It should return boolean
+1. `then` _(`Unit<T>`)_ — This unit will be triggered with data from `source` if `$checker` contains `true`. Required if `else` is not provided
+1. `else` _(`Unit<T>`)_ — This unit will be triggered with data from `source` if `$checker` contains `false`. Required if `then` is not provided
+
+### Returns
+
+1. _(`Unit<T>`)_ — The same unit type that passed to `source`
+
+### Example
+
+```ts
+const change = createEvent();
+const $source = createStore('data').on(change, (_, payload) => payload);
+const target = createEvent();
+const another = createEvent();
+
+condition({
+  source: $source,
+  if: (source) => source.length > 3,
+  then: target,
+  else: another,
+});
+target.watch((payload) => console.log('triggered', payload));
+another.watch((payload) => console.log('condition else:', payload));
+
+change('newdata');
+// => triggered newdata
+
+change('old');
+// => condition else: old
+```
+
+## Examples
 
 ### Source is event
 
