@@ -194,25 +194,51 @@ import { condition } from '../condition';
   );
 }
 
+{
+  expectType<Store<number>>(
+    condition({
+      source: createStore(0),
+      if: 1,
+      then: createEvent<number>(),
+    }),
+  );
+
+  expectType<Store<string>>(
+    condition({
+      source: createStore('hi'),
+      if: 'hi',
+      then: createEvent<string>(),
+    }),
+  );
+
+  expectType<Store<boolean>>(
+    condition({
+      source: createStore(true),
+      if: true,
+      then: createEvent<boolean>(),
+    }),
+  );
+}
+
 // Disallow pass invalid type to then/else
 {
   condition({
-    source: createStore(0),
     // @ts-expect-error
+    source: createStore(0),
     if: 0,
     then: createEvent<string>(),
   });
 
   condition({
-    source: createStore<boolean>(false),
     // @ts-expect-error
+    source: createStore<boolean>(false),
     if: console,
     then: createEvent(),
   });
 
   condition({
-    source: createStore<string>(''),
     // @ts-expect-error
+    source: createStore<string>(''),
     if: (a) => 1,
     then: createEvent(),
   });
