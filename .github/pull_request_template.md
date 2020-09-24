@@ -19,5 +19,5 @@
   - Add useful examples in `Example` section for each overload
 - [ ] Add section to `README.md` in root
   - Add method to table of contents `- [MethodName](#methodname)`
-  - Add section `## [MethodName](/method-name 'Documentation')
+  - Add section `## [MethodName](/method-name 'Documentation')`
   - With summary and simple example
