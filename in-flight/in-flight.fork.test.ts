@@ -50,7 +50,7 @@ describe('domain', () => {
     const effect1 = domain.createEffect({
       handler: () => new Promise((resolve) => setTimeout(resolve, 1)),
     });
-    const effect2 = domain.createEffect({
+    const _effect2 = domain.createEffect({
       handler: () => new Promise((resolve) => setTimeout(resolve, 1)),
     });
     const $count = inFlight({ domain });

@@ -320,7 +320,7 @@ describe('invalid', () => {
   });
 
   test('empty object in source', () => {
-    const source = createEvent<{}>();
+    const source = createEvent<Record<string, unknown>>();
     const targetA = createEvent();
     const targetB = createEvent();
 
@@ -344,7 +344,7 @@ describe('invalid', () => {
   });
 
   test('null/undefined in source', () => {
-    const source = createEvent();
+    const source = createEvent<null | void>();
     const targetA = createEvent();
     const targetB = createEvent();
 

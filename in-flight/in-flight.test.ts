@@ -297,7 +297,7 @@ describe('domain', () => {
     const effect2 = domain.createEffect({
       handler: () => new Promise((resolve) => setTimeout(resolve, 10)),
     });
-    const effect3 = domain.createEffect({
+    const _effect3 = domain.createEffect({
       handler: () => new Promise((resolve) => setTimeout(resolve, 10)),
     });
     const $count = inFlight({ domain });
@@ -357,7 +357,7 @@ describe('domain', () => {
     const effect2 = domain.createEffect({
       handler: () => new Promise((resolve) => setTimeout(resolve, 10)),
     });
-    const effect3 = domain.createEffect({
+    const _effect3 = domain.createEffect({
       handler: () => new Promise((resolve) => setTimeout(resolve, 10)),
     });
     const $count = inFlight({ domain });

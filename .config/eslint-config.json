@@ -1,7 +1,4 @@
 {
-  "parser": "@typescript-eslint/parser",
-  "plugins": ["@typescript-eslint/eslint-plugin"],
-  "extends": ["@atomix/eslint-config", "plugin:prettier/recommended"],
   "overrides": [
     {
       "files": ["**/*.test.ts", "**/*.test.tsx", "_/**.js"],
@@ -20,7 +17,24 @@
         "no-unused-vars": "off",
         "@typescript-eslint/explicit-function-return-type": "off",
         "@typescript-eslint/no-explicit-any": "off",
-        "import/extensions": "off"
+        "import/extensions": "off",
+        "@typescript-eslint/naming-convention": [
+          "warn",
+          {
+            "selector": "variable",
+            "format": ["camelCase", "UPPER_CASE", "PascalCase"],
+            "leadingUnderscore": "allow"
+          },
+          {
+            "selector": "parameter",
+            "format": ["camelCase"],
+            "leadingUnderscore": "allow"
+          },
+          {
+            "selector": "typeLike",
+            "format": ["PascalCase"]
+          }
+        ]
       }
     },
     {
@@ -31,15 +45,14 @@
       "rules": {
         "no-magic-numbers": "off",
         "no-multi-assign": "off",
-        "prefer-template": "off"
+        "prefer-template": "off",
+        "@typescript-eslint/ban-ts-comment": "off"
       }
     },
     {
-      "files": ["test-d/*.ts"],
+      "files": ["**/*.d.ts"],
       "rules": {
-        "no-lone-blocks": "off",
-        "@typescript-eslint/no-empty-function": "off",
-        "symbol-description": "off"
+        "@typescript-eslint/no-unused-vars": "off"
       }
     }
   ],
@@ -49,6 +62,7 @@
     "unicorn/prefer-spread": "off",
     "prefer-rest-params": "off",
     "no-param-reassign": "off",
-    "no-underscore-dangle": "off"
+    "no-underscore-dangle": "off",
+    "no-use-before-define": "off"
   }
 }

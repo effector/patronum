@@ -2,7 +2,7 @@
 
 function readProperties(part, target, properties) {
   properties
-    .filter((name) => !!part[name])
+    .filter((name) => Boolean(part[name]))
     .forEach((name) => {
       target[name] = part[name];
     });
