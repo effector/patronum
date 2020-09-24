@@ -1,7 +1,7 @@
 import { Unit, Store, Event, Effect } from 'effector';
 
 type Tuple<T = unknown> = [T] | T[];
-type Results = { [key: string]: any } | Tuple<any>;
+type Payloads = { [key: string]: any } | Tuple<any>;
 type Events<Result> = {
   [Key in keyof Result]: Event<Result[Key]>;
 };
@@ -10,9 +10,9 @@ type ReturnTarget<Result, Target> = Target extends Store<infer S>
   ? S extends Result
     ? Store<S>
     : Store<Result>
-  : Target extends Event<infer E>
-  ? E extends Result
-    ? Event<E>
+  : Target extends Event<infer P>
+  ? P extends Result
+    ? Event<P>
     : Event<Result>
   : Target extends Effect<infer P, infer D, infer F>
   ? P extends Result
@@ -20,16 +20,16 @@ type ReturnTarget<Result, Target> = Target extends Store<infer S>
     : Effect<Result, D, F>
   : Unit<Result>;
 
-export function combineEvents<T extends Results>(config: {
-  events: Events<T>;
+export function combineEvents<P extends Payloads>(config: {
+  events: Events<P>;
   reset?: Unit<any>;
-}): Event<T>;
+}): Event<P>;
 
 export function combineEvents<
-  T extends Results,
-  Target extends Unit<Results>
+  P extends Payloads,
+  T extends Unit<Payloads>
 >(config: {
-  events: Events<T>;
-  target: Target;
+  events: Events<P>;
+  target: T;
   reset?: Unit<any>;
-}): ReturnTarget<T, Target>;
+}): ReturnTarget<P, T>;
