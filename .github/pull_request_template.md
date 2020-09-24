@@ -2,8 +2,6 @@
 
 <!-- Why we should add this method? -->
 
-{template}
-
 ### Checklist for a new method
 
 - [ ] Create directory for new method in root in `param-case`
