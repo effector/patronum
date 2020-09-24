@@ -1,12 +1,6 @@
-// @ts-nocheck
-const {
-  createEvent,
-  createEffect,
-  createStore,
-  createDomain,
-} = require('effector');
-const { argumentsHistory } = require('../test-library');
-const { debug } = require('./index');
+import { createEvent, createEffect, createStore, createDomain } from 'effector';
+import { argumentsHistory } from '../test-library';
+import { debug } from './index';
 
 const stringArguments = (ƒ) =>
   argumentsHistory(ƒ).map((value) =>
@@ -24,7 +18,7 @@ afterEach(() => {
 });
 
 test('debug event, store, effect simultaneously', async () => {
-  const event = createEvent();
+  const event = createEvent<number>();
   const effect = createEffect().use((payload) =>
     Promise.resolve('result' + payload),
   );
@@ -75,7 +69,7 @@ test('debug event, store, effect simultaneously', async () => {
 
 test('debug domain', async () => {
   const domain = createDomain();
-  const event = domain.createEvent();
+  const event = domain.createEvent<number>();
   const effect = domain
     .createEffect()
     .use((payload) => Promise.resolve('result' + payload));
