@@ -1,5 +1,5 @@
-const { createStore, createEvent } = require('effector');
-const { reshape } = require('./index');
+import { createStore, createEvent } from 'effector';
+import { reshape } from './index';
 
 test('reshape from string to different types', () => {
   const $original = createStore('some long value');
@@ -20,7 +20,7 @@ test('reshape from string to different types', () => {
 
 test('reshaped stores updates correctly', () => {
   const $original = createStore('some long value');
-  const update = createEvent();
+  const update = createEvent<string>();
   $original.on(update, (_, v) => v);
 
   const shape = reshape({
