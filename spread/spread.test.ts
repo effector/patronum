@@ -1,12 +1,11 @@
-// @ts-nocheck
-const { createEvent, createStore, forward } = require('effector');
-const { spread } = require('./index');
+import { createEvent, createStore, forward } from 'effector';
+import { spread } from './index';
 
 describe('spread(source, targets)', () => {
   test('event to events', () => {
-    const source = createEvent();
-    const targetA = createEvent();
-    const targetB = createEvent();
+    const source = createEvent<{ first: string; second: number }>();
+    const targetA = createEvent<string>();
+    const targetB = createEvent<number>();
 
     const fnA = jest.fn();
     const fnB = jest.fn();
@@ -28,7 +27,7 @@ describe('spread(source, targets)', () => {
   });
 
   test('event to stores', () => {
-    const source = createEvent();
+    const source = createEvent<{ first: string; second: number }>();
     const targetA = createStore('');
     const targetB = createStore(0);
 
@@ -52,7 +51,7 @@ describe('spread(source, targets)', () => {
   });
 
   test('store to stores', () => {
-    const change = createEvent();
+    const change = createEvent<{ first: string; second: number }>();
     const source = createStore({ first: 'hello', second: 200 }).on(
       change,
       (_, value) => value,
@@ -80,7 +79,7 @@ describe('spread(source, targets)', () => {
   });
 
   test('store to events', () => {
-    const change = createEvent();
+    const change = createEvent<{ first: string; second: number }>();
     const source = createStore({ first: 'hello', second: 200 }).on(
       change,
       (_, value) => value,
@@ -110,7 +109,7 @@ describe('spread(source, targets)', () => {
 
 describe('spread(targets)', () => {
   test('event to events', () => {
-    const source = createEvent();
+    const source = createEvent<{ first: string; second: number }>();
     const targetA = createEvent();
     const targetB = createEvent();
 
@@ -121,6 +120,7 @@ describe('spread(targets)', () => {
 
     forward({
       from: source,
+      // @ts-expect-error should fixes after https://github.com/effector/patronum/issues/60
       to: spread({
         targets: {
           first: targetA,
@@ -136,7 +136,7 @@ describe('spread(targets)', () => {
   });
 
   test('event to stores', () => {
-    const source = createEvent();
+    const source = createEvent<{ first: string; second: number }>();
     const targetA = createStore('');
     const targetB = createStore(0);
 
@@ -147,6 +147,7 @@ describe('spread(targets)', () => {
 
     forward({
       from: source,
+      // @ts-expect-error should fixes after https://github.com/effector/patronum/issues/60
       to: spread({
         targets: {
           first: targetA,
@@ -162,7 +163,7 @@ describe('spread(targets)', () => {
   });
 
   test('store to stores', () => {
-    const change = createEvent();
+    const change = createEvent<{ first: string; second: number }>();
     const source = createStore({ first: 'hello', second: 200 }).on(
       change,
       (_, value) => value,
@@ -177,6 +178,7 @@ describe('spread(targets)', () => {
 
     forward({
       from: source,
+      // @ts-expect-error should fixes after https://github.com/effector/patronum/issues/60
       to: spread({
         targets: {
           first: targetA,
@@ -192,7 +194,7 @@ describe('spread(targets)', () => {
   });
 
   test('store to events', () => {
-    const change = createEvent();
+    const change = createEvent<{ first: string; second: number }>();
     const source = createStore({ first: 'hello', second: 200 }).on(
       change,
       (_, value) => value,
@@ -207,6 +209,7 @@ describe('spread(targets)', () => {
 
     forward({
       from: source,
+      // @ts-expect-error should fixes after https://github.com/effector/patronum/issues/60
       to: spread({
         targets: {
           first: targetA,
@@ -224,7 +227,8 @@ describe('spread(targets)', () => {
 
 describe('edge', () => {
   test('array in source', () => {
-    const source = createEvent();
+    // Eslint brokes here // createEvent<[string, number]>();
+    const source = createEvent<any>();
     const targetA = createEvent();
     const targetB = createEvent();
 
@@ -248,7 +252,10 @@ describe('edge', () => {
   });
 
   test('nested targets', () => {
-    const source = createEvent();
+    const source = createEvent<{
+      first: string;
+      second: { foo: number; bar: boolean };
+    }>();
     const targetA = createEvent();
     const targetB = createEvent();
     const targetC = createEvent();
@@ -289,7 +296,7 @@ describe('edge', () => {
 
 describe('invalid', () => {
   test('no field in source', () => {
-    const source = createEvent();
+    const source = createEvent<{ second: number }>();
     const targetA = createEvent();
     const targetB = createEvent();
 
@@ -313,7 +320,7 @@ describe('invalid', () => {
   });
 
   test('empty object in source', () => {
-    const source = createEvent();
+    const source = createEvent<{}>();
     const targetA = createEvent();
     const targetB = createEvent();
 
@@ -362,7 +369,7 @@ describe('invalid', () => {
   });
 
   test('no object in source', () => {
-    const source = createEvent();
+    const source = createEvent<unknown>();
     const targetA = createEvent();
     const targetB = createEvent();
 
@@ -379,11 +386,12 @@ describe('invalid', () => {
       },
     });
 
+    // @ts-expect-error no argument
     source();
     source(1);
     source('');
     source(false);
-    source(() => {});
+    source(() => undefined);
     source(Symbol(1));
 
     expect(fnA).toBeCalledTimes(0);
