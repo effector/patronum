@@ -1,6 +1,6 @@
-const { createStore, createEvent } = require('effector');
-const { argumentHistory } = require('../test-library');
-const { every } = require('./index');
+import { createStore, createEvent } from 'effector';
+import { argumentHistory } from '../test-library';
+import { every } from './index';
 
 test('boolean predicate', () => {
   const fn = jest.fn();
