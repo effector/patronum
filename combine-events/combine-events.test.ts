@@ -1,8 +1,6 @@
-/* eslint-disable prettier/prettier */
 import { createEvent, restore, Event } from 'effector';
+import { argumentHistory } from '../test-library';
 import { combineEvents } from './index';
-
-const argumentHistory = (fn) => fn.mock.calls.map(([argument]) => argument);
 
 test('source: shape', () => {
   const fn = jest.fn();
@@ -547,18 +545,18 @@ test('target', () => {
     string | void,
   ];
 
-  type TargetAbcData = {
+  interface TargetAbcData {
     a: { x: number };
     b: () => boolean;
     c: void;
-  };
+  }
 
   type Target = Event<Target5XData | TargetAbcData>;
 
   const target = createEvent<Target>();
 
   // Inferred, but checked
-  const target5X: Event<Target5XData> = combineEvents({
+  const _target: Event<Target5XData> = combineEvents({
     events: [event1, event2, event3, event4, event5],
     reset,
     target,
@@ -674,7 +672,7 @@ test('target', () => {
   const store = restore(renew, null);
 
   // Inferred, but checked
-  const targetAbc: Event<TargetAbcData> = combineEvents({
+  const _targetAbc: Event<TargetAbcData> = combineEvents({
     events: { a, b, c },
     reset: store,
     target,

@@ -2,13 +2,13 @@ import { createEvent, createEffect, createStore, createDomain } from 'effector';
 import { argumentsHistory } from '../test-library';
 import { debug } from './index';
 
-const stringArguments = (ƒ) =>
+const stringArguments = (ƒ: any) =>
   argumentsHistory(ƒ).map((value) =>
     value.map((a) => (typeof a === 'object' ? JSON.stringify(a) : a)).join(' '),
   );
 
 const original = global.console.info;
-let fn;
+let fn: any;
 
 beforeEach(() => {
   global.console.info = fn = jest.fn();
@@ -73,7 +73,7 @@ test('debug domain', async () => {
   const effect = domain
     .createEffect()
     .use((payload) => Promise.resolve('result' + payload));
-  const $store = domain
+  const _$store = domain
     .createStore(0)
     .on(event, (state, value) => state + value)
     .on(effect.done, (state) => state * 10);
@@ -82,25 +82,25 @@ test('debug domain', async () => {
 
   expect(stringArguments(fn)).toMatchInlineSnapshot(`
     Array [
-      "[store] domain/$store 0",
+      "[store] domain/_$store 0",
     ]
   `);
 
   event(5);
   expect(stringArguments(fn)).toMatchInlineSnapshot(`
     Array [
-      "[store] domain/$store 0",
+      "[store] domain/_$store 0",
       "[event] domain/event 5",
-      "[store] domain/$store 5",
+      "[store] domain/_$store 5",
     ]
   `);
 
   effect('demo');
   expect(stringArguments(fn)).toMatchInlineSnapshot(`
     Array [
-      "[store] domain/$store 0",
+      "[store] domain/_$store 0",
       "[event] domain/event 5",
-      "[store] domain/$store 5",
+      "[store] domain/_$store 5",
     ]
   `);
 
@@ -108,11 +108,11 @@ test('debug domain', async () => {
 
   expect(stringArguments(fn)).toMatchInlineSnapshot(`
     Array [
-      "[store] domain/$store 0",
+      "[store] domain/_$store 0",
       "[event] domain/event 5",
-      "[store] domain/$store 5",
+      "[store] domain/_$store 5",
       "[effect] domain/effect.done {\\"params\\":\\"demo\\",\\"result\\":\\"resultdemo\\"}",
-      "[store] domain/$store 50",
+      "[store] domain/_$store 50",
     ]
   `);
 });

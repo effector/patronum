@@ -1,0 +1,10 @@
+{
+  "extends": [
+    "@eslint-kit/base",
+    "@eslint-kit/typescript",
+    "@eslint-kit/node",
+    "@eslint-kit/prettier",
+    "./.config/eslint-config"
+  ],
+  "parser": "@typescript-eslint/parser"
+}

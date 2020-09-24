@@ -10,7 +10,7 @@ test('throttle works in forked scope', async () => {
   const $second = app.createStore(0).on(change, () => 1);
   const $third = app.createStore(0);
 
-  const $result = some({ predicate: 1, stores: [$first, $second, $third] });
+  const _$result = some({ predicate: 1, stores: [$first, $second, $third] });
 
   const scope = fork(app);
 
@@ -38,7 +38,7 @@ test('throttle do not affect another forks', async () => {
     .on(change, (state, payload) => state + payload);
   const $third = app.createStore(0);
 
-  const $result = some({
+  const _$result = some({
     predicate: (x) => x > 0,
     stores: [$first, $second, $third],
   });

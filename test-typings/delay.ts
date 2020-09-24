@@ -59,9 +59,13 @@ import { delay } from '../delay';
   // @ts-expect-error
   delay({ source, timeout: (p: undefined) => 0 });
   // @ts-expect-error
-  delay({ source, timeout: (p: object) => 0 });
+  delay({ source, timeout: (p: Record<string, unknown>) => 0 });
   // @ts-expect-error
-  delay({ source, timeout: (p: Function) => 0 });
+  delay({ source, timeout: (p: () => '') => 0 });
+  // @ts-expect-error
+  delay({ source, timeout: (p: () => false) => 0 });
+  // @ts-expect-error
+  delay({ source, timeout: (p: () => []) => 0 });
 }
 
 // Check timeout type for store
