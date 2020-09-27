@@ -1,7 +1,8 @@
 import { Unit, Store, Event, Effect } from 'effector';
 
 type Tuple<T = unknown> = [T] | T[];
-type Payloads = { [key: string]: any } | Tuple<any>;
+type Shape = Record<string, unknown> | Tuple;
+
 type Events<Result> = {
   [Key in keyof Result]: Event<Result[Key]>;
 };
@@ -20,14 +21,14 @@ type ReturnTarget<Result, Target> = Target extends Store<infer S>
     : Effect<Result, D, F>
   : Unit<Result>;
 
-export function combineEvents<P extends Payloads>(config: {
+export function combineEvents<P extends Shape>(config: {
   events: Events<P>;
   reset?: Unit<any>;
 }): Event<P>;
 
 export function combineEvents<
-  P extends Payloads,
-  T extends Unit<Payloads>
+  P extends Shape,
+  T extends Unit<P extends Tuple ? P : Partial<P>>
 >(config: {
   events: Events<P>;
   target: T;

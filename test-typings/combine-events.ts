@@ -1,5 +1,12 @@
 import { expectType } from 'tsd';
-import { Event, createEvent } from 'effector';
+import {
+  Event,
+  Store,
+  Effect,
+  createEvent,
+  createStore,
+  createEffect,
+} from 'effector';
 import { combineEvents } from '../combine-events';
 
 // Check simple combine of different events
@@ -107,7 +114,7 @@ import { combineEvents } from '../combine-events';
     target: createEvent<{ foo: string; bar: number }>(),
   });
 
-  // TODO: should throw // @ts-expect-error
+  // @ts-expect-error
   combineEvents({
     events: { foo, bar, baz },
     target: createEvent<{ foo: string; bar: number; baz: number }>(),
@@ -138,13 +145,13 @@ import { combineEvents } from '../combine-events';
     target: createEvent<{ foo: string; bar: number }>(),
   });
 
-  // TODO: should throw // @ts-expect-error
+  // @ts-expect-error
   combineEvents({
     events: { foo, bar, baz, bai },
     target: createEvent<{ foo: string; bar: number; baz: number }>(),
   });
 
-  // TODO: should throw // @ts-expect-error
+  // @ts-expect-error
   combineEvents({
     events: { foo, bar, baz, bai },
     target: createEvent<{
@@ -169,15 +176,87 @@ import { combineEvents } from '../combine-events';
     target,
   });
 
-  // TODO: should throw // @ts-expect-error
+  // @ts-expect-error
   combineEvents({
     events: [foo, bar, baz],
     target: createEvent<[string, number, number]>(),
   });
 
-  // TODO: should throw ? // @ts-expect-error
+  // @ts-expect-error
   combineEvents({
     events: [foo, bar, baz],
     target: createEvent<[string]>(),
   });
+}
+
+// Check target Event
+{
+  const foo = createEvent<string>();
+  const bar = createEvent<number>();
+  const baz = createEvent<boolean>();
+
+  interface Target {
+    foo: string;
+    bar: number;
+    baz: boolean;
+  }
+
+  const target = createEvent<Target>();
+
+  const event = combineEvents({
+    events: { foo, bar, baz },
+    target,
+  });
+
+  expectType<Event<Target>>(event);
+}
+
+// Check target Store
+{
+  const foo = createEvent<string>();
+  const bar = createEvent<number>();
+  const baz = createEvent<boolean>();
+
+  interface Target {
+    foo: string;
+    bar: number;
+    baz: boolean;
+  }
+
+  const target = createStore<Target>({
+    foo: 'string',
+    bar: 1,
+    baz: true,
+  });
+
+  const store = combineEvents({
+    events: { foo, bar, baz },
+    target,
+  });
+
+  expectType<Store<Target>>(store);
+}
+
+// Check target Effect
+{
+  const foo = createEvent<string>();
+  const bar = createEvent<number>();
+  const baz = createEvent<boolean>();
+
+  interface Target {
+    foo: string;
+    bar: number;
+    baz: boolean;
+  }
+
+  const target = createEffect<Target, void>({
+    handler: () => {},
+  });
+
+  const effect = combineEvents({
+    events: { foo, bar, baz },
+    target,
+  });
+
+  expectType<Effect<Target, void>>(effect);
 }
