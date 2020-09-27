@@ -1,5 +1,19 @@
-import {} from 'effector';
+import { Unit, Event } from 'effector';
 
-// TODO: should be typed
-export function spread(_: { source: any; targets: any }): void;
-export function spread(_: { targets: any }): void;
+type NoInfer<T> = [T][T extends any ? 0 : never];
+
+export function spread<Payload>(config: {
+  targets: {
+    [Key in keyof Payload]?: Unit<Payload[Key]>;
+  };
+}): Event<Payload>;
+
+export function spread<
+  Source,
+  Payload extends Source extends Unit<infer S> ? S : never
+>(config: {
+  source: Source;
+  targets: {
+    [Key in keyof Payload]?: Unit<NoInfer<Payload[Key]>>;
+  };
+}): Source;
