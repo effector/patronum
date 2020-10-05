@@ -84,8 +84,8 @@ describe('spread(source, targets)', () => {
       change,
       (_, value) => value,
     );
-    const targetA = createEvent();
-    const targetB = createEvent();
+    const targetA = createEvent<string>();
+    const targetB = createEvent<number>();
 
     const fnA = jest.fn();
     const fnB = jest.fn();
@@ -110,8 +110,8 @@ describe('spread(source, targets)', () => {
 describe('spread(targets)', () => {
   test('event to events', () => {
     const source = createEvent<{ first: string; second: number }>();
-    const targetA = createEvent();
-    const targetB = createEvent();
+    const targetA = createEvent<string>();
+    const targetB = createEvent<number>();
 
     const fnA = jest.fn();
     const fnB = jest.fn();
@@ -120,7 +120,6 @@ describe('spread(targets)', () => {
 
     forward({
       from: source,
-      // @ts-expect-error should fixes after https://github.com/effector/patronum/issues/60
       to: spread({
         targets: {
           first: targetA,
@@ -147,7 +146,6 @@ describe('spread(targets)', () => {
 
     forward({
       from: source,
-      // @ts-expect-error should fixes after https://github.com/effector/patronum/issues/60
       to: spread({
         targets: {
           first: targetA,
@@ -178,7 +176,6 @@ describe('spread(targets)', () => {
 
     forward({
       from: source,
-      // @ts-expect-error should fixes after https://github.com/effector/patronum/issues/60
       to: spread({
         targets: {
           first: targetA,
@@ -199,8 +196,8 @@ describe('spread(targets)', () => {
       change,
       (_, value) => value,
     );
-    const targetA = createEvent();
-    const targetB = createEvent();
+    const targetA = createEvent<string>();
+    const targetB = createEvent<number>();
 
     const fnA = jest.fn();
     const fnB = jest.fn();
@@ -209,7 +206,6 @@ describe('spread(targets)', () => {
 
     forward({
       from: source,
-      // @ts-expect-error should fixes after https://github.com/effector/patronum/issues/60
       to: spread({
         targets: {
           first: targetA,
@@ -256,9 +252,9 @@ describe('edge', () => {
       first: string;
       second: { foo: number; bar: boolean };
     }>();
-    const targetA = createEvent();
-    const targetB = createEvent();
-    const targetC = createEvent();
+    const targetA = createEvent<string>();
+    const targetB = createEvent<number>();
+    const targetC = createEvent<boolean>();
 
     const fnA = jest.fn();
     const fnB = jest.fn();
@@ -298,13 +294,14 @@ describe('invalid', () => {
   test('no field in source', () => {
     const source = createEvent<{ second: number }>();
     const targetA = createEvent();
-    const targetB = createEvent();
+    const targetB = createEvent<number>();
 
     const fnA = jest.fn();
     const fnB = jest.fn();
     targetA.watch(fnA);
     targetB.watch(fnB);
 
+    // @ts-expect-error Types do not allows extra targets
     spread({
       source,
       targets: {
@@ -344,9 +341,12 @@ describe('invalid', () => {
   });
 
   test('null/undefined in source', () => {
-    const source = createEvent<null | void>();
-    const targetA = createEvent();
-    const targetB = createEvent();
+    const source = createEvent<null | void | {
+      first: number;
+      second: boolean;
+    }>();
+    const targetA = createEvent<number>();
+    const targetB = createEvent<boolean>();
 
     const fnA = jest.fn();
     const fnB = jest.fn();
