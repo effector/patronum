@@ -11,6 +11,7 @@ result = reshape(source, shape);
 ```
 
 - Call each function in `shape` object with data from `source`, and create store with the same name as key in `shape`
+- If function in `shape` returns `undefined`, the same store will contain `null`, because store cannot contain `undefined`.
 
 > No arguments yet
 

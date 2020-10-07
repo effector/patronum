@@ -59,3 +59,18 @@ test('reshape ejects values from object', () => {
   expect(shape.name.getState()).toBe('Sergey');
   expect(shape.surname.getState()).toBe('Sova');
 });
+
+test('reshape returns null in shape if fn returned undefined', () => {
+  const $user = createStore<{ first: string; second?: number }>({ first: '' });
+
+  const shape = reshape({
+    source: $user,
+    shape: {
+      first: (user) => user.first,
+      second: (user) => user.second,
+    },
+  });
+
+  expect(shape.first.getState()).toBe('');
+  expect(shape.second.getState()).toBe(null);
+});
