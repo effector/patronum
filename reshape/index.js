@@ -6,7 +6,11 @@ function reshape(argument) {
 
   for (const key in shape) {
     if (key in shape) {
-      result[key] = source.map(shape[key]);
+      const fn = shape[key];
+      result[key] = source.map((state) => {
+        const result = fn(state);
+        return result === undefined ? null : result;
+      });
     }
   }
 

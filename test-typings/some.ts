@@ -15,22 +15,26 @@ import { some } from '../some';
 }
 
 // Check types for string enum
-// TODO: FIX THAT
-// {
-//   type Enum = 'a' | 'b' | 'c';
-//   const $a = createStore<Enum>('a');
-//   const $b = createStore<Enum>('c');
-//   const $invalid = createStore('d');
+{
+  type Enum = 'a' | 'b' | 'c';
+  const $a = createStore<Enum>('a');
+  const $b = createStore<Enum>('c');
+  const $invalid = createStore('d');
 
-//   const value: Enum = 'c';
+  const value: Enum = 'c';
 
-//   expectType<Store<boolean>>(some({ predicate: value, stores: [$a, $b] }));
+  expectType<Store<boolean>>(some({ predicate: value, stores: [$a, $b] }));
+  expectType<Store<boolean>>(
+    some({ predicate: (b) => b === 'b', stores: [$a, $b] }),
+  );
 
-//   // @ts-expect-error
-//   some({ predicate: value, stores: [$a, $invalid] });
-//   // @ts-expect-error
-//   some({ predicate: 'demo', stores: [$a, $b] });
-// }
+  // @ts-expect-error
+  some({ predicate: value, stores: [$a, $invalid] });
+  // @ts-expect-error
+  some({ predicate: 'demo', stores: [$a, $b] });
+  // @ts-expect-error
+  some({ predicate: (c) => c === 'demo', stores: [$a, $b] });
+}
 
 // Check function predicate
 {

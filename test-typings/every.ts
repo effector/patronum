@@ -15,22 +15,26 @@ import { every } from '../every';
 }
 
 // Check types for string enum
-// TODO: fix that
-// {
-//   type Enum = 'a' | 'b' | 'c';
-//   const $a = createStore<Enum>('a');
-//   const $b = createStore<Enum>('c');
-//   const $invalid = createStore('d');
+{
+  type Enum = 'a' | 'b' | 'c';
+  const $a = createStore<Enum>('a');
+  const $b = createStore<Enum>('c');
+  const $invalid = createStore('d');
 
-//   const value: Enum = 'c';
+  const value: Enum = 'c';
 
-//   expectType<Store<boolean>>(every({ predicate: value, stores: [$a, $b] }));
+  expectType<Store<boolean>>(every({ predicate: value, stores: [$a, $b] }));
+  expectType<Store<boolean>>(
+    every({ predicate: (c) => c === 'c', stores: [$a, $b] }),
+  );
 
-//   // @ts-expect-error
-//   every({ predicate: value, stores: [$a, $invalid] });
-//   // @ts-expect-error
-//   every({ predicate: 'demo', stores: [$a, $b] });
-// }
+  // @ts-expect-error
+  every({ predicate: value, stores: [$a, $invalid] });
+  // @ts-expect-error
+  every({ predicate: 'demo', stores: [$a, $b] });
+  // @ts-expect-error
+  every({ predicate: (v) => v === 'demo', stores: [$a, $b] });
+}
 
 // Check function predicate
 {
