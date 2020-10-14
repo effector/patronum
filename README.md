@@ -60,6 +60,14 @@ import { delay, inFlight } from 'patronum';
 
 ## Migration guide
 
+### v0.110
+
+From `v0.110.0` patronum removed support of effector v20. Now minimum supported version is `v21.4`.
+
+Please, before upgrade review release notes of [`effector v21`](https://github.com/zerobias/effector/releases/tag/effector%4021.0.0).
+
+### v0.100
+
 From `v0.100.0` patronum introduced object arguments form with **BREAKING CHANGES**. Please, review [migration guide](./MIGRATION.md) before upgrade from `v0.14.x` on your project.
 
 ---
