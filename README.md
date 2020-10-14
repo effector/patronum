@@ -24,7 +24,7 @@
 - [Delay](#delay) — Delays the call of the event by defined timeout.
 - [Throttle](#throttle) — Creates event which triggers at most once per timeout.
 
-### Multiple
+### Combination/Decomposition
 
 - [CombineEvents](#combineevents) — Wait for all passed events is triggered.
 - [Reshape](#reshape) — Destructure one store to different stores
