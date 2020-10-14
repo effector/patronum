@@ -3004,10 +3004,10 @@ ecc-jsbn@~0.1.1:
     jsbn "~0.1.0"
     safer-buffer "^2.1.0"
 
-effector@^21.3.0:
-  version "21.3.0"
-  resolved "https://registry.yarnpkg.com/effector/-/effector-21.3.0.tgz#378a990cd570a9f86c0f14fb29ff912ecfe93f58"
-  integrity sha512-EeiFe43tUDsSvTH06Na4xYG2A7xj9uCGpPsz5D51bl/oTq1AiBMtQiE6u+qgmR+OeR6G2c8vhBBrovPqQCN2yg==
+effector@^21.4.0:
+  version "21.5.0"
+  resolved "https://registry.yarnpkg.com/effector/-/effector-21.5.0.tgz#a574222f9e32a6a4157ce142dda9fafb877b3b9d"
+  integrity sha512-OCmmV0uSFjNCBCnQ/1Nwj7ogY/be6lNuQaTzOEUDo6nuskHvJ0dMSm9EloOJhBAuKZrPt3/14mGZ3afTegvvrA==
 
 electron-to-chromium@^1.3.570:
   version "1.3.570"
