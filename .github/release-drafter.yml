@@ -25,6 +25,22 @@ categories:
   - title: '🏎 Optimizations'
     label: 'optimizations'
 
+version-resolver:
+  major:
+    labels:
+      - 'BREAKING CHANGES'
+  minor:
+    labels:
+      - 'feature'
+      - 'enhancement'
+  patch:
+    labels:
+      - 'fix'
+  default: patch
+
+name-template: 'v$RESOLVED_VERSION'
+tag-template: 'v$RESOLVED_VERSION'
+
 change-template: '- $TITLE #$NUMBER (@$AUTHOR)'
 template: |
   $CHANGES
