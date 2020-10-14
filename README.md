@@ -6,20 +6,34 @@
 
 ## Table of contents
 
-- [CombineEvents](#combineevents)
-- [Condition](#condition)
-- [Debounce](#debounce)
-- [Debug](#debug)
-- [Delay](#delay)
-- [Every](#every)
-- [Pending](#pending)
-- [InFlight](#inflight)
-- [Reshape](#reshape)
-- [Some](#some)
-- [SplitMap](#splitmap)
-- [Spread](#spread)
-- [Status](#status)
-- [Throttle](#throttle)
+### Predicate
+
+- [Condition](#condition) — Trigger then or else by condition.
+- [Some](#some) — Checks that state in at least one store passes the predicate test.
+- [Every](#every) — Checks that state in each store passes the predicate test.
+
+### Effect
+
+- [Pending](#pending) — Checks that has effects in pending state.
+- [InFlight](#inflight) — Counts all pending effects
+- [Status](#status) — Return text representation of effect state.
+
+### Timeout
+
+- [Debounce](#debounce) — Creates event which waits until time passes after previous trigger.
+- [Delay](#delay) — Delays the call of the event by defined timeout.
+- [Throttle](#throttle) — Creates event which triggers at most once per timeout.
+
+### Multiple
+
+- [CombineEvents](#combineevents) — Wait for all passed events is triggered.
+- [Reshape](#reshape) — Destructure one store to different stores
+- [SplitMap](#splitmap) — Split event to different events and map data.
+- [Spread](#spread) — Send fields from object to same targets.
+
+### Debug
+
+- [Debug](#debug) — Log triggers of passed units.
 
 ## Usage
 
