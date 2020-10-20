@@ -118,7 +118,7 @@ import { debounce } from 'patronum/debounce';
 // You should call this event
 const trigger = createEvent<number>();
 
-const target = debounce(trigger, 200);
+const target = debounce({ source: trigger, timeout: 200 });
 
 target.watch((payload) => console.info('debounced', payload));
 
