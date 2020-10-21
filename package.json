@@ -2,7 +2,7 @@
   "name": "patronum",
   "version": "0.110.0",
   "description": "☄️ Effector utility library delivering modularity and convenience",
-  "main": "index.js",
+  "main": "patronum.cjs.js",
   "types": "index.d.ts",
   "scripts": {
     "test": "yarn test:code && yarn test:types",
@@ -11,7 +11,7 @@
     "commit": "git-cz",
     "format": "prettier --write \"./src/**/**.{ts,tsx,js,jsx,json}\"",
     "lint": "eslint ./",
-    "prepublishOnly": "node ./.scripts/build.js && prettier --write ./babel-preset-plugins.json"
+    "prepublishOnly": "node ./.scripts/build.js && node ./.scripts/rollup.js && prettier --write ./babel-preset-plugins.json"
   },
   "files": [
     "*/*.d.ts",
@@ -21,7 +21,8 @@
     "babel-preset-plugins.json",
     "babel-preset.js",
     "index.d.ts",
-    "index.js",
+    "patronum.cjs.js",
+    "patronum.cjs.js.map",
     "library.js"
   ],
   "repository": {
@@ -45,6 +46,9 @@
     "@eslint-kit/eslint-config-node": "^2.0.0",
     "@eslint-kit/eslint-config-prettier": "^2.0.0",
     "@eslint-kit/eslint-config-typescript": "^3.1.1",
+    "@rollup/plugin-babel": "^5.2.1",
+    "@rollup/plugin-commonjs": "^15.1.0",
+    "@rollup/plugin-node-resolve": "^9.0.0",
     "@types/jest": "^26.0.14",
     "@typescript-eslint/parser": "^4.2.0",
     "camel-case": "^4.1.1",
@@ -57,6 +61,8 @@
     "jest": "^26.4.2",
     "lint-staged": "^9.5.0",
     "prettier": "^1.19.1",
+    "rollup": "^2.32.1",
+    "rollup-plugin-terser": "^7.0.2",
     "tsd": "^0.13.1",
     "typescript": "^4.0.3"
   },

@@ -1,4 +1,5 @@
 # Security Policy
+
 <!--
 ## Supported Versions
 
@@ -12,9 +13,11 @@ currently being supported with security updates.
 | 4.0.x   | :white_check_mark: |
 | < 4.0   | :x:                |
 -->
+
 ## Reporting a Vulnerability
 
-Create new issue with label `security then:
+Create new issue with label `security` then:
+
 - add your `yarn.lock` or `package-lock.json` files under the spoiler
 - mark vulnerable dependencies if have
 - add reproduction example with vulnerability
