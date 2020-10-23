@@ -139,3 +139,42 @@ test('map from store', () => {
     ]
   `);
 });
+
+test('from readme', () => {
+  const watchFirst = jest.fn();
+  const watchLast = jest.fn();
+
+  const nameReceived = createEvent<string>();
+  const received = splitMap({
+    source: nameReceived,
+    cases: {
+      firstName: (string) => string.split(' ')[0], // string | undefined
+      lastName: (string) => string.split(' ')[1], // string | undefined
+    },
+  });
+
+  received.firstName.watch(watchFirst);
+  received.lastName.watch(watchLast);
+
+  nameReceived('Sergey');
+  expect(argumentHistory(watchFirst)).toMatchInlineSnapshot(`
+    Array [
+      "Sergey",
+    ]
+  `);
+  expect(argumentHistory(watchLast)).toMatchInlineSnapshot(`Array []`);
+
+  watchFirst.mockReset();
+  watchFirst.mockReset();
+  nameReceived('Sergey Sova');
+  expect(argumentHistory(watchFirst)).toMatchInlineSnapshot(`
+    Array [
+      "Sergey",
+    ]
+  `);
+  expect(argumentHistory(watchLast)).toMatchInlineSnapshot(`
+    Array [
+      "Sova",
+    ]
+  `);
+});
