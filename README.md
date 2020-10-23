@@ -85,11 +85,19 @@ const shortString = createEvent<string>();
 
 condition({
   source: trigger,
-  if: (string) => string.length > 8,
+  if: (string) => string.length > 6,
   then: longString,
   else: shortString,
 });
+
+longString.watch(str => console.log("long", str))
+shortString.watch(str => console.log("short", str))
+
+trigger("hi") // => short hi
+trigger("welcome") // => long welcome
 ```
+
+[Try it](https://share.effector.dev/vGMekp9H 'in playground')
 
 ## [Delay](/delay 'Documentation')
 
@@ -108,6 +116,8 @@ trigger('hello');
 // after 300ms
 // => triggered hello
 ```
+
+[Try it](https://share.effector.dev/vWwXoL4n)
 
 ## [Debounce](/debounce 'Documentation')
 
@@ -130,6 +140,8 @@ trigger(4);
 // => debounced 4
 ```
 
+[Try it](https://share.effector.dev/ZFXJbv1b)
+
 ## [Throttle](/throttle 'Documentation')
 
 ```ts
@@ -148,8 +160,10 @@ trigger(2);
 trigger(3);
 trigger(4);
 // 200ms after trigger(1)
-// => throttled 1
+// => throttled 4
 ```
+
+[Try it](https://share.effector.dev/OH0TUJUH)
 
 ## [Debug](/debug 'Documentation')
 
@@ -178,6 +192,8 @@ effect('demo');
 // => [store] $store 60
 ```
 
+[Try it](https://share.effector.dev/iFi3CahC)
+
 ## [Status](/status 'Documentation')
 
 ```ts
@@ -194,6 +210,8 @@ effect();
 // => status: "pending"
 // => status: "done"
 ```
+
+[Try it](https://share.effector.dev/6VRR39iC)
 
 ## [Spread](/spread 'Documentation')
 
@@ -216,9 +234,11 @@ spread({
 
 trigger({ first: 'Hello', second: 'World' });
 
-$first.getState(); // "Hello"
-$second.getState(); // "World"
+$first.watch(console.log) // => Hello
+$second.watch(console.log) // => World
 ```
+
+[Try it](https://share.effector.dev/DmiLrYAC)
 
 ## [CombineEvents](/combine-events 'Documentation')
 
@@ -244,12 +264,17 @@ event.watch((object) => console.log('triggered', object));
 
 event1(true); // nothing
 event2('demo'); // nothing
-event3(5); // triggered { event1: true, event2: "demo", event3: 5 }
+event3(5); // => triggered { event1: true, event2: "demo", event3: 5 }
 ```
+
+[Try it](https://share.effector.dev/nzc276i0)
 
 ## [Every](/every 'Documentation')
 
 ```ts
+import { createStore } from 'effector'
+import { every } from 'patronum/every'
+
 const $isPasswordCorrect = createStore(true);
 const $isEmailCorrect = createStore(true);
 
@@ -257,14 +282,20 @@ const $isFormCorrect = every({
   predicate: true,
   stores: [$isPasswordCorrect, $isEmailCorrect],
 });
-// true
+
+$isFormCorrect.watch(console.log) // => true
 ```
+
+[Try it](https://share.effector.dev/Q9ZZSXoZ)
 
 ## [InFlight](/in-flight 'Documentation')
 
 ```ts
-const firstFx = createEffect();
-const secondFx = createEffect();
+import { createEffect } from 'effector'
+import { inFlight } from 'patronum/in-flight'
+
+const firstFx = createEffect().use(() => Promise.resolve(1));
+const secondFx = createEffect().use(() => Promise.resolve(2));
 
 const $allInFlight = inFlight({ effects: [firstFx, secondFx] });
 
@@ -272,8 +303,14 @@ firstFx();
 secondFx();
 firstFx();
 
-$allInFlight.watch(console.log); // 3
+$allInFlight.watch(console.log);
+// => 3
+// => 2
+// => 1
+// => 0
 ```
+
+[Try it](https://share.effector.dev/NYNJEbpH)
 
 ## [Pending](/pending 'Documentation')
 
@@ -291,18 +328,30 @@ $processing.watch((processing) => console.info(`processing: ${processing}`));
 loadFirst();
 loadSecond();
 // => processing: true
+// => processing: false
 ```
+
+[Try it](https://share.effector.dev/TaxOi6nT)
 
 ## [Some](/some 'Documentation')
 
 ```ts
-const $width = createStore(440);
-const $height = createStore(820);
+import { createStore, restore, createEvent } from 'effector'
+import { some } from 'patronum/some'
 
-const $tooBig = some((size) => size > 800, [$width, $height]);
+const widthSet = createEvent<number>();
+const $width = restore(widthSet, 820);
+const $height = createStore(620);
 
-console.assert(true === $tooBig.getState());
+const $tooBig = some({ predicate: (size) => size > 800, stores: [$width, $height] });
+
+$tooBig.watch(big => console.log("big", big)) // => big true
+
+widthSet(200)
+// => big false
 ```
+
+[Try it](https://share.effector.dev/NBxHl8xR)
 
 ## [Reshape](/reshape 'Documentation')
 
@@ -326,6 +375,8 @@ parts.first.watch(console.log); // "Hello"
 parts.second.watch(console.log); // "Second"
 ```
 
+[Try it](https://share.effector.dev/SmqZgxrx)
+
 ## [SplitMap](/split-map 'Documentation')
 
 ```ts
@@ -348,7 +399,9 @@ received.lastName.watch((last) => console.info('lastname received', last));
 nameReceived('Sergey');
 // firstname received "Sergey"
 
-nameReceived('Sergey Sova');
+nameReceived('SergeySova');
 // firstname received "Sergey"
 // lastname received "Sova"
 ```
+
+[Try it](https://share.effector.dev/inSAmJAd)
