@@ -141,40 +141,66 @@ test('map from store', () => {
 });
 
 test('from readme', () => {
-  const watchFirst = jest.fn();
-  const watchLast = jest.fn();
+  const watchUpdate = jest.fn();
+  const watchCreated = jest.fn();
+  const watchDefault = jest.fn();
 
-  const nameReceived = createEvent<string>();
+  type Action =
+    | { type: 'update'; content: string }
+    | { type: 'created'; value: number }
+    | { type: 'another' };
+
+  const serverActionReceived = createEvent<Action>();
+
   const received = splitMap({
-    source: nameReceived,
+    source: serverActionReceived,
     cases: {
-      firstName: (string) => string.split(' ')[0], // string | undefined
-      lastName: (string) => string.split(' ')[1], // string | undefined
+      update: (action) =>
+        action.type === 'update' ? action.content : undefined,
+      created: (action) =>
+        action.type === 'created' ? action.value : undefined,
     },
   });
 
-  received.firstName.watch(watchFirst);
-  received.lastName.watch(watchLast);
+  received.update.watch(watchUpdate);
+  received.created.watch(watchCreated);
+  received.__.watch(watchDefault);
 
-  nameReceived('Sergey');
-  expect(argumentHistory(watchFirst)).toMatchInlineSnapshot(`
+  serverActionReceived({ type: 'created', value: 1 });
+  expect(argumentHistory(watchCreated)).toMatchInlineSnapshot(`
     Array [
-      "Sergey",
+      1,
     ]
   `);
-  expect(argumentHistory(watchLast)).toMatchInlineSnapshot(`Array []`);
+  expect(argumentHistory(watchUpdate)).toMatchInlineSnapshot(`Array []`);
+  expect(argumentHistory(watchDefault)).toMatchInlineSnapshot(`Array []`);
+  watchCreated.mockClear();
+  watchUpdate.mockClear();
+  watchDefault.mockClear();
 
-  watchFirst.mockReset();
-  watchFirst.mockReset();
-  nameReceived('Sergey Sova');
-  expect(argumentHistory(watchFirst)).toMatchInlineSnapshot(`
+  serverActionReceived({ type: 'update', content: 'demo' });
+  expect(argumentHistory(watchCreated)).toMatchInlineSnapshot(`Array []`);
+  expect(argumentHistory(watchUpdate)).toMatchInlineSnapshot(`
     Array [
-      "Sergey",
+      "demo",
     ]
   `);
-  expect(argumentHistory(watchLast)).toMatchInlineSnapshot(`
+  expect(argumentHistory(watchDefault)).toMatchInlineSnapshot(`Array []`);
+  watchCreated.mockClear();
+  watchUpdate.mockClear();
+  watchDefault.mockClear();
+
+  serverActionReceived({ type: 'another' });
+  expect(argumentHistory(watchCreated)).toMatchInlineSnapshot(`Array []`);
+  expect(argumentHistory(watchUpdate)).toMatchInlineSnapshot(`Array []`);
+  expect(argumentHistory(watchDefault)).toMatchInlineSnapshot(`
     Array [
-      "Sova",
+      Object {
+        "type": "another",
+      },
     ]
   `);
+  watchCreated.mockClear();
+  watchUpdate.mockClear();
+  watchDefault.mockClear();
 });

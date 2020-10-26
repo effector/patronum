@@ -90,11 +90,11 @@ condition({
   else: shortString,
 });
 
-longString.watch(str => console.log("long", str))
-shortString.watch(str => console.log("short", str))
+longString.watch((str) => console.log('long', str));
+shortString.watch((str) => console.log('short', str));
 
-trigger("hi") // => short hi
-trigger("welcome") // => long welcome
+trigger('hi'); // => short hi
+trigger('welcome'); // => long welcome
 ```
 
 [Try it](https://share.effector.dev/vGMekp9H 'in playground')
@@ -234,8 +234,8 @@ spread({
 
 trigger({ first: 'Hello', second: 'World' });
 
-$first.watch(console.log) // => Hello
-$second.watch(console.log) // => World
+$first.watch(console.log); // => Hello
+$second.watch(console.log); // => World
 ```
 
 [Try it](https://share.effector.dev/DmiLrYAC)
@@ -272,8 +272,8 @@ event3(5); // => triggered { event1: true, event2: "demo", event3: 5 }
 ## [Every](/every 'Documentation')
 
 ```ts
-import { createStore } from 'effector'
-import { every } from 'patronum/every'
+import { createStore } from 'effector';
+import { every } from 'patronum/every';
 
 const $isPasswordCorrect = createStore(true);
 const $isEmailCorrect = createStore(true);
@@ -283,7 +283,7 @@ const $isFormCorrect = every({
   stores: [$isPasswordCorrect, $isEmailCorrect],
 });
 
-$isFormCorrect.watch(console.log) // => true
+$isFormCorrect.watch(console.log); // => true
 ```
 
 [Try it](https://share.effector.dev/Q9ZZSXoZ)
@@ -291,8 +291,8 @@ $isFormCorrect.watch(console.log) // => true
 ## [InFlight](/in-flight 'Documentation')
 
 ```ts
-import { createEffect } from 'effector'
-import { inFlight } from 'patronum/in-flight'
+import { createEffect } from 'effector';
+import { inFlight } from 'patronum/in-flight';
 
 const firstFx = createEffect().use(() => Promise.resolve(1));
 const secondFx = createEffect().use(() => Promise.resolve(2));
@@ -336,18 +336,21 @@ loadSecond();
 ## [Some](/some 'Documentation')
 
 ```ts
-import { createStore, restore, createEvent } from 'effector'
-import { some } from 'patronum/some'
+import { createStore, restore, createEvent } from 'effector';
+import { some } from 'patronum/some';
 
 const widthSet = createEvent<number>();
 const $width = restore(widthSet, 820);
 const $height = createStore(620);
 
-const $tooBig = some({ predicate: (size) => size > 800, stores: [$width, $height] });
+const $tooBig = some({
+  predicate: (size) => size > 800,
+  stores: [$width, $height],
+});
 
-$tooBig.watch(big => console.log("big", big)) // => big true
+$tooBig.watch((big) => console.log('big', big)); // => big true
 
-widthSet(200)
+widthSet(200);
 // => big false
 ```
 
@@ -383,25 +386,39 @@ parts.second.watch(console.log); // "Second"
 import { createEvent } from 'effector';
 import { splitMap } from 'patronum/split-map';
 
-const nameReceived = createEvent<string>();
+type Action =
+  | { type: 'update'; content: string }
+  | { type: 'created'; value: number }
+  | { type: 'another' };
+
+const serverActionReceived = createEvent<Action>();
 
 const received = splitMap({
-  source: nameReceived,
+  source: serverActionReceived,
   cases: {
-    firstName: (string) => string.split(' ')[0], // string | undefined
-    lastName: (string) => string.split(' ')[1], // string | undefined
+    update: (action) => (action.type === 'update' ? action.content : undefined),
+    created: (action) => (action.type === 'created' ? action.value : undefined),
   },
 });
 
-received.firstName.watch((first) => console.info('firstname received', first));
-received.lastName.watch((last) => console.info('lastname received', last));
+received.update.watch((payload) =>
+  console.info('update received with content:', payload),
+);
+received.created.watch((payload) =>
+  console.info('created with value:', payload),
+);
+received.__.watch((payload) =>
+  console.info('unknown action received:', payload),
+);
 
-nameReceived('Sergey');
-// firstname received "Sergey"
+serverActionReceived({ type: 'created', value: 1 });
+// => created with value: 1
 
-nameReceived('SergeySova');
-// firstname received "Sergey"
-// lastname received "Sova"
+serverActionReceived({ type: 'update', content: 'demo' });
+// => update received with content: "demo"
+
+serverActionReceived({ type: 'another' });
+// => unknown action received: { type: "another" }
 ```
 
-[Try it](https://share.effector.dev/inSAmJAd)
+[Try it](https://share.effector.dev/RRf57lK4)
