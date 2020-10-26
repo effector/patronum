@@ -1,0 +1,61 @@
+# This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+
+name: Intergration testing
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [14.x]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+          registry-url: 'https://npm.pkg.github.com'
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Rename package to scoped
+        run: 'sed -i.bak -e ''s+"name": "patronum"+"name": "@effector/patronum"+g'' ./package.json'
+
+      - name: Add commit SHA to package version
+        run: npm version --force --no-git-tag-version prepatch --preid=${{ github.sha }}
+
+      - name: Publish to Github NPM registry
+        # if: github.ref == 'refs/heads/main'
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_GITHUB_TOKEN }}
+
+      - name: Get version from package.json
+        uses: sergeysova/jq-action@v2
+        id: version
+        with:
+          cmd: 'jq .version package.json -r'
+
+      - name: Install integration dependencies
+        run: yarn --frozen-lockfile
+        env:
+          working-directory: ./integration
+
+      - name: Install patronum to integration package
+        run: yarn add @effector/patronum@${{ steps.version.outputs.value }}
+        env:
+          working-directory: ./integration
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_GITHUB_TOKEN }}
+
+      - name: Run intergration tests
+        run: yarn test
+        env:
+          working-directory: ./integration

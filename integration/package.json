@@ -1,0 +1,20 @@
+{
+  "name": "@effector/integration",
+  "version": "0.0.0",
+  "description": "Integration test for patronum version",
+  "main": "main.js",
+  "repository": "https://github.com/effector/patronum",
+  "author": "Sergey Sova <mail@sergeysova.com> (https://sova.dev)",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "test": "jest"
+  },
+  "devDependencies": {
+    "jest": "^26.6.1"
+  },
+  "dependencies": {
+    "effector": "^21.6.0",
+    "patronum": "^0.111.0"
+  }
+}

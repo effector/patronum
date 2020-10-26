@@ -1,7 +1,14 @@
 {
   "overrides": [
     {
-      "files": ["**/*.test.ts", "**/*.test.tsx", "_/**.js"],
+      "files": [
+        "**/*.test.ts",
+        "**/*.test.tsx",
+        "**/*.spec.tsx",
+        "**/*.spec.ts",
+        "**/*.spec.js",
+        "_/**.js"
+      ],
       "env": { "jest": true },
       "rules": {
         "import/no-extraneous-dependencies": "off"
@@ -38,7 +45,7 @@
       }
     },
     {
-      "files": ["**/*.test.js", "**/*.test.ts"],
+      "files": ["**/*.test.js", "**/*.test.ts", "**/*.spec.ts"],
       "env": {
         "jest": true
       },
