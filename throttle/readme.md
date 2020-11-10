@@ -12,6 +12,17 @@ import { throttle } from 'patronum/throttle';
 result = throttle({ source, timeout });
 ```
 
+- Triggers `result` at most once per `timeout` after triggering `source`
+
+### Arguments
+
+1. `source` ([_`Event`_] | [_`Store`_] | [_`Effect`_]) — Source unit, data from this unit used by the `result`
+1. `timeout` ([_`number`_]) — time to wait before trigger `result` after last trigger or `source` trigger
+
+### Returns
+
+- `result` ([_`Event`_]) — new event, that triggered each time after triggering `source` with argument from `source`
+
 ### Usage
 
 Create event that should be throttled:
@@ -75,6 +86,18 @@ const throttledStore: Event<number> = throttle({
 throttle({ source, timeout, target });
 ```
 
+- Triggers `target` at most once per `timeout` after triggering `source`
+
+### Arguments
+
+1. `source` ([_`Event`_] | [_`Store`_] | [_`Effect`_]) — Source unit, data from this unit used by the `target`
+1. `timeout` ([_`number`_]) — time to wait before trigger `target` after last trigger or `source` trigger
+1. `target` ([_`Event`_] | [_`Store`_] | [_`Effect`_]) — Target unit, that triggered each time after triggering `source` with argument from `source`
+
+### Returns
+
+- `target` ([_`Event`_] | [_`Store`_] | [_`Effect`_]) — Target unit passed to arguments
+
 ### Usage
 
 ```ts
@@ -94,3 +117,8 @@ change();
 
 // after 40ms after first call, 3 will be saved to localStorage
 ```
+
+[_`event`_]: https://effector.dev/docs/api/effector/event
+[_`effect`_]: https://effector.dev/docs/api/effector/effect
+[_`store`_]: https://effector.dev/docs/api/effector/store
+[_`number`_]: https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Number
