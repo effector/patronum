@@ -19,6 +19,14 @@ const target = combineEvents({
 
 - When all events (`event1` and `event2` from example) is triggered, trigger `target` with data from events mapped to `key1` and `key2`
 
+### Arguments
+
+1. `events` — Object of events
+
+### Returns
+
+- `target` — Event with the same shape as `events`, that triggered after all `events` triggered
+
 ### Example
 
 ```ts
