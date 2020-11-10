@@ -8,7 +8,7 @@ import {
 } from 'effector';
 import { throttle } from '.';
 
-const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 describe('event', () => {
   test('throttle event', async () => {
