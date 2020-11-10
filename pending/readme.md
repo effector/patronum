@@ -4,6 +4,13 @@
 import { pending } from 'patronum/pending';
 ```
 
+## `pending({ effects: [] })`
+
+### Motivation
+
+This overload allows to read pending state of passed effects.
+It is usef when you want to show loading state of the whole application.
+
 ### Formulae
 
 ```ts

@@ -6,6 +6,11 @@ import { spread } from 'patronum/spread';
 
 ## `spread({ source, targets })`
 
+### Motivation
+
+This method allows to trigger many target at once, if they match the source structure.
+It is useful when you need to destructure object and save values to different stores.
+
 ### Formulae
 
 ```ts
@@ -85,7 +90,14 @@ save(null);
 // Nothing, because store is null
 ```
 
-## `spread({ targets })`
+## `source = spread({ targets })`
+
+### Motivation
+
+This overload creates event `source` that should be triggered and returns it.
+It is useful to pass `source` immediately to another method as argument.
+
+### Formulae
 
 ```ts
 source = spread({ targets: { field: target, ... } })

@@ -41,6 +41,11 @@ trigger('hello');
 
 ## `delay({ source, timeout: Function })`
 
+### Motivation
+
+This overload allows to calculate timeout from payload of `source`.
+It is useful when you know that calculations requires more time if you have more data for payload.
+
 ### Formulae
 
 ```ts
@@ -79,7 +84,12 @@ update('!');
 // => log !
 ```
 
-## `delay({ source, timeout: Store })`
+## `delay({ source, timeout: Store<T> })`
+
+### Motivation
+
+This overload allows you to read timeout from another store.
+It is useful when you writing music editor and need dynamic delay for your events.
 
 ### Formulae
 

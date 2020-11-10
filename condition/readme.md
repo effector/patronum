@@ -4,6 +4,12 @@
 import { condition } from 'patronum/condition';
 ```
 
+## Motivation
+
+Condition is very similar to [`guard`], but allows you to have `else` branch along with simple `if` matcher.
+
+[`guard`]: https://effector.dev/docs/api/effector/guard
+
 ## `condition({ source: Unit, if: Store, then?: Unit, else?: Unit })`
 
 ### Formulae

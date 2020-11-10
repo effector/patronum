@@ -6,6 +6,11 @@ import { debounce } from 'patronum/debounce';
 
 ## `debounce({ source, timeout: number })`
 
+### Motivation
+
+Method creates a new event, that will be triggered after some time. It is useful for handling user events such as scrolling, mouse movement, or keypressing.
+It is useful when you want to pass created event immediately to another method as argument.
+
 ### Formulae
 
 ```ts
@@ -50,6 +55,11 @@ someHappened(4);
 ```
 
 ## `debounce({ source, timeout: number, target })`
+
+### Motivation
+
+This overload receives target as argument, that will be triggered after timeout.
+It is useful when you already have an unit that you need to trigger.
 
 ### Formulae
 

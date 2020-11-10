@@ -4,6 +4,11 @@
 import { status } from 'patronum/status';
 ```
 
+## Motivation
+
+This method returns current status of effect as store with string enumeration.
+It is useful to show correct state of process in UI.
+
 ## Formulae
 
 ```ts
