@@ -4,24 +4,29 @@
 import { throttle } from 'patronum/throttle';
 ```
 
-## `throttle({ source, timeout })`
+## `target = throttle({ source, timeout })`
+
+### Motivation
+
+This method allows to trigger `target` in equal timeouts regardless of source trigger frequency.
+It is useful in live search in UI.
 
 ### Formulae
 
 ```ts
-result = throttle({ source, timeout });
+target = throttle({ source, timeout });
 ```
 
-- Triggers `result` at most once per `timeout` after triggering `source`
+- Triggers `target` at most once per `timeout` after triggering `source`
 
 ### Arguments
 
-1. `source` ([_`Event`_] | [_`Store`_] | [_`Effect`_]) — Source unit, data from this unit used by the `result`
-1. `timeout` ([_`number`_]) — time to wait before trigger `result` after last trigger or `source` trigger
+1. `source` ([_`Event`_] | [_`Store`_] | [_`Effect`_]) — Source unit, data from this unit used by the `target`
+1. `timeout` ([_`number`_]) — time to wait before trigger `target` after last trigger or `source` trigger
 
 ### Returns
 
-- `result` ([_`Event`_]) — new event, that triggered each time after triggering `source` with argument from `source`
+- `target` ([_`Event`_]) — new event, that triggered each time after triggering `source` with argument from `source`
 
 ### Usage
 
@@ -79,6 +84,11 @@ const throttledStore: Event<number> = throttle({
 ```
 
 ## `throttle({ source, timeout, target })`
+
+### Motivation
+
+This overload allows to receive target instead of returning it.
+This is useful when you already have a unit that should be triggered.
 
 ### Formulae
 

@@ -6,6 +6,11 @@ import { inFlight } from 'patronum/in-flight';
 
 ## `inFlight({ effects: [] })`
 
+### Motivation
+
+Method allows calculate total current in flight states of each passed effect.
+It is useful when you want to show pending state of complex process.
+
 ### Formulae
 
 ```ts
@@ -48,6 +53,11 @@ loadSecond();
 ```
 
 ## `inFlight({ domain })`
+
+### Motivation
+
+This overload allows to count effects in flight of the whole domain.
+It is usef when you want to show loading state of the whole application.
 
 ### Formulae
 

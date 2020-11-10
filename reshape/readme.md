@@ -6,6 +6,11 @@ import { reshape } from 'patronum/reshape';
 
 ## `result = reshape({ source, shape })`
 
+### Motivation
+
+This method allows to create many stores from single store at once.
+It useful when you want to read many properties from object to different stores.
+
 ### Formulae
 
 ```ts

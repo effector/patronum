@@ -6,6 +6,13 @@ import { some } from 'patronum/some';
 
 ## `some({ predicate: Function, stores })`
 
+### Motivation
+
+Method calculates boolean value if at least one state of the store satisfies the condition in `predicate`.
+It is useful to check that user filled at least a single field.
+
+### Formulae
+
 ```ts
 $result = some({ predicate: (value) => true, stores });
 ```
@@ -37,6 +44,13 @@ console.assert(true === $tooBig.getState());
 ```
 
 ## `some({ predicate: value, stores })`
+
+### Motivation
+
+This overload compares each store to specific value in `predicate`.
+It is useful when you write `combine` with `||` very often, for example to create an invalid form flag.
+
+### Formulae
 
 ```ts
 $result = some({ predicate: value, stores });

@@ -6,6 +6,13 @@ import { every } from 'patronum/every';
 
 ## `every({ predicate: Function, stores })`
 
+### Motivation
+
+Method calculates boolean value if each store satisfies the condition in `predicate`.
+It is useful to check that user has correct values in each state.
+
+### Formulae
+
 ```ts
 $result = every({ predicate: fn, stores });
 ```
@@ -36,6 +43,13 @@ console.assert(true === $fitsSquare.getState());
 ```
 
 ## `every({ predicate: value, stores })`
+
+### Motivation
+
+This overload compares each store to specific value in `predicate`.
+It is useful when you write `combine` with `&&` very often, for example to create a pending state or a form valid flag.
+
+### Formulae
 
 ```ts
 $result = every({ predicate: value, stores });

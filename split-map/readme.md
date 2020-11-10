@@ -6,7 +6,10 @@ import { splitMap } from 'patronum/split-map';
 
 ## `shape = splitMap({ source, cases })`
 
-It is combination of [`split`] and [`map`].
+### Motivation
+
+The method is a combination of [`split`] and [`map`].
+It is useful when you want add some kind of pattern matching.
 
 [`split`]: https://effector.dev/docs/api/effector/split
 [`map`]: https://effector.dev/docs/api/effector/event#mapfn
