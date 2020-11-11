@@ -14,8 +14,8 @@
   - `import { expectType } from 'tsd'` to check expected return type
 - [ ] Add documentation in `{method-name}/reade.md`
   - Add header `Patronum/MethodName`
-  - Add section with overloads, if has
-  - Add `Formulae`, `Arguments` and `Return` section for each overload
+  - Add section with overloads, if have
+  - Add `Motivation`, `Formulae`, `Arguments` and `Return` sections for each overload
   - Add useful examples in `Example` section for each overload
 - [ ] Add section to `README.md` in root
   - Add method to table of contents `- [MethodName](#methodname)`
