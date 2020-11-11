@@ -72,7 +72,9 @@ From `v0.100.0` patronum introduced object arguments form with **BREAKING CHANGE
 
 ---
 
-## [Condition](/condition 'Documentation')
+## Condition
+
+[Documentation](/condition)
 
 ```ts
 import { createEvent } from 'effector';
@@ -99,7 +101,9 @@ trigger('welcome'); // => long welcome
 
 [Try it](https://share.effector.dev/vGMekp9H 'in playground')
 
-## [Delay](/delay 'Documentation')
+## Delay
+
+[Documentation](/delay)
 
 ```ts
 import { createEvent } from 'effector';
@@ -119,7 +123,9 @@ trigger('hello');
 
 [Try it](https://share.effector.dev/vWwXoL4n)
 
-## [Debounce](/debounce 'Documentation')
+## Debounce
+
+[Documentation](/debounce)
 
 ```ts
 import { createEvent } from 'effector';
@@ -142,7 +148,9 @@ trigger(4);
 
 [Try it](https://share.effector.dev/ZFXJbv1b)
 
-## [Throttle](/throttle 'Documentation')
+## Throttle
+
+[Documentation](/throttle)
 
 ```ts
 import { createEvent } from 'effector';
@@ -165,7 +173,9 @@ trigger(4);
 
 [Try it](https://share.effector.dev/OH0TUJUH)
 
-## [Debug](/debug 'Documentation')
+## Debug
+
+[Documentation](/debug)
 
 ```ts
 import { createStore, createEvent, createEffect } from 'effector';
@@ -194,7 +204,9 @@ effect('demo');
 
 [Try it](https://share.effector.dev/iFi3CahC)
 
-## [Status](/status 'Documentation')
+## Status
+
+[Documentation](/status)
 
 ```ts
 import { createEvent, createEffect } from 'effector';
@@ -213,7 +225,9 @@ effect();
 
 [Try it](https://share.effector.dev/6VRR39iC)
 
-## [Spread](/spread 'Documentation')
+## Spread
+
+[Documentation](/spread)
 
 ```ts
 import { createEvent, createStore } from 'effector';
@@ -240,7 +254,9 @@ $second.watch(console.log); // => World
 
 [Try it](https://share.effector.dev/DmiLrYAC)
 
-## [CombineEvents](/combine-events 'Documentation')
+## CombineEvents
+
+[Documentation](/combine-events)
 
 Call target event when all event from object/array is triggered
 
@@ -269,7 +285,9 @@ event3(5); // => triggered { event1: true, event2: "demo", event3: 5 }
 
 [Try it](https://share.effector.dev/nzc276i0)
 
-## [Every](/every 'Documentation')
+## Every
+
+[Documentation](/every)
 
 ```ts
 import { createStore } from 'effector';
@@ -288,7 +306,9 @@ $isFormCorrect.watch(console.log); // => true
 
 [Try it](https://share.effector.dev/Q9ZZSXoZ)
 
-## [InFlight](/in-flight 'Documentation')
+## InFlight
+
+[Documentation](/in-flight)
 
 ```ts
 import { createEffect } from 'effector';
@@ -312,7 +332,9 @@ $allInFlight.watch(console.log);
 
 [Try it](https://share.effector.dev/NYNJEbpH)
 
-## [Pending](/pending 'Documentation')
+## Pending
+
+[Documentation](/pending)
 
 ```ts
 import { createEffect } from 'effector';
@@ -333,7 +355,9 @@ loadSecond();
 
 [Try it](https://share.effector.dev/TaxOi6nT)
 
-## [Some](/some 'Documentation')
+## Some
+
+[Documentation](/some)
 
 ```ts
 import { createStore, restore, createEvent } from 'effector';
@@ -356,7 +380,9 @@ widthSet(200);
 
 [Try it](https://share.effector.dev/NBxHl8xR)
 
-## [Reshape](/reshape 'Documentation')
+## Reshape
+
+[Documentation](/reshape)
 
 ```ts
 import { createStore } from 'effector';
@@ -380,7 +406,9 @@ parts.second.watch(console.log); // "Second"
 
 [Try it](https://share.effector.dev/SmqZgxrx)
 
-## [SplitMap](/split-map 'Documentation')
+## SplitMap
+
+[Documentation](/split-map)
 
 ```ts
 import { createEvent } from 'effector';
