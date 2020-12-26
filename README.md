@@ -74,7 +74,7 @@ From `v0.100.0` patronum introduced object arguments form with **BREAKING CHANGE
 
 ## Condition
 
-[Documentation](/condition)
+[Method documentation & API](/condition)
 
 ```ts
 import { createEvent } from 'effector';
@@ -103,7 +103,7 @@ trigger('welcome'); // => long welcome
 
 ## Delay
 
-[Documentation](/delay)
+[Method documentation & API](/delay)
 
 ```ts
 import { createEvent } from 'effector';
@@ -125,7 +125,7 @@ trigger('hello');
 
 ## Debounce
 
-[Documentation](/debounce)
+[Method documentation & API](/debounce)
 
 ```ts
 import { createEvent } from 'effector';
@@ -150,7 +150,7 @@ trigger(4);
 
 ## Throttle
 
-[Documentation](/throttle)
+[Method documentation & API](/throttle)
 
 ```ts
 import { createEvent } from 'effector';
@@ -175,7 +175,7 @@ trigger(4);
 
 ## Debug
 
-[Documentation](/debug)
+[Method documentation & API](/debug)
 
 ```ts
 import { createStore, createEvent, createEffect } from 'effector';
@@ -206,7 +206,7 @@ effect('demo');
 
 ## Status
 
-[Documentation](/status)
+[Method documentation & API](/status)
 
 ```ts
 import { createEvent, createEffect } from 'effector';
@@ -227,7 +227,7 @@ effect();
 
 ## Spread
 
-[Documentation](/spread)
+[Method documentation & API](/spread)
 
 ```ts
 import { createEvent, createStore } from 'effector';
@@ -256,7 +256,7 @@ $second.watch(console.log); // => World
 
 ## CombineEvents
 
-[Documentation](/combine-events)
+[Method documentation & API](/combine-events)
 
 Call target event when all event from object/array is triggered
 
@@ -287,7 +287,7 @@ event3(5); // => triggered { event1: true, event2: "demo", event3: 5 }
 
 ## Every
 
-[Documentation](/every)
+[Method documentation & API](/every)
 
 ```ts
 import { createStore } from 'effector';
@@ -308,7 +308,7 @@ $isFormCorrect.watch(console.log); // => true
 
 ## InFlight
 
-[Documentation](/in-flight)
+[Method documentation & API](/in-flight)
 
 ```ts
 import { createEffect } from 'effector';
@@ -334,7 +334,7 @@ $allInFlight.watch(console.log);
 
 ## Pending
 
-[Documentation](/pending)
+[Method documentation & API](/pending)
 
 ```ts
 import { createEffect } from 'effector';
@@ -357,7 +357,7 @@ loadSecond();
 
 ## Some
 
-[Documentation](/some)
+[Method documentation & API](/some)
 
 ```ts
 import { createStore, restore, createEvent } from 'effector';
@@ -382,7 +382,7 @@ widthSet(200);
 
 ## Reshape
 
-[Documentation](/reshape)
+[Method documentation & API](/reshape)
 
 ```ts
 import { createStore } from 'effector';
@@ -408,7 +408,7 @@ parts.second.watch(console.log); // "Second"
 
 ## SplitMap
 
-[Documentation](/split-map)
+[Method documentation & API](/split-map)
 
 ```ts
 import { createEvent } from 'effector';
