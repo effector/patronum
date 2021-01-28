@@ -1,6 +1,6 @@
 {
   "name": "patronum",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "☄️ Effector utility library delivering modularity and convenience",
   "main": "patronum.cjs.js",
   "types": "index.d.ts",
@@ -29,7 +29,14 @@
     "type": "git",
     "url": "git+https://github.com/effector/patronum.git"
   },
-  "keywords": ["babel-preset", "effector", "lib", "modules", "stdlib", "util"],
+  "keywords": [
+    "babel-preset",
+    "effector",
+    "lib",
+    "modules",
+    "stdlib",
+    "util"
+  ],
   "author": "Sergey Sova <mail@sergeysova.com> (https://sergeysova.com/)",
   "license": "MIT",
   "bugs": {
