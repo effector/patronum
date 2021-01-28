@@ -14,7 +14,9 @@ categories:
       - 'bug'
 
   - title: '🧰 Maintenance'
-    label: 'chore'
+    labels:
+      - 'chore'
+      - 'dependencies'
 
   - title: '📚 Documentation'
     label: 'documentation'
