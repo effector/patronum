@@ -450,3 +450,12 @@ serverActionReceived({ type: 'another' });
 ```
 
 [Try it](https://share.effector.dev/RRf57lK4)
+
+
+# Development
+
+## How to release
+
+1. Make changes with PullRequests
+1. Wait for updates of Draft release with github actions
+1. Publish release and wait for publish-to-npm action
