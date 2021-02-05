@@ -7,13 +7,14 @@ import { Unit, Store, Event, Effect } from 'effector';
  */
 // type NoInfer<T> = [T][T extends any ? 0 : never];
 type NoInfer<T> = T & { [K in keyof T]: T[K] };
+type EventAsReturnType<Payload> = any extends Payload ? Event<Payload> : never;
 
 export function condition<State>(options: {
   source: Event<State>;
   if: ((payload: State) => boolean) | Store<boolean> | State;
   then: Unit<NoInfer<State> | void>;
   else: Unit<NoInfer<State> | void>;
-}): Event<State>;
+}): EventAsReturnType<State>;
 export function condition<State>(options: {
   source: Store<State>;
   if: ((payload: State) => boolean) | Store<boolean> | State;
@@ -31,7 +32,7 @@ export function condition<State>(options: {
   source: Event<State>;
   if: ((payload: State) => boolean) | Store<boolean> | State;
   then: Unit<NoInfer<State> | void>;
-}): Event<State>;
+}): EventAsReturnType<State>;
 export function condition<State>(options: {
   source: Store<State>;
   if: ((payload: State) => boolean) | Store<boolean> | State;
@@ -47,7 +48,7 @@ export function condition<State>(options: {
   source: Event<State>;
   if: ((payload: State) => boolean) | Store<boolean> | State;
   else: Unit<NoInfer<State> | void>;
-}): Event<State>;
+}): EventAsReturnType<State>;
 export function condition<State>(options: {
   source: Store<State>;
   if: ((payload: State) => boolean) | Store<boolean> | State;
@@ -65,7 +66,7 @@ export function condition<State>(options: {
   if: ((payload: State) => boolean) | Store<boolean> | State;
   then: Unit<NoInfer<State> | void>;
   else: Unit<NoInfer<State> | void>;
-}): Event<State>;
+}): EventAsReturnType<State>;
 export function condition<State>(options: {
   if: ((payload: State) => boolean) | Store<boolean> | State;
   then: Unit<NoInfer<State> | void>;
