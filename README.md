@@ -457,6 +457,6 @@ serverActionReceived({ type: 'another' });
 ## How to release
 
 1. Make changes with PullRequests
-1. Increment verision in [package.json](./package.json)
+1. Set verision in [package.json](./package.json) from Draft release
 1. Wait for updates of Draft release with github actions
 1. Publish release and wait for publish-to-npm action
