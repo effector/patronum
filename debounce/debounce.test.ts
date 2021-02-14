@@ -3,6 +3,45 @@ import { createStore, createEvent, createEffect, createDomain } from 'effector';
 import { wait } from '../test-library';
 import { debounce } from '.';
 
+describe('arguments validation', () => {
+  test('event, effect and store is allowed as source', () => {
+    debounce({ source: createStore(0), timeout: 10 });
+    debounce({ source: createEvent(), timeout: 10 });
+    debounce({ source: createEffect(), timeout: 10 });
+  });
+
+  test('domain is not allowed', () => {
+    expect(() =>
+      debounce({ source: createDomain(), timeout: 10 }),
+    ).toThrowError();
+  });
+
+  test('negative timeout is wrong', () => {
+    expect(() => debounce({ source: createEvent(), timeout: -1 })).toThrowError(
+      /must be positive/,
+    );
+  });
+
+  test('zero timeout is allowed', () => {
+    debounce({ source: createEvent(), timeout: 0 });
+  });
+
+  test('NaN timeout is wrong', () => {
+    expect(() =>
+      debounce({ source: createEvent(), timeout: Number.NaN }),
+    ).toThrowError(/must be positive/);
+  });
+
+  test('Infinity timeout is wrong', () => {
+    expect(() =>
+      debounce({ source: createEvent(), timeout: Infinity }),
+    ).toThrowError(/must be positive/);
+    expect(() =>
+      debounce({ source: createEvent(), timeout: -Infinity }),
+    ).toThrowError(/must be positive/);
+  });
+});
+
 describe('triple trigger one wait', () => {
   test('event', async () => {
     const watcher = jest.fn();
