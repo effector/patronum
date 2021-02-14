@@ -52,7 +52,7 @@ function delay(argument) {
   });
 
   forward({
-    from: timerFx.doneData.map((payload) => payload.result),
+    from: timerFx.doneData,
     to: target,
   });
 
