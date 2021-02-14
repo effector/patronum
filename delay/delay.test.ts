@@ -35,6 +35,28 @@ test('delay event with number', async () => {
   `);
 });
 
+test('delay event with number with target', async () => {
+  const source = createEvent();
+  const target = createEvent();
+  delay({ source, timeout: 100, target });
+  const fn = jest.fn();
+  target.watch(fn);
+
+  source(1);
+  const start = time();
+  expect(fn).toBeCalledTimes(0);
+
+  await waitFor(target);
+  expect(start.diff()).toBeCloseWithThreshold(100, TIMER_THRESHOLD);
+  expect(fn).toBeCalledTimes(1);
+
+  expect(argumentHistory(fn)).toMatchInlineSnapshot(`
+    Array [
+      1,
+    ]
+  `);
+});
+
 test('double delay event with number', async () => {
   const source = createEvent();
   const delayed = delay({ source, timeout: 100 });
