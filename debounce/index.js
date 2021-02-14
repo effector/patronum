@@ -12,9 +12,14 @@ function debounce(argument) {
     'sid',
   ]);
 
-  if (!is.unit(source)) throw new Error('source must be unit from effector');
-  if (typeof timeout !== 'number' || timeout < 0)
-    throw new Error('timeout must be positive number or zero');
+  if (!is.unit(source))
+    throw new TypeError('source must be unit from effector');
+  if (is.domain(source)) throw new TypeError('source cannot be domain');
+
+  if (typeof timeout !== 'number' || timeout < 0 || !Number.isFinite(timeout))
+    throw new Error(
+      `timeout must be positive number or zero. Received: "${timeout}"`,
+    );
 
   const actualName = name || source.shortName || 'unknown';
 
