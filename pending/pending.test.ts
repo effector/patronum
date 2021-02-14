@@ -6,6 +6,35 @@ test('throw when no passed arguments', () => {
   expect(() => pending({} as any)).toThrowError(/should be passed/);
 });
 
+describe('strategies', () => {
+  test('some', () => {
+    const fx1 = createEffect(() => new Promise((res) => setTimeout(res, 1)));
+    const fx2 = createEffect(() => new Promise((res) => setTimeout(res, 1)));
+    const $pending = pending({ effects: [fx1, fx2], of: 'some' });
+    expect($pending.getState()).toBeFalsy();
+
+    fx1();
+    expect($pending.getState()).toBeTruthy();
+  });
+
+  test('every', () => {
+    const fx1 = createEffect(() => new Promise((res) => setTimeout(res, 1)));
+    const fx2 = createEffect(() => new Promise((res) => setTimeout(res, 1)));
+    const fx3 = createEffect(() => new Promise((res) => setTimeout(res, 1)));
+    const $pending = pending({ effects: [fx1, fx2, fx3], of: 'every' });
+    expect($pending.getState()).toBeFalsy();
+
+    fx1();
+    expect($pending.getState()).toBeFalsy();
+
+    fx2();
+    expect($pending.getState()).toBeFalsy();
+
+    fx3();
+    expect($pending.getState()).toBeTruthy();
+  });
+});
+
 describe('effects', () => {
   test('initial at false', async () => {
     const effect = createEffect({
