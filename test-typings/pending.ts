@@ -26,3 +26,10 @@ import { pending } from '../pending';
   // @ts-expect-error
   pending({ effects: [event, store, domain] });
 }
+
+// Accept domain
+{
+  const domain = createDomain();
+
+  expectType<Store<boolean>>(pending({ domain }));
+}
