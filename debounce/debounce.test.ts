@@ -13,7 +13,7 @@ describe('arguments validation', () => {
   test('domain is not allowed', () => {
     expect(() =>
       debounce({ source: createDomain(), timeout: 10 }),
-    ).toThrowError();
+    ).toThrowError(/cannot be domain/);
   });
 
   test('negative timeout is wrong', () => {
