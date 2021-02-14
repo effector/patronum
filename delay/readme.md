@@ -4,20 +4,21 @@
 import { delay } from 'patronum/delay';
 ```
 
-## `delay({ source, timeout: number })`
+## `delay({ source, timeout: number, target })`
 
 ### Formulae
 
 ```ts
-event = delay({ source, timeout: number });
+target = delay({ source, timeout: number, target });
 ```
 
-- When `source` is triggered, wait for `timeout`, then trigger `event` with payload of the `source`
+- When `source` is triggered, wait for `timeout`, then trigger `target` with payload of the `source`
 
 ### Arguments
 
-1. `source` _(`Event<T>` | `Store<T>` | `Effect<T>`)_ — Source unit, data from this unit used to trigger `event` with.
+1. `source` _(`Event<T>` | `Store<T>` | `Effect<T>`)_ — Source unit, data from this unit used to trigger `target` with.
 1. `timeout` _(`number`)_ — time to wait before trigger `event`
+1. `target` _(`Event<T>` | `Store<T>` | `Effect<T`>)_ — Optional. Target unit, that should be called after delay.
 
 ### Returns
 
@@ -39,7 +40,7 @@ trigger('hello');
 // => triggered hello
 ```
 
-## `delay({ source, timeout: Function })`
+## `delay({ source, timeout: Function, target })`
 
 ### Motivation
 
@@ -49,15 +50,16 @@ It is useful when you know that calculations requires more time if you have more
 ### Formulae
 
 ```ts
-event = delay({ source, timeout: Function });
+target = delay({ source, timeout: Function, target });
 ```
 
-- When `source` is triggered, call `timeout` with payload to get the timeout for delay, then trigger `event` with payload of the `source`
+- When `source` is triggered, call `timeout` with payload to get the timeout for delay, then trigger `target` with payload of the `source`
 
 ### Arguments
 
-1. `source` _(`Event<T>` | `Store<T>` | `Effect<T>`)_ — Source unit, data from this unit used to trigger `event` with.
+1. `source` _(`Event<T>` | `Store<T>` | `Effect<T>`)_ — Source unit, data from this unit used to trigger `target` with.
 1. `timeout` _(`(payload: T) => number`)_ — Calculate delay for each `source` call. Receives the payload of `source` as argument. Should return `number` — delay in milliseconds.
+1. `target` _(`Event<T>` | `Store<T>` | `Effect<T`>)_ — Optional. Target unit, that should be called after delay.
 
 ### Example
 
@@ -66,11 +68,13 @@ import { createEvent, createStore } from 'effector';
 import { delay } from 'patronum/delay';
 
 const update = createEvent<string>();
+const logDelayed = createEvent<string>();
 const $data = createStore('');
 
-const logDelayed = delay({
+delay({
   source: $data,
   timeout: (string) => string.length * 100,
+  target: logDelayed,
 });
 
 logDelayed.watch((data) => console.log('log', data));
@@ -84,7 +88,7 @@ update('!');
 // => log !
 ```
 
-## `delay({ source, timeout: Store<T> })`
+## `delay({ source, timeout: Store<T>, target })`
 
 ### Motivation
 
@@ -94,15 +98,16 @@ It is useful when you writing music editor and need dynamic delay for your event
 ### Formulae
 
 ```ts
-event = delay({ source, timeout: $store });
+target = delay({ source, timeout: $store, target });
 ```
 
-- When `source` is triggered, read timeout from `timeout` store, then trigger `event` with payload of the `source`
+- When `source` is triggered, read timeout from `timeout` store, then trigger `target` with payload of the `source`
 
 ### Arguments
 
-1. `source` _(`Event<T>` | `Store<T>` | `Effect<T>`)_ — Source unit, data from this unit used to trigger `event` with.
+1. `source` _(`Event<T>` | `Store<T>` | `Effect<T>`)_ — Source unit, data from this unit used to trigger `target` with.
 1. `timeout` _(`Store<number>`)_ — Store with number — delay in milliseconds.
+1. `target` _(`Event<T>` | `Store<T>` | `Effect<T`>)_ — Optional. Target unit, that should be called after delay.
 
 ### Example
 

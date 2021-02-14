@@ -27,6 +27,31 @@ test('throttle works in forked scope', async () => {
   `);
 });
 
+test('throttle works in forked scope with target', async () => {
+  const app = createDomain();
+  const source = app.createEvent();
+  const target = app.createEvent();
+
+  const $counter = app.createStore(0, { sid: '$counter' });
+
+  delay({ source, timeout: 40, target });
+
+  $counter.on(target, (value) => value + 1);
+
+  const scope = fork(app);
+
+  await allSettled(source, {
+    scope,
+    params: undefined,
+  });
+
+  expect(serialize(scope)).toMatchInlineSnapshot(`
+    Object {
+      "$counter": 1,
+    }
+  `);
+});
+
 test('throttle do not affect another forks', async () => {
   const app = createDomain();
   const $counter = app.createStore(0, { sid: '$counter' });

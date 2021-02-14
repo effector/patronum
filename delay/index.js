@@ -2,20 +2,32 @@ const { createEffect, createEvent, forward, is, sample } = require('effector');
 const { readConfig } = require('../library');
 
 function delay(argument) {
-  const { source, timeout, loc, name = 'unknown', sid } = readConfig(argument, [
-    'source',
-    'timeout',
+  const {
+    loc,
+    name = 'unknown',
+    sid,
 
+    source,
+    timeout,
+    target = createEvent({ name: `${name}Delayed`, sid, loc }),
+  } = readConfig(argument, [
     'loc',
     'sid',
     'name',
+
+    'source',
+    'timeout',
+    'target',
   ]);
 
   if (!is.unit(source))
     throw new TypeError('source must be a unit from effector');
+
+  if (!is.unit(target))
+    throw new TypeError('target must be a unit from effector');
+
   const ms = validateTimeout(timeout);
 
-  const tick = createEvent({ name: `${name}Delayed`, sid, loc });
   const timerFx = createEffect({
     config: { name: `${name}DelayTimer`, loc },
     handler: ({ payload, milliseconds }) =>
@@ -40,11 +52,11 @@ function delay(argument) {
   });
 
   forward({
-    from: timerFx.done.map((payload) => payload.result),
-    to: tick,
+    from: timerFx.doneData,
+    to: target,
   });
 
-  return tick;
+  return target;
 }
 
 module.exports = { delay };
