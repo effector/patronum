@@ -2,7 +2,7 @@
 
 function readProperties(part, target, properties) {
   properties
-    .filter((name) => Boolean(part[name]))
+    .filter((name) => typeof part[name] !== 'undefined')
     .forEach((name) => {
       target[name] = part[name];
     });
