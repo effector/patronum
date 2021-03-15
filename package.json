@@ -11,7 +11,9 @@
     "commit": "git-cz",
     "format": "prettier --write \"./src/**/**.{ts,tsx,js,jsx,json}\"",
     "lint": "eslint ./",
-    "prepublishOnly": "node ./.scripts/build.js && node ./.scripts/rollup.js && prettier --write ./babel-preset-plugins.json"
+    "build:methods": "node ./.scripts/build.js && prettier --config ./.prettierrc --write ./babel-preset-plugins.json",
+    "build:cjs": "node ./.scripts/rollup.js",
+    "prepublishOnly": "yarn build:methods && yarn build:cjs"
   },
   "files": [
     "*/*.d.ts",
@@ -29,14 +31,7 @@
     "type": "git",
     "url": "git+https://github.com/effector/patronum.git"
   },
-  "keywords": [
-    "babel-preset",
-    "effector",
-    "lib",
-    "modules",
-    "stdlib",
-    "util"
-  ],
+  "keywords": ["babel-preset", "effector", "lib", "modules", "stdlib", "util"],
   "author": "Sergey Sova <mail@sergeysova.com> (https://sergeysova.com/)",
   "license": "MIT",
   "bugs": {
@@ -61,7 +56,7 @@
     "camel-case": "^4.1.1",
     "commitizen": "4.0.3",
     "cz-conventional-changelog": "3.0.2",
-    "effector": "^21.4.0",
+    "effector": "^21.8.7",
     "eslint": "^7.9.0",
     "globby": "^11.0.0",
     "husky": "3.1.0",
@@ -71,10 +66,10 @@
     "rollup": "^2.32.1",
     "rollup-plugin-terser": "^7.0.2",
     "tsd": "^0.13.1",
-    "typescript": "^4.0.3"
+    "typescript": "^4.2.3"
   },
   "peerDependencies": {
-    "effector": "^21.4.0"
+    "effector": "^21.8.0"
   },
   "config": {
     "commitizen": {
