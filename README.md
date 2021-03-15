@@ -52,11 +52,21 @@ import { inFlight } from 'patronum/in-flight';
 
 Also use can import it from index:
 
-> Be careful, with this import method, all functions will be at your bundle
+> Be careful, with this import method, all functions can be at your bundle
 
 ```ts
 import { delay, inFlight } from 'patronum';
 ```
+
+### Create React App and Macros support
+
+Just import from `patronum/macro`, and imports will be replaced to full qualified:
+
+```ts
+import { status, splitMap, combineEvents } from 'patronum/macro'
+```
+
+> Warning: babel-plugin-macros do not support `import * as name`!
 
 ## Migration guide
 

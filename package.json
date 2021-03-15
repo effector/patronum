@@ -1,6 +1,6 @@
 {
   "name": "patronum",
-  "version": "1.1.0",
+  "version": "1.2.0-next",
   "description": "☄️ Effector utility library delivering modularity and convenience",
   "main": "patronum.cjs.js",
   "types": "index.d.ts",
