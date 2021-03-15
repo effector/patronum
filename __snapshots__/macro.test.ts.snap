@@ -2,7 +2,8 @@
 
 exports[`macro with attachCreators: with attachCreators 1`] = `
 
-import { status } from "patronum/status"; const $status = status({ effect });
+import { status } from "patronum/status";
+const $status = status({ effect });
 
       ↓ ↓ ↓ ↓ ↓ ↓
 
@@ -15,11 +16,11 @@ const $status = status({
   config: {
     loc: {
       file: _effectorFileName,
-      line: 1,
-      column: 58,
+      line: 2,
+      column: 16,
     },
     name: '$status',
-    sid: 'inq62s',
+    sid: 'j4rpgh',
   },
 });
 
@@ -28,7 +29,8 @@ const $status = status({
 
 exports[`macro with fabrics and root import: with fabrics and root import 1`] = `
 
-import { status } from "patronum"; const $status = status({ effect });
+import { status } from "patronum";
+const $status = status({ effect });
 
       ↓ ↓ ↓ ↓ ↓ ↓
 
@@ -36,7 +38,7 @@ var _effectorFileName = '/macro.test.ts';
 import { withFactory } from 'effector';
 import { status } from 'patronum';
 const $status = withFactory({
-  sid: 'inq5wr',
+  sid: 'j4rpgh',
   fn: () =>
     status({
       effect,
@@ -45,8 +47,8 @@ const $status = withFactory({
   method: 'status',
   loc: {
     file: _effectorFileName,
-    line: 1,
-    column: 51,
+    line: 2,
+    column: 16,
   },
 });
 
@@ -55,7 +57,8 @@ const $status = withFactory({
 
 exports[`macro with fabrics: with fabrics 1`] = `
 
-import { status } from "patronum/status"; const $status = status({ effect });
+import { status } from "patronum/status";
+const $status = status({ effect });
 
       ↓ ↓ ↓ ↓ ↓ ↓
 
@@ -63,7 +66,7 @@ var _effectorFileName = '/macro.test.ts';
 import { withFactory } from 'effector';
 import { status } from 'patronum/status';
 const $status = withFactory({
-  sid: 'inq62s',
+  sid: 'j4rpgh',
   fn: () =>
     status({
       effect,
@@ -72,15 +75,15 @@ const $status = withFactory({
   method: 'status',
   loc: {
     file: _effectorFileName,
-    line: 1,
-    column: 58,
+    line: 2,
+    column: 16,
   },
 });
 
 
 `;
 
-exports[`macros renames import: renames import 1`] = `
+exports[`macros import from root and rename import: import from root and rename import 1`] = `
 
 import { status, debounce } from "./macro";
 const $status = status({ effect });
@@ -110,7 +113,7 @@ const last = withFactory({
 
 `;
 
-exports[`macros with macro: with macro 1`] = `
+exports[`macros import from root: import from root 1`] = `
 
 import { status, debounce } from "./macro";
 const $status = status({ effect });
@@ -120,6 +123,66 @@ const last = debounce({ source: wow, timeout: 10 });
 
 import { debounce as _debounce } from 'patronum';
 import { status as _status } from 'patronum';
+import { withFactory } from 'effector';
+const $status = withFactory({
+  sid: 'j4rpgh',
+  fn: () =>
+    _status({
+      effect,
+    }),
+});
+const last = withFactory({
+  sid: '-flsuql',
+  fn: () =>
+    _debounce({
+      source: wow,
+      timeout: 10,
+    }),
+});
+
+
+`;
+
+exports[`macros renames import: renames import 1`] = `
+
+import { status, debounce } from "./macro";
+const $status = status({ effect });
+const last = debounce({ source: wow, timeout: 10 });
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+import { debounce as _debounce } from '@effector/patronum/debounce';
+import { status as _status } from '@effector/patronum/status';
+import { withFactory } from 'effector';
+const $status = withFactory({
+  sid: 'j4rpgh',
+  fn: () =>
+    _status({
+      effect,
+    }),
+});
+const last = withFactory({
+  sid: '-flsuql',
+  fn: () =>
+    _debounce({
+      source: wow,
+      timeout: 10,
+    }),
+});
+
+
+`;
+
+exports[`macros with macro: with macro 1`] = `
+
+import { status, debounce } from "./macro";
+const $status = status({ effect });
+const last = debounce({ source: wow, timeout: 10 });
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+import { debounce as _debounce } from 'patronum/debounce';
+import { status as _status } from 'patronum/status';
 import { withFactory } from 'effector';
 const $status = withFactory({
   sid: 'j4rpgh',

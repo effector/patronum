@@ -3,7 +3,7 @@ const { createMacro } = require('babel-plugin-macros');
 const { addNamed } = require('@babel/helper-module-imports');
 const { default: traverse } = require('@babel/traverse');
 const babelPlugin = require('effector/babel-plugin');
-const factories = require('./babel-plugin-factories.json');
+const { factories, mapping } = require('./babel-plugin-factories.json');
 
 module.exports = createMacro(patronum, {
   configName: 'patronum',
@@ -13,12 +13,15 @@ function patronum({
   references,
   state,
   babel,
-  config: { importModuleName = 'patronum' } = {},
+  config: { importModuleName = 'patronum', importFromRoot = false } = {},
 }) {
   const program = state.file.path;
 
   Object.keys(references).forEach((referenceName) => {
-    const id = addNamed(program, referenceName, importModuleName, {
+    const methodImportPath = importFromRoot
+      ? importModuleName
+      : importModuleName + '/' + mapping[referenceName];
+    const id = addNamed(program, referenceName, methodImportPath, {
       nameHint: referenceName,
     });
 

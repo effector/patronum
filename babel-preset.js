@@ -1,4 +1,4 @@
-const factories = require('./babel-plugin-factories.json');
+const { factories } = require('./babel-plugin-factories.json');
 
 module.exports = (_api, _options, _dirname) => ({
   plugins: [

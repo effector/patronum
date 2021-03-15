@@ -1,16 +1,33 @@
-[
-  "patronum",
-  "patronum/combine-events",
-  "patronum/condition",
-  "patronum/debounce",
-  "patronum/delay",
-  "patronum/every",
-  "patronum/in-flight",
-  "patronum/pending",
-  "patronum/reshape",
-  "patronum/some",
-  "patronum/split-map",
-  "patronum/spread",
-  "patronum/status",
-  "patronum/throttle"
-]
+{
+  "factories": [
+    "patronum",
+    "patronum/combine-events",
+    "patronum/condition",
+    "patronum/debounce",
+    "patronum/delay",
+    "patronum/every",
+    "patronum/in-flight",
+    "patronum/pending",
+    "patronum/reshape",
+    "patronum/some",
+    "patronum/split-map",
+    "patronum/spread",
+    "patronum/status",
+    "patronum/throttle"
+  ],
+  "mapping": {
+    "combineEvents": "combine-events",
+    "condition": "condition",
+    "debounce": "debounce",
+    "delay": "delay",
+    "every": "every",
+    "inFlight": "in-flight",
+    "pending": "pending",
+    "reshape": "reshape",
+    "some": "some",
+    "splitMap": "split-map",
+    "spread": "spread",
+    "status": "status",
+    "throttle": "throttle"
+  }
+}

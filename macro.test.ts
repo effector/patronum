@@ -1,5 +1,15 @@
 import pluginTester from 'babel-plugin-tester';
-import factories from './babel-plugin-factories.json';
+import settings from './babel-plugin-factories.json';
+
+const { factories } = settings as any;
+
+const statusUsage = `
+import { status } from "patronum/status";
+const $status = status({ effect });`;
+
+const statusUsageRoot = `
+import { status } from "patronum";
+const $status = status({ effect });`;
 
 pluginTester({
   title: 'macro',
@@ -11,7 +21,7 @@ pluginTester({
   snapshot: true,
   tests: {
     'with attachCreators': {
-      code: `import { status } from "patronum/status"; const $status = status({ effect });`,
+      code: statusUsage,
       pluginOptions: {
         importName: 'patronum/status',
         attachCreators: ['status'],
@@ -20,14 +30,14 @@ pluginTester({
       },
     },
     'with fabrics': {
-      code: `import { status } from "patronum/status"; const $status = status({ effect });`,
+      code: statusUsage,
       pluginOptions: {
         factories,
         addLoc: true,
       },
     },
     'with fabrics and root import': {
-      code: `import { status } from "patronum"; const $status = status({ effect });`,
+      code: statusUsageRoot,
       pluginOptions: {
         factories,
         addLoc: true,
@@ -57,6 +67,21 @@ pluginTester({
       code: macroStatusAndDebounce,
       pluginOptions: {
         patronum: { importModuleName: '@effector/patronum' },
+      },
+    },
+    'import from root': {
+      code: macroStatusAndDebounce,
+      pluginOptions: {
+        patronum: { importFromRoot: true },
+      },
+    },
+    'import from root and rename import': {
+      code: macroStatusAndDebounce,
+      pluginOptions: {
+        patronum: {
+          importModuleName: '@effector/patronum',
+          importFromRoot: true,
+        },
       },
     },
   },

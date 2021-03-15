@@ -16,22 +16,32 @@
     "prepublishOnly": "yarn build:methods && yarn build:cjs"
   },
   "files": [
-    "*/*.d.ts",
-    "*/*.js",
     "!.scripts",
     "!*.test.js",
+    "*/*.d.ts",
+    "*/*.js",
     "babel-plugin-factories.json",
     "babel-preset.js",
     "index.d.ts",
-    "patronum.cjs.js",
+    "library.js",
+    "macro.d.ts",
+    "macro.js",
     "patronum.cjs.js.map",
-    "library.js"
+    "patronum.cjs.js"
   ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/effector/patronum.git"
   },
-  "keywords": ["babel-preset", "effector", "lib", "modules", "stdlib", "util"],
+  "keywords": [
+    "babel-preset",
+    "effector",
+    "lib",
+    "modules",
+    "stdlib",
+    "util",
+    "macro"
+  ],
   "author": "Sergey Sova <mail@sergeysova.com> (https://sergeysova.com/)",
   "license": "MIT",
   "bugs": {
