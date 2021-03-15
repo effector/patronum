@@ -11,7 +11,7 @@
     "commit": "git-cz",
     "format": "prettier --write \"./src/**/**.{ts,tsx,js,jsx,json}\"",
     "lint": "eslint ./",
-    "build:methods": "node ./.scripts/build.js && prettier --config ./.prettierrc --write ./babel-preset-plugins.json",
+    "build:methods": "node ./.scripts/build.js && prettier --config ./.prettierrc --write ./babel-plugin-factories.json",
     "build:cjs": "node ./.scripts/rollup.js",
     "prepublishOnly": "yarn build:methods && yarn build:cjs"
   },
@@ -20,7 +20,7 @@
     "*/*.js",
     "!.scripts",
     "!*.test.js",
-    "babel-preset-plugins.json",
+    "babel-plugin-factories.json",
     "babel-preset.js",
     "index.d.ts",
     "patronum.cjs.js",
@@ -53,6 +53,7 @@
     "@rollup/plugin-node-resolve": "^9.0.0",
     "@types/jest": "^26.0.14",
     "@typescript-eslint/parser": "^4.2.0",
+    "babel-plugin-macros": "^3.0.1",
     "babel-plugin-tester": "^10.0.0",
     "camel-case": "^4.1.1",
     "commitizen": "4.0.3",
@@ -77,5 +78,8 @@
       "path": "cz-conventional-changelog"
     }
   },
-  "dependencies": {}
+  "dependencies": {
+    "@babel/helper-module-imports": "^7.12.13",
+    "@babel/traverse": "^7.13.0"
+  }
 }

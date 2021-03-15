@@ -67,16 +67,16 @@ test('throttle do not affect another forks', async () => {
 
   expect(serialize(scopeA)).toMatchInlineSnapshot(`
     Object {
-      "35aewt": 0,
-      "jq7xe": 0,
-      "l6jq27": 2,
+      "2o8sim": 0,
+      "2olj7": 0,
+      "kpi3o0": 2,
     }
   `);
   expect(serialize(scopeB)).toMatchInlineSnapshot(`
     Object {
-      "35aewt": 0,
-      "jq7xe": 0,
-      "l6jq27": 200,
+      "2o8sim": 0,
+      "2olj7": 0,
+      "kpi3o0": 200,
     }
   `);
 });
@@ -109,9 +109,9 @@ test('throttle do not affect original store value', async () => {
 
   expect(serialize(scope)).toMatchInlineSnapshot(`
     Object {
-      "-z6isiu": 2,
-      "f7rrbh": 0,
-      "htbyaw": 0,
+      "6g90u8": 0,
+      "dsmw4w": 0,
+      "ohibzm": 2,
     }
   `);
 

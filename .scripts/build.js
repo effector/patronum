@@ -36,31 +36,13 @@ async function createTypings(names) {
 }
 
 async function createPresetPlugins(names) {
-  const patronum = [
-    'effector/babel-plugin',
-    {
-      importName: 'patronum',
-      attachCreators: names.sort().map(camelCase),
-      noDefaults: true,
-    },
-    'patronum',
-  ];
+  const methods = names.sort().map((method) => `patronum/${method}`);
 
-  const methods = names.sort().map((method) => [
-    'effector/babel-plugin',
-    {
-      importName: `patronum/${method}`,
-      attachCreators: [camelCase(method)],
-      noDefaults: true,
-    },
-    `patronum/${method}`,
-  ]);
-
-  const plugins = [patronum, ...methods];
+  const factories = ['patronum', ...methods];
 
   await writeFile(
-    './babel-preset-plugins.json',
-    JSON.stringify(plugins, null, 2),
+    './babel-plugin-factories.json',
+    JSON.stringify(factories, null, 2),
   );
 }
 

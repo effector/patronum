@@ -1,0 +1,16 @@
+[
+  "patronum",
+  "patronum/combine-events",
+  "patronum/condition",
+  "patronum/debounce",
+  "patronum/delay",
+  "patronum/every",
+  "patronum/in-flight",
+  "patronum/pending",
+  "patronum/reshape",
+  "patronum/some",
+  "patronum/split-map",
+  "patronum/spread",
+  "patronum/status",
+  "patronum/throttle"
+]
