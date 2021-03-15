@@ -24,7 +24,6 @@ test('throttle works in forked scope', async () => {
       "-9xrduy": 0,
       "-q07q39": 0,
       "ij1gv4": 0,
-      "ryha7v": false,
     }
   `);
 });
@@ -70,7 +69,6 @@ test('throttle do not affect another forks', async () => {
     Object {
       "-jcx1ie": 0,
       "66ukpz": 2,
-      "ryha7v": false,
       "yheth1": 0,
     }
   `);
@@ -78,7 +76,6 @@ test('throttle do not affect another forks', async () => {
     Object {
       "-jcx1ie": 0,
       "66ukpz": 200,
-      "ryha7v": false,
       "yheth1": 0,
     }
   `);
@@ -115,7 +112,6 @@ test('throttle do not affect original store value', async () => {
       "-4ovi4b": 0,
       "-lvnp40": 0,
       "kuw442": 2,
-      "ryha7v": false,
     }
   `);
 

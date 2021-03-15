@@ -22,7 +22,6 @@ test('throttle works in forked scope', async () => {
   expect(serialize(scope)).toMatchInlineSnapshot(`
     Object {
       "-b0ikr1": 1,
-      "-lkk1fg": true,
       "-vkjewi": 0,
       "-wlfbo8": 0,
     }
@@ -68,7 +67,6 @@ test('throttle do not affect another forks', async () => {
 
   expect(serialize(scopeA)).toMatchInlineSnapshot(`
     Object {
-      "-lkk1fg": true,
       "35aewt": 0,
       "jq7xe": 0,
       "l6jq27": 2,
@@ -76,7 +74,6 @@ test('throttle do not affect another forks', async () => {
   `);
   expect(serialize(scopeB)).toMatchInlineSnapshot(`
     Object {
-      "-lkk1fg": true,
       "35aewt": 0,
       "jq7xe": 0,
       "l6jq27": 200,
@@ -112,7 +109,6 @@ test('throttle do not affect original store value', async () => {
 
   expect(serialize(scope)).toMatchInlineSnapshot(`
     Object {
-      "-lkk1fg": true,
       "-z6isiu": 2,
       "f7rrbh": 0,
       "htbyaw": 0,
