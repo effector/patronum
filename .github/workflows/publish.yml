@@ -16,7 +16,14 @@ jobs:
         with:
           node-version: 14.x
 
+      - uses: actions/cache@v2
+        id: yarn-cache
+        with:
+          path: './node_modules'
+          key: node-14-modules-${{ hashFiles('./yarn.lock') }}
+
       - name: Install dependencies
+        if: steps.yarn-cache.outputs.cache-hit != 'true'
         run: yarn install --frozen-lockfile
 
       - name: Run tests
