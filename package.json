@@ -39,7 +39,7 @@
   },
   "homepage": "https://github.com/effector/patronum#readme",
   "devDependencies": {
-    "@babel/core": "^7.10.2",
+    "@babel/core": "^7.13.10",
     "@babel/preset-env": "^7.10.2",
     "@babel/preset-typescript": "^7.10.1",
     "@commitlint/cli": "8.2.0",
@@ -53,6 +53,7 @@
     "@rollup/plugin-node-resolve": "^9.0.0",
     "@types/jest": "^26.0.14",
     "@typescript-eslint/parser": "^4.2.0",
+    "babel-plugin-tester": "^10.0.0",
     "camel-case": "^4.1.1",
     "commitizen": "4.0.3",
     "cz-conventional-changelog": "3.0.2",

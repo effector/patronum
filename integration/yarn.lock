@@ -1149,10 +1149,10 @@ ecc-jsbn@~0.1.1:
     jsbn "~0.1.0"
     safer-buffer "^2.1.0"
 
-effector@^21.6.0:
-  version "21.6.0"
-  resolved "https://registry.yarnpkg.com/effector/-/effector-21.6.0.tgz#945dc3536a7457de1adb7e5d3601005323c34466"
-  integrity sha512-HQh4KaVt7jP/aGb/7Syki3tfnJ2WiMzS7+dPVBY2L3OZMzmROoPKHwHzJcvI870ysMAavfuT7pAfvujZ+WDLsA==
+effector@^21.8.0:
+  version "21.8.7"
+  resolved "https://registry.yarnpkg.com/effector/-/effector-21.8.7.tgz#7a0a7824145a6b034d8fcb389ea5f0d2ed46041e"
+  integrity sha512-5C5FoXfMfhwNiMSRFjew7JYLDxKq1HiVYKNBqAgfgz+AbS5WMulcWge5DMbn1puHsWeTsJpPfc2k8NQ4kLvrqg==
 
 emittery@^0.7.1:
   version "0.7.2"
@@ -2682,10 +2682,8 @@ path-parse@^1.0.6:
   resolved "https://registry.yarnpkg.com/path-parse/-/path-parse-1.0.6.tgz#d62dbb5679405d72c4737ec58600e9ddcf06d24c"
   integrity sha512-GSmOT2EbHrINBf9SR7CDELwlJ8AENk3Qn7OikK4nFYAu3Ote2+JYNVvkpAEQm3/TLNEJFD/xZJjzyxg3KBWOzw==
 
-patronum@^0.111.0:
-  version "0.111.0"
-  resolved "https://registry.yarnpkg.com/patronum/-/patronum-0.111.0.tgz#1151969ee160c9d599efc8b27d5a63d898c4babf"
-  integrity sha512-jbXMCcVHUZekNfhGMJVOuFY1Na2oJdac23WoINSTyaqMnACEVgg2tiqTQ1h69GHgnNrlwSBRRoPqDJ3HfUWBKQ==
+patronum@../:
+  version "1.1.0"
 
 performance-now@^2.1.0:
   version "2.1.0"
