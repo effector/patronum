@@ -1,20 +1,16 @@
 const { is, guard, createEvent } = require('effector');
-const { readConfig } = require('../library');
 
 /**
  * if — (payload: T) => boolean,
  * if — Store<boolean>
  * if — T
  */
-function condition(argument) {
-  const {
-    name = 'unknown',
-    source = createEvent({ name: `${name}Source` }),
-    if: test,
-    then: thenBranch,
-    else: elseBranch,
-  } = readConfig(argument, ['name', 'source', 'if', 'then', 'else']);
-
+function condition({
+  if: test,
+  then: thenBranch,
+  else: elseBranch,
+  source = createEvent({ named: 'source' }),
+}) {
   const checker =
     is.unit(test) || isFunction(test) ? test : (value) => value === test;
 

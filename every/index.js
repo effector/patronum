@@ -1,9 +1,6 @@
 const { combine } = require('effector');
-const { readConfig } = require('../library');
 
-function every(argument) {
-  const { predicate, stores } = readConfig(argument, ['predicate', 'stores']);
-
+function every({ predicate, stores }) {
   const checker = isFunction(predicate)
     ? predicate
     : (value) => value === predicate;

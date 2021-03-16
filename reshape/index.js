@@ -1,7 +1,4 @@
-const { readConfig } = require('../library');
-
-function reshape(argument) {
-  const { source, shape } = readConfig(argument, ['source', 'shape']);
+function reshape({ source, shape }) {
   const result = {};
 
   for (const key in shape) {

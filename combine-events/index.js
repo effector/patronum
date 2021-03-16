@@ -7,23 +7,16 @@ const {
   withRegion,
   is,
 } = require('effector');
-const { readConfig } = require('../library');
 
 const throwError = (message) => {
   throw new Error(message);
 };
 
-function combineEvents(argument) {
-  const {
-    loc,
-    name = 'unknown',
-    events,
-    reset,
-    target: givenTarget,
-  } = readConfig(argument, ['loc', 'name', 'events', 'reset', 'target']);
-
-  const target = givenTarget || createEvent({ name });
-
+function combineEvents({
+  events,
+  reset,
+  target = createEvent({ named: 'target' }),
+}) {
   if (!is.unit(target)) throwError('target should be a unit');
   if (reset && !is.unit(reset)) throwError('reset should be a unit');
 
@@ -32,11 +25,8 @@ function combineEvents(argument) {
     const keys = Object.keys(events);
     const defaultShape = isArray ? [...keys].fill() : {};
 
-    const $counter = createStore(keys.length, { name: `${name}Counter`, loc });
-    const $results = createStore(defaultShape, {
-      name: `${name}Results`,
-      loc,
-    });
+    const $counter = createStore(keys.length, { named: 'counter' });
+    const $results = createStore(defaultShape, { named: 'results' });
 
     $counter.reset(sample(target));
     $results.reset(target);

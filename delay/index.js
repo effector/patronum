@@ -1,25 +1,7 @@
 const { createEffect, createEvent, forward, is, sample } = require('effector');
 const { readConfig } = require('../library');
 
-function delay(argument) {
-  const {
-    loc,
-    name = 'unknown',
-    sid,
-
-    source,
-    timeout,
-    target = createEvent({ name: `${name}Delayed`, sid, loc }),
-  } = readConfig(argument, [
-    'loc',
-    'sid',
-    'name',
-
-    'source',
-    'timeout',
-    'target',
-  ]);
-
+function delay({ source, timeout, target = createEvent() }) {
   if (!is.unit(source))
     throw new TypeError('source must be a unit from effector');
 
@@ -29,7 +11,7 @@ function delay(argument) {
   const ms = validateTimeout(timeout);
 
   const timerFx = createEffect({
-    config: { name: `${name}DelayTimer`, loc },
+    named: 'timerFx',
     handler: ({ payload, milliseconds }) =>
       new Promise((resolve) => {
         setTimeout(resolve, milliseconds, payload);

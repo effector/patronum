@@ -1,8 +1,6 @@
 const { is } = require('effector');
-const { readConfig } = require('../library');
 
-function splitMap(argument) {
-  const { source, cases } = readConfig(argument, ['source', 'cases']);
+function splitMap({ source, cases }) {
   const result = {};
 
   let current = is.store(source) ? source.updates : source;

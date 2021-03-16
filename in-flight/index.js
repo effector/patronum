@@ -1,18 +1,8 @@
 const { combine } = require('effector');
-const { readConfig } = require('../library');
 
-function inFlight(argument) {
-  const { effects, domain, sid, name, loc } = readConfig(argument, [
-    'effects',
-    'domain',
-
-    'sid',
-    'name',
-    'loc',
-  ]);
-
+function inFlight({ effects, domain }) {
   if (domain) {
-    const $inFlight = domain.createStore(0, { sid, name, loc });
+    const $inFlight = domain.createStore(0);
 
     domain.onCreateEffect((fx) => {
       $inFlight

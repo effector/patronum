@@ -1,6 +1,5 @@
 /* eslint-disable no-param-reassign */
 const { createEvent, sample, guard } = require('effector');
-const { readConfig } = require('../library');
 
 /**
  * @example
@@ -9,14 +8,7 @@ const { readConfig } = require('../library');
  *   to: spread({targets: { first: targetA, second: targetB } })
  * })
  */
-function spread(argument) {
-  const {
-    loc,
-    name = 'unknown',
-    source = createEvent({ loc, name: `${name}Source` }),
-    targets,
-  } = readConfig(argument, ['loc', 'name', 'source', 'targets']);
-
+function spread({ targets, source = createEvent({ named: 'source' }) }) {
   for (const targetKey in targets) {
     if (targetKey in targets) {
       const hasTargetKey = guard({

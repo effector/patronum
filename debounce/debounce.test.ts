@@ -445,21 +445,21 @@ describe('name assigned from source', () => {
     const source = createEvent();
     const debounced = debounce({ source, timeout: 40 });
 
-    expect(debounced.shortName).toMatchInlineSnapshot(`"sourceDebounceTick"`);
+    expect(debounced.shortName).toMatchInlineSnapshot(`"tick"`);
   });
 
   test('store', () => {
     const $source = createStore(0);
     const debounced = debounce({ source: $source, timeout: 40 });
 
-    expect(debounced.shortName).toMatchInlineSnapshot(`"$sourceDebounceTick"`);
+    expect(debounced.shortName).toMatchInlineSnapshot(`"tick"`);
   });
 
   test('effect', () => {
     const sourceFx = createEffect();
     const debounced = debounce({ source: sourceFx, timeout: 40 });
 
-    expect(debounced.shortName).toMatchInlineSnapshot(`"sourceFxDebounceTick"`);
+    expect(debounced.shortName).toMatchInlineSnapshot(`"tick"`);
   });
 });
 
@@ -468,14 +468,14 @@ describe('name assigned from params', () => {
     const source = createEvent();
     const debounced = debounce({ source, name: 'hello', timeout: 40 });
 
-    expect(debounced.shortName).toMatchInlineSnapshot(`"helloDebounceTick"`);
+    expect(debounced.shortName).toMatchInlineSnapshot(`"tick"`);
   });
 
   test('store', () => {
     const $source = createStore(0);
     const debounced = debounce({ source: $source, name: 'hello', timeout: 40 });
 
-    expect(debounced.shortName).toMatchInlineSnapshot(`"helloDebounceTick"`);
+    expect(debounced.shortName).toMatchInlineSnapshot(`"tick"`);
   });
 
   test('effect', () => {
@@ -486,7 +486,7 @@ describe('name assigned from params', () => {
       timeout: 40,
     });
 
-    expect(debounced.shortName).toMatchInlineSnapshot(`"helloDebounceTick"`);
+    expect(debounced.shortName).toMatchInlineSnapshot(`"tick"`);
   });
 });
 
@@ -496,7 +496,7 @@ describe('name of debounced should not inherit domain', () => {
     const source = domain.createEvent();
     const debounced = debounce({ source, timeout: 40 });
 
-    expect(debounced.shortName).toMatchInlineSnapshot(`"sourceDebounceTick"`);
+    expect(debounced.shortName).toMatchInlineSnapshot(`"tick"`);
   });
 
   test('store', () => {
@@ -504,7 +504,7 @@ describe('name of debounced should not inherit domain', () => {
     const $source = domain.createStore(0);
     const debounced = debounce({ source: $source, timeout: 40 });
 
-    expect(debounced.shortName).toMatchInlineSnapshot(`"$sourceDebounceTick"`);
+    expect(debounced.shortName).toMatchInlineSnapshot(`"tick"`);
   });
 
   test('effect', () => {
@@ -512,7 +512,7 @@ describe('name of debounced should not inherit domain', () => {
     const sourceFx = domain.createEffect();
     const debounced = debounce({ source: sourceFx, timeout: 40 });
 
-    expect(debounced.shortName).toMatchInlineSnapshot(`"sourceFxDebounceTick"`);
+    expect(debounced.shortName).toMatchInlineSnapshot(`"tick"`);
   });
 });
 

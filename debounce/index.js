@@ -1,19 +1,9 @@
 const { is, createEffect, forward, createEvent } = require('effector');
-const { readConfig } = require('../library');
 
-function debounce(argument) {
-  const { source, timeout, target, sid, loc, name } = readConfig(argument, [
-    'source',
-    'timeout',
-    'target',
-
-    'loc',
-    'name',
-    'sid',
-  ]);
-
+function debounce({ source, timeout, target }) {
   if (!is.unit(source))
     throw new TypeError('source must be unit from effector');
+
   if (is.domain(source)) throw new TypeError('source cannot be domain');
 
   if (typeof timeout !== 'number' || timeout < 0 || !Number.isFinite(timeout))
@@ -21,22 +11,13 @@ function debounce(argument) {
       `timeout must be positive number or zero. Received: "${timeout}"`,
     );
 
-  const actualName = name || source.shortName || 'unknown';
-
   let rejectPromise;
   let timeoutId;
 
-  const tick =
-    target ||
-    createEvent({
-      name: `${actualName}DebounceTick`,
-      loc,
-    });
+  const tick = target || createEvent({ named: 'tick' });
 
   const timerFx = createEffect({
-    name: `${actualName}DebounceTimer`,
-    sid,
-    loc,
+    named: 'timerFx',
     handler: (parameter) => {
       clearTimeout(timeoutId);
       if (rejectPromise) rejectPromise();

@@ -1,18 +1,11 @@
 const { combine, is } = require('effector');
-const { readConfig } = require('../library');
 
 const strategies = {
   some: (list) => list.some(Boolean),
   every: (list) => list.every(Boolean),
 };
 
-function pending(argument) {
-  const { effects: rawEffects, domain, of = 'some' } = readConfig(argument, [
-    'effects',
-    'domain',
-    'of',
-  ]);
-
+function pending({ effects: rawEffects, domain, of = 'some' }) {
   if (!is.domain(domain) && !rawEffects)
     throw new TypeError('domain or effects should be passed');
 
