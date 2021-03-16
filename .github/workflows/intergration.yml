@@ -7,7 +7,10 @@ on: [push, pull_request]
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
+
+    outputs:
+      version: ${{ steps.version.outputs.value }}
 
     strategy:
       matrix:
@@ -44,18 +47,30 @@ jobs:
         with:
           cmd: 'jq .version package.json -r'
 
+  integration:
+    needs: build
+    runs-on: ubuntu-18.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Use Node.js 14.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14.x
+          registry-url: 'https://npm.pkg.github.com'
+
       - name: Install integration dependencies
         run: yarn --frozen-lockfile
-        env:
-          working-directory: ./integration
+        working-directory: ./integration
 
       - name: Install patronum to integration package
-        run: yarn add @effector/patronum@${{ steps.version.outputs.value }}
+        run: yarn add @effector/patronum@${{ needs.build.outputs.version }}
+        working-directory: ./integration
         env:
-          working-directory: ./integration
           NODE_AUTH_TOKEN: ${{ secrets.NPM_GITHUB_TOKEN }}
 
       - name: Run intergration tests
         run: yarn test
-        env:
-          working-directory: ./integration
+        working-directory: ./integration
