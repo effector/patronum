@@ -62,7 +62,7 @@ jobs:
           registry-url: 'https://npm.pkg.github.com'
 
       - name: Install integration dependencies
-        run: yarn --frozen-lockfile
+        run: yarn
         working-directory: ./integration/custom
 
       - name: Install patronum to integration package
@@ -90,7 +90,7 @@ jobs:
           registry-url: 'https://npm.pkg.github.com'
 
       - name: Install integration dependencies
-        run: yarn --frozen-lockfile
+        run: yarn
         working-directory: ./integration/cra
 
       - name: Install patronum to integration package
