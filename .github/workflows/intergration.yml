@@ -47,7 +47,7 @@ jobs:
         with:
           cmd: 'jq .version package.json -r'
 
-  integration:
+  custom:
     needs: build
     runs-on: ubuntu-18.04
 
@@ -63,14 +63,42 @@ jobs:
 
       - name: Install integration dependencies
         run: yarn --frozen-lockfile
-        working-directory: ./integration
+        working-directory: ./integration/custom
 
       - name: Install patronum to integration package
         run: yarn add @effector/patronum@${{ needs.build.outputs.version }}
-        working-directory: ./integration
+        working-directory: ./integration/custom
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_GITHUB_TOKEN }}
 
       - name: Run intergration tests
         run: yarn test
-        working-directory: ./integration
+        working-directory: ./integration/custom
+
+  cra:
+    needs: build
+    runs-on: ubuntu-18.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Use Node.js 14.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14.x
+          registry-url: 'https://npm.pkg.github.com'
+
+      - name: Install integration dependencies
+        run: yarn --frozen-lockfile
+        working-directory: ./integration/cra
+
+      - name: Install patronum to integration package
+        run: yarn add @effector/patronum@${{ needs.build.outputs.version }}
+        working-directory: ./integration/cra
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_GITHUB_TOKEN }}
+
+      - name: Run intergration tests
+        run: yarn test
+        working-directory: ./integration/cra
