@@ -29,7 +29,7 @@ test('status has sid', () => {
 
   expect($status.sid).toBeDefined();
   expect($status.sid).not.toBeNull();
-  expect($status.sid).toMatchInlineSnapshot(`null`);
+  expect($status.sid).toMatchInlineSnapshot(`"-o5m1b3ɔstatus"`);
 });
 
 test('pending macro works as expected', () => {
