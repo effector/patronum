@@ -1,7 +1,7 @@
 const { createStore } = require('effector');
 
 function status({ effect, defaultValue = 'initial' }) {
-  const $status = createStore(defaultValue, { named: 'status' });
+  const $status = createStore(defaultValue, { named: 'status', sid: 'status' });
 
   $status
     .on(effect, () => 'pending')
