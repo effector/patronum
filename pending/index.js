@@ -31,7 +31,7 @@ function pending({ effects: rawEffects, domain, of = 'some' }) {
       sid: 'pending',
       named: 'pending',
     },
-  );
+  });
 }
 
 module.exports = { pending };
