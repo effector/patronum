@@ -11,7 +11,11 @@ function patronum({
   references,
   state,
   babel,
-  config: { importModuleName = 'patronum', importFromRoot = false } = {},
+  config: {
+    importModuleName = 'patronum',
+    importFromRoot = false,
+    ...options
+  } = {},
 }) {
   const program = state.file.path;
 
@@ -27,6 +31,7 @@ function patronum({
   });
 
   const instance = babelPlugin(babel, {
+    ...options,
     factories: factories.map((name) =>
       name.replace('patronum', importModuleName),
     ),

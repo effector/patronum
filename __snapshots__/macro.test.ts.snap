@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`macro with attachCreators: with attachCreators 1`] = `
+exports[`effector plugin with attachCreators: with attachCreators 1`] = `
 
 import { status } from "patronum/status";
 const $status = status({ effect });
@@ -27,7 +27,7 @@ const $status = status({
 
 `;
 
-exports[`macro with fabrics and root import: with fabrics and root import 1`] = `
+exports[`effector plugin with fabrics and root import: with fabrics and root import 1`] = `
 
 import { status } from "patronum";
 const $status = status({ effect });
@@ -55,7 +55,7 @@ const $status = withFactory({
 
 `;
 
-exports[`macro with fabrics: with fabrics 1`] = `
+exports[`effector plugin with fabrics: with fabrics 1`] = `
 
 import { status } from "patronum/status";
 const $status = status({ effect });
@@ -108,6 +108,51 @@ const last = withFactory({
       source: wow,
       timeout: 10,
     }),
+});
+
+
+`;
+
+exports[`macros import from root, rename import and add loc: import from root, rename import and add loc 1`] = `
+
+import { status, debounce } from "./macro";
+const $status = status({ effect });
+const last = debounce({ source: wow, timeout: 10 });
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+var _effectorFileName = '/macro.test.ts';
+import { withFactory } from 'effector';
+import { debounce as _debounce } from '@effector/patronum';
+import { status as _status } from '@effector/patronum';
+const $status = withFactory({
+  sid: 'j4rpgh',
+  fn: () =>
+    _status({
+      effect,
+    }),
+  name: '$status',
+  method: 'status',
+  loc: {
+    file: _effectorFileName,
+    line: 2,
+    column: 16,
+  },
+});
+const last = withFactory({
+  sid: '-flsuql',
+  fn: () =>
+    _debounce({
+      source: wow,
+      timeout: 10,
+    }),
+  name: 'last',
+  method: 'debounce',
+  loc: {
+    file: _effectorFileName,
+    line: 3,
+    column: 13,
+  },
 });
 
 

@@ -12,7 +12,7 @@ import { status } from "patronum";
 const $status = status({ effect });`;
 
 pluginTester({
-  title: 'macro',
+  title: 'effector plugin',
   plugin: require('effector/babel-plugin'),
   pluginName: 'effector',
   root: __dirname,
@@ -81,6 +81,17 @@ pluginTester({
         patronum: {
           importModuleName: '@effector/patronum',
           importFromRoot: true,
+          addNames: true,
+        },
+      },
+    },
+    'import from root, rename import and add loc': {
+      code: macroStatusAndDebounce,
+      pluginOptions: {
+        patronum: {
+          importModuleName: '@effector/patronum',
+          importFromRoot: true,
+          addLoc: true,
         },
       },
     },
