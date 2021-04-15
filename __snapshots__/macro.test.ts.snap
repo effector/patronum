@@ -91,9 +91,9 @@ const last = debounce({ source: wow, timeout: 10 });
 
       ↓ ↓ ↓ ↓ ↓ ↓
 
+import { withFactory } from 'effector';
 import { debounce as _debounce } from '@effector/patronum';
 import { status as _status } from '@effector/patronum';
-import { withFactory } from 'effector';
 const $status = withFactory({
   sid: 'j4rpgh',
   fn: () =>
@@ -121,9 +121,9 @@ const last = debounce({ source: wow, timeout: 10 });
 
       ↓ ↓ ↓ ↓ ↓ ↓
 
+import { withFactory } from 'effector';
 import { debounce as _debounce } from 'patronum';
 import { status as _status } from 'patronum';
-import { withFactory } from 'effector';
 const $status = withFactory({
   sid: 'j4rpgh',
   fn: () =>
@@ -151,9 +151,9 @@ const last = debounce({ source: wow, timeout: 10 });
 
       ↓ ↓ ↓ ↓ ↓ ↓
 
+import { withFactory } from 'effector';
 import { debounce as _debounce } from '@effector/patronum/debounce';
 import { status as _status } from '@effector/patronum/status';
-import { withFactory } from 'effector';
 const $status = withFactory({
   sid: 'j4rpgh',
   fn: () =>
@@ -181,9 +181,9 @@ const last = debounce({ source: wow, timeout: 10 });
 
       ↓ ↓ ↓ ↓ ↓ ↓
 
+import { withFactory } from 'effector';
 import { debounce as _debounce } from 'patronum/debounce';
 import { status as _status } from 'patronum/status';
-import { withFactory } from 'effector';
 const $status = withFactory({
   sid: 'j4rpgh',
   fn: () =>
