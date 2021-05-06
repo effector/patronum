@@ -1,7 +1,16 @@
 const { factories } = require('./babel-plugin-factories.json');
 
-module.exports = (_api, _options, _dirname) => ({
-  plugins: [
-    ['effector/babel-plugin', { factories, noDefault: true }, 'patronum'],
-  ],
-});
+module.exports = (_api, { importModuleName } = {}, _dirname) => {
+  const mappedFactories = importModuleName
+    ? factories.map((item) => item.replace('patronum', importModuleName))
+    : factories;
+  return {
+    plugins: [
+      [
+        'effector/babel-plugin',
+        { factories: mappedFactories, noDefault: true },
+        'patronum',
+      ],
+    ],
+  };
+};
