@@ -248,10 +248,11 @@ describe('edge', () => {
   });
 
   test('nested targets', () => {
-    const source = createEvent<{
-      first: string;
-      second: { foo: number; bar: boolean };
-    }>();
+    const source =
+      createEvent<{
+        first: string;
+        second: { foo: number; bar: boolean };
+      }>();
     const targetA = createEvent<string>();
     const targetB = createEvent<number>();
     const targetC = createEvent<boolean>();
@@ -341,10 +342,11 @@ describe('invalid', () => {
   });
 
   test('null/undefined in source', () => {
-    const source = createEvent<null | void | {
-      first: number;
-      second: boolean;
-    }>();
+    const source =
+      createEvent<null | void | {
+        first: number;
+        second: boolean;
+      }>();
     const targetA = createEvent<number>();
     const targetB = createEvent<boolean>();
 

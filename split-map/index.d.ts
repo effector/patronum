@@ -2,7 +2,7 @@ import { Unit, Event } from 'effector';
 
 export function splitMap<
   S,
-  Cases extends Record<string, (payload: S) => any | undefined>
+  Cases extends Record<string, (payload: S) => any | undefined>,
 >(_: {
   source: Unit<S>;
   cases: Cases;

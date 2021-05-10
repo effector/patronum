@@ -11,7 +11,7 @@ export function spread<Payload>(config: {
 
 export function spread<
   Source,
-  Payload extends Source extends Unit<infer S> ? S : never
+  Payload extends Source extends Unit<infer S> ? S : never,
 >(config: {
   source: Source;
   targets: {

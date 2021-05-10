@@ -1,12 +1,12 @@
 import { expectType } from 'tsd';
 import {
-  Store,
-  Event,
-  Effect,
-  createStore,
-  createEvent,
-  createEffect,
   combine,
+  createEffect,
+  createEvent,
+  createStore,
+  Effect,
+  Event,
+  Store,
 } from 'effector';
 import { condition } from '../condition';
 

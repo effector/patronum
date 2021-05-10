@@ -23,10 +23,7 @@ function pending({ effects: rawEffects, domain, of = 'some' }) {
   }
 
   return combine({
-    ɔ: [
-      effects.map((fx) => fx.pending),
-      strategy,
-    ],
+    ɔ: [effects.map((fx) => fx.pending), strategy],
     config: {
       sid: 'pending',
       named: 'pending',

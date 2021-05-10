@@ -98,11 +98,12 @@ import { combineEvents } from '../combine-events';
   const bar = createEvent<number>();
   const baz = createEvent<boolean>();
 
-  const target = createEvent<{
-    foo: string;
-    bar: number;
-    baz: boolean;
-  }>();
+  const target =
+    createEvent<{
+      foo: string;
+      bar: number;
+      baz: boolean;
+    }>();
 
   combineEvents({
     events: { foo, bar, baz },
@@ -128,12 +129,13 @@ import { combineEvents } from '../combine-events';
   const baz = createEvent<boolean>();
   const bai = createEvent<{ foo: string }>();
 
-  const target = createEvent<{
-    foo: string;
-    bar: number;
-    baz: boolean;
-    bai: { foo: string };
-  }>();
+  const target =
+    createEvent<{
+      foo: string;
+      bar: number;
+      baz: boolean;
+      bai: { foo: string };
+    }>();
 
   combineEvents({
     events: { foo, bar, baz, bai },
@@ -154,12 +156,13 @@ import { combineEvents } from '../combine-events';
   // @ts-expect-error
   combineEvents({
     events: { foo, bar, baz, bai },
-    target: createEvent<{
-      foo: string;
-      bar: number;
-      baz: number;
-      bai: { demo: string };
-    }>(),
+    target:
+      createEvent<{
+        foo: string;
+        bar: number;
+        baz: number;
+        bai: { demo: string };
+      }>(),
   });
 }
 
