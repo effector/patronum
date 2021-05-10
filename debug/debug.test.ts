@@ -19,9 +19,7 @@ afterEach(() => {
 
 test('debug event, store, effect simultaneously', async () => {
   const event = createEvent<number>();
-  const effect = createEffect().use((payload) =>
-    Promise.resolve('result' + payload),
-  );
+  const effect = createEffect().use((payload) => Promise.resolve('result' + payload));
   const $store = createStore(0)
     .on(event, (state, value) => state + value)
     .on(effect.done, (state) => state * 10);

@@ -2,11 +2,9 @@ const { createEffect, createEvent, forward, is, sample } = require('effector');
 const { readConfig } = require('../library');
 
 function delay({ source, timeout, target = createEvent() }) {
-  if (!is.unit(source))
-    throw new TypeError('source must be a unit from effector');
+  if (!is.unit(source)) throw new TypeError('source must be a unit from effector');
 
-  if (!is.unit(target))
-    throw new TypeError('target must be a unit from effector');
+  if (!is.unit(target)) throw new TypeError('target must be a unit from effector');
 
   const ms = validateTimeout(timeout);
 
@@ -26,9 +24,7 @@ function delay({ source, timeout, target = createEvent() }) {
     fn: ({ milliseconds }, payload) => ({
       payload,
       milliseconds:
-        typeof milliseconds === 'function'
-          ? milliseconds(payload)
-          : milliseconds,
+        typeof milliseconds === 'function' ? milliseconds(payload) : milliseconds,
     }),
     target: timerFx,
   });

@@ -21,9 +21,7 @@ afterEach(() => {
 test('works in forked scope', async () => {
   const app = createDomain();
   const event = app.createEvent<number>();
-  const effect = app.createEffect(
-    async (payload: string) => `result ${payload}`,
-  );
+  const effect = app.createEffect(async (payload: string) => `result ${payload}`);
   const $store = app
     .createStore(0)
     .on(event, (counter, payload) => counter + payload)

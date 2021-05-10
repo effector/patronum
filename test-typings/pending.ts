@@ -24,9 +24,7 @@ import { pending } from '../pending';
   const fx3 = createEffect<string, number>();
 
   expectType<Store<boolean>>(pending({ effects: [fx1, fx2, fx3], of: 'some' }));
-  expectType<Store<boolean>>(
-    pending({ effects: [fx1, fx2, fx3], of: 'every' }),
-  );
+  expectType<Store<boolean>>(pending({ effects: [fx1, fx2, fx3], of: 'every' }));
 }
 
 // Fails on invalid units

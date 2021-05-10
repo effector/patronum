@@ -132,9 +132,7 @@ import { debounce } from '../debounce';
   expectType<Store<number>>(
     debounce({ source, target, timeout: 10, name: undefined }),
   );
-  expectType<Store<number>>(
-    debounce({ source, target, timeout: 10, name: 'demo' }),
-  );
+  expectType<Store<number>>(debounce({ source, target, timeout: 10, name: 'demo' }));
 
   // @ts-expect-error
   debounce({ source, target, timeout: 10, name: null });

@@ -1,8 +1,7 @@
 const { is, createEffect, forward, createEvent } = require('effector');
 
 function debounce({ source, timeout, target }) {
-  if (!is.unit(source))
-    throw new TypeError('source must be unit from effector');
+  if (!is.unit(source)) throw new TypeError('source must be unit from effector');
 
   if (is.domain(source)) throw new TypeError('source cannot be domain');
 

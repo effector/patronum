@@ -156,10 +156,8 @@ test('from readme', () => {
   const received = splitMap({
     source: serverActionReceived,
     cases: {
-      update: (action) =>
-        action.type === 'update' ? action.content : undefined,
-      created: (action) =>
-        action.type === 'created' ? action.value : undefined,
+      update: (action) => (action.type === 'update' ? action.content : undefined),
+      created: (action) => (action.type === 'created' ? action.value : undefined),
     },
   });
 

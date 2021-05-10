@@ -180,11 +180,9 @@ describe('effects', () => {
   `);
 
     await waitFor(
-      combine(
-        effect2.inFlight,
-        effect1.inFlight,
-        (a, b) => a + b,
-      ).updates.filter({ fn: (c) => c === 0 }),
+      combine(effect2.inFlight, effect1.inFlight, (a, b) => a + b).updates.filter({
+        fn: (c) => c === 0,
+      }),
     );
     expect(argumentHistory(fn)).toMatchInlineSnapshot(`
     Array [
@@ -381,11 +379,9 @@ describe('domain', () => {
   `);
 
     await waitFor(
-      combine(
-        effect2.inFlight,
-        effect1.inFlight,
-        (a, b) => a + b,
-      ).updates.filter({ fn: (c) => c === 0 }),
+      combine(effect2.inFlight, effect1.inFlight, (a, b) => a + b).updates.filter({
+        fn: (c) => c === 0,
+      }),
     );
     expect(argumentHistory(fn)).toMatchInlineSnapshot(`
     Array [

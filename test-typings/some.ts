@@ -24,9 +24,7 @@ import { some } from '../some';
   const value: Enum = 'c';
 
   expectType<Store<boolean>>(some({ predicate: value, stores: [$a, $b] }));
-  expectType<Store<boolean>>(
-    some({ predicate: (b) => b === 'b', stores: [$a, $b] }),
-  );
+  expectType<Store<boolean>>(some({ predicate: (b) => b === 'b', stores: [$a, $b] }));
 
   // @ts-expect-error
   some({ predicate: value, stores: [$a, $invalid] });

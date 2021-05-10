@@ -12,11 +12,7 @@ const throwError = (message) => {
   throw new Error(message);
 };
 
-function combineEvents({
-  events,
-  reset,
-  target = createEvent({ named: 'target' }),
-}) {
+function combineEvents({ events, reset, target = createEvent({ named: 'target' }) }) {
   if (!is.unit(target)) throwError('target should be a unit');
   if (reset && !is.unit(reset)) throwError('reset should be a unit');
 

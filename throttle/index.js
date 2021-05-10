@@ -1,12 +1,7 @@
 const { createEffect, createEvent, guard, is, sample } = require('effector');
 
-function throttle({
-  source,
-  timeout,
-  target = createEvent({ named: 'tick' }),
-}) {
-  if (!is.unit(source))
-    throw new TypeError('source must be unit from effector');
+function throttle({ source, timeout, target = createEvent({ named: 'tick' }) }) {
+  if (!is.unit(source)) throw new TypeError('source must be unit from effector');
 
   if (typeof timeout !== 'number' || timeout < 0)
     throw new Error('timeout must be positive number or zero');

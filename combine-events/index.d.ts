@@ -29,8 +29,4 @@ export function combineEvents<P extends Shape>(config: {
 export function combineEvents<
   P extends Shape,
   T extends Unit<P extends Tuple ? P : Partial<P>>,
->(config: {
-  events: Events<P>;
-  target: T;
-  reset?: Unit<any>;
-}): ReturnTarget<P, T>;
+>(config: { events: Events<P>; target: T; reset?: Unit<any> }): ReturnTarget<P, T>;

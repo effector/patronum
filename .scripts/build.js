@@ -40,9 +40,7 @@ async function createPresetPlugins(names) {
 
   const factories = ['patronum', ...methods];
 
-  const mapping = Object.fromEntries(
-    names.map((name) => [camelCase(name), name]),
-  );
+  const mapping = Object.fromEntries(names.map((name) => [camelCase(name), name]));
 
   await writeFile(
     './babel-plugin-factories.json',

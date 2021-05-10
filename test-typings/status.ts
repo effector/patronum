@@ -10,9 +10,7 @@ import { status, EffectState } from '../status';
 
 // Check that accepts only effect
 {
-  expectType<Store<EffectState>>(
-    status({ effect: createEffect<number, string>() }),
-  );
+  expectType<Store<EffectState>>(status({ effect: createEffect<number, string>() }));
 
   // @ts-expect-error
   status({ effect: createEvent() });

@@ -11,9 +11,9 @@ describe('arguments validation', () => {
   });
 
   test('domain is not allowed', () => {
-    expect(() =>
-      debounce({ source: createDomain(), timeout: 10 }),
-    ).toThrowError(/cannot be domain/);
+    expect(() => debounce({ source: createDomain(), timeout: 10 })).toThrowError(
+      /cannot be domain/,
+    );
   });
 
   test('negative timeout is wrong', () => {
@@ -33,9 +33,9 @@ describe('arguments validation', () => {
   });
 
   test('Infinity timeout is wrong', () => {
-    expect(() =>
-      debounce({ source: createEvent(), timeout: Infinity }),
-    ).toThrowError(/must be positive/);
+    expect(() => debounce({ source: createEvent(), timeout: Infinity })).toThrowError(
+      /must be positive/,
+    );
     expect(() =>
       debounce({ source: createEvent(), timeout: -Infinity }),
     ).toThrowError(/must be positive/);

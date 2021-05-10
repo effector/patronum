@@ -32,9 +32,7 @@ test('throttle do not affect another forks', async () => {
   const app = createDomain();
   const change = app.createEvent<number>();
   const $first = app.createStore(0);
-  const $second = app
-    .createStore(0)
-    .on(change, (state, payload) => state + payload);
+  const $second = app.createStore(0).on(change, (state, payload) => state + payload);
   const $third = app.createStore(0);
 
   const _$result = every({
@@ -85,9 +83,7 @@ test('throttle do not affect original store value', async () => {
   const app = createDomain();
   const change = app.createEvent<number>();
   const $first = app.createStore(0);
-  const $second = app
-    .createStore(0)
-    .on(change, (state, payload) => state + payload);
+  const $second = app.createStore(0).on(change, (state, payload) => state + payload);
   const $third = app.createStore(0);
 
   const $result = every({

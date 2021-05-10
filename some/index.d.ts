@@ -10,7 +10,4 @@ export function some<T extends string>(_: {
   stores: Array<Store<T>>;
 }): Store<boolean>;
 
-export function some<T>(_: {
-  predicate: T;
-  stores: Array<Store<T>>;
-}): Store<boolean>;
+export function some<T>(_: { predicate: T; stores: Array<Store<T>> }): Store<boolean>;

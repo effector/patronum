@@ -6,7 +6,4 @@ export function pending(config: {
   effects: Array<Effect<any, any, any>>;
   of?: Strategy;
 }): Store<boolean>;
-export function pending(config: {
-  domain: Domain;
-  of?: Strategy;
-}): Store<boolean>;
+export function pending(config: { domain: Domain; of?: Strategy }): Store<boolean>;

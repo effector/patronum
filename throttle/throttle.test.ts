@@ -1,11 +1,5 @@
 import 'regenerator-runtime/runtime';
-import {
-  createStore,
-  createEvent,
-  createEffect,
-  createDomain,
-  is,
-} from 'effector';
+import { createStore, createEvent, createEffect, createDomain, is } from 'effector';
 import { throttle } from '.';
 
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));

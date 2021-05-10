@@ -2,10 +2,7 @@ module.exports = {
   presets: [
     ['@babel/preset-env', { targets: { node: 'current' } }],
     '@babel/preset-typescript',
-    [
-      '@effector/patronum/babel-preset',
-      { importModuleName: '@effector/patronum' },
-    ],
+    ['@effector/patronum/babel-preset', { importModuleName: '@effector/patronum' }],
   ],
   plugins: [
     [

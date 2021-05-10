@@ -132,9 +132,7 @@ import { throttle } from '../throttle';
   expectType<Store<number>>(
     throttle({ source, target, timeout: 10, name: undefined }),
   );
-  expectType<Store<number>>(
-    throttle({ source, target, timeout: 10, name: 'demo' }),
-  );
+  expectType<Store<number>>(throttle({ source, target, timeout: 10, name: 'demo' }));
 
   // @ts-expect-error
   throttle({ source, target, timeout: 10, name: null });
