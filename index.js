@@ -12,3 +12,4 @@ module.exports.splitMap = require('./split-map').splitMap;
 module.exports.spread = require('./spread').spread;
 module.exports.status = require('./status').status;
 module.exports.throttle = require('./throttle').throttle;
+module.exports.format = require('./format').format;
