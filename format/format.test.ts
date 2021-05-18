@@ -2,7 +2,7 @@ import { createStore, createEvent } from 'effector';
 import { argumentHistory } from '../test-library';
 import { format } from './index';
 
-test('using same type of storage', () => {
+test('works with same type of storage', () => {
   const fn = jest.fn();
 
   const changeName = createEvent();
@@ -22,26 +22,56 @@ test('using same type of storage', () => {
   `);
 });
 
-test('using different types of storage', () => {
+test('works with different type of storage', () => {
   const fn = jest.fn();
+
   const changeName = createEvent();
   const changeAge = createEvent();
-
   const $name = createStore('Mike').on(changeName, () => 'Bob');
   const $age = createStore(28).on(changeAge, () => 30);
 
-  const $result = format`That ${$name} is a ${$age}`;
+  const $result = format`That ${$name} is a ${$age} old`;
 
   $result.watch(fn);
-  expect(fn).toHaveBeenCalledWith('That Mike is a 28');
+  expect(fn).toHaveBeenCalledWith('That Mike is a 28 old');
 
   changeName();
   changeAge();
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
     Array [
-      "That Mike is a 28",
-      "That Bob is a 28",
-      "That Bob is a 30",
+      "That Mike is a 28 old",
+      "That Bob is a 28 old",
+      "That Bob is a 30 old",
     ]
   `);
+});
+
+describe('works with different combination of string template', () => {
+  const $first = createStore('first');
+  const $second = createStore('second');
+  const $third = createStore('third');
+
+  test('works with when stores is not provided', () => {
+    const $result = format`1 2 3`;
+
+    expect($result.getState()).toBe('1 2 3');
+  });
+
+  test('works with when only stores provided', () => {
+    const $result = format`${$first} ${$second} ${$third}`;
+
+    expect($result.getState()).toBe('first second third');
+  });
+
+  test('works with when last element is store', () => {
+    const $result = format`1 2 ${$third}`;
+
+    expect($result.getState()).toBe('1 2 third');
+  });
+
+  test('works with when last element is string', () => {
+    const $result = format`1 ${$second} 3`;
+
+    expect($result.getState()).toBe('1 second 3');
+  });
 });

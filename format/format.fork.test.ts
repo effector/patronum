@@ -9,7 +9,7 @@ test('format works in forked scope', async () => {
   const changeName = app.createEvent();
   const $name = app.createStore('Mike').on(changeName, () => 'Bob');
 
-  const _$result = format`My name is ${$name}`;
+  const $result = format`My name is ${$name}`;
 
   const scope = fork(app);
 
@@ -23,6 +23,8 @@ test('format works in forked scope', async () => {
       "b87jz2": "Bob",
     }
   `);
+
+  expect(scope.getState($result)).toBe('My name is Bob');
 });
 
 test('format do not affect another forks', async () => {
@@ -33,7 +35,7 @@ test('format do not affect another forks', async () => {
   const $name = app.createStore('Mike').on(changeName, (_, name) => name);
   const $age = app.createStore(28).on(changeAge, (_, age) => age);
 
-  const _$result = format`That ${$name} is a ${$age}`;
+  const $result = format`That ${$name} is a ${$age}`;
 
   const firstScope = fork(app);
   const secondScope = fork(app);
@@ -60,16 +62,19 @@ test('format do not affect another forks', async () => {
 
   expect(serialize(firstScope)).toMatchInlineSnapshot(`
     Object {
-      "-t0z2df": "Bob",
-      "e0szo1": 30,
+      "-s2vtl1": "Bob",
+      "eyw8gf": 30,
     }
   `);
   expect(serialize(secondScope)).toMatchInlineSnapshot(`
     Object {
-      "-t0z2df": "Kate",
-      "e0szo1": 18,
+      "-s2vtl1": "Kate",
+      "eyw8gf": 18,
     }
   `);
+
+  expect(firstScope.getState($result)).toBe('That Bob is a 30');
+  expect(secondScope.getState($result)).toBe('That Kate is a 18');
 });
 
 test('format do not affect original store value', async () => {
@@ -94,9 +99,9 @@ test('format do not affect original store value', async () => {
 
   expect(serialize(scope)).toMatchInlineSnapshot(`
     Object {
-      "wivsvv": "Bob",
+      "-q722u7": "Bob",
     }
   `);
 
-  expect($result.getState()).toMatchInlineSnapshot(`"My name is Mike"`);
+  expect($result.getState()).toBe('My name is Mike');
 });
