@@ -1,9 +1,10 @@
 {
   "name": "patronum",
-  "version": "1.2.0-next.0",
+  "version": "1.2.0-next.1",
   "description": "☄️ Effector utility library delivering modularity and convenience",
-  "main": "patronum.cjs.js",
+  "main": "dist/patronum.cjs.js",
   "types": "index.d.ts",
+  "browser": "dist/patronum.umd.js",
   "scripts": {
     "test": "yarn test:code && yarn test:types",
     "test:code": "jest",
@@ -12,7 +13,7 @@
     "format": "prettier --write \"./src/**/**.{ts,tsx,js,jsx,json}\"",
     "lint": "eslint ./",
     "build:methods": "node ./.scripts/build.js && prettier --config ./.prettierrc --write ./babel-plugin-factories.json",
-    "build:cjs": "node ./.scripts/rollup.js",
+    "build:cjs": "rollup -c",
     "prepublishOnly": "yarn build:methods && yarn build:cjs"
   },
   "files": [
@@ -26,8 +27,7 @@
     "library.js",
     "macro.d.ts",
     "macro.js",
-    "patronum.cjs.js.map",
-    "patronum.cjs.js"
+    "dist"
   ],
   "repository": {
     "type": "git",

@@ -123,7 +123,7 @@ typings/
 # nuxt.js build output
 .nuxt
 
-# rollup.js default build output
+# rollup.config.js default build output
 dist/
 
 # Uncomment the public line if your project uses Gatsby
@@ -179,6 +179,5 @@ $RECYCLE.BIN/
 
 # End of https://www.gitignore.io/api/node,windows,linux,macos
 
-patronum.cjs.js
-patronum.cjs.js.map
+dist
 .idea

@@ -7,7 +7,8 @@
         "**/*.spec.tsx",
         "**/*.spec.ts",
         "**/*.spec.js",
-        "_/**.js"
+        "_/**.js",
+        "rollup.config.js"
       ],
       "env": { "jest": true },
       "rules": {
