@@ -7,6 +7,7 @@ export { every } from './every';
 export { inFlight } from './in-flight';
 export { pending } from './pending';
 export { reshape } from './reshape';
+export { snapshot } from './snapshot';
 export { some } from './some';
 export { splitMap } from './split-map';
 export { spread } from './spread';

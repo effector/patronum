@@ -7,6 +7,7 @@ module.exports.every = require('./every').every;
 module.exports.inFlight = require('./in-flight').inFlight;
 module.exports.pending = require('./pending').pending;
 module.exports.reshape = require('./reshape').reshape;
+module.exports.snapshot = require('./snapshot').snapshot;
 module.exports.some = require('./some').some;
 module.exports.splitMap = require('./split-map').splitMap;
 module.exports.spread = require('./spread').spread;
