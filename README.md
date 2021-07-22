@@ -444,7 +444,7 @@ parts.first.watch(console.log); // "Hello"
 parts.second.watch(console.log); // "world"
 ```
 
-[Try it](https://share.effector.dev/SmqZgxrx)
+[Try it](https://share.effector.dev/VbNg7nlV)
 
 ## SplitMap
 
