@@ -441,7 +441,7 @@ const parts = reshape({
 
 parts.length.watch(console.info); // 11
 parts.first.watch(console.log); // "Hello"
-parts.second.watch(console.log); // "Second"
+parts.second.watch(console.log); // "world"
 ```
 
 [Try it](https://share.effector.dev/SmqZgxrx)
