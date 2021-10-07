@@ -12,12 +12,12 @@
     "commit": "git-cz",
     "format": "prettier --write \"./src/**/**.{ts,tsx,js,jsx,json}\"",
     "lint": "eslint ./",
-    "build:methods": "node ./.scripts/build.js && prettier --config ./.prettierrc --write ./babel-plugin-factories.json",
+    "build:methods": "node scripts/build.js && prettier --config ./.prettierrc --write ./babel-plugin-factories.json",
     "build:cjs": "rollup -c",
     "prepublishOnly": "yarn build:methods && yarn build:cjs"
   },
   "files": [
-    "!.scripts",
+    "!scripts",
     "!*.test.js",
     "*/*.d.ts",
     "*/*.js",
