@@ -1,12 +1,13 @@
 module.exports = () => ({
   name: 'patronum',
-  version: '1.2.0-next.2',
+  version: '0.0.0-real-version-will-be-set-on-ci',
   description: '☄️ Effector utility library delivering modularity and convenience',
   type: 'module',
   main: 'patronum.cjs.js',
   types: 'index.d.ts',
   module: 'patronum.mjs',
   browser: 'patronum.umd.js',
+  sideEffects: false,
   repository: {
     type: 'git',
     url: 'git+https://github.com/effector/patronum.git',

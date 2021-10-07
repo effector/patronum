@@ -489,9 +489,10 @@ serverActionReceived({ type: 'another' });
 
 # Development
 
-## How to release
+## Release process
 
-1. Make changes with PullRequests
-1. Set verision in [package.json](./package.json) from Draft release
-1. Wait for updates of Draft release with github actions
-1. Publish release and wait for publish-to-npm action
+1. Check out the [draft release](https://github.com/effector/patronum/releases).
+1. All PRs should have correct labels and useful titles. You can [review available labels here](https://github.com/effector/patronum/blob/master/.github/release-drafter.yml).
+1. Update labels for PRs and titles, next [manually run the release drafter action](https://github.com/effector/patronum/actions/workflows/release-drafter.yml) to regenerate the draft release.
+1. Review the new version and press "Publish"
+1. If required check "Create discussion for this release"

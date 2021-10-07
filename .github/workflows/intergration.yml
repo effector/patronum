@@ -12,18 +12,14 @@ jobs:
     outputs:
       version: ${{ steps.version.outputs.value }}
 
-    strategy:
-      matrix:
-        node-version: [14.x]
-
     steps:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Use Node.js v14.x
         uses: actions/setup-node@v1
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: v14.x
           registry-url: 'https://npm.pkg.github.com'
 
       - name: Install dependencies
