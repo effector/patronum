@@ -8,7 +8,7 @@ const plugins = [
   terser({}),
 ];
 
-const input = 'index.js';
+const input = 'dist/index.js';
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default [
@@ -17,7 +17,20 @@ export default [
     external: ['effector'],
     plugins,
     output: {
-      file: 'patronum.cjs.js',
+      file: './dist/patronum.mjs',
+      format: 'es',
+      freeze: false,
+      exports: 'named',
+      sourcemap: true,
+      externalLiveBindings: false,
+    },
+  },
+  {
+    input,
+    external: ['effector'],
+    plugins,
+    output: {
+      file: './dist/patronum.cjs.js',
       format: 'cjs',
       freeze: false,
       exports: 'named',
@@ -31,7 +44,7 @@ export default [
     plugins,
     output: {
       name: 'patronum',
-      file: 'patronum.umd.js',
+      file: './dist/patronum.umd.js',
       format: 'umd',
       exports: 'named',
       sourcemap: true,

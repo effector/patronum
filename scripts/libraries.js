@@ -2,8 +2,6 @@ const { promisify } = require('util');
 const fs = require('fs');
 const { camelCase } = require('camel-case');
 
-const makeDirectory = promisify(fs.mkdir);
-const removeFiles = promisify(fs.rm);
 const writeFile = promisify(fs.writeFile);
 const copyFile = promisify(fs.copyFile);
 
@@ -35,8 +33,6 @@ function createFactoriesJson(library, names) {
 }
 
 async function createDistribution(dir) {
-  await removeFiles(dir, { recursive: true });
-  await makeDirectory(dir);
   return {
     write: (path, content) => writeFile(`${dir}/${path}`, content),
     copyList: (source, list, fn = (i) => i) =>

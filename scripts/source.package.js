@@ -5,7 +5,7 @@ module.exports = () => ({
   main: 'dist/patronum.cjs.js',
   types: 'index.d.ts',
   browser: 'dist/patronum.umd.js',
-  files: ['*/*.d.ts', '*/*.js', 'dist'],
+  files: ['*/*.d.ts', '*/*.js', '*/*.mjs', 'dist'],
   repository: {
     type: 'git',
     url: 'git+https://github.com/effector/patronum.git',

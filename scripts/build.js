@@ -14,7 +14,7 @@ const packageMarker = 'index.ts';
 async function main() {
   const library = 'patronum';
   const package = packageJson();
-  const staticFiles = ['macro.d.ts', 'macro.js', 'index.d.ts', 'babel-preset.js'];
+  const staticFiles = ['macro.d.ts', 'macro.js', 'babel-preset.js'];
 
   const directory = await createDistribution('./dist');
   await directory.copyList('.', staticFiles);
@@ -34,6 +34,8 @@ async function main() {
     'babel-plugin-factories.json',
     JSON.stringify(createFactoriesJson(library, productionMethods), null, 2),
   );
+
+  await directory.write('package.json', JSON.stringify(package));
 }
 
 main().catch((error) => {
