@@ -1,3 +1,5 @@
+const { factories } = require('./babel-plugin-factories.json');
+
 module.exports = {
   presets: [
     '@babel/preset-typescript',
@@ -9,6 +11,18 @@ module.exports = {
         },
       },
     ],
+    ['./babel-preset'],
   ],
-  plugins: ['effector/babel-plugin'],
+  plugins: [
+    [
+      'effector/babel-plugin',
+      {
+        noDefaults: true,
+        factories: factories.map(
+          (item) => item.replace('patronum', 'src') + '/index',
+        ),
+      },
+      'index',
+    ],
+  ],
 };

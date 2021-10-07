@@ -1,5 +1,5 @@
-import { createDomain, forward } from 'effector';
-import { fork, allSettled } from 'effector/fork';
+import { createDomain, forward, fork, allSettled } from 'effector';
+
 import { inFlight } from './index';
 
 describe('effects', () => {

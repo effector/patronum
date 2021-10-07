@@ -1,6 +1,6 @@
 import 'regenerator-runtime/runtime';
-import { createDomain } from 'effector';
-import { fork, serialize, allSettled } from 'effector/fork';
+import { createDomain, fork, serialize, allSettled } from 'effector';
+
 import { debounce } from './index';
 
 test('debounce works in forked scope', async () => {
@@ -22,7 +22,7 @@ test('debounce works in forked scope', async () => {
 
   expect(serialize(scope)).toMatchInlineSnapshot(`
     Object {
-      "5fqfmh": 1,
+      "-m5qxcs": 1,
     }
   `);
 });
@@ -62,13 +62,13 @@ test('debounce do not affect another forks', async () => {
 
   expect(serialize(scopeA)).toMatchInlineSnapshot(`
     Object {
-      "r5878y": 2,
+      "o0molj": 2,
     }
   `);
 
   expect(serialize(scopeB)).toMatchInlineSnapshot(`
     Object {
-      "r5878y": 200,
+      "o0molj": 200,
     }
   `);
 });
@@ -96,7 +96,7 @@ test('debounce do not affect original store value', async () => {
 
   expect(serialize(scope)).toMatchInlineSnapshot(`
     Object {
-      "hnz0j4": 2,
+      "ejdhvp": 2,
     }
   `);
 

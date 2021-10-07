@@ -1,4 +1,3 @@
-const path = require('path');
 const { terser } = require('rollup-plugin-terser');
 const { nodeResolve } = require('@rollup/plugin-node-resolve');
 const commonjs = require('@rollup/plugin-commonjs');

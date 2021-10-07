@@ -1,5 +1,5 @@
-import { createDomain } from 'effector';
-import { fork, serialize, allSettled } from 'effector/fork';
+import { createDomain, fork, serialize, allSettled } from 'effector';
+
 import { condition } from './index';
 
 test('condition works in forked scope', async () => {
@@ -28,9 +28,7 @@ test('condition works in forked scope', async () => {
 
   expect(serialize(scope)).toMatchInlineSnapshot(`
     Object {
-      "-qh8eop": "",
-      "-qqszf6": true,
-      "6phgk": "Demo",
+      "tdeurd": "Demo",
     }
   `);
 });
@@ -74,20 +72,17 @@ test('do not affect another forks', async () => {
 
   expect(serialize(scope1)).toMatchInlineSnapshot(`
     Object {
-      "-pv4h23": "",
-      "ii1ors": "First",
+      "-e3rnr5": "First",
     }
   `);
   expect(serialize(scope2)).toMatchInlineSnapshot(`
     Object {
-      "-pv4h23": "Second",
-      "ii1ors": "",
+      "2dhngc": "Second",
     }
   `);
   expect(serialize(scope3)).toMatchInlineSnapshot(`
     Object {
-      "-pv4h23": "",
-      "ii1ors": "Third",
+      "-e3rnr5": "Third",
     }
   `);
 });

@@ -2,6 +2,8 @@ import { createEffect, combine, createDomain } from 'effector';
 import { argumentHistory, waitFor } from '../../test-library';
 import { pending } from './index';
 
+// jest.useFakeTimers();
+
 test('throw when no passed arguments', () => {
   expect(() => pending({} as any)).toThrowError(/should be passed/);
 });

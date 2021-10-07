@@ -22,13 +22,10 @@ function pending({ effects: rawEffects, domain, of = 'some' }) {
     domain.onCreateEffect((fx) => effects.push(fx));
   }
 
-  return combine({
-    ɔ: [effects.map((fx) => fx.pending), strategy],
-    config: {
-      sid: 'pending',
-      named: 'pending',
-    },
-  });
+  return combine(
+    effects.map((fx) => fx.pending),
+    strategy,
+  );
 }
 
 module.exports = { pending };

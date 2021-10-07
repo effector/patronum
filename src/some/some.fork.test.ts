@@ -1,6 +1,6 @@
 import 'regenerator-runtime/runtime';
-import { createDomain } from 'effector';
-import { fork, serialize, allSettled } from 'effector/fork';
+import { createDomain, fork, serialize, allSettled } from 'effector';
+
 import { some } from './index';
 
 test('throttle works in forked scope', async () => {
@@ -21,9 +21,7 @@ test('throttle works in forked scope', async () => {
 
   expect(serialize(scope)).toMatchInlineSnapshot(`
     Object {
-      "-b0ikr1": 1,
-      "-vkjewi": 0,
-      "-wlfbo8": 0,
+      "-be2ofs": 1,
     }
   `);
 });
@@ -65,16 +63,12 @@ test('throttle do not affect another forks', async () => {
 
   expect(serialize(scopeA)).toMatchInlineSnapshot(`
     Object {
-      "-ven97": 0,
-      "2o8sim": 0,
-      "kpi3o0": 2,
+      "jdur6v": 2,
     }
   `);
   expect(serialize(scopeB)).toMatchInlineSnapshot(`
     Object {
-      "-ven97": 0,
-      "2o8sim": 0,
-      "kpi3o0": 200,
+      "jdur6v": 200,
     }
   `);
 });
@@ -105,9 +99,7 @@ test('throttle do not affect original store value', async () => {
 
   expect(serialize(scope)).toMatchInlineSnapshot(`
     Object {
-      "1yica1": 0,
-      "5i5s1u": 0,
-      "njf378": 2,
+      "kbl95b": 2,
     }
   `);
 

@@ -1,25 +1,27 @@
-import { createDomain, forward } from 'effector';
-import { fork, allSettled } from 'effector/fork';
+import { createDomain, forward, fork, allSettled } from 'effector';
+
 import { pending } from './index';
+
+// jest.useFakeTimers();
 
 test('works in forked scope', async () => {
   const app = createDomain();
-  const effect1 = app.createEffect({
-    handler: () => new Promise((resolve) => setTimeout(resolve, 1)),
-  });
-  const effect2 = app.createEffect({
-    handler: () => new Promise((resolve) => setTimeout(resolve, 1)),
-  });
+  const effect1 = app.createEffect(
+    () => new Promise((resolve) => setTimeout(resolve, 10)),
+  );
+  const effect2 = app.createEffect(
+    () => new Promise((resolve) => setTimeout(resolve, 10)),
+  );
   const $pending = pending({ effects: [effect1, effect2] });
-  const scope = fork(app);
+  const scope = fork();
 
   const finish = allSettled(effect1, { scope });
   expect(scope.getState($pending)).toMatchInlineSnapshot(`true`);
 
   await finish;
   expect(scope.getState($pending)).toMatchInlineSnapshot(`false`);
-});
-
+}, 500);
+//
 test('works in forked scope with domain', async () => {
   const app = createDomain();
   const effect1 = app.createEffect({

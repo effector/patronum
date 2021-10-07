@@ -1,5 +1,5 @@
-import { createDomain } from 'effector';
-import { fork, allSettled } from 'effector/fork';
+import { createDomain, fork, allSettled } from 'effector';
+
 import { status } from './index';
 
 test('works in forked scope', async () => {

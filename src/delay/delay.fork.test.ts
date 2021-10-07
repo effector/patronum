@@ -1,6 +1,6 @@
 import 'regenerator-runtime/runtime';
-import { createDomain } from 'effector';
-import { fork, serialize, allSettled } from 'effector/fork';
+import { createDomain, fork, serialize, allSettled } from 'effector';
+
 import { delay } from './index';
 
 test('throttle works in forked scope', async () => {
