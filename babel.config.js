@@ -1,4 +1,4 @@
-const { factories } = require('./babel-plugin-factories.json');
+const { factories } = require('./src/babel-plugin-factories.json');
 
 module.exports = {
   presets: [
@@ -6,12 +6,14 @@ module.exports = {
     [
       '@babel/preset-env',
       {
+        modules: process.env.ESMODULES === 'true' ? false : 'cjs',
         targets: {
           node: 'current',
+          esmodules: process.env.ESMODULES === 'true',
         },
       },
     ],
-    ['./babel-preset'],
+    ['./src/babel-preset'],
   ],
   plugins: [
     [

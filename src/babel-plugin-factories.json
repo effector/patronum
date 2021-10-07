@@ -1,0 +1,6 @@
+{
+  "factories": ["patronum", "patronum/delay"],
+  "mapping": {
+    "delay": "delay"
+  }
+}

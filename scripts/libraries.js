@@ -14,6 +14,15 @@ function createCommonJsIndex(names) {
   return imports.join('\n') + '\n';
 }
 
+function createMjsIndex(names) {
+  const imports = names.sort().map((name) => {
+    const camel = camelCase(name);
+    return `export { ${camel} } from './${name}/index.mjs'`;
+  });
+
+  return imports.join('\n') + '\n';
+}
+
 function createTypingsIndex(names) {
   const types = names
     .sort()
@@ -43,7 +52,9 @@ async function createDistribution(dir) {
 }
 
 module.exports = {
+  writeFile,
   createCommonJsIndex,
+  createMjsIndex,
   createTypingsIndex,
   createFactoriesJson,
   createDistribution,

@@ -56,8 +56,6 @@ export function delay<T>({
   return target as unknown as Event<T>;
 }
 
-module.exports = { delay };
-
 function validateTimeout<T>(
   timeout: number | ((_: T) => number) | Store<number> | unknown,
 ) {

@@ -6,6 +6,8 @@ const {
   createTypingsIndex,
   createFactoriesJson,
   createDistribution,
+  writeFile,
+  createMjsIndex,
 } = require('./libraries');
 const packageJson = require('./source.package.js');
 
@@ -13,13 +15,13 @@ const packageMarker = 'index.ts';
 
 async function main() {
   const library = 'patronum';
-  const package = packageJson();
-  const staticFiles = ['macro.d.ts', 'macro.js', 'babel-preset.js'];
+  const pkg = packageJson();
+  const staticFiles = ['macro.js', 'babel-preset.js'];
 
   const directory = await createDistribution('./dist');
-  await directory.copyList('.', staticFiles);
+  await directory.copyList('./src', staticFiles);
 
-  package.files.push(...staticFiles);
+  pkg.files.push(...staticFiles);
 
   const found = await globby(`./src/*/${packageMarker}`);
   const names = found.map((name) =>
@@ -27,15 +29,18 @@ async function main() {
   );
 
   await directory.write('index.js', createCommonJsIndex(names));
+  await directory.write('index.mjs', createMjsIndex(names));
   await directory.write('index.d.ts', createTypingsIndex(names));
+  await directory.write('macro.d.ts', 'export * from "./index";');
 
   const productionMethods = names.filter((method) => method !== 'debug');
-  await directory.write(
-    'babel-plugin-factories.json',
-    JSON.stringify(createFactoriesJson(library, productionMethods), null, 2),
+  const factoriesJson = createFactoriesJson(library, productionMethods);
+  await writeFile(
+    './src/babel-plugin-factories.json',
+    JSON.stringify(factoriesJson, null, 2),
   );
 
-  await directory.write('package.json', JSON.stringify(package));
+  await directory.write('package.json', JSON.stringify(pkg));
 }
 
 main().catch((error) => {
