@@ -124,7 +124,7 @@ typings/
 .nuxt
 
 # rollup.config.js default build output
-dist/
+node_modules/dist/
 
 # Uncomment the public line if your project uses Gatsby
 # https://nextjs.org/blog/next-9-1#public-directory-support
@@ -179,5 +179,5 @@ $RECYCLE.BIN/
 
 # End of https://www.gitignore.io/api/node,windows,linux,macos
 
-dist
 .idea
+dist

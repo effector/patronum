@@ -2,10 +2,10 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "emitDeclarationOnly": true,
-    "declarationDir": "./dist",
+    "declarationDir": "./node_modules/dist",
     "declaration": true,
     "rootDir": "./src",
-    "outDir": "./dist",
+    "outDir": "./node_modules/dist",
     "allowJs": false
   },
   "exclude": [

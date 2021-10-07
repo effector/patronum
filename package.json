@@ -11,7 +11,7 @@
     "cleanup": "rm -rf dist && mkdir dist",
     "build:indexes": "node scripts/build.js",
     "build:types": "tsc --project ./tsconfig.build.json",
-    "build:commonjs": "yarn babel --out-dir ./dist src -x .ts --ignore '**/*.test.ts','**/*.d.ts'",
+    "build:commonjs": "yarn babel --verbose --out-dir dist src -x .ts --ignore '**/*.test.ts','**/*.d.ts'",
     "build:mjs": "ESMODULES=true yarn build:commonjs --out-file-extension .mjs",
     "build:bundles": "rollup -c",
     "build": "run-s cleanup build:indexes build:types build:commonjs build:mjs build:bundles",

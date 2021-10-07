@@ -41,6 +41,17 @@ function createFactoriesJson(library, names) {
   return { factories, mapping };
 }
 
+function createExportsMap(names) {
+  const object = {};
+  names.forEach((name) => {
+    object[`./${name}`] = {
+      require: `./${name}/index.js`,
+      import: `./${name}/index.mjs`,
+    };
+  });
+  return object;
+}
+
 async function createDistribution(dir) {
   return {
     write: (path, content) => writeFile(`${dir}/${path}`, content),
@@ -56,6 +67,7 @@ module.exports = {
   createCommonJsIndex,
   createMjsIndex,
   createTypingsIndex,
+  createExportsMap,
   createFactoriesJson,
   createDistribution,
 };

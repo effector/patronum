@@ -5,7 +5,7 @@ const commonjs = require('@rollup/plugin-commonjs');
 const plugins = [
   nodeResolve({ jsnext: true, skip: ['effector'], extensions: ['.js', '.mjs'] }),
   commonjs({ extensions: ['.js', '.mjs'] }),
-  // terser({}),
+  terser({}),
 ];
 
 const input = 'dist/index.js';

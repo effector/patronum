@@ -92,7 +92,7 @@ const received = splitMap({
   cases: {
     firstName: (string) => string.split(' ')[0], // string | undefined
     lastName: (string) => string.split(' ')[1], // string | undefined
-});
+  });
 ```
 
 - First argument should be `source`
@@ -340,10 +340,10 @@ const source = spread({
 ```
 
 1. If you have two arguments:
-   - First argument should be `source` in object
-   - Second argument should be `targets`
+  - First argument should be `source` in object
+  - Second argument should be `targets`
 1. If only one argument:
-   - Wrap it to object and assign to `targets`
+  - Wrap it to object and assign to `targets`
 
 https://github.com/sergeysova/patronum/pull/61
 

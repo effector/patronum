@@ -8,6 +8,7 @@ const {
   createDistribution,
   writeFile,
   createMjsIndex,
+  createExportsMap,
 } = require('./libraries');
 const packageJson = require('./source.package.js');
 
@@ -20,13 +21,21 @@ async function main() {
 
   const directory = await createDistribution('./dist');
   await directory.copyList('./src', staticFiles);
-
-  pkg.files.push(...staticFiles);
+  await directory.copyList('./', ['README.md', 'MIGRATION.md', 'LICENSE']);
 
   const found = await globby(`./src/*/${packageMarker}`);
   const names = found.map((name) =>
     name.replace(`/${packageMarker}`, '').replace('./src/', ''),
   );
+
+  pkg.exports = {
+    '.': {
+      require: './index.js',
+      import: './index.mjs',
+      default: './index.mjs',
+    },
+    ...createExportsMap(names),
+  };
 
   await directory.write('index.js', createCommonJsIndex(names));
   await directory.write('index.mjs', createMjsIndex(names));
