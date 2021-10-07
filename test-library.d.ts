@@ -1,10 +1,15 @@
-import { Unit } from 'effector';
-
-export function waitFor<T>(unit: Unit<T>): Promise<T>;
-
-type Mock = ReturnType<typeof jest.fn>;
-
-export function argumentHistory(ƒ: Mock): Array<unknown>;
-export function argumentsHistory(ƒ: Mock): Array<Array<unknown>>;
-
-export function wait(ms: number): Promise<void>;
+export function argumentHistory(ƒ: any): any;
+export function argumentsHistory(ƒ: any): any;
+export function time(): {
+  diff: () => number;
+};
+export function toBeCloseWithThreshold(
+  received: any,
+  expected: any,
+  threshold: any,
+): {
+  pass: boolean;
+  message: () => string;
+};
+export function wait(ms: any): Promise<any>;
+export function waitFor(unit: any): Promise<any>;

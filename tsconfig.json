@@ -16,7 +16,6 @@
     "noImplicitThis": true,
     "noUnusedLocals": false,
     "pretty": true,
-    "noEmit": true,
     "sourceMap": true,
     "strict": true,
     "strictNullChecks": true,

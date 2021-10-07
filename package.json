@@ -1,10 +1,6 @@
 {
   "name": "patronum",
-  "version": "1.2.0-next.2",
-  "description": "☄️ Effector utility library delivering modularity and convenience",
-  "main": "dist/patronum.cjs.js",
-  "types": "index.d.ts",
-  "browser": "dist/patronum.umd.js",
+  "private": true,
   "scripts": {
     "test": "NODE_ENV=test yarn test:code && yarn test:types",
     "test:code": "jest",
@@ -12,42 +8,14 @@
     "commit": "git-cz",
     "format": "prettier --write \"./src/**/**.{ts,tsx,js,jsx,json}\"",
     "lint": "eslint ./",
+    "build:types": "tsc --project ./tsconfig.build.json",
+    "build:commonjs": "yarn babel --out-dir ./dist src -x .ts --ignore '**/*.test.ts','**/*.d.ts'",
     "build:methods": "node scripts/build.js && prettier --config ./.prettierrc --write ./babel-plugin-factories.json",
     "build:cjs": "rollup -c",
     "prepublishOnly": "yarn build:methods && yarn build:cjs"
   },
-  "files": [
-    "!scripts",
-    "!*.test.js",
-    "*/*.d.ts",
-    "*/*.js",
-    "babel-plugin-factories.json",
-    "babel-preset.js",
-    "index.d.ts",
-    "src/library.js",
-    "macro.d.ts",
-    "macro.js",
-    "dist"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/effector/patronum.git"
-  },
-  "keywords": [
-    "babel-preset",
-    "effector",
-    "lib",
-    "modules",
-    "stdlib",
-    "util",
-    "macro"
-  ],
   "author": "Sergey Sova <mail@sergeysova.com> (https://sergeysova.com/)",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/effector/patronum/issues"
-  },
-  "homepage": "https://github.com/effector/patronum#readme",
   "devDependencies": {
     "@babel/cli": "^7.15.7",
     "@babel/core": "^7.13.10",
@@ -81,13 +49,9 @@
     "tsd": "^0.13.1",
     "typescript": "^4.2.3"
   },
-  "peerDependencies": {
-    "effector": "^21.8.0"
-  },
   "config": {
     "commitizen": {
       "path": "cz-conventional-changelog"
     }
-  },
-  "dependencies": {}
+  }
 }

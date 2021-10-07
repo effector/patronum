@@ -1,4 +1,11 @@
+const { promisify } = require('util');
+const fs = require('fs');
 const { camelCase } = require('camel-case');
+
+const makeDirectory = promisify(fs.mkdir);
+const removeFiles = promisify(fs.rm);
+const writeFile = promisify(fs.writeFile);
+const copyFile = promisify(fs.copyFile);
 
 function createCommonJsIndex(names) {
   const imports = names.sort().map((name) => {
@@ -27,4 +34,21 @@ function createFactoriesJson(library, names) {
   return { factories, mapping };
 }
 
-module.exports = { createCommonJsIndex, createTypingsIndex, createFactoriesJson };
+async function createDistribution(dir) {
+  await removeFiles(dir, { recursive: true });
+  await makeDirectory(dir);
+  return {
+    write: (path, content) => writeFile(`${dir}/${path}`, content),
+    copyList: (source, list, fn = (i) => i) =>
+      Promise.all(
+        list.map((file) => copyFile(`${source}/${file}`, `${dir}/${fn(file)}`)),
+      ),
+  };
+}
+
+module.exports = {
+  createCommonJsIndex,
+  createTypingsIndex,
+  createFactoriesJson,
+  createDistribution,
+};

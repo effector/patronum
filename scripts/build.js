@@ -1,29 +1,37 @@
 /* eslint-disable unicorn/no-process-exit, prefer-template */
-const fs = require('fs');
-const { promisify } = require('util');
 const globby = require('globby');
+
 const {
   createCommonJsIndex,
   createTypingsIndex,
   createFactoriesJson,
+  createDistribution,
 } = require('./libraries');
-
-const writeFile = promisify(fs.writeFile);
+const packageJson = require('./source.package.js');
 
 const packageMarker = 'index.ts';
 
 async function main() {
   const library = 'patronum';
-  const found = await globby(`./*/${packageMarker}`);
+  const package = packageJson();
+  const staticFiles = ['macro.d.ts', 'macro.js', 'index.d.ts', 'babel-preset.js'];
 
-  const names = found.map((name) => name.replace(`/${packageMarker}`, ''));
+  const directory = await createDistribution('./dist');
+  await directory.copyList('.', staticFiles);
 
-  await writeFile('./index.js', createCommonJsIndex(names));
-  await writeFile('./index.d.ts', createTypingsIndex(names));
+  package.files.push(...staticFiles);
+
+  const found = await globby(`./src/*/${packageMarker}`);
+  const names = found.map((name) =>
+    name.replace(`/${packageMarker}`, '').replace('./src/', ''),
+  );
+
+  await directory.write('index.js', createCommonJsIndex(names));
+  await directory.write('index.d.ts', createTypingsIndex(names));
 
   const productionMethods = names.filter((method) => method !== 'debug');
-  await writeFile(
-    './babel-plugin-factories.json',
+  await directory.write(
+    'babel-plugin-factories.json',
     JSON.stringify(createFactoriesJson(library, productionMethods), null, 2),
   );
 }
