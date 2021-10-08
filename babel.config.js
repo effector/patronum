@@ -26,5 +26,6 @@ module.exports = {
       },
       'index',
     ],
+    'effector/babel-plugin',
   ],
 };

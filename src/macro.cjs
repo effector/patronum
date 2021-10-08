@@ -31,19 +31,21 @@ function patronum({
 
   const instance = babelPlugin(babel, {
     ...options,
-    factories: factories.map((name) => name.replace('patronum', importModuleName)),
+    factories: factories.map((name) => name.replace(/^(patronum)/, importModuleName)),
     noDefaults: true,
   });
 
   instance.pre();
   babel.traverse(program.parent, instance.visitor, undefined, {
-    ...state,
     ...instance,
+    ...state
   });
   instance.post();
 }
 
-function addImport(t, programPath, specifierName, importPath) {
+function addImport(t, path, specifierName, importPath) {
+  const programPath = path.find(path => path.isProgram())
+
   const [newPath] = programPath.unshiftContainer(
     'body',
     t.importDeclaration(
@@ -65,6 +67,5 @@ function addImport(t, programPath, specifierName, importPath) {
     }
   });
 
-  programPath.scope.registerBinding('module', found);
   return found.node.local.name;
 }

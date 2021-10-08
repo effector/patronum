@@ -22,5 +22,6 @@
     "suppressImplicitAnyIndexErrors": true,
     "target": "es2016",
     "types": ["jest", "node"]
-  }
+  },
+  "exclude": ["**/*.cjs"]
 }

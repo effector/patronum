@@ -204,6 +204,33 @@ const last = _withFactory({
 
 `;
 
+exports[`macros macro for pending: macro for pending 1`] = `
+
+import { pending } from './macro';
+import { status } from './macro';
+const effect = createEffect();
+const $pending = pending({ effects: [effect] });
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+import { status as _status } from '@effector/patronum';
+import { withFactory as _withFactory } from 'effector';
+import { pending as _pending } from '@effector/patronum';
+const effect = createEffect();
+
+const $pending = _withFactory({
+  sid: 'mkcas6',
+  fn: () =>
+    _pending({
+      effects: [effect],
+    }),
+  name: '$pending',
+  method: 'pending',
+});
+
+
+`;
+
 exports[`macros renames import: renames import 1`] = `
 
 import { status, debounce } from "./macro";

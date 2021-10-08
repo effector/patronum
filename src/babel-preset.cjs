@@ -8,7 +8,7 @@ module.exports = (_api, { importModuleName } = {}, _dirname) => {
     plugins: [
       [
         'effector/babel-plugin',
-        { factories: mappedFactories, noDefault: true },
+        { factories: mappedFactories, noDefaults: true },
         'patronum',
       ],
     ],

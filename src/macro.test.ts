@@ -52,6 +52,13 @@ const $status = status({ effect });
 const last = debounce({ source: wow, timeout: 10 });
 `;
 
+const pendingTesting = `
+import { pending } from './macro';
+import { status } from './macro';
+const effect = createEffect();
+const $pending = pending({ effects: [effect] });
+`;
+
 pluginTester({
   plugin: require('babel-plugin-macros'),
   pluginName: 'macros',
@@ -92,6 +99,16 @@ pluginTester({
           importModuleName: '@effector/patronum',
           importFromRoot: true,
           addLoc: true,
+        },
+      },
+    },
+    'macro for pending': {
+      code: pendingTesting,
+      pluginOptions: {
+        patronum: {
+          importModuleName: '@effector/patronum',
+          importFromRoot: true,
+          addNames: true,
         },
       },
     },
