@@ -85,7 +85,7 @@ From `v0.100.0` patronum introduced object arguments form with **BREAKING CHANGE
 
 ## Condition
 
-[Method documentation & API](/condition)
+[Method documentation & API](/src/condition)
 
 ```ts
 import { createEvent } from 'effector';
@@ -114,7 +114,7 @@ trigger('welcome'); // => long welcome
 
 ## Delay
 
-[Method documentation & API](/delay)
+[Method documentation & API](/src/delay)
 
 ```ts
 import { createEvent } from 'effector';
@@ -136,7 +136,7 @@ trigger('hello');
 
 ## Debounce
 
-[Method documentation & API](/debounce)
+[Method documentation & API](/src/debounce)
 
 ```ts
 import { createEvent } from 'effector';
@@ -161,7 +161,7 @@ trigger(4);
 
 ## Throttle
 
-[Method documentation & API](/throttle)
+[Method documentation & API](/src/throttle)
 
 ```ts
 import { createEvent } from 'effector';
@@ -186,7 +186,7 @@ trigger(4);
 
 ## Debug
 
-[Method documentation & API](/debug)
+[Method documentation & API](/src/debug)
 
 ```ts
 import { createStore, createEvent, createEffect } from 'effector';
@@ -215,7 +215,7 @@ effect('demo');
 
 ## Status
 
-[Method documentation & API](/status)
+[Method documentation & API](/src/status)
 
 ```ts
 import { createEvent, createEffect } from 'effector';
@@ -236,7 +236,7 @@ effect();
 
 ## Spread
 
-[Method documentation & API](/spread)
+[Method documentation & API](/src/spread)
 
 ```ts
 import { createEvent, createStore } from 'effector';
@@ -265,7 +265,7 @@ $second.watch(console.log); // => World
 
 ## Snapshot
 
-[Method documentation & API](/snapshot)
+[Method documentation & API](/src/snapshot)
 
 ```ts
 import { restore, createEvent } from 'effector';
@@ -296,7 +296,7 @@ createSnapshot();
 
 ## CombineEvents
 
-[Method documentation & API](/combine-events)
+[Method documentation & API](/src/combine-events)
 
 Call target event when all event from object/array is triggered
 
@@ -327,7 +327,7 @@ event3(5); // => triggered { event1: true, event2: "demo", event3: 5 }
 
 ## Every
 
-[Method documentation & API](/every)
+[Method documentation & API](/src/every)
 
 ```ts
 import { createStore } from 'effector';
@@ -348,7 +348,7 @@ $isFormCorrect.watch(console.log); // => true
 
 ## InFlight
 
-[Method documentation & API](/in-flight)
+[Method documentation & API](/src/in-flight)
 
 ```ts
 import { createEffect } from 'effector';
@@ -374,7 +374,7 @@ $allInFlight.watch(console.log);
 
 ## Pending
 
-[Method documentation & API](/pending)
+[Method documentation & API](/src/pending)
 
 ```ts
 import { createEffect } from 'effector';
@@ -397,7 +397,7 @@ loadSecond();
 
 ## Some
 
-[Method documentation & API](/some)
+[Method documentation & API](/src/some)
 
 ```ts
 import { createStore, restore, createEvent } from 'effector';
@@ -422,7 +422,7 @@ widthSet(200);
 
 ## Reshape
 
-[Method documentation & API](/reshape)
+[Method documentation & API](/src/reshape)
 
 ```ts
 import { createStore } from 'effector';
@@ -448,7 +448,7 @@ parts.second.watch(console.log); // "world"
 
 ## SplitMap
 
-[Method documentation & API](/split-map)
+[Method documentation & API](/src/split-map)
 
 ```ts
 import { createEvent } from 'effector';
@@ -489,9 +489,10 @@ serverActionReceived({ type: 'another' });
 
 # Development
 
-## How to release
+## Release process
 
-1. Make changes with PullRequests
-1. Set verision in [package.json](./package.json) from Draft release
-1. Wait for updates of Draft release with github actions
-1. Publish release and wait for publish-to-npm action
+1. Check out the [draft release](https://github.com/effector/patronum/releases).
+1. All PRs should have correct labels and useful titles. You can [review available labels here](https://github.com/effector/patronum/blob/master/.github/release-drafter.yml).
+1. Update labels for PRs and titles, next [manually run the release drafter action](https://github.com/effector/patronum/actions/workflows/release-drafter.yml) to regenerate the draft release.
+1. Review the new version and press "Publish"
+1. If required check "Create discussion for this release"

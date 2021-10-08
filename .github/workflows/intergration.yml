@@ -12,31 +12,31 @@ jobs:
     outputs:
       version: ${{ steps.version.outputs.value }}
 
-    strategy:
-      matrix:
-        node-version: [14.x]
-
     steps:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Use Node.js v14.x
         uses: actions/setup-node@v1
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: v14.x
           registry-url: 'https://npm.pkg.github.com'
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
-      - name: Rename package to scoped
-        run: 'sed -i.bak -e ''s+"name": "patronum"+"name": "@effector/patronum"+g'' ./package.json'
+      - name: Build package
+        run: yarn build
+        env:
+          LIBRARY_NAME: '@effector/patronum'
 
       - name: Add commit SHA to package version
         run: npm version --force --no-git-tag-version prepatch --preid=${{ github.sha }}
+        working-directory: './dist/'
 
       - name: Publish to Github NPM registry
         # if: github.ref == 'refs/heads/main'
+        working-directory: './dist/'
         run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_GITHUB_TOKEN }}
@@ -45,7 +45,10 @@ jobs:
         uses: sergeysova/jq-action@v2
         id: version
         with:
-          cmd: 'jq .version package.json -r'
+          cmd: 'jq .version dist/package.json -r'
+
+      - name: Published ${{ steps.version.outputs.value }}
+        run: echo @effector/patronum@${{ steps.version.outputs.value }}
 
   custom:
     needs: build
@@ -65,7 +68,7 @@ jobs:
         run: yarn
         working-directory: ./integration/custom
 
-      - name: Install patronum to integration package
+      - name: Install patronum@${{ needs.build.outputs.version }} to integration package
         run: yarn add @effector/patronum@${{ needs.build.outputs.version }}
         working-directory: ./integration/custom
         env:
@@ -93,7 +96,7 @@ jobs:
         run: yarn
         working-directory: ./integration/cra
 
-      - name: Install patronum to integration package
+      - name: Install patronum@${{ needs.build.outputs.version }} to integration package
         run: yarn add @effector/patronum@${{ needs.build.outputs.version }}
         working-directory: ./integration/cra
         env:

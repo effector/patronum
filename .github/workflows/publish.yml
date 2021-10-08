@@ -26,20 +26,42 @@ jobs:
         if: steps.yarn-cache.outputs.cache-hit != 'true'
         run: yarn install --frozen-lockfile
 
+      - name: Build bundle
+        run: yarn build
+
       - name: Run tests
         run: yarn test
         env:
           CI: true
 
-      - name: Publish package
-        uses: JS-DevTools/npm-publish@v1
-        id: publish
+      - name: Set version from release
+        uses: reedyuk/npm-version@1.0.1
         with:
-          token: ${{ secrets.NPM_TOKEN }}
-          check-version: true
-          access: 'public'
+          version: ${{ steps.version.outputs.tag }}
+          git-tag-version: false
+          package: 'dist/'
 
-      # log results
-      - if: steps.publish.outputs.type != 'none'
-        run: |
-          echo "Version changed: ${{ steps.publish.outputs.old-version }} => ${{ steps.publish.outputs.version }}"
+      - name: Create NPM config
+        working-directory: './dist/'
+        run: npm config set //registry.npmjs.org/:_authToken $NPM_TOKEN
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Check for NEXT tag
+        id: next
+        uses: actions-ecosystem/action-regex-match@v2
+        with:
+          text: ${{ steps.version.outputs.tag }}
+          regex: 'next'
+
+      - name: Publish package with NEXT tag
+        if: ${{ steps.next.outputs.match != '' }}
+        working-directory: './dist/'
+        run: npm publish --tag next
+
+      - name: Publish package to latest
+        if: ${{ steps.next.outputs.match == '' }}
+        working-directory: './dist/'
+        run: npm publish
+
+
