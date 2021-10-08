@@ -10,7 +10,8 @@
     "patronum/pending",
     "patronum/reshape",
     "patronum/snapshot",
-    "patronum/some"
+    "patronum/some",
+    "patronum/split-map"
   ],
   "mapping": {
     "combineEvents": "combine-events",
@@ -22,6 +23,7 @@
     "pending": "pending",
     "reshape": "reshape",
     "snapshot": "snapshot",
-    "some": "some"
+    "some": "some",
+    "splitMap": "split-map"
   }
 }
