@@ -6,7 +6,8 @@
     "patronum/debounce",
     "patronum/delay",
     "patronum/every",
-    "patronum/in-flight"
+    "patronum/in-flight",
+    "patronum/pending"
   ],
   "mapping": {
     "combineEvents": "combine-events",
@@ -14,6 +15,7 @@
     "debounce": "debounce",
     "delay": "delay",
     "every": "every",
-    "inFlight": "in-flight"
+    "inFlight": "in-flight",
+    "pending": "pending"
   }
 }
