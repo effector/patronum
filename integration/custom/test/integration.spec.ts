@@ -29,7 +29,7 @@ test('status has sid', () => {
 
   expect($status.sid).toBeDefined();
   expect($status.sid).not.toBeNull();
-  expect($status.sid).toMatchInlineSnapshot(`"-o5m1b3ɔstatus"`);
+  expect($status.sid).toMatchInlineSnapshot(`"-o5m1b3|abrgim"`);
 });
 
 test('pending macro works as expected', () => {
@@ -38,7 +38,7 @@ test('pending macro works as expected', () => {
 
   expect($pending.sid).toBeDefined();
   expect($pending.sid).not.toBeNull();
-  expect($pending.sid).toMatchInlineSnapshot(`"-hszfx7ɔpending"`);
+  expect($pending.sid).toMatchInlineSnapshot(`"-hszfx7|a37bj0"`);
 });
 
 function waitFor<T>(unit: Event<T>) {
