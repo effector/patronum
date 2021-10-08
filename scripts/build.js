@@ -44,10 +44,9 @@ async function main() {
 
   const productionMethods = names.filter((method) => method !== 'debug');
   const factoriesJson = createFactoriesJson(library, productionMethods);
-  await writeFile(
-    './src/babel-plugin-factories.json',
-    JSON.stringify(factoriesJson, null, 2),
-  );
+  const fileName = 'babel-plugin-factories.json';
+  await writeFile(`./src/${fileName}`, JSON.stringify(factoriesJson, null, 2));
+  await directory.copyList('./src', [fileName]);
 
   await directory.write('package.json', JSON.stringify(pkg));
 }
