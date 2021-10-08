@@ -18,7 +18,7 @@ async function main() {
   const library = process.env.LIBRARY_NAME ?? 'patronum';
   const pkg = packageJson();
   pkg.name = library;
-  const staticFiles = ['macro.js', 'babel-preset.js'];
+  const staticFiles = ['macro.cjs', 'babel-preset.cjs'];
 
   const directory = await createDistribution('./dist');
   await directory.copyList('./src', staticFiles);
@@ -36,10 +36,10 @@ async function main() {
       default: './index.mjs',
     },
     './babel-preset': {
-      require: './babel-preset.js',
+      require: './babel-preset.cjs',
     },
     './macro': {
-      require: './macro.js',
+      require: './macro.cjs',
     },
     ...createExportsMap(names),
   };

@@ -13,7 +13,7 @@ module.exports = {
         },
       },
     ],
-    ['./src/babel-preset'],
+    ['./src/babel-preset.cjs'],
   ],
   plugins: [
     [
