@@ -19,7 +19,6 @@
     "jest": "^26.6.1"
   },
   "dependencies": {
-    "@effector/patronum": "../../",
     "effector": "^21.8.0"
   }
 }
