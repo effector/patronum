@@ -9,7 +9,8 @@
     "patronum/in-flight",
     "patronum/pending",
     "patronum/reshape",
-    "patronum/snapshot"
+    "patronum/snapshot",
+    "patronum/some"
   ],
   "mapping": {
     "combineEvents": "combine-events",
@@ -20,6 +21,7 @@
     "inFlight": "in-flight",
     "pending": "pending",
     "reshape": "reshape",
-    "snapshot": "snapshot"
+    "snapshot": "snapshot",
+    "some": "some"
   }
 }
