@@ -3,11 +3,13 @@
     "patronum",
     "patronum/combine-events",
     "patronum/condition",
+    "patronum/debounce",
     "patronum/delay"
   ],
   "mapping": {
     "combineEvents": "combine-events",
     "condition": "condition",
+    "debounce": "debounce",
     "delay": "delay"
   }
 }
