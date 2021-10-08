@@ -1,21 +1,18 @@
-/* eslint-disable no-console, prefer-template */
-const { is } = require('effector');
+import { Domain, Effect, Event, is, Store, Unit } from 'effector';
 
-function debug() {
-  const units = Array.from(arguments);
-
+export function debug(...units: Unit<any>[]): void {
   for (const unit of units) {
     const type = getType(unit);
 
-    if (unit.watch) {
+    if (is.store(unit) || is.effect(unit) || is.event(unit)) {
       log(unit, type);
     }
 
-    if (type === 'effect') {
+    if (is.effect(unit)) {
       logEffect(unit);
     }
 
-    if (type === 'domain') {
+    if (is.domain(unit)) {
       unit.onCreateEvent((event) => log(event, 'event'));
       unit.onCreateStore((store) => log(store, 'store'));
       unit.onCreateEffect(logEffect);
@@ -23,7 +20,7 @@ function debug() {
   }
 }
 
-function getType(unit) {
+function getType(unit: Unit<any>) {
   if (is.store(unit)) {
     return 'store';
   }
@@ -42,7 +39,11 @@ function getType(unit) {
   return 'unknown';
 }
 
-function log(unit, type, prefix = '') {
+function log(
+  unit: Store<any> | Event<any> | Effect<any, any, any>,
+  type: string,
+  prefix = '',
+) {
   const name = prefix + getName(unit);
 
   unit.watch((payload) => {
@@ -50,12 +51,12 @@ function log(unit, type, prefix = '') {
   });
 }
 
-function logEffect(unit) {
+function logEffect(unit: Effect<any, any, any>) {
   log(unit.done, 'effect', getName(unit) + '.');
   log(unit.fail, 'effect', getName(unit) + '.');
 }
 
-function getName(unit) {
+function getName(unit: any) {
   if (unit.compositeName && unit.compositeName.fullName) {
     return unit.compositeName.fullName;
   }
@@ -67,5 +68,3 @@ function getName(unit) {
   }
   return '';
 }
-
-module.exports = { debug };
