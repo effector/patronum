@@ -27,14 +27,25 @@ jobs:
         env:
           LIBRARY_NAME: '@effector/patronum'
 
-      - name: Fetch latest release version
-        id: latest-release
+      - name: Fetch latest package version
+        id: latest-package
         run: echo "::set-output name=latest::$(npm info @effector/patronum version)"
 
+      - name: Resolve latest release version
+        if: ${{ steps.latest-package.outputs.latest-release == '' }}
+        uses: pozetroninc/github-action-get-latest-release@master
+        id: github-release
+        with:
+          repository: ${{ github.repository }}
+          excludes: draft
+
+      - name: Set version to package from github release
+        if: ${{ steps.latest-package.outputs.latest-release == '' }}
+        run: npm version --force --no-git-tag-version ${{ steps.latest-package.outputs.latest-release }}
+        working-directory: './dist/'
+
       - name: Add commit SHA to package version
-        run: |
-          npm version --force --no-git-tag-version ${{ steps.latest-release.outputs.latest-release }} \
-          npm version --force --no-git-tag-version prerelease --preid=${{ github.sha }}
+        run: npm version --force --no-git-tag-version prerelease --preid=${{ github.sha }}
         working-directory: './dist/'
 
       - name: Publish to Github NPM registry
