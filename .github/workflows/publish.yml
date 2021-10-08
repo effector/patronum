@@ -54,12 +54,12 @@ jobs:
           text: ${{ steps.version.outputs.tag }}
           regex: 'next'
 
-      - name: Publish package with NEXT tag
+      - name: Publish patronum@${{ steps.version.outputs.tag }} with NEXT tag
         if: ${{ steps.next.outputs.match != '' }}
         working-directory: './dist/'
         run: npm publish --tag next
 
-      - name: Publish package to latest
+      - name: Publish patronum@${{ steps.version.outputs.tag }} to latest
         if: ${{ steps.next.outputs.match == '' }}
         working-directory: './dist/'
         run: npm publish
