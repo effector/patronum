@@ -41,7 +41,7 @@ jobs:
 
       - name: Set version to package from github release
         if: ${{ steps.latest-package.outputs.latest-release == '' }}
-        run: npm version --force --no-git-tag-version ${{ steps.latest-package.outputs.latest-release }}
+        run: npm version --force --no-git-tag-version ${{ steps.github-release.outputs.release }}
         working-directory: './dist/'
 
       - name: Add commit SHA to package version
