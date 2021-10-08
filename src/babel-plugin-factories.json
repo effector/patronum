@@ -4,12 +4,14 @@
     "patronum/combine-events",
     "patronum/condition",
     "patronum/debounce",
-    "patronum/delay"
+    "patronum/delay",
+    "patronum/every"
   ],
   "mapping": {
     "combineEvents": "combine-events",
     "condition": "condition",
     "debounce": "debounce",
-    "delay": "delay"
+    "delay": "delay",
+    "every": "every"
   }
 }
