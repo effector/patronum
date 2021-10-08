@@ -47,6 +47,9 @@ jobs:
         with:
           cmd: 'jq .version dist/package.json -r'
 
+      - name: Published ${{ steps.version.outputs.value }}
+        run: echo @effector/patronum@${{ steps.version.outputs.value }}
+
   custom:
     needs: build
     runs-on: ubuntu-18.04
@@ -65,7 +68,7 @@ jobs:
         run: yarn
         working-directory: ./integration/custom
 
-      - name: Install patronum to integration package
+      - name: Install patronum@${{ needs.build.outputs.version }} to integration package
         run: yarn add @effector/patronum@${{ needs.build.outputs.version }}
         working-directory: ./integration/custom
         env:
@@ -93,7 +96,7 @@ jobs:
         run: yarn
         working-directory: ./integration/cra
 
-      - name: Install patronum to integration package
+      - name: Install patronum@${{ needs.build.outputs.version }} to integration package
         run: yarn add @effector/patronum@${{ needs.build.outputs.version }}
         working-directory: ./integration/cra
         env:
