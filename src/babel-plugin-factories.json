@@ -13,7 +13,8 @@
     "patronum/some",
     "patronum/split-map",
     "patronum/spread",
-    "patronum/status"
+    "patronum/status",
+    "patronum/throttle"
   ],
   "mapping": {
     "combineEvents": "combine-events",
@@ -28,6 +29,7 @@
     "some": "some",
     "splitMap": "split-map",
     "spread": "spread",
-    "status": "status"
+    "status": "status",
+    "throttle": "throttle"
   }
 }

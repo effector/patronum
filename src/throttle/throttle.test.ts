@@ -147,7 +147,7 @@ describe('event', () => {
     const demo = createEvent();
     const throttledDemo = throttle({ source: demo, timeout: 20 });
 
-    expect(throttledDemo.shortName).toMatchInlineSnapshot(`"tick"`);
+    expect(throttledDemo.shortName).toMatchInlineSnapshot(`"target"`);
   });
 });
 
@@ -332,7 +332,7 @@ describe('effect', () => {
     const demoFx = createEffect();
     const throttledDemo = throttle({ source: demoFx, timeout: 20 });
 
-    expect(throttledDemo.shortName).toMatchInlineSnapshot(`"tick"`);
+    expect(throttledDemo.shortName).toMatchInlineSnapshot(`"target"`);
   });
 });
 
@@ -413,7 +413,7 @@ describe('store', () => {
     const $demo = createStore(0);
     const throttledDemo = throttle({ source: $demo, timeout: 20 });
 
-    expect(throttledDemo.shortName).toMatchInlineSnapshot(`"tick"`);
+    expect(throttledDemo.shortName).toMatchInlineSnapshot(`"target"`);
   });
 });
 
@@ -486,7 +486,7 @@ test('name correctly assigned from params', () => {
     name: 'Example',
   });
 
-  expect(throttledDemo.shortName).toMatchInlineSnapshot(`"tick"`);
+  expect(throttledDemo.shortName).toMatchInlineSnapshot(`"target"`);
 });
 
 test('name should not be in domain', () => {
@@ -494,7 +494,7 @@ test('name should not be in domain', () => {
   const event = domain.createEvent();
   const throttledDemo = throttle({ source: event, timeout: 20 });
 
-  expect(throttledDemo.shortName).toMatchInlineSnapshot(`"tick"`);
+  expect(throttledDemo.shortName).toMatchInlineSnapshot(`"target"`);
 });
 
 test('source event, target effect', async () => {

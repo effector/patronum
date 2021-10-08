@@ -64,9 +64,22 @@ const $status = status({ effect });
       ↓ ↓ ↓ ↓ ↓ ↓
 
 var _effectorFileName = '/macro.test.ts';
+import { withFactory as _withFactory } from 'effector';
 import { status } from 'patronum/status';
-const $status = status({
-  effect,
+
+const $status = _withFactory({
+  sid: 'j4rpgh',
+  fn: () =>
+    status({
+      effect,
+    }),
+  name: '$status',
+  method: 'status',
+  loc: {
+    file: _effectorFileName,
+    line: 2,
+    column: 16,
+  },
 });
 
 
@@ -199,16 +212,29 @@ const last = debounce({ source: wow, timeout: 10 });
 
       ↓ ↓ ↓ ↓ ↓ ↓
 
-import { debounce as _debounce } from '@effector/patronum/undefined';
-import { status as _status } from '@effector/patronum/undefined';
+import { withFactory as _withFactory } from 'effector';
+import { debounce as _debounce } from '@effector/patronum/debounce';
+import { status as _status } from '@effector/patronum/status';
 
-const $status = _status({
-  effect,
+const $status = _withFactory({
+  sid: '-21v3re',
+  fn: () =>
+    _status({
+      effect,
+    }),
+  name: '$status',
+  method: 'status',
 });
 
-const last = _debounce({
-  source: wow,
-  timeout: 10,
+const last = _withFactory({
+  sid: '-rwdk3s',
+  fn: () =>
+    _debounce({
+      source: wow,
+      timeout: 10,
+    }),
+  name: 'last',
+  method: 'debounce',
 });
 
 
@@ -222,16 +248,29 @@ const last = debounce({ source: wow, timeout: 10 });
 
       ↓ ↓ ↓ ↓ ↓ ↓
 
-import { debounce as _debounce } from 'patronum/undefined';
-import { status as _status } from 'patronum/undefined';
+import { withFactory as _withFactory } from 'effector';
+import { debounce as _debounce } from 'patronum/debounce';
+import { status as _status } from 'patronum/status';
 
-const $status = _status({
-  effect,
+const $status = _withFactory({
+  sid: '-21v3re',
+  fn: () =>
+    _status({
+      effect,
+    }),
+  name: '$status',
+  method: 'status',
 });
 
-const last = _debounce({
-  source: wow,
-  timeout: 10,
+const last = _withFactory({
+  sid: '-rwdk3s',
+  fn: () =>
+    _debounce({
+      source: wow,
+      timeout: 10,
+    }),
+  name: 'last',
+  method: 'debounce',
 });
 
 
