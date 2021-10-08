@@ -14,7 +14,7 @@ test('works in forked scope', async () => {
     clock: copy,
   });
 
-  const scope = fork(app);
+  const scope = fork();
 
   expect(scope.getState($copy)).toBe(1);
 

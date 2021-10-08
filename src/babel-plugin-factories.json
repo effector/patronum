@@ -1,14 +1,15 @@
 {
   "factories": [
-    "@effector/patronum",
-    "@effector/patronum/combine-events",
-    "@effector/patronum/condition",
-    "@effector/patronum/debounce",
-    "@effector/patronum/delay",
-    "@effector/patronum/every",
-    "@effector/patronum/in-flight",
-    "@effector/patronum/pending",
-    "@effector/patronum/reshape"
+    "patronum",
+    "patronum/combine-events",
+    "patronum/condition",
+    "patronum/debounce",
+    "patronum/delay",
+    "patronum/every",
+    "patronum/in-flight",
+    "patronum/pending",
+    "patronum/reshape",
+    "patronum/snapshot"
   ],
   "mapping": {
     "combineEvents": "combine-events",
@@ -18,6 +19,7 @@
     "every": "every",
     "inFlight": "in-flight",
     "pending": "pending",
-    "reshape": "reshape"
+    "reshape": "reshape",
+    "snapshot": "snapshot"
   }
 }
