@@ -12,7 +12,8 @@
     "patronum/snapshot",
     "patronum/some",
     "patronum/split-map",
-    "patronum/spread"
+    "patronum/spread",
+    "patronum/status"
   ],
   "mapping": {
     "combineEvents": "combine-events",
@@ -26,6 +27,7 @@
     "snapshot": "snapshot",
     "some": "some",
     "splitMap": "split-map",
-    "spread": "spread"
+    "spread": "spread",
+    "status": "status"
   }
 }
