@@ -12,21 +12,15 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Use Node.js 14.x
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v2
         with:
           node-version: 14.x
-
-      - uses: actions/cache@v2
-        id: yarn-cache
-        with:
-          path: './node_modules'
-          key: node-14-modules-${{ hashFiles('./yarn.lock') }}
+          cache: 'yarn'
 
       - name: Install dependencies
-        if: steps.yarn-cache.outputs.cache-hit != 'true'
         run: yarn install --frozen-lockfile
 
-      - name: Build bundle
+      - name: Build package
         run: yarn build
 
       - name: Run tests
@@ -34,11 +28,17 @@ jobs:
         env:
           CI: true
 
+      - name: Extract version from release
+        id: version
+        uses: olegtarasov/get-tag@v2.1
+        with:
+          tagRegex: 'v(.*)'
+
       - name: Set version from release
-        uses: reedyuk/npm-version@1.0.1
+        uses: reedyuk/npm-version@1.1.1
         with:
           version: ${{ steps.version.outputs.tag }}
-          git-tag-version: false
+          git-tag-version: 'false'
           package: 'dist/'
 
       - name: Create NPM config
