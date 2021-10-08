@@ -1,11 +1,5 @@
-import { Unit, Store, Event, Effect } from 'effector';
+import { createEvent, Effect, Event, guard, is, Store, Unit } from 'effector';
 
-/**
- * Non inferential type parameter usage.
- *
- * @see https://github.com/microsoft/TypeScript/issues/14829#issuecomment-504042546
- */
-// type NoInfer<T> = [T][T extends any ? 0 : never];
 type NoInfer<T> = T & { [K in keyof T]: T[K] };
 type EventAsReturnType<Payload> = any extends Payload ? Event<Payload> : never;
 
@@ -75,3 +69,48 @@ export function condition<State>(options: {
   if: ((payload: State) => boolean) | Store<boolean> | State;
   else: Unit<NoInfer<State> | void>;
 }): Event<State>;
+export function condition<State>({
+  if: test,
+  then: thenBranch,
+  else: elseBranch,
+  source = createEvent<State>(),
+}: {
+  if: ((payload: State) => boolean) | Store<boolean> | State;
+  source?: Store<State> | Event<State> | Effect<State, any, any>;
+  then?: Unit<State | void>;
+  else?: Unit<State | void>;
+}) {
+  const checker =
+    is.unit(test) || isFunction(test) ? test : (value: State) => value === test;
+
+  if (thenBranch) {
+    guard({
+      source,
+      filter: checker,
+      target: thenBranch,
+    });
+  }
+
+  if (elseBranch) {
+    guard({
+      source,
+      filter: inverse(checker as any),
+      target: elseBranch,
+    });
+  }
+
+  return source;
+}
+
+function isFunction<T>(value: unknown): value is (payload: T) => boolean {
+  return typeof value === 'function';
+}
+
+function inverse<A extends boolean>(
+  fnOrUnit: Store<boolean> | ((payload: unknown) => boolean),
+): Store<boolean> | ((payload: unknown) => boolean) {
+  if (is.unit(fnOrUnit)) {
+    return fnOrUnit.map((value) => !value);
+  }
+  return (value) => !fnOrUnit(value);
+}

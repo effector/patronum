@@ -16,6 +16,9 @@ function patronum({
   const program = state.file.path;
 
   Object.keys(references).forEach((referenceName) => {
+    if (!mapping[referenceName]) {
+      throw new Error(`Cannot find '${referenceName}' for ${importModuleName}`);
+    }
     const methodImportPath = importFromRoot
       ? importModuleName
       : importModuleName + '/' + mapping[referenceName];

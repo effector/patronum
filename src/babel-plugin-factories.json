@@ -1,7 +1,13 @@
 {
-  "factories": ["patronum", "patronum/combine-events", "patronum/delay"],
+  "factories": [
+    "patronum",
+    "patronum/combine-events",
+    "patronum/condition",
+    "patronum/delay"
+  ],
   "mapping": {
     "combineEvents": "combine-events",
+    "condition": "condition",
     "delay": "delay"
   }
 }

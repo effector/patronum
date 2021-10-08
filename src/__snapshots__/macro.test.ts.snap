@@ -64,22 +64,9 @@ const $status = status({ effect });
       ↓ ↓ ↓ ↓ ↓ ↓
 
 var _effectorFileName = '/macro.test.ts';
-import { withFactory as _withFactory } from 'effector';
 import { status } from 'patronum/status';
-
-const $status = _withFactory({
-  sid: 'j4rpgh',
-  fn: () =>
-    status({
-      effect,
-    }),
-  name: '$status',
-  method: 'status',
-  loc: {
-    file: _effectorFileName,
-    line: 2,
-    column: 16,
-  },
+const $status = status({
+  effect,
 });
 
 
@@ -98,7 +85,7 @@ import { debounce as _debounce } from '@effector/patronum';
 import { status as _status } from '@effector/patronum';
 
 const $status = _withFactory({
-  sid: 'j4rpgh',
+  sid: '-21v3re',
   fn: () =>
     _status({
       effect,
@@ -108,7 +95,7 @@ const $status = _withFactory({
 });
 
 const last = _withFactory({
-  sid: '-flsuql',
+  sid: '-rwdk3s',
   fn: () =>
     _debounce({
       source: wow,
@@ -129,13 +116,13 @@ const last = debounce({ source: wow, timeout: 10 });
 
       ↓ ↓ ↓ ↓ ↓ ↓
 
-var _effectorFileName = '/macro.test.ts';
+var _effectorFileName = '/src/macro.test.ts';
 import { withFactory as _withFactory } from 'effector';
 import { debounce as _debounce } from '@effector/patronum';
 import { status as _status } from '@effector/patronum';
 
 const $status = _withFactory({
-  sid: 'j4rpgh',
+  sid: '-21v3re',
   fn: () =>
     _status({
       effect,
@@ -150,7 +137,7 @@ const $status = _withFactory({
 });
 
 const last = _withFactory({
-  sid: '-flsuql',
+  sid: '-rwdk3s',
   fn: () =>
     _debounce({
       source: wow,
@@ -181,7 +168,7 @@ import { debounce as _debounce } from 'patronum';
 import { status as _status } from 'patronum';
 
 const $status = _withFactory({
-  sid: 'j4rpgh',
+  sid: '-21v3re',
   fn: () =>
     _status({
       effect,
@@ -191,7 +178,7 @@ const $status = _withFactory({
 });
 
 const last = _withFactory({
-  sid: '-flsuql',
+  sid: '-rwdk3s',
   fn: () =>
     _debounce({
       source: wow,
@@ -212,29 +199,16 @@ const last = debounce({ source: wow, timeout: 10 });
 
       ↓ ↓ ↓ ↓ ↓ ↓
 
-import { withFactory as _withFactory } from 'effector';
-import { debounce as _debounce } from '@effector/patronum/debounce';
-import { status as _status } from '@effector/patronum/status';
+import { debounce as _debounce } from '@effector/patronum/undefined';
+import { status as _status } from '@effector/patronum/undefined';
 
-const $status = _withFactory({
-  sid: 'j4rpgh',
-  fn: () =>
-    _status({
-      effect,
-    }),
-  name: '$status',
-  method: 'status',
+const $status = _status({
+  effect,
 });
 
-const last = _withFactory({
-  sid: '-flsuql',
-  fn: () =>
-    _debounce({
-      source: wow,
-      timeout: 10,
-    }),
-  name: 'last',
-  method: 'debounce',
+const last = _debounce({
+  source: wow,
+  timeout: 10,
 });
 
 
@@ -248,29 +222,16 @@ const last = debounce({ source: wow, timeout: 10 });
 
       ↓ ↓ ↓ ↓ ↓ ↓
 
-import { withFactory as _withFactory } from 'effector';
-import { debounce as _debounce } from 'patronum/debounce';
-import { status as _status } from 'patronum/status';
+import { debounce as _debounce } from 'patronum/undefined';
+import { status as _status } from 'patronum/undefined';
 
-const $status = _withFactory({
-  sid: 'j4rpgh',
-  fn: () =>
-    _status({
-      effect,
-    }),
-  name: '$status',
-  method: 'status',
+const $status = _status({
+  effect,
 });
 
-const last = _withFactory({
-  sid: '-flsuql',
-  fn: () =>
-    _debounce({
-      source: wow,
-      timeout: 10,
-    }),
-  name: 'last',
-  method: 'debounce',
+const last = _debounce({
+  source: wow,
+  timeout: 10,
 });
 
 
