@@ -1,6 +1,7 @@
 {
-  "factories": ["patronum", "patronum/delay"],
+  "factories": ["patronum", "patronum/combine-events", "patronum/delay"],
   "mapping": {
+    "combineEvents": "combine-events",
     "delay": "delay"
   }
 }
