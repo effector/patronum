@@ -26,13 +26,13 @@ jobs:
         if: steps.yarn-cache.outputs.cache-hit != 'true'
         run: yarn install --frozen-lockfile
 
+      - name: Build bundle
+        run: yarn build
+
       - name: Run tests
         run: yarn test
         env:
           CI: true
-
-      - name: Build bundle
-        run: yarn build
 
       - name: Set version from release
         uses: reedyuk/npm-version@1.0.1

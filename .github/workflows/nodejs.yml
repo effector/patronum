@@ -26,6 +26,9 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
+      - name: Build
+        run: yarn build±
+
       - name: Test code
         run: yarn test:code
         env:
@@ -33,6 +36,3 @@ jobs:
 
       - name: Test types
         run: yarn test:types
-
-      - name: Build
-        run: yarn build

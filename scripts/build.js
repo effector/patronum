@@ -15,8 +15,9 @@ const packageJson = require('./source.package.js');
 const packageMarker = 'index.ts';
 
 async function main() {
-  const library = 'patronum';
+  const library = process.env.LIBRARY_NAME ?? 'patronum';
   const pkg = packageJson();
+  pkg.name = library;
   const staticFiles = ['macro.js', 'babel-preset.js'];
 
   const directory = await createDistribution('./dist');
