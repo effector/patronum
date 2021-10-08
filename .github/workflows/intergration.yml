@@ -9,9 +9,6 @@ jobs:
   build:
     runs-on: ubuntu-18.04
 
-    outputs:
-      version: ${{ steps.version.outputs.value }}
-
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -30,12 +27,17 @@ jobs:
         env:
           LIBRARY_NAME: '@effector/patronum'
 
+      - name: Fetch latest release version
+        id: latest-release
+        run: echo "::set-output name=latest::$(npm info @effector/patronum version)"
+
       - name: Add commit SHA to package version
-        run: npm version --force --no-git-tag-version prepatch --preid=${{ github.sha }}
+        run: |
+          npm version --force --no-git-tag-version ${{ steps.latest-release.outputs.latest-release }} \
+          npm version --force --no-git-tag-version prerelease --preid=${{ github.sha }}
         working-directory: './dist/'
 
       - name: Publish to Github NPM registry
-        # if: github.ref == 'refs/heads/main'
         working-directory: './dist/'
         run: npm publish
         env:
@@ -49,6 +51,9 @@ jobs:
 
       - name: Published ${{ steps.version.outputs.value }}
         run: echo @effector/patronum@${{ steps.version.outputs.value }}
+
+    outputs:
+      version: ${{ steps.version.outputs.value }}
 
   custom:
     needs: build
