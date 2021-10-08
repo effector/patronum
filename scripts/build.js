@@ -35,6 +35,12 @@ async function main() {
       import: './index.mjs',
       default: './index.mjs',
     },
+    './babel-preset': {
+      require: './babel-preset.js',
+    },
+    './macro': {
+      require: './macro.js',
+    },
     ...createExportsMap(names),
   };
 
