@@ -11,7 +11,8 @@
     "patronum/reshape",
     "patronum/snapshot",
     "patronum/some",
-    "patronum/split-map"
+    "patronum/split-map",
+    "patronum/spread"
   ],
   "mapping": {
     "combineEvents": "combine-events",
@@ -24,6 +25,7 @@
     "reshape": "reshape",
     "snapshot": "snapshot",
     "some": "some",
-    "splitMap": "split-map"
+    "splitMap": "split-map",
+    "spread": "spread"
   }
 }
