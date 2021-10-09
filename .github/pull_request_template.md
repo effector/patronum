@@ -4,14 +4,14 @@
 
 ### Checklist for a new method
 
-- [ ] Create directory for new method in root in `param-case`
-- [ ] Place code to `method-name/index.ts` in ESModules export in `camelCase` **named** export
-- [ ] Add tests to `method-name/method-name.test.ts`
-- [ ] Add **fork** tests to `method-name/method-name.fork.test.ts`
+- [ ] Create a directory for the new method in the `src` directory in `param-case`
+- [ ] Place the source code to `src/method-name/index.ts` in ESModules export in `camelCase` **named** export
+- [ ] Add tests to `src/method-name/method-name.test.ts`
+- [ ] Add **fork** tests to `src/method-name/method-name.fork.test.ts`
 - [ ] Add **type** tests to `test-typings/method-name.ts`
   - Use `// @ts-expect-error` to mark expected type error
   - `import { expectType } from 'tsd'` to check expected return type
-- [ ] Add documentation in `method-name/reade.md`
+- [ ] Add documentation in `src/method-name/reade.md`
   - Add header `Patronum/MethodName`
   - Add section with overloads, if have
   - Add `Motivation`, `Formulae`, `Arguments` and `Return` sections for each overload
