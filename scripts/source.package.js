@@ -19,4 +19,7 @@ module.exports = () => ({
     url: 'https://github.com/effector/patronum/issues',
   },
   homepage: 'https://github.com/effector/patronum#readme',
+  peerDependencies: {
+    effector: '^22.1.2',
+  },
 });
