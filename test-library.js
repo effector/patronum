@@ -56,6 +56,13 @@ function toBeCloseWithThreshold(received, expected, threshold) {
 
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
+function watch(unit) {
+  // eslint-disable-next-line no-undef
+  const fn = jest.fn();
+  unit.watch(fn);
+  return fn;
+}
+
 module.exports = {
   argumentHistory,
   argumentsHistory,
@@ -63,4 +70,5 @@ module.exports = {
   toBeCloseWithThreshold,
   wait,
   waitFor,
+  watch,
 };

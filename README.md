@@ -24,6 +24,7 @@
 - [Debounce](#debounce) — Creates event which waits until time passes after previous trigger.
 - [Delay](#delay) — Delays the call of the event by defined timeout.
 - [Throttle](#throttle) — Creates event which triggers at most once per timeout.
+- [Interval](#interval) — Creates a dynamic interval with any timeout.
 
 ### Combination/Decomposition
 
@@ -184,6 +185,34 @@ trigger(4);
 ```
 
 [Try it](https://share.effector.dev/OH0TUJUH)
+
+## Interval
+
+[Method documentation & API](/src/interval)
+
+```ts
+import { createStore, createEvent } from 'effector'
+import { interval } from 'patronum'
+
+const startCounter = createEvent();
+const stopCounter = createEvent();
+const $counter = createStore(0);
+
+const { tick } = interval({
+  timeout: 500,
+  start: startCounter,
+  stop: stopCounter
+});
+
+$counter.on(tick, (number) => number + 1);
+$counter.watch(value => console.log("COUNTER", value));
+
+startCounter();
+
+setTimeout(() => stopCounter(), 5000)
+```
+
+[Try it](https://share.effector.dev/EOVzc3df)
 
 ## Debug
 
