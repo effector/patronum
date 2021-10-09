@@ -7,6 +7,7 @@
     "patronum/delay",
     "patronum/every",
     "patronum/in-flight",
+    "patronum/interval",
     "patronum/pending",
     "patronum/reshape",
     "patronum/snapshot",
@@ -14,7 +15,8 @@
     "patronum/split-map",
     "patronum/spread",
     "patronum/status",
-    "patronum/throttle"
+    "patronum/throttle",
+    "patronum/time"
   ],
   "mapping": {
     "combineEvents": "combine-events",
@@ -23,6 +25,7 @@
     "delay": "delay",
     "every": "every",
     "inFlight": "in-flight",
+    "interval": "interval",
     "pending": "pending",
     "reshape": "reshape",
     "snapshot": "snapshot",
@@ -30,6 +33,7 @@
     "splitMap": "split-map",
     "spread": "spread",
     "status": "status",
-    "throttle": "throttle"
+    "throttle": "throttle",
+    "time": "time"
   }
 }
