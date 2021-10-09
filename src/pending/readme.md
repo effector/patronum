@@ -8,8 +8,8 @@ import { pending } from 'patronum/pending';
 
 ### Motivation
 
-This overload allows to read pending state of passed effects.
-It is usef when you want to show loading state of the whole application.
+This overload allows to read pending state of passed effects. It is usef when
+you want to show loading state of the whole application.
 
 ### Formulae
 
@@ -23,13 +23,14 @@ $inProcess = pending({ effects: [fx1, fx2], of: Strategy });
 ### Arguments
 
 1. `effects` _(Array<Effect<any, any, any>>)_ - array of any effects
-1. `of` _("some" | "every")_ — Optional. Select strategy of combining pendings of differents effects. Default `"some"`
+1. `of` _("some" | "every")_ — Optional. Select strategy of combining pendings
+   of differents effects. Default `"some"`
 
-## Returns
+### Returns
 
 - `$inProcess` _(Store<boolean>)_ - Store with boolean state
 
-## Example
+### Example
 
 ```ts
 import { createEffect } from 'effector';
@@ -51,8 +52,8 @@ loadSecond();
 
 ### Motivation
 
-This overload allows to read pending state of created effects in the domain.
-It is usef when you want to show loading state of the whole application.
+This overload allows to read pending state of created effects in the domain. It
+is usef when you want to show loading state of the whole application.
 
 ### Formulae
 
@@ -66,13 +67,14 @@ $inProcess = pending({ domain, of: Strategy });
 ### Arguments
 
 1. `domain` _(Domain)_ - Effector domain with at least one effect
-1. `of` _("some" | "every")_ — Optional. Select strategy of combining pendings of differents effects. Default `"some"`
+1. `of` _("some" | "every")_ — Optional. Select strategy of combining pendings
+   of differents effects. Default `"some"`
 
-## Returns
+### Returns
 
 - `$inProcess` _(Store<boolean>)_ - Store with boolean state
 
-## Example
+### Example
 
 ```ts
 import { createDomain } from 'effector';
@@ -95,7 +97,8 @@ loadSecond();
 
 There available two options:
 
-- `some` — default strategy when `of` parameter is not provided. At least one effect must be in pending state.
+- `some` — default strategy when `of` parameter is not provided. At least one
+  effect must be in pending state.
 - `every` — each effect must be in pending state.
 
 ### Example
