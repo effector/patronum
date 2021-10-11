@@ -9,21 +9,21 @@ class AbortedError<Key = any> extends Error {
   }
 }
 
-interface Defer {
-  key: any;
-  req: Promise<any>;
-  rs: (result: any) => void;
+interface Defer<Key = any, Result = any> {
+  key: Key;
+  req: Promise<Result>;
+  rs: (result: Result) => void;
   rj: (error: any) => void;
 }
 
-const createDefer = ({
+const createDefer = <Key>({
   aborter,
   key,
 }: {
-  key: any;
-  aborter: { handlers: any[] };
+  key: Key;
+  aborter: { handlers: (() => void)[] };
 }): Defer => {
-  const defer: Defer = { key } as Defer;
+  const defer: Defer = { key } as Defer<Key>;
 
   defer.req = new Promise((rs, rj) => {
     defer.rs = rs;
@@ -64,7 +64,9 @@ function abort<
 > {
   const { domain = base, signal, handler, getKey } = c;
   const runDeferFx = domain.createEffect({
-    handler: async (def: Defer) => {
+    handler: async (
+      def: Defer<UnitValue<Signal>, NoAny<ReturnType<typeof c['handler']>>>,
+    ) => {
       const result = await def.req;
 
       return result;
@@ -113,7 +115,7 @@ function abort<
 
       const result = await runDeferFx(def);
 
-      return result as NoAny<ReturnType<typeof c['handler']>>;
+      return result;
     },
   });
 
