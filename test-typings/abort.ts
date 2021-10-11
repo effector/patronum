@@ -173,3 +173,28 @@ import { abort, AbortedError } from '../src/abort';
   expectType<Effect<number, Promise<number>, Error | AbortedError>>(fx);
   expectType<Event<readonly [true, number]>>(aborted);
 }
+
+// aborted error is not overriden by generic types
+{
+  const signal = createEvent<number>();
+  const fx = abort<number, number, Error, Event<number>>({
+    signal,
+    getKey: () => 10,
+    async handler(p: number, { onAbort }) {
+      const result = await new Promise<number>((r) => r(p));
+
+      const unabort = onAbort(() => {});
+
+      unabort();
+
+      return result;
+    },
+  });
+
+  const aborted = fx.failData
+    .filterMap((error) => (error instanceof AbortedError ? error : undefined))
+    .map((error) => [error.aborted, error.key] as const);
+
+  expectType<Effect<number, Promise<number>, Error | AbortedError>>(fx);
+  expectType<Event<readonly [true, number]>>(aborted);
+}
