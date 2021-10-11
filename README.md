@@ -18,6 +18,7 @@
 - [Pending](#pending) — Checks that has effects in pending state.
 - [InFlight](#inflight) — Counts all pending effects
 - [Status](#status) — Return text representation of effect state.
+- [Abort](#abort) — Creates abortable effects
 
 ### Timeout
 
@@ -263,6 +264,44 @@ effect();
 ```
 
 [Try it](https://share.effector.dev/6VRR39iC)
+
+## Abort
+
+[Method documentation & API](/abort)
+
+```ts
+import { createEvent } from "effector";
+import { abort } from "patronum/abort";
+
+const cancel = createEvent<number>();
+const abortableFx = abort({
+  signal: cancel,
+  getKey: (p: number) => p,
+  async handler(todoId: number, { onAbort }) {
+    const controller = new AbortController();
+
+    onAbort(() => {
+      controller.abort();
+    });
+
+    const response = await fetch(
+      `https://jsonplaceholder.typicode.com/todos/${todoId}`,
+      { signal: controller.signal }
+    );
+    const result = await response.json();
+
+    return result;
+  },
+});
+
+abortableFx(1);
+abortableFx(2);
+abortableFx(3);
+
+cancel(2);
+```
+
+[Try it](https://share.effector.dev/Z3ZwbyA2)
 
 ## Spread
 
