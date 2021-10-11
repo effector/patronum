@@ -1,5 +1,4 @@
-import { createDomain } from 'effector';
-import { fork, allSettled, scopeBind } from 'effector/fork';
+import { createDomain, fork, allSettled, scopeBind } from 'effector';
 import { abort, AbortedError } from './index';
 
 test('Abort: if not aborted, works as regular effect', async () => {
