@@ -39,7 +39,7 @@ const createDefer = ({
   return defer;
 };
 
-const base = createDomain();
+const base = createDomain('abort/internal');
 
 type IfAny<T, Y, N> = 0 extends 1 & T ? Y : N;
 type NoAny<T> = IfAny<T, unknown, T>;
@@ -63,13 +63,16 @@ function abort<
   Fail | AbortedError<UnitValue<typeof c['signal']>>
 > {
   const { domain = base, signal, handler, getKey } = c;
-  const runDeferFx = domain.createEffect(async (def: Defer) => {
-    const result = await def.req;
+  const runDeferFx = domain.createEffect({
+    handler: async (def: Defer) => {
+      const result = await def.req;
 
-    return result;
+      return result;
+    },
+    sid: 'abort/runner',
   });
-  const addDef = createEvent<Defer>();
-  const removeDef = createEvent<Defer>();
+  const addDef = createEvent<Defer>({ sid: 'abort/add' });
+  const removeDef = createEvent<Defer>({ sid: 'abort' });
   const $defs = domain
     .createStore<Defer[]>([], { serialize: 'ignore', sid: 'abort/$defs' })
     .on(addDef, (defs, def) => [...defs, def])
@@ -87,28 +90,31 @@ function abort<
     NoAny<Parameters<typeof c['handler']>[0]>,
     Promise<Done>,
     Fail | AbortedError<UnitValue<typeof c['signal']>>
-  >(async (params) => {
-    const aborter: { handlers: (() => void)[] } = { handlers: [] };
+  >({
+    sid: 'abort/abortable',
+    handler: async (params) => {
+      const aborter: { handlers: (() => void)[] } = { handlers: [] };
 
-    const onAbort = (fn: () => void) => {
-      aborter.handlers = [...aborter.handlers, fn];
+      const onAbort = (fn: () => void) => {
+        aborter.handlers = [...aborter.handlers, fn];
 
-      return () => (aborter.handlers = aborter.handlers.filter((f) => f !== fn));
-    };
+        return () => (aborter.handlers = aborter.handlers.filter((f) => f !== fn));
+      };
 
-    const key = getKey(params as any);
-    const def = createDefer({ aborter, key });
-    addDef(def);
+      const key = getKey(params as any);
+      const def = createDefer({ aborter, key });
+      addDef(def);
 
-    handler(params as any, { onAbort })
-      .then(def.rs)
-      .catch((error) => {
-        def.rj(error);
-      });
+      handler(params as any, { onAbort })
+        .then(def.rs)
+        .catch((error) => {
+          def.rj(error);
+        });
 
-    const result = await runDeferFx(def);
+      const result = await runDeferFx(def);
 
-    return result as NoAny<ReturnType<typeof c['handler']>>;
+      return result as NoAny<ReturnType<typeof c['handler']>>;
+    },
   });
 
   return abortable;
