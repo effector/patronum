@@ -52,12 +52,24 @@ jobs:
         uses: actions-ecosystem/action-regex-match@v2
         with:
           text: ${{ steps.version.outputs.tag }}
-          regex: 'next'
+          regex: '-next'
+
+      - name: Check for RC tag
+        id: rc
+        uses: actions-ecosystem/action-regex-match@v2
+        with:
+          text: ${{ steps.version.outputs.tag }}
+          regex: '-rc'
 
       - name: Publish patronum@${{ steps.version.outputs.tag }} with NEXT tag
         if: ${{ steps.next.outputs.match != '' }}
         working-directory: './dist/'
         run: npm publish --tag next
+
+      - name: Publish patronum@${{ steps.version.outputs.tag }} with RC tag
+        if: ${{ steps.rc.outputs.match != '' }}
+        working-directory: './dist/'
+        run: npm publish --tag rc
 
       - name: Publish patronum@${{ steps.version.outputs.tag }} to latest
         if: ${{ steps.next.outputs.match == '' }}
