@@ -33,6 +33,7 @@
 - [SplitMap](#splitmap) — Split event to different events and map data.
 - [Spread](#spread) — Send fields from object to same targets.
 - [Snapshot](#snapshot) — Create store value snapshot.
+- [Format](#format) — Combine stores to a string literal.
 
 ### Debug
 
@@ -544,6 +545,24 @@ readTime();
 ```
 
 [Try it](https://share.effector.dev/BFlhNGvk)
+
+## Format
+
+[Method documentation & API](/src/format)
+
+```ts
+import { createStore } from 'effector';
+import { format } from 'patronum';
+
+const $firstName = createStore('John');
+const $lastName = createStore('Doe');
+
+const $fullName = format`${$firstName} ${$lastName}`;
+$fullName.watch(console.log);
+// => John Doe
+```
+
+[Try it](https://share.effector.dev/IafeiFkF)
 
 # Development
 
