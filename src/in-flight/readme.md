@@ -8,7 +8,7 @@ import { inFlight } from 'patronum/in-flight';
 
 ### Motivation
 
-Method allows calculate total current in flight states of each passed effect.
+Method allows to calculate total current in flight states of each passed effect.
 It is useful when you want to show pending state of complex process.
 
 ### Formulae
