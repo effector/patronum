@@ -1,6 +1,6 @@
 # Patronum/Interval
 
-Creates a dynamic interval with events to start, stop interval, and handle tick. 
+Creates a dynamic interval with events to start, stop interval, and handle tick.
 
 > From v1.3.0
 
@@ -14,7 +14,13 @@ import { interval } from 'patronum/interval';
 ### Formulae
 
 ```ts
-const { tick, isRunning } = interval({ timeout, start, stop })
+const { tick, isRunning } = interval({
+  timeout,
+  start,
+  stop,
+  leading?,
+  trailing?,
+})
 ```
 
 - When `start` is triggered, `tick` will be `triggered` each `timeout` ms
@@ -30,6 +36,9 @@ const { tick, isRunning } = interval({ timeout, start, stop })
    without `stop` call, do nothing.
 3. `stop` _(Event<any>)_ - stop triggering `tick`. Double trigger
    without `start` call between them, do nothing.
+4. `leading` _(boolean)_ - Allows running `tick` when `start` is triggered.
+5. `trailing` _(boolean)_ - Allows running `tick` when `stop` is triggered, it
+   will be final call of `tick`.
 
 ### Returns
 
@@ -65,26 +74,3 @@ setTimeout(() => stopCounter(), 5000)
 
 [Try it](https://share.effector.dev/EOVzc3df)
 
-## Leading and trailing
-
-### Motivation
-
-Sometimes we need to run tick on start or stop the interval.
-
-### Formulae
-
-```ts
-const { tick, isRunning } = interval({
-  timeout,
-  start,
-  stop,
-  leading: true,
-  trailing: true
-});
-```
-
-### Arguments
-
-> All the same, just review first section
-4. `leading` _(boolean)_ - Allows running `tick` when `start` is triggered.
-5. `trailing` _(boolean)_ - Allows running `tick` when `stop` is triggered, it will be final call of `tick`.

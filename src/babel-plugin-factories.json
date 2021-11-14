@@ -15,7 +15,8 @@
     "patronum/split-map",
     "patronum/spread",
     "patronum/status",
-    "patronum/throttle"
+    "patronum/throttle",
+    "patronum/time"
   ],
   "mapping": {
     "combineEvents": "combine-events",
@@ -32,6 +33,7 @@
     "splitMap": "split-map",
     "spread": "spread",
     "status": "status",
-    "throttle": "throttle"
+    "throttle": "throttle",
+    "time": "time"
   }
 }

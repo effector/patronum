@@ -18,12 +18,13 @@
 - [InFlight](#inflight) — Counts all pending effects
 - [Status](#status) — Return text representation of effect state.
 
-### Timeout
+### Time
 
 - [Debounce](#debounce) — Creates event which waits until time passes after previous trigger.
 - [Delay](#delay) — Delays the call of the event by defined timeout.
 - [Throttle](#throttle) — Creates event which triggers at most once per timeout.
 - [Interval](#interval) — Creates a dynamic interval with any timeout.
+- [Time](#time) — Allows reading current timestamp by triggering clock.
 
 ### Combination/Decomposition
 
@@ -524,7 +525,29 @@ serverActionReceived({ type: 'another' });
 
 [Try it](https://share.effector.dev/RRf57lK4)
 
+## Time
+
+[Method documentation & API](/src/time)
+
+```ts
+import { createEvent } from 'effector';
+import { time } from 'patronum/time';
+
+const readTime = createEvent();
+const $now = time({ clock: readTime });
+
+$now.watch((now) => console.log('Now is:', now));
+// => Now is: 1636914286675
+
+readTime();
+// => Now is: 1636914300691
+```
+
+[Try it](https://share.effector.dev/BFlhNGvk)
+
 # Development
+
+You can review [CONTRIBUTING.md](./CONTRIBUTING.md)
 
 ## Release process
 
