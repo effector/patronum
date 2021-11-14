@@ -2,7 +2,6 @@
 
 [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg)](https://conventionalcommits.org) ![Node.js CI](https://github.com/effector/patronum/workflows/Node.js%20CI/badge.svg) [![Rate on Openbase](https://badges.openbase.com/js/rating/patronum.svg)](https://openbase.com/js/patronum?utm_source=embedded&utm_medium=badge&utm_campaign=rate-badge)
 
-
 ☄️ Effector operators library delivering modularity and convenience
 
 ## Table of contents
@@ -40,6 +39,8 @@
 
 ## Usage
 
+> Please, review documentation for YOUR version of patronum not the latest. Find and open tag/release for your version.
+
 ```bash
 npm install patronum
 # or
@@ -55,8 +56,6 @@ import { inFlight } from 'patronum/in-flight';
 
 Also use can import it from index:
 
-> Be careful, with this import method, all functions can be at your bundle
-
 ```ts
 import { delay, inFlight } from 'patronum';
 ```
@@ -71,13 +70,21 @@ import { status, splitMap, combineEvents } from 'patronum/macro';
 
 > Warning: babel-plugin-macros do not support `import * as name`!
 
+Since release of patronum@2.0.0 it is required to use babel-plugin-macros@3.0.0 or higher.
+
+Please note, that react-scripts@4.0.3 and older **uses outdated version** of this plugin - you can either use [yarn resolutions](https://classic.yarnpkg.com/lang/en/docs/selective-version-resolutions/) or use react-scripts@5.0.0 or higher.
+
 ## Migration guide
+
+### v2.0.0
+
+Removed support of effector v21. Now the minimum supported version is `v22.1.2`.
 
 ### v0.110
 
 From `v0.110.0` patronum removed support of effector v20. Now minimum supported version is `v21.4`.
 
-Please, before upgrade review release notes of [`effector v21`](https://github.com/zerobias/effector/releases/tag/effector%4021.0.0).
+Please, before upgrade review release notes of [`effector v21`](https://github.com/effector/effector/releases/tag/effector%4021.0.0).
 
 ### v0.100
 
@@ -191,8 +198,8 @@ trigger(4);
 [Method documentation & API](/src/interval)
 
 ```ts
-import { createStore, createEvent } from 'effector'
-import { interval } from 'patronum'
+import { createStore, createEvent } from 'effector';
+import { interval } from 'patronum';
 
 const startCounter = createEvent();
 const stopCounter = createEvent();
@@ -201,15 +208,15 @@ const $counter = createStore(0);
 const { tick } = interval({
   timeout: 500,
   start: startCounter,
-  stop: stopCounter
+  stop: stopCounter,
 });
 
 $counter.on(tick, (number) => number + 1);
-$counter.watch(value => console.log("COUNTER", value));
+$counter.watch((value) => console.log('COUNTER', value));
 
 startCounter();
 
-setTimeout(() => stopCounter(), 5000)
+setTimeout(() => stopCounter(), 5000);
 ```
 
 [Try it](https://share.effector.dev/EOVzc3df)
