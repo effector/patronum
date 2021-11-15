@@ -19,7 +19,7 @@ spread({ source, targets: { field: target, ... } })
 
 - When `source` is triggered with **object**, extract `field` from data, and trigger `target`
 - `targets` can have multiple properties
-- If `source` is triggered with not object, nothing will be happen.
+- If the `source` was triggered with non-object, nothing would be happening
 - If `source` is triggered with object but without propertpy `field`, target for this `field` will not be triggered
 
 ### Arguments
@@ -105,7 +105,7 @@ source = spread({ targets: { field: target, ... } })
 
 - When `source` is triggered with **object**, extract `field` from data, and trigger `target`
 - `targets` can have multiple properties
-- If `source` is triggered with not object, nothing will be happen.
+- If the `source` was triggered with non-object, nothing would be happening
 - If `source` is triggered with object but without propertpy `field`, target for this `field` will not be triggered
 
 ### Arguments
