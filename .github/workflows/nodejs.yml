@@ -30,7 +30,7 @@ jobs:
         run: yarn build
 
       - name: Test code
-        run: yarn test:code
+        run: yarn test:code --detectOpenHandles
         env:
           CI: true
 
