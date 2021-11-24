@@ -11,6 +11,7 @@
 - [Condition](#condition) — Trigger then or else by condition.
 - [Some](#some) — Checks that state in at least one store passes the predicate test.
 - [Every](#every) — Checks that state in each store passes the predicate test.
+- [Reset](#reset) — Reset all passed stores by clock.
 
 ### Effect
 
@@ -563,6 +564,27 @@ $fullName.watch(console.log);
 ```
 
 [Try it](https://share.effector.dev/IafeiFkF)
+
+## Reset
+
+```ts
+import { createEvent, createStore } from 'effector';
+import { reset } from 'patronum/reset';
+
+const pageUnmounted = createEvent();
+const userSessionFinished = createEvent();
+
+const $post = createStore(null);
+const $comments = createStore([]);
+const $draftComment = createStore('');
+
+reset({
+  clock: [pageUnmounted, userSessionFinished],
+  target: [$post, $comments, $draftComment],
+});
+```
+
+[Try it](https://share.effector.dev/06hpVftG)
 
 # Development
 
