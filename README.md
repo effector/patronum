@@ -350,6 +350,7 @@ const event3 = createEvent();
 const reset = createEvent();
 
 const event = combineEvents({
+  reset,
   events: {
     event1,
     event2,
