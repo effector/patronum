@@ -347,8 +347,10 @@ import { combineEvents } from 'patronum/combine-events';
 const event1 = createEvent();
 const event2 = createEvent();
 const event3 = createEvent();
+const reset = createEvent();
 
 const event = combineEvents({
+  reset,
   events: {
     event1,
     event2,
@@ -357,6 +359,15 @@ const event = combineEvents({
 });
 
 event.watch((object) => console.log('triggered', object));
+
+event1(true); // nothing
+event2('demo'); // nothing
+event3(5); // => triggered { event1: true, event2: "demo", event3: 5 }
+
+event1(true); // nothing
+event2('demo'); // nothing
+reset();
+event3(5) // nothing
 
 event1(true); // nothing
 event2('demo'); // nothing
