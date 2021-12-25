@@ -1,4 +1,4 @@
-import { allSettled, createEvent, fork } from 'effector';
+import { allSettled, createEvent, fork, createStore, guard } from 'effector';
 import { argumentHistory, wait, watch } from '../../test-library';
 import { interval } from '.';
 
@@ -77,4 +77,22 @@ test('concurrent run of interval in different scopes', async () => {
   allSettled(stop, { scope: scopeA });
   expect(scopeA.getState(isRunning)).toBe(false);
   expect(scopeB.getState(isRunning)).toBe(false);
+});
+
+test('does not leaves unresolved timeout effect, if stopped', async () => {
+  const start = createEvent();
+  const stop = createEvent();
+  const { tick } = interval({ timeout: 1, start, stop });
+  const $count = createStore(0).on(tick, (s) => s + 1);
+  guard({
+    source: $count,
+    clock: tick,
+    filter: (c) => c === 6,
+    target: stop,
+  });
+
+  const scope = fork();
+  await allSettled(start, { scope });
+
+  expect(scope.getState($count)).toEqual(7);
 });
