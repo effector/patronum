@@ -87,12 +87,12 @@ test('does not leaves unresolved timeout effect, if stopped', async () => {
   guard({
     source: $count,
     clock: tick,
-    filter: (c) => c > 9,
+    filter: (c) => c === 6,
     target: stop,
   });
 
   const scope = fork();
   await allSettled(start, { scope });
 
-  expect($count).toEqual(10);
+  expect(scope.getState($count)).toEqual(7);
 });
