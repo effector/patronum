@@ -1,4 +1,4 @@
-import { combine, Store } from 'effector';
+import { combine, is, Store } from 'effector';
 
 export function every<T>(_: {
   predicate: (value: T) => boolean;
@@ -15,20 +15,35 @@ export function every<T>(_: {
   stores: Array<Store<T>>;
 }): Store<boolean>;
 
+export function every<T>(_: {
+  predicate: Store<T>;
+  stores: Array<Store<T>>;
+}): Store<boolean>;
+
 export function every<T>({
   predicate,
   stores,
 }: {
-  predicate: T | ((value: T) => boolean);
+  predicate: T | ((value: T) => boolean) | Store<T>;
   stores: Array<Store<T>>;
 }): Store<boolean> {
-  const checker = isFunction(predicate)
-    ? predicate
-    : (value: T) => value === predicate;
+  let checker;
+  if (isFunction(predicate)) {
+    checker = predicate;
+  } else if (is.store(predicate)) {
+    checker = predicate.map((value) => (required: T) => value === required);
+  } else {
+    checker = (value: T) => value === predicate;
+  }
 
-  return combine(stores, (values) => values.every(checker));
+  const $values = combine(stores);
+  // Combine pass simple values as is
+  const $checker = checker as Store<(value: T) => boolean>;
+
+  return combine($checker, $values, (checker, values) => values.every(checker));
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function isFunction<T>(value: unknown): value is (value: T) => boolean {
   return typeof value === 'function';
 }

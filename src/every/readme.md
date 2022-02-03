@@ -55,13 +55,13 @@ It is useful when you write `combine` with `&&` very often, for example to creat
 $result = every({ predicate: value, stores });
 ```
 
-- `$result` will be `true` if each value in `stores` equals `values`, otherwise it will be `false`
+- `$result` will be `true` if each value in `stores` equals `value`, otherwise it will be `false`
 
 ### Arguments
 
 1. `predicate` _(`T`)_ — Data to compare stores values with
 1. `stores` _(`Array<Store<T>>`)_ — List of stores to compare with `value`
-1. type of `value` and `stores` should should be the same
+1. type of `value` and `stores` should be the same
 
 ### Return
 
@@ -75,6 +75,47 @@ const $isEmailCorrect = createStore(true);
 
 const $isFormCorrect = every({
   predicate: true,
+  stores: [$isPasswordCorrect, $isEmailCorrect],
+});
+
+console.assert(true === $isFormCorrect.getState());
+```
+
+## `every({ predicate: Store, stores })`
+
+### Motivation
+
+This overload compares each store to specific value in the store `predicate`.
+It is useful when you write `combine` with `&&` very often, for example to create a pending state or a form valid flag.
+
+### Formulae
+
+```ts
+$result = every({ predicate: $value, stores });
+```
+
+- `$result` will be `true` if each value in `stores` equals value in the `$value`, otherwise it will be `false`
+
+### Arguments
+
+1. `predicate` _(`Store<T>`)_ — Store contains value to compare values from `stores` with
+1. `stores` _(`Array<Store<T>>`)_ — List of stores to compare with `$value` store
+1. type of `value` and `stores` should be the same
+
+### Return
+
+- `$result` _(`Store<boolean>`)_ — `true` if each store contains value from the `predicate` store
+
+### Example
+
+```ts
+const $allowToCompare = createStore(true);
+
+const $isPasswordCorrect = createStore(true);
+const $isEmailCorrect = createStore(true);
+
+const $isFormCorrect = every({
+  predicate: $allowToCompare,
   stores: [$isPasswordCorrect, $isEmailCorrect],
 });
 
