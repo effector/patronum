@@ -48,3 +48,24 @@ import { every } from '../src/every';
   // @ts-expect-error
   every({ predicate, stores: [$a, $invalid] });
 }
+
+// Check store predicate
+{
+  const $predicate = createStore(0);
+  const $a = createStore(0);
+  const $b = createStore(1);
+  const $invalid1 = createStore('');
+  const $invalid2 = createStore(true);
+  const $invalid3 = createStore({});
+
+  expectType<Store<boolean>>(every({ predicate: $predicate, stores: [$a, $b] }));
+
+  // @ts-expect-error
+  expectType<Store<boolean>>(every({ predicate: $invalid1, stores: [$a, $b] }));
+
+  // @ts-expect-error
+  expectType<Store<boolean>>(every({ predicate: $invalid2, stores: [$a, $b] }));
+
+  // @ts-expect-error
+  expectType<Store<boolean>>(every({ predicate: $invalid3, stores: [$a, $b] }));
+}
