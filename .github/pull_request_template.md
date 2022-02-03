@@ -11,7 +11,7 @@
 - [ ] Add **type** tests to `test-typings/method-name.ts`
   - Use `// @ts-expect-error` to mark expected type error
   - `import { expectType } from 'tsd'` to check expected return type
-- [ ] Add documentation in `src/method-name/reade.md`
+- [ ] Add documentation in `src/method-name/readme.md`
   - Add header `Patronum/MethodName`
   - Add section with overloads, if have
   - Add `Motivation`, `Formulae`, `Arguments` and `Return` sections for each overload
