@@ -367,7 +367,7 @@ event3(5); // => triggered { event1: true, event2: "demo", event3: 5 }
 event1(true); // nothing
 event2('demo'); // nothing
 reset();
-event3(5) // nothing
+event3(5); // nothing
 
 event1(true); // nothing
 event2('demo'); // nothing
@@ -387,10 +387,7 @@ import { every } from 'patronum/every';
 const $isPasswordCorrect = createStore(true);
 const $isEmailCorrect = createStore(true);
 
-const $isFormCorrect = every({
-  predicate: true,
-  stores: [$isPasswordCorrect, $isEmailCorrect],
-});
+const $isFormCorrect = every([$isPasswordCorrect, $isEmailCorrect], true);
 
 $isFormCorrect.watch(console.log); // => true
 ```

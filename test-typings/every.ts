@@ -69,3 +69,30 @@ import { every } from '../src/every';
   // @ts-expect-error
   expectType<Store<boolean>>(every({ predicate: $invalid3, stores: [$a, $b] }));
 }
+
+// Short
+{
+  const predicate = (value: number) => value > 0;
+  const $predicate = createStore(0);
+  const $a = createStore(0);
+  const $b = createStore(1);
+  const $invalid1 = createStore('');
+  const $invalid2 = createStore(true);
+  const $invalid3 = createStore({});
+
+  expectType<Store<boolean>>(every([$a, $b], 0));
+  // @ts-expect-error
+  every([$a, $invalid1], 0);
+
+  expectType<Store<boolean>>(every([$a, $b], predicate));
+  // @ts-expect-error
+  every([$a, $invalid1], predicate);
+
+  expectType<Store<boolean>>(every([$a, $b], $predicate));
+  // @ts-expect-error
+  expectType<Store<boolean>>(every([$a, $b], $invalid1));
+  // @ts-expect-error
+  expectType<Store<boolean>>(every([$a, $b], $invalid2));
+  // @ts-expect-error
+  expectType<Store<boolean>>(every([$a, $b], $invalid3));
+}

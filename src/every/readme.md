@@ -121,3 +121,18 @@ const $isFormCorrect = every({
 
 console.assert(true === $isFormCorrect.getState());
 ```
+
+## Shorthands
+
+```ts
+$result = every(stores, value);
+$result = every(stores, (value) => false);
+$result = every(stores, $predicate);
+```
+
+Shorthand have the same rules as the main overrides, just it uses positional arguments instead of object-form.
+
+### Arguments
+
+1. `stores` _(`Array<Store<T>>`)_ — List of stores to compare with predicate in the second argument
+2. `predicate` _(`Store<T> | (value: T) => boolean | T`)_ — Predicate to compare with
