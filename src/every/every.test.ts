@@ -86,3 +86,26 @@ test('initially true', () => {
   $result.watch(fn);
   expect(fn).toHaveBeenCalledWith(true);
 });
+
+test('allow predicate to use store', () => {
+  const setSource = createEvent<boolean>();
+  const setPredicate = createEvent<boolean>();
+
+  const $predicate = createStore(false).on(setPredicate, (_, value) => value);
+
+  const $first = createStore(true);
+  const $second = createStore(false).on(setSource, (_, value) => value);
+  const $third = createStore(true);
+
+  const $result = every({ predicate: $predicate, stores: [$first, $second, $third] });
+  expect($result.getState()).toBeFalsy();
+
+  setSource(true);
+  expect($result.getState()).toBeFalsy();
+
+  setPredicate(true);
+  expect($result.getState()).toBeTruthy();
+
+  setSource(false);
+  expect($result.getState()).toBeFalsy();
+});
