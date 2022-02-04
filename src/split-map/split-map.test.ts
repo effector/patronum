@@ -53,12 +53,11 @@ test('default case from event', () => {
 });
 
 test('fall through from event', () => {
-  const source =
-    createEvent<{
-      first?: string;
-      second?: boolean;
-      default?: number;
-    }>();
+  const source = createEvent<{
+    first?: string;
+    second?: boolean;
+    default?: number;
+  }>();
   const out = splitMap({
     source,
     cases: {
