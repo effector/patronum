@@ -1,5 +1,12 @@
 import 'regenerator-runtime/runtime';
-import { createDomain, fork, serialize, allSettled } from 'effector';
+import {
+  createDomain,
+  fork,
+  serialize,
+  allSettled,
+  createEvent,
+  createStore,
+} from 'effector';
 
 import { some } from './index';
 
@@ -21,7 +28,7 @@ test('throttle works in forked scope', async () => {
 
   expect(serialize(scope)).toMatchInlineSnapshot(`
     Object {
-      "-be2ofs": 1,
+      "-82rbof": 1,
     }
   `);
 });
@@ -63,12 +70,12 @@ test('throttle do not affect another forks', async () => {
 
   expect(serialize(scopeA)).toMatchInlineSnapshot(`
     Object {
-      "jdur6v": 2,
+      "wn468b": 2,
     }
   `);
   expect(serialize(scopeB)).toMatchInlineSnapshot(`
     Object {
-      "jdur6v": 200,
+      "wn468b": 200,
     }
   `);
 });
@@ -99,9 +106,35 @@ test('throttle do not affect original store value', async () => {
 
   expect(serialize(scope)).toMatchInlineSnapshot(`
     Object {
-      "kbl95b": 2,
+      "nmwlwo": 2,
     }
   `);
 
   expect($result.getState()).toMatchInlineSnapshot(`false`);
+});
+
+test('allow predicate to use store', async () => {
+  const setSource = createEvent<boolean>();
+  const setPredicate = createEvent<boolean>();
+
+  const $predicate = createStore(false).on(setPredicate, (_, value) => value);
+
+  const $first = createStore(true);
+  const $second = createStore(true).on(setSource, (_, value) => value);
+  const $third = createStore(true);
+
+  const $result = some({ predicate: $predicate, stores: [$first, $second, $third] });
+
+  const scope = fork();
+
+  expect(scope.getState($result)).toBeFalsy();
+
+  await allSettled(setSource, { scope, params: false });
+  expect(scope.getState($result)).toBeTruthy();
+
+  await allSettled(setPredicate, { scope, params: true });
+  expect(scope.getState($result)).toBeTruthy();
+
+  await allSettled(setSource, { scope, params: true });
+  expect(scope.getState($result)).toBeTruthy();
 });
