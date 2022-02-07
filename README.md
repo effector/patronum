@@ -73,19 +73,177 @@ const userLoadFx = createEffect()
 const $status = status({ effect: userLoadFx })
 ```
 
-### Create React App and Macros support
+## 🐞 Debug and log
 
-Just import from `patronum/macro`, and imports will be replaced to full qualified:
+Sometimes we need to log each event and change in our application, here we need to install [`effector-logger`](https://github.com/effector/logger):
 
-```ts
-import { status, splitMap, combineEvents } from 'patronum/macro';
+```bash
+npm install --dev effector-logger
 ```
 
-> Warning: babel-plugin-macros do not support `import * as name`!
+We have some variants how to use logger to debug our applications. Please, don't merge all variants, **it's not compatible**!
 
-Since release of patronum@2.0.0 it is required to use babel-plugin-macros@3.0.0 or higher.
+### 1. Temporarily change imports in certain modules
 
-Please note, that react-scripts@4.0.3 and older **uses outdated version** of this plugin - you can either use [yarn resolutions](https://classic.yarnpkg.com/lang/en/docs/selective-version-resolutions/) or use react-scripts@5.0.0 or higher.
+If we need to debug just some list of modules, we can just replace `effector` import to `effector-logger`:
+
+```diff
+-import { createStore, createEvent, sample } from 'effector'
++import { createStore, createEvent, sample } from 'effector-logger'
+import { spread } from 'patronum'
+```
+
+Next just open the Console in browser DevTools. But here we see strange names of the stores and events like "ashg7d".
+This means we need to use [effector babel plugin](https://effector.dev/docs/api/effector/babel-plugin/).
+
+> Note: You don't need to install it separately, because its bundled into effector package.
+
+```json5
+// .babelrc
+{
+  "plugins": [
+    ["effector/babel-plugin", { "importName": "effector-logger" }], // Just add this line into your .babelrc or babel.config.js plugins section.
+  ],
+  "presets": [
+    "patronum/babel-preset" // Add this line at the end of the all presets
+  ]
+}
+```
+
+### 2. Use `effector-logger/babel-plugin` to automatically replace all imports in development
+
+But some projects already use `effector/babel-plugin`, and for correct work with `effector-logger` we need **just one** instance of babel plugin.
+This means that [effector-logger has its own babel-plugin](https://github.com/effector/logger#usage).<br/>
+**Don't use `effector/babel-plugin` simultaneously with `effector-logger/babel-plugin`!** Use just one at the time, for example: for the dev environment use `effector-logger/babel-plugin`, but for production use `effector/babel-plugin`.
+
+
+<details>
+  <summary>
+    How to setup `.babelrc`
+  </summary>
+
+```json5
+// .babelrc
+{
+  "presets": [
+    "patronum/babel-preset" // Add this line at the end of the all presets in the root of the file
+  ],
+  "env": {
+    "development": {
+      "plugins": [
+        ["effector-logger/babel-plugin", {}] // In the curly brackets you can pass options for logger AND effector
+      ]
+    },
+    "production": {
+      "plugins": [
+        ["effector/babel-plugin", {}] // In the curly brackets you can pass options for effector
+      ]
+    },
+  },
+}
+```
+  
+If you need to pass factories, here you need to duplicate your array:
+  
+```json5
+// .babelrc
+{
+  "env": {
+    "development": {
+      "plugins": [
+        ["effector-logger/babel-plugin", {
+          "effector": { "factories": ["src/shared/lib/compare", "src/shared/lib/timing"] }
+        }]
+      ]
+    },
+    "production": {
+      "plugins": [
+        ["effector/babel-plugin", { "factories": ["src/shared/lib/compare", "src/shared/lib/timing"] }]
+      ]
+    },
+  },
+}
+```
+
+Also, you need to build your project with `BABEL_ENV=development` for dev and `BABEL_ENV=production` for prod, to choose the appropriate option in the `"env"` section.
+  
+  
+Relative links:
+- https://babeljs.io/docs/en/options#env
+- https://babeljs.io/docs/en/config-files
+  
+</details>
+
+
+<details>
+  <summary>
+    How to setup `babel.config.js`
+  </summary>
+
+```js
+module.exports = (api) => {
+  const isDev = api.env("development")
+  
+  return {
+    presets: [
+      // Add next line at the end of presets list
+      "patronum/babel-preset",
+    ],
+    plugins: [
+      // Add next lines at the end of the plugins list
+      isDev
+        ? ["effector-logger/babel-plugin", {}]
+        : ["effector/babel-plugin", {}]
+    ]
+  }
+}
+```
+  
+If you want to pass factories to the effector plugin, you need just put it to the variable:
+
+  
+```js
+
+module.exports = (api) => {
+  const isDev = api.env("development")
+  // Here your factories
+  const factories = ["src/shared/lib/compare", "src/shared/lib/timing"]
+  
+  return {
+    plugins: [
+      isDev
+        // All effector options passed into `effector` property
+        ? ["effector-logger/babel-plugin", { effector: { factories } }]
+        : ["effector/babel-plugin", { factories }]
+    ]
+  }
+}
+```
+
+Also, you need to build your project with `BABEL_ENV=development` for dev and `BABEL_ENV=production` for prod, to choose the appropriate option in the `"env"` section.
+  
+  
+Relative links:
+- https://babeljs.io/docs/en/options#env
+- https://babeljs.io/docs/en/config-files
+
+</details>
+
+
+### 3. CRA support with [macros](https://github.com/kentcdodds/babel-plugin-macros)
+
+[`babel-plugin-macros`](https://github.com/kentcdodds/babel-plugin-macros) is bundled into CRA, so we can use it due CRA don't support adding babel plugins into `.babelrc` or `babel.config.js`.
+
+Just import from `patronum/macro` and `effector-logger/macro`, and use as early:
+
+```ts
+import { createStore, createEffect, sample } from "effector-logger/macro"
+import { status, splitMap, combineEvents } from "patronum/macro";
+```
+
+> - Warning: babel-plugin-macros do not support `import * as name`!
+> - Note: Since release of patronum@2.0.0 it is required to use babel-plugin-macros@3.0.0 or higher.
+> - Please note, that react-scripts@4.0.3 and older **uses outdated version** of this plugin - you can either use [yarn resolutions](https://classic.yarnpkg.com/lang/en/docs/selective-version-resolutions/) or use react-scripts@5.0.0 or higher.
 
 ## Migration guide
 
