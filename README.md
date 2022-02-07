@@ -55,27 +55,22 @@
 
 - [Debug](#debug) — Log triggers of passed units.
 
-## Usage
+## 💿 Install now
 
-> Please, review documentation for YOUR version of patronum not the latest. Find and open tag/release for your version.
+> Please, review documentation for **YOUR** version of patronum not the latest. Find and [open tag/release](https://github.com/effector/patronum/releases) for your version and click on the tag [vA.B.C](https://github.com/effector/patronum/tree/v1.7.0) to view repo and documentation for that version, or use "Switch branches/tags" selector.
 
 ```bash
 npm install patronum
-# or
-yarn add patronum
 ```
 
-Import function by its name from `patronum`:
+Next just import methods from `"patronum"` and use it:
 
 ```ts
-import { delay } from 'patronum/delay';
-import { inFlight } from 'patronum/in-flight';
-```
+import { createEffect } from "effector"
+import { status } from "patronum"
 
-Also use can import it from index:
-
-```ts
-import { delay, inFlight } from 'patronum';
+const userLoadFx = createEffect()
+const $status = status({ effect: userLoadFx })
 ```
 
 ### Create React App and Macros support
@@ -94,6 +89,12 @@ Please note, that react-scripts@4.0.3 and older **uses outdated version** of thi
 
 ## Migration guide
 
+<details>
+  <summary>
+    show / hide
+  </summary>
+
+
 ### v2.0.0
 
 Removed support of effector v21. Now the minimum supported version is `v22.1.2`.
@@ -107,6 +108,8 @@ Please, before upgrade review release notes of [`effector v21`](https://github.c
 ### v0.100
 
 From `v0.100.0` patronum introduced object arguments form with **BREAKING CHANGES**. Please, review [migration guide](./MIGRATION.md) before upgrade from `v0.14.x` on your project.
+  
+</details>
 
 ---
 
