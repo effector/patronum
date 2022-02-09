@@ -138,7 +138,7 @@ import { spread } from '../src/spread';
 
 // Check target different units without source
 {
-  expectType<Event<{ foo: string; bar: number; baz: boolean }>>(
+  expectType<Event<{ foo?: string; bar?: number; baz?: boolean }>>(
     spread({
       targets: {
         foo: createStore(''),

@@ -7,7 +7,7 @@ export function spread<Payload>(config: {
   targets: {
     [Key in keyof Payload]?: Unit<Payload[Key]>;
   };
-}): EventAsReturnType<Payload>;
+}): EventAsReturnType<Partial<Payload>>;
 
 export function spread<
   Source,
