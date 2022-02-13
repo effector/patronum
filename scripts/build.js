@@ -52,12 +52,11 @@ async function main() {
     types: 'index.d.ts',
   };
 
-  for (const name of names) {
-    await directory.write(
-      `${name}/package.json`,
-      JSON.stringify(internalPkg, null, 2),
-    );
-  }
+  await Promise.all(
+    names.map((name) =>
+      directory.write(`${name}/package.json`, JSON.stringify(internalPkg, null, 2)),
+    ),
+  );
 
   await directory.write('index.js', createCommonJsIndex(names));
   await directory.write('index.mjs', createMjsIndex(names));
