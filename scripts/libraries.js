@@ -1,9 +1,12 @@
 const { promisify } = require('util');
+const { dirname } = require('path');
 const fs = require('fs');
 const { camelCase } = require('camel-case');
 
 const writeFile = promisify(fs.writeFile);
 const copyFile = promisify(fs.copyFile);
+const exists = promisify(fs.exists);
+const mkdir = promisify(fs.mkdir);
 
 function createCommonJsIndex(names) {
   const imports = names.sort().map((name) => {
@@ -44,6 +47,7 @@ function createFactoriesJson(library, names) {
 function createExportsMap(names) {
   const object = {};
   names.forEach((name) => {
+    object[`./${name}/package.json`] = `./${name}/package.json`;
     object[`./${name}`] = {
       require: `./${name}/index.js`,
       import: `./${name}/index.mjs`,
@@ -54,7 +58,13 @@ function createExportsMap(names) {
 
 async function createDistribution(dir) {
   return {
-    write: (path, content) => writeFile(`${dir}/${path}`, content),
+    write: async (path, content) => {
+      const directory = dirname(`${dir}/${path}`);
+      if (!(await exists(directory))) {
+        await mkdir(directory, { recursive: true });
+      }
+      return writeFile(`${dir}/${path}`, content);
+    },
     copyList: (source, list, fn = (i) => i) =>
       Promise.all(
         list.map((file) => copyFile(`${source}/${file}`, `${dir}/${fn(file)}`)),

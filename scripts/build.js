@@ -30,6 +30,7 @@ async function main() {
   );
 
   pkg.exports = {
+    './package.json': './package.json',
     '.': {
       require: './index.js',
       import: './index.mjs',
@@ -44,6 +45,19 @@ async function main() {
     ...createExportsMap(names),
   };
 
+  const internalPkg = {
+    type: 'module',
+    main: 'index.js',
+    module: 'index.mjs',
+    types: 'index.d.ts',
+  };
+
+  await Promise.all(
+    names.map((name) =>
+      directory.write(`${name}/package.json`, JSON.stringify(internalPkg, null, 2)),
+    ),
+  );
+
   await directory.write('index.js', createCommonJsIndex(names));
   await directory.write('index.mjs', createMjsIndex(names));
   await directory.write('index.d.ts', createTypingsIndex(names));
@@ -55,7 +69,7 @@ async function main() {
   await writeFile(`./src/${fileName}`, JSON.stringify(factoriesJson, null, 2));
   await directory.copyList('./src', [fileName]);
 
-  await directory.write('package.json', JSON.stringify(pkg));
+  await directory.write('package.json', JSON.stringify(pkg, null, 2));
 }
 
 main().catch((error) => {
