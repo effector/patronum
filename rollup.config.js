@@ -8,16 +8,16 @@ const plugins = [
   terser({}),
 ];
 
-const input = 'dist/index.js';
+const input = 'dist/index.cjs';
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default [
   {
-    input: 'dist/index.mjs',
+    input: 'dist/index.js',
     external: ['effector'],
     plugins,
     output: {
-      file: './dist/patronum.mjs',
+      file: './dist/patronum.js',
       format: 'es',
       sourcemap: true,
       externalLiveBindings: false,
@@ -28,7 +28,7 @@ export default [
     external: ['effector'],
     plugins,
     output: {
-      file: './dist/patronum.cjs.js',
+      file: './dist/patronum.cjs',
       format: 'cjs',
       freeze: false,
       exports: 'named',

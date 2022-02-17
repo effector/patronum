@@ -32,9 +32,9 @@ async function main() {
   pkg.exports = {
     './package.json': './package.json',
     '.': {
-      require: './index.js',
-      import: './index.mjs',
-      default: './index.mjs',
+      require: './index.cjs',
+      import: './index.js',
+      default: './index.js',
     },
     './babel-preset': {
       require: './babel-preset.cjs',
@@ -47,8 +47,8 @@ async function main() {
 
   const internalPkg = {
     type: 'module',
-    main: 'index.js',
-    module: 'index.mjs',
+    main: 'index.cjs',
+    module: 'index.js',
     types: 'index.d.ts',
   };
 
@@ -58,8 +58,8 @@ async function main() {
     ),
   );
 
-  await directory.write('index.js', createCommonJsIndex(names));
-  await directory.write('index.mjs', createMjsIndex(names));
+  await directory.write('index.cjs', createCommonJsIndex(names));
+  await directory.write('index.js', createMjsIndex(names));
   await directory.write('index.d.ts', createTypingsIndex(names));
   await directory.write('macro.d.ts', 'export * from "./index";');
 
