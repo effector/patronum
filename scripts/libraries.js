@@ -11,7 +11,7 @@ const mkdir = promisify(fs.mkdir);
 function createCommonJsIndex(names) {
   const imports = names.sort().map((name) => {
     const camel = camelCase(name);
-    return `module.exports.${camel} = require('./${name}').${camel};`;
+    return `module.exports.${camel} = require('./${name}/index.cjs').${camel};`;
   });
 
   return imports.join('\n') + '\n';
@@ -20,7 +20,7 @@ function createCommonJsIndex(names) {
 function createMjsIndex(names) {
   const imports = names.sort().map((name) => {
     const camel = camelCase(name);
-    return `export { ${camel} } from './${name}/index.mjs'`;
+    return `export { ${camel} } from './${name}/index.js'`;
   });
 
   return imports.join('\n') + '\n';
@@ -49,8 +49,8 @@ function createExportsMap(names) {
   names.forEach((name) => {
     object[`./${name}/package.json`] = `./${name}/package.json`;
     object[`./${name}`] = {
-      require: `./${name}/index.js`,
-      import: `./${name}/index.mjs`,
+      require: `./${name}/index.cjs`,
+      import: `./${name}/index.js`,
     };
   });
   return object;
