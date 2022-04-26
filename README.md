@@ -34,7 +34,7 @@
 - [InFlight](#inflight) — Counts all pending effects
 - [Status](#status) — Return text representation of effect state.
 
-### Time
+### Timeouts
 
 - [Debounce](#debounce) — Creates event which waits until time passes after previous trigger.
 - [Delay](#delay) — Delays the call of the event by defined timeout.
