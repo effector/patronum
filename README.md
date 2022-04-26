@@ -40,7 +40,7 @@
 - [Delay](#delay) — Delays the call of the event by defined timeout.
 - [Throttle](#throttle) — Creates event which triggers at most once per timeout.
 - [Interval](#interval) — Creates a dynamic interval with any timeout.
-- [Time](#time) — Allows reading current timestamp by triggering clock.
+- [Time](#time-1) — Allows reading current timestamp by triggering clock.
 
 ### Combination/Decomposition
 
