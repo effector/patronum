@@ -116,11 +116,10 @@ import { createEvent, createStore } from 'effector';
 import { delay } from 'patronum/delay';
 
 const update = createEvent<string>();
-const $data = createStore('');
 const $timeout = createStore(500);
 
 const logDelayed = delay({
-  source: $data,
+  source: update,
   timeout: $timeout,
 });
 
