@@ -39,6 +39,7 @@ const config = {
           breadcrumbs: true,
           editUrl: 'https://github.com/effector/patronum/tree/main/src/',
         },
+        pages: {},
         blog: false,
         theme: {
           customCss: require.resolve('./src/main.css'),
@@ -71,6 +72,11 @@ const config = {
           src: 'img/logo.svg',
         },
         items: [
+          {
+            to: 'docs/installation',
+            position: 'left',
+            label: 'Documentation',
+          },
           {
             type: 'doc',
             docId: 'methods',
