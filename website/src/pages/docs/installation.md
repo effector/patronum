@@ -54,5 +54,5 @@ import { status, splitMap, combineEvents } from 'patronum/macro';
 ```
 
 > - Warning: babel-plugin-macros do not support `import * as name`!
-> - Note: Since release of patronum@2.0.0 it is required to use babel-plugin-macros@3.0.0 or higher.
-> - Please note, that react-scripts@4.0.3 and older **uses outdated version** of this plugin - you can either use [yarn resolutions](https://classic.yarnpkg.com/lang/en/docs/selective-version-resolutions/) or use react-scripts@5.0.0 or higher.
+> - Note: Since release of patronum v2.0.0 it is required to use babel-plugin-macros v3.0.0 or higher.
+> - Please note, that react-scripts v4.0.3 and older **uses outdated version** of this plugin - you can either use [yarn resolutions](https://classic.yarnpkg.com/lang/en/docs/selective-version-resolutions/) or use react-scripts v5.0.0 or higher.
