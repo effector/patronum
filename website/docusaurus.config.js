@@ -75,13 +75,18 @@ const config = {
           {
             to: 'docs/installation',
             position: 'left',
-            label: 'Documentation',
+            label: 'Installation',
           },
           {
             type: 'doc',
             docId: 'methods',
             position: 'left',
             label: 'Methods',
+          },
+          {
+            href: 'https://share.effector.dev/YC6TiqYW',
+            label: 'Try',
+            position: 'left',
           },
           {
             href: 'https://github.com/effector/patronum',
