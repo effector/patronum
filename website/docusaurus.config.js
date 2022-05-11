@@ -69,7 +69,7 @@ const config = {
         title: 'effector patronum ✨',
         logo: {
           alt: 'effector patronum',
-          src: 'img/logo.svg',
+          src: 'img/comet.png',
         },
         items: [
           {
