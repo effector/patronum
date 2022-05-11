@@ -1,0 +1,34 @@
+name: Deploy Docs
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-18.04
+
+    steps:
+      - name: 🛎️ Checkout
+        uses: actions/checkout@v3
+
+      - name: 🐧 Use Node.js v16.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: v16.x
+          cache: 'yarn'
+
+      - name: 🔍 Installation
+        run: yarn install
+        working-directory: ./website
+
+      - name: 🔧 Build
+        run: yarn install
+        working-directory: ./website
+
+      - name: 🚀 Deploy
+        uses: JamesIves/github-pages-deploy-action@v4.3.3
+        with:
+          branch: gh-pages
+          folder: ./website/build
