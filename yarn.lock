@@ -8682,6 +8682,7 @@ __metadata:
     "@rollup/plugin-commonjs": ^15.1.0
     "@rollup/plugin-node-resolve": ^9.0.0
     "@types/jest": ^26.0.14
+    "@typescript-eslint/eslint-plugin": 3.2.0
     "@typescript-eslint/parser": ^4.2.0
     babel-plugin-macros: ^3.0.1
     babel-plugin-tester: ^10.0.0
