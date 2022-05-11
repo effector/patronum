@@ -1,4 +1,4 @@
-# Patronum/Delay
+# delay
 
 ```ts
 import { delay } from 'patronum/delay';
@@ -16,13 +16,13 @@ target = delay({ source, timeout: number, target });
 
 ### Arguments
 
-1. `source` _(`Event<T>` | `Store<T>` | `Effect<T>`)_ — Source unit, data from this unit used to trigger `target` with.
-1. `timeout` _(`number`)_ — time to wait before trigger `event`
-1. `target` _(`Event<T>` | `Store<T>` | `Effect<T`>)_ — Optional. Target unit, that should be called after delay.
+1. `source` `(Event<T>` | `Store<T>` | `Effect<T>)` — Source unit, data from this unit used to trigger `target` with.
+1. `timeout` `(number)` — time to wait before trigger `event`
+1. `target` `(Event<T>` | `Store<T>` | `Effect<T`>)` — Optional. Target unit, that should be called after delay.
 
 ### Returns
 
-- `event` _(`Event<T>`)_ — New event, that triggered after delay
+- `event` `(Event<T>)` — New event, that triggered after delay
 
 ### Example
 
@@ -57,9 +57,9 @@ target = delay({ source, timeout: Function, target });
 
 ### Arguments
 
-1. `source` _(`Event<T>` | `Store<T>` | `Effect<T>`)_ — Source unit, data from this unit used to trigger `target` with.
-1. `timeout` _(`(payload: T) => number`)_ — Calculate delay for each `source` call. Receives the payload of `source` as argument. Should return `number` — delay in milliseconds.
-1. `target` _(`Event<T>` | `Store<T>` | `Effect<T`>)_ — Optional. Target unit, that should be called after delay.
+1. `source` `(Event<T>` | `Store<T>` | `Effect<T>)` — Source unit, data from this unit used to trigger `target` with.
+1. `timeout` `((payload: T) => number)` — Calculate delay for each `source` call. Receives the payload of `source` as argument. Should return `number` — delay in milliseconds.
+1. `target` `(Event<T>` | `Store<T>` | `Effect<T`>)` — Optional. Target unit, that should be called after delay.
 
 ### Example
 
@@ -105,9 +105,9 @@ target = delay({ source, timeout: $store, target });
 
 ### Arguments
 
-1. `source` _(`Event<T>` | `Store<T>` | `Effect<T>`)_ — Source unit, data from this unit used to trigger `target` with.
-1. `timeout` _(`Store<number>`)_ — Store with number — delay in milliseconds.
-1. `target` _(`Event<T>` | `Store<T>` | `Effect<T`>)_ — Optional. Target unit, that should be called after delay.
+1. `source` `(Event<T>` | `Store<T>` | `Effect<T>)` — Source unit, data from this unit used to trigger `target` with.
+1. `timeout` `(Store<number>)` — Store with number — delay in milliseconds.
+1. `target` `(Event<T>` | `Store<T>` | `Effect<T`>)` — Optional. Target unit, that should be called after delay.
 
 ### Example
 

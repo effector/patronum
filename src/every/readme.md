@@ -1,4 +1,4 @@
-# Patronum/Every
+# every
 
 ```ts
 import { every } from 'patronum/every';
@@ -21,12 +21,12 @@ $result = every({ predicate: fn, stores });
 
 ### Arguments
 
-1. `predicate` _(`(value: T) => boolean`)_ — Function to check store value
-1. `stores` _(`Array<Store<T>>`)_ — List of stores
+1. `predicate` `((value: T) => boolean)` — Function to check store value
+1. `stores` `(Array<Store<T>>)` — List of stores
 
 ### Return
 
-- `$result` _(`Store<boolean>`)_ — `true` if each store corresponds to `predicate`
+- `$result` `(Store<boolean>)` — `true` if each store corresponds to `predicate`
 
 ### Example
 
@@ -59,13 +59,13 @@ $result = every({ predicate: value, stores });
 
 ### Arguments
 
-1. `predicate` _(`T`)_ — Data to compare stores values with
-1. `stores` _(`Array<Store<T>>`)_ — List of stores to compare with `value`
+1. `predicate` `(T)` — Data to compare stores values with
+1. `stores` `(Array<Store<T>>)` — List of stores to compare with `value`
 1. type of `value` and `stores` should be the same
 
 ### Return
 
-- `$result` _(`Store<boolean>`)_ — `true` if each store contains `value`
+- `$result` `(Store<boolean>)` — `true` if each store contains `value`
 
 ### Example
 
@@ -98,13 +98,13 @@ $result = every({ predicate: $value, stores });
 
 ### Arguments
 
-1. `predicate` _(`Store<T>`)_ — Store contains value to compare values from `stores` with
-1. `stores` _(`Array<Store<T>>`)_ — List of stores to compare with `$value` store
+1. `predicate` `(Store<T>)` — Store contains value to compare values from `stores` with
+1. `stores` `(Array<Store<T>>)` — List of stores to compare with `$value` store
 1. type of `value` and `stores` should be the same
 
 ### Return
 
-- `$result` _(`Store<boolean>`)_ — `true` if each store contains value from the `predicate` store
+- `$result` `(Store<boolean>)` — `true` if each store contains value from the `predicate` store
 
 ### Example
 
@@ -134,5 +134,5 @@ Shorthand have the same rules as the main overrides, just it uses positional arg
 
 ### Arguments
 
-1. `stores` _(`Array<Store<T>>`)_ — List of stores to compare with predicate in the second argument
-2. `predicate` _(`Store<T> | (value: T) => boolean | T`)_ — Predicate to compare with
+1. `stores` `(Array<Store<T>>)` — List of stores to compare with predicate in the second argument
+2. `predicate` `(Store<T> | (value: T) => boolean | T)` — Predicate to compare with

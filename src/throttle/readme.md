@@ -1,4 +1,4 @@
-# Patronum/Throttle
+# throttle
 
 ```ts
 import { throttle } from 'patronum/throttle';

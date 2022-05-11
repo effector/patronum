@@ -1,4 +1,4 @@
-# Patronum/Interval
+# interval
 
 Creates a dynamic interval with events to start, stop interval, and handle tick.
 
@@ -18,9 +18,9 @@ const { tick, isRunning } = interval({
   timeout,
   start,
   stop,
-  leading?,
-  trailing?,
-})
+  leading,
+  trailing,
+});
 ```
 
 - When `start` is triggered, `tick` will be `triggered` each `timeout` ms
@@ -31,28 +31,28 @@ const { tick, isRunning } = interval({
 
 ### Arguments
 
-1. `timeout` _(number | Store<number>)_ - timeout for each `tick` run
-2. `start` _(Event<any>)_ - start triggering `tick`. Double trigger
+1. `timeout` `(number | Store<number>)` - timeout for each `tick` run
+2. `start` `(Event<any>)` - start triggering `tick`. Double trigger
    without `stop` call, do nothing.
-3. `stop` _(Event<any>)_ - stop triggering `tick`. Double trigger
+3. `stop` `(Event<any>)` - stop triggering `tick`. Double trigger
    without `start` call between them, do nothing.
-4. `leading` _(boolean)_ - Allows running `tick` when `start` is triggered.
-5. `trailing` _(boolean)_ - Allows running `tick` when `stop` is triggered, it
+4. `leading` `(boolean)` - Allows running `tick` when `start` is triggered.
+5. `trailing` `(boolean)` - Allows running `tick` when `stop` is triggered, it
    will be final call of `tick`.
 
 ### Returns
 
-- An *object* of event `tick` and store `isRunning`
-  - `tick` _(Event<void)_ - the event is run on each `timeout` ms after `start`
+- An _object_ of event `tick` and store `isRunning`
+  - `tick` `(Event<void)` - the event is run on each `timeout` ms after `start`
     trigger until `stop` trigger
-  - `isRunning` _(Store<boolean>)_ - the store contains `false` until `start` is
+  - `isRunning` `(Store<boolean>)` - the store contains `false` until `start` is
     triggered, next until `stop` triggered the store will be `true`.
 
 ### Example
 
 ```ts
-import { createStore, createEvent } from 'effector'
-import { interval } from 'patronum'
+import { createStore, createEvent } from 'effector';
+import { interval } from 'patronum';
 
 const startCounter = createEvent();
 const stopCounter = createEvent();
@@ -61,16 +61,15 @@ const $counter = createStore(0);
 const { tick } = interval({
   timeout: 500,
   start: startCounter,
-  stop: stopCounter
+  stop: stopCounter,
 });
 
 $counter.on(tick, (number) => number + 1);
-$counter.watch(value => console.log("COUNTER", value));
+$counter.watch((value) => console.log('COUNTER', value));
 
 startCounter();
 
-setTimeout(() => stopCounter(), 5000)
+setTimeout(() => stopCounter(), 5000);
 ```
 
 [Try it](https://share.effector.dev/EOVzc3df)
-

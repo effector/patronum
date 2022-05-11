@@ -1,4 +1,4 @@
-# Patronum/Format
+# format
 
 ```ts
 import { format } from 'patronum/format';

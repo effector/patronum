@@ -1,4 +1,4 @@
-# Patronum/CombineEvents
+# combineEvents
 
 ```ts
 import { combineEvents } from 'patronum/combine-events';

@@ -1,4 +1,4 @@
-# Patronum/InFlight
+# inFlight
 
 ```ts
 import { inFlight } from 'patronum/in-flight';
@@ -21,11 +21,11 @@ $count = inFlight({ effects: [fx1, fx2] });
 
 ### Arguments
 
-1. `effects` _(Array<Effect<any, any, any>>)_ - array of any effects
+1. `effects` `(Array<Effect<any, any, any>>)` - array of any effects
 
 ## Returns
 
-- `$count` _(Store<number>)_ - Store with count of run effects in pending state
+- `$count` `(Store<number>)` - Store with count of run effects in pending state
 
 ## Example
 
@@ -69,11 +69,11 @@ $count = inFlight({ domain });
 
 ### Arguments
 
-1. `domain` _(Domain)_ - domain to count effects from
+1. `domain` `(Domain)` - domain to count effects from
 
 ## Returns
 
-- `$count` _(Store<number>)_ - Store with count of run effects in pending state
+- `$count` `(Store<number>)` - Store with count of run effects in pending state
 
 ## Example
 

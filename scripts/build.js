@@ -9,10 +9,9 @@ const {
   writeFile,
   createMjsIndex,
   createExportsMap,
+  resolveMethods,
 } = require('./libraries');
 const packageJson = require('./source.package.js');
-
-const packageMarker = 'index.ts';
 
 async function main() {
   const library = process.env.LIBRARY_NAME ?? 'patronum';
@@ -24,10 +23,7 @@ async function main() {
   await directory.copyList('./src', staticFiles);
   await directory.copyList('./', ['README.md', 'MIGRATION.md', 'LICENSE']);
 
-  const found = await globby(`./src/*/${packageMarker}`);
-  const names = found.map((name) =>
-    name.replace(`/${packageMarker}`, '').replace('./src/', ''),
-  );
+  const names = resolveMethods();
 
   pkg.exports = {
     './package.json': './package.json',

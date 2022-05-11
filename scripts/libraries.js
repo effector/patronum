@@ -1,12 +1,24 @@
 const { promisify } = require('util');
-const { dirname } = require('path');
+const { dirname, resolve } = require('path');
 const fs = require('fs');
 const { camelCase } = require('camel-case');
+const globby = require('globby');
 
 const writeFile = promisify(fs.writeFile);
 const copyFile = promisify(fs.copyFile);
 const exists = promisify(fs.exists);
 const mkdir = promisify(fs.mkdir);
+
+const packageMarker = 'index.ts';
+
+function resolveMethods() {
+  const localPath = resolve(__dirname, '..', 'src');
+  const found = globby.sync(`${localPath}/*/${packageMarker}`);
+  const names = found.map((name) =>
+    name.replace(`/${packageMarker}`, '').replace(`${localPath}/`, ''),
+  );
+  return names;
+}
 
 function createCommonJsIndex(names) {
   const imports = names.sort().map((name) => {
@@ -80,4 +92,6 @@ module.exports = {
   createExportsMap,
   createFactoriesJson,
   createDistribution,
+  resolveMethods,
+  packageMarker,
 };

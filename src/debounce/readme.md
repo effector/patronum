@@ -1,4 +1,4 @@
-# Patronum/Debounce
+# debounce
 
 ```ts
 import { debounce } from 'patronum/debounce';
@@ -21,12 +21,12 @@ event = debounce({ source, timeout: number });
 
 ### Arguments
 
-1. `source` _(`Event<T>` | `Store<T>` | `Effect<T>`)_ — Source unit, data from this unit used by the `event`
-1. `timeout` _(`number`)_ — time to wait before trigger `event`
+1. `source` `(Event<T>` | `Store<T>` | `Effect<T>)` — Source unit, data from this unit used by the `event`
+1. `timeout` `(number)` — time to wait before trigger `event`
 
 ### Returns
 
-- `event` _(`Event<T>`)_ — New event, that triggered after delay
+- `event` `(Event<T>)` — New event, that triggered after delay
 
 ### Example
 
@@ -71,13 +71,13 @@ event = debounce({ source, timeout: number, target });
 
 ### Arguments
 
-1. `source` _(`Event<T>` | `Store<T>` | `Effect<T>`)_ — Source unit, data from this unit used to trigger `target` with payload of the `source`
-1. `timeout` _(`number`)_ — time to wait before trigger `event`
-1. `target` _(`Event<T>` | `Store<T>` | `Effect<T>`)_ — Target unit, data from the `source` will be passed to this unit
+1. `source` `(Event<T>` | `Store<T>` | `Effect<T>)` — Source unit, data from this unit used to trigger `target` with payload of the `source`
+1. `timeout` `(number)` — time to wait before trigger `event`
+1. `target` `(Event<T>` | `Store<T>` | `Effect<T>)` — Target unit, data from the `source` will be passed to this unit
 
 ### Returns
 
-- `target` _(`Event<T>` | `Store<T>` | `Effect<T>`)_ — Target unit that was passed to input argument `target`
+- `target` `(Event<T>` | `Store<T>` | `Effect<T>)` — Target unit that was passed to input argument `target`
 
 ### Example
 

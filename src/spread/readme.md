@@ -1,4 +1,4 @@
-# Patronum/Spread
+# spread
 
 ```ts
 import { spread } from 'patronum/spread';
@@ -24,8 +24,8 @@ spread({ source, targets: { field: target, ... } })
 
 ### Arguments
 
-1. `source` _(`Event<T>` | `Store<T>` | `Effect<T>`)_ — Source unit, data passed to it should be an object with fields from `targets`
-2. `targets` _(`Record<string, Event<T> | Store<T> | Effect<T>>`)_ — Flat object which key is key in `source` payload, and value is unit to store value to.
+1. `source` `(Event<T>` | `Store<T>` | `Effect<T>)` — Source unit, data passed to it should be an object with fields from `targets`
+2. `targets` `(Record<string, Event<T> | Store<T> | Effect<T>>)` — Flat object which key is key in `source` payload, and value is unit to store value to.
 
 ### Example
 
@@ -110,11 +110,11 @@ source = spread({ targets: { field: target, ... } })
 
 ### Arguments
 
-1. `targets` _(`Record<string, Event<T> | Store<T> | Effect<T>>`)_ — Flat object which key is key in `source` payload, and value is unit to store value to.
+1. `targets` `(Record<string, Event<T> | Store<T> | Effect<T>>)` — Flat object which key is key in `source` payload, and value is unit to store value to.
 
 ### Returns
 
-- `source` _(`Event<T>` | `Store<T>` | `Effect<T>`)_ — Source unit, data passed to it should be an object with fields from `targets`
+- `source` `(Event<T>` | `Store<T>` | `Effect<T>)` — Source unit, data passed to it should be an object with fields from `targets`
 
 ### Example
 

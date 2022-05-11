@@ -1,4 +1,4 @@
-# Patronum/Pending
+# pending
 
 ```ts
 import { pending } from 'patronum/pending';
@@ -22,13 +22,13 @@ $inProcess = pending({ effects: [fx1, fx2], of: Strategy });
 
 ### Arguments
 
-1. `effects` _(Array<Effect<any, any, any>>)_ - array of any effects
-1. `of` _("some" | "every")_ — Optional. Select strategy of combining pendings
+1. `effects` `(Array<Effect<any, any, any>>)` - array of any effects
+1. `of` `("some" | "every")` — Optional. Select strategy of combining pendings
    of differents effects. Default `"some"`
 
 ### Returns
 
-- `$inProcess` _(Store<boolean>)_ - Store with boolean state
+- `$inProcess` `(Store<boolean>)` - Store with boolean state
 
 ### Example
 
@@ -66,13 +66,13 @@ $inProcess = pending({ domain, of: Strategy });
 
 ### Arguments
 
-1. `domain` _(Domain)_ - Effector domain with at least one effect
-1. `of` _("some" | "every")_ — Optional. Select strategy of combining pendings
+1. `domain` `(Domain)` - Effector domain with at least one effect
+1. `of` `("some" | "every")` — Optional. Select strategy of combining pendings
    of differents effects. Default `"some"`
 
 ### Returns
 
-- `$inProcess` _(Store<boolean>)_ - Store with boolean state
+- `$inProcess` `(Store<boolean>)` - Store with boolean state
 
 ### Example
 

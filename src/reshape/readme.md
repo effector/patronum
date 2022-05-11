@@ -1,4 +1,4 @@
-# Patronum/Reshape
+# reshape
 
 ```ts
 import { reshape } from 'patronum/reshape';
