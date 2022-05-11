@@ -41,3 +41,18 @@ Just add `patronum/babel-preset` to your `.babelrc` or `babel.config.js` at the 
   "presets": ["patronum/babel-preset"]
 }
 ```
+
+## Logger and CRA support with [macros](https://github.com/kentcdodds/babel-plugin-macros)
+
+[`babel-plugin-macros`](https://github.com/kentcdodds/babel-plugin-macros) is bundled into CRA, so we can use it due CRA don't support adding babel plugins into `.babelrc` or `babel.config.js`.
+
+Just import from `patronum/macro` and `effector-logger/macro`, and use as early:
+
+```ts
+import { createStore, createEffect, sample } from 'effector-logger/macro';
+import { status, splitMap, combineEvents } from 'patronum/macro';
+```
+
+> - Warning: babel-plugin-macros do not support `import * as name`!
+> - Note: Since release of patronum@2.0.0 it is required to use babel-plugin-macros@3.0.0 or higher.
+> - Please note, that react-scripts@4.0.3 and older **uses outdated version** of this plugin - you can either use [yarn resolutions](https://classic.yarnpkg.com/lang/en/docs/selective-version-resolutions/) or use react-scripts@5.0.0 or higher.
