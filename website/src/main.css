@@ -51,4 +51,5 @@ html[data-theme='dark'] {
 
 .hero-logo {
   height: 350px;
+  max-width: 100vw;
 }
