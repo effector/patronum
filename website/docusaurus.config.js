@@ -8,8 +8,8 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 const config = {
   title: 'effector patronum',
   tagline: 'Operators library delivering modularity and convenience.',
-  url: 'https://patronum.effector.dev',
-  baseUrl: '/',
+  url: 'https://effector.github.io/patronum',
+  baseUrl: '/patronum',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',
