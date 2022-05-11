@@ -24,7 +24,7 @@ jobs:
         working-directory: ./website
 
       - name: 🔧 Build
-        run: yarn install
+        run: yarn build
         working-directory: ./website
 
       - name: 🚀 Deploy
