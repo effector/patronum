@@ -38,7 +38,7 @@ jobs:
 
       - name: Resolve latest package version from json
         uses: sergeysova/jq-action@v2
-        id: latest-package-json
+        id: latest-package
         with:
           cmd: echo "::set-output name=latest::$(echo '${{ steps.latest-package-json.outputs.latest }}' | jq .version -r)"
 
