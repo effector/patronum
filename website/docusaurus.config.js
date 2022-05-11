@@ -9,7 +9,7 @@ const config = {
   title: 'effector patronum',
   tagline: 'Operators library delivering modularity and convenience.',
   url: 'https://effector.github.io',
-  baseUrl: '/patronum',
+  baseUrl: '/patronum/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',
