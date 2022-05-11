@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://effector.github.io/patronum/sitemap.xml
+Sitemap: https://effector.patronum.dev/sitemap.xml
