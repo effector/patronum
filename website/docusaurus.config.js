@@ -138,7 +138,7 @@ const config = {
             ],
           },
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} Effector Core Team`,
+        copyright: `Copyright © 2020-${new Date().getFullYear()} Effector Core Team`,
       },
       prism: {
         theme: lightCodeTheme,
