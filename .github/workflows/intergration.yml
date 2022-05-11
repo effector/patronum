@@ -31,10 +31,16 @@ jobs:
           LIBRARY_NAME: '@effector/patronum'
 
       - name: Fetch latest package version
-        id: latest-package
-        run: echo "::set-output name=latest::$(yarn npm info @effector/patronum -f version)"
+        id: latest-package-json
+        run: echo "::set-output name=latest::$(yarn npm info @effector/patronum -f version --json)"
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Resolve latest package version from json
+        uses: sergeysova/jq-action@v2
+        id: latest-package-json
+        with:
+          cmd: echo "::set-output name=latest::$(echo '${{ steps.latest-package-json.outputs.latest }}' | jq .version -r)"
 
       - name: Resolve latest release version
         if: ${{ steps.latest-package.outputs.latest-release == '' }}
