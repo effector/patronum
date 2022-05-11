@@ -6,7 +6,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: '☄️ effector patronum ✨',
+  title: 'effector patronum',
   tagline: 'Operators library delivering modularity and convenience.',
   url: 'https://patronum.effector.dev',
   baseUrl: '/',
@@ -37,23 +37,35 @@ const config = {
           routeBasePath: '/methods',
           sidebarPath: require.resolve('./sidebars.js'),
           breadcrumbs: true,
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
           editUrl: 'https://github.com/effector/patronum/tree/main/src/',
         },
         blog: false,
         theme: {
-          customCss: require.resolve('./src/css/custom.css'),
+          customCss: require.resolve('./src/main.css'),
         },
       }),
     ],
+  ],
+
+  plugins: [
+    async function tailwindPlugin(context, options) {
+      return {
+        name: 'docusaurus-tailwindcss',
+        configurePostCss(postcssOptions) {
+          // Appends TailwindCSS and AutoPrefixer.
+          postcssOptions.plugins.push(require('tailwindcss'));
+          postcssOptions.plugins.push(require('autoprefixer'));
+          return postcssOptions;
+        },
+      };
+    },
   ],
 
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
       navbar: {
-        title: 'effector patronum',
+        title: 'effector patronum ✨',
         logo: {
           alt: 'effector patronum',
           src: 'img/logo.svg',
