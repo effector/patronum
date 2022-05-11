@@ -57,5 +57,6 @@
     "commitizen": {
       "path": "cz-conventional-changelog"
     }
-  }
+  },
+  "packageManager": "yarn@3.2.0"
 }
