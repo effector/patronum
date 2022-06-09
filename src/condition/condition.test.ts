@@ -1,5 +1,5 @@
 import { createStore, createEvent, restore } from 'effector';
-import { argumentHistory } from '../../test-library';
+import { argumentHistory, monitor } from '../../test-library';
 import { condition } from './index';
 
 test('source: event, if: store, then: event', () => {
@@ -197,4 +197,56 @@ test('source: event, if: store, then: event, else: condition', () => {
       "4 <= 5",
     ]
   `);
+});
+
+test('does not trigger twice if branch change predicate state', () => {
+  const randomTrigger = createEvent();
+  const thenEvent = createEvent();
+  const elseEvent = createEvent();
+  const $predicate = createStore(true);
+
+  $predicate.on(thenEvent, () => false);
+  condition({
+    source: randomTrigger,
+    if: $predicate,
+    then: thenEvent,
+    else: elseEvent,
+  });
+  const history = monitor([randomTrigger, thenEvent, elseEvent, $predicate]);
+
+  const onThen = jest.fn();
+  const onElse = jest.fn();
+
+  thenEvent.watch(onThen);
+  elseEvent.watch(onElse);
+
+  randomTrigger();
+
+  expect(history()).toMatchInlineSnapshot(`
+    Array [
+      Array [
+        "Store $predicate",
+        true,
+      ],
+      Array [
+        "Event randomTrigger",
+        undefined,
+      ],
+      Array [
+        "Event thenEvent",
+        undefined,
+      ],
+      Array [
+        "Store $predicate",
+        false,
+      ],
+      Array [
+        "Event elseEvent",
+        undefined,
+      ],
+    ]
+  `);
+
+  expect(onThen).toHaveBeenCalledTimes(1);
+  expect(onElse).not.toHaveBeenCalled();
 });
