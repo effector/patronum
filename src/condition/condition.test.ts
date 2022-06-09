@@ -240,10 +240,6 @@ test('does not trigger twice if branch change predicate state', () => {
         "Store $predicate",
         false,
       ],
-      Array [
-        "Event elseEvent",
-        undefined,
-      ],
     ]
   `);
 
