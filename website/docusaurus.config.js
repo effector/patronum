@@ -144,6 +144,13 @@ const config = {
         theme: lightCodeTheme,
         darkTheme: darkCodeTheme,
       },
+      algolia: {
+        appId: 'OEOSWK083U',
+        apiKey: '9bd36cd63b76ad65baf1dc4cb0b872f4',
+        indexName: 'patronum-website',
+        contextualSearch: true,
+        searchPagePath: 'search',
+      },
     }),
 };
 
