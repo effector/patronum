@@ -2,7 +2,7 @@
 
 Creates a dynamic interval with events to start, stop interval, and handle tick.
 
-> From v1.3.0
+> Since v1.3.0
 
 ```ts
 import { interval } from 'patronum';

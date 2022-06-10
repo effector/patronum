@@ -40,3 +40,10 @@ All methods split into categories.
 
 - [debug](./debug/readme.md) — Log triggers of passed units.
 
+### Experimental
+
+- [and](./and/readme.md)
+- [either](./either/readme.md)
+- [equals](./equals/readme.md)
+- [not](./not/readme.md)
+- [or](./or/readme.md)
