@@ -27,5 +27,6 @@ module.exports = {
       'index',
     ],
     'effector/babel-plugin',
+    '@babel/plugin-proposal-nullish-coalescing-operator',
   ],
 };
