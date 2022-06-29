@@ -43,7 +43,7 @@
     "camel-case": "^4.1.1",
     "commitizen": "4.0.3",
     "cz-conventional-changelog": "3.0.2",
-    "effector": "22.3.0",
+    "effector": "^22.3.0",
     "eslint": "^7.9.0",
     "globby": "^11.0.0",
     "husky": "3.1.0",
