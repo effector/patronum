@@ -4,6 +4,10 @@ import {
   createStore,
   createDomain,
   sample,
+  guard,
+  forward,
+  split,
+  merge,
 } from 'effector';
 import { argumentsHistory } from '../../test-library';
 import { debug } from './index';
@@ -186,6 +190,30 @@ test('trace support', async () => {
       "<- [event] submitFx.done {\\"params\\":1}",
       "<- [filterMap]  {\\"params\\":1}",
       "<- [event] submitFx.finally {\\"status\\":\\"done\\",\\"params\\":1}",
+    ]
+  `);
+});
+
+test('domain is traceable', async () => {
+  const d = createDomain();
+  const up = d.createEvent();
+  const $c = d.createStore(0).on(up, (s) => s + 1);
+
+  debug({ trace: true }, d);
+
+  up();
+
+  expect(stringArguments(fn)).toMatchInlineSnapshot(`
+    Array [
+      "[store] d/$c 0",
+      "[event] d/up ",
+      "[event] d/up trace",
+      "<- [event] up ",
+      "[store] d/$c 1",
+      "[store] d/$c trace",
+      "<- [store] $c 1",
+      "<- [$c.on] $c.on(up) 1",
+      "<- [event] up ",
     ]
   `);
 });

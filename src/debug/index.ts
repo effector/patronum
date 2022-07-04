@@ -27,19 +27,11 @@ export function debug(
     config = maybeConfig;
   } else {
     logUnit(maybeConfig);
-
-    if (config.trace) {
-      logTrace(maybeConfig);
-    }
   }
 
   for (const unit of restUnits) {
     if (is.unit(unit)) {
-      logUnit(unit);
-
-      if (config.trace) {
-        logTrace(unit);
-      }
+      logUnit(unit, config);
     }
   }
 }
@@ -115,11 +107,15 @@ function getLoc(unit: Node) {
   return `${loc.file ?? ''}:${loc.line}:${loc.column}`;
 }
 
-function logUnit(unit: Unit<any>) {
+function logUnit(unit: Unit<any>, config?: { trace: boolean }) {
   const type = getType(unit);
 
   if (is.store(unit) || is.effect(unit) || is.event(unit)) {
     log(unit, type);
+
+    if (config?.trace) {
+      logTrace(unit);
+    }
   }
 
   if (is.effect(unit)) {
@@ -127,8 +123,18 @@ function logUnit(unit: Unit<any>) {
   }
 
   if (is.domain(unit)) {
-    unit.onCreateEvent((event) => log(event, 'event'));
-    unit.onCreateStore((store) => log(store, 'store'));
+    unit.onCreateEvent((event) => {
+      log(event, 'event');
+      if (config?.trace) {
+        logTrace(event);
+      }
+    });
+    unit.onCreateStore((store) => {
+      log(store, 'store');
+      if (config?.trace) {
+        logTrace(store);
+      }
+    });
     unit.onCreateEffect(logEffect);
   }
 }
@@ -149,7 +155,7 @@ function isEffectChild(node: Node | { graphite: Node }) {
   );
 }
 
-function getNodeName(node?: Node) {
+function getNodeName(node?: Node): string {
   if (!node) return '';
 
   const { meta } = node;
