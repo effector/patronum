@@ -7,10 +7,11 @@
 
 ☄️ Effector operators library delivering modularity and convenience
 
-- 🎲 Try it online: [Codesandbox](codesandbox) | [Playground](try-patronum-share)
+- 🎲 Try it online: [StackBlitz](stackblitz) | [Codesandbox](codesandbox) | [Playground](try-patronum-share)
 - 📦 Source: [JSdeliver](jsdelivr) | [Unpkg](unpkg) | [NPM](npm) | [GitHub](github)
 - 🦉 Say about it: [Twitter](twitter-share)
 
+[stackblitz]: https://stackblitz.com/edit/effector-react
 [codesandbox]: https://codesandbox.io/s/effector-patronum-playground-zuqjx
 [try-patronum-share]: https://share.effector.dev/Neewtbz3
 [jsdelivr]: https://www.jsdelivr.com/package/npm/patronum
