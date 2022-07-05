@@ -42,7 +42,7 @@ effect('demo');
 ## Traces
 
 `patronum/debug` supports computation traces logging, if `{ trace: true }` is set.
-It is recommended to use this feature along with `effector/babel-plugin` and its `addLoc` setting.
+It is recommended to use this feature along with `effector/babel-plugin`.
 
 ```ts
 const inputChanged = createEvent();
