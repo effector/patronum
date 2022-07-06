@@ -36,23 +36,22 @@ export function spread<P>({
   source?: Unit<P>;
 }): EventAsReturnType<P> {
   for (const targetKey in targets) {
-    if (targetKey in targets) {
+    const currentTarget = targets[targetKey];
+
+    if (currentTarget) {
       const hasTargetKey = guard({
         source,
-        filter: (object) =>
+        filter: (object): object is any =>
           typeof object === 'object' && object !== null && targetKey in object,
       });
 
-      if (is.store(targets[targetKey])) {
-        (targets[targetKey] as Store<any>).on(
-          hasTargetKey,
-          (prev, object) => object[targetKey],
-        );
+      if (is.store(currentTarget)) {
+        currentTarget.on(hasTargetKey, (prev, object) => object[targetKey]);
       } else {
         sample({
-          source: hasTargetKey,
-          fn: (object) => object[targetKey],
-          target: targets[targetKey] as any,
+          clock: hasTargetKey,
+          fn: (object: P) => object[targetKey],
+          target: currentTarget as Unit<any>,
         });
       }
     }
