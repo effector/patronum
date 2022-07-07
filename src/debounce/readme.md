@@ -116,7 +116,7 @@ someHappened(4);
 
 ```ts
 import { createStore } from 'effector';
-import { format } from 'patronum';
+import { debounce } from 'patronum';
 
 const DEBOUNCE_TIMEOUT_IN_MS = 200;
 
@@ -125,7 +125,7 @@ const $timeout = createStore(DEBOUNCE_TIMEOUT_IN_MS).on(changeTimeout, (_, value
 const someHappened = createEvent<number>();
 const debounced = debounce({
   source: someHappened,
-  timeout: DEBOUNCE_TIMEOUT_IN_MS,
+  timeout: $timeout,
 });
 
 debounced.watch((payload) => {
