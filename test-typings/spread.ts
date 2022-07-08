@@ -192,3 +192,22 @@ import { spread } from '../src/spread';
     },
   });
 }
+
+// allows nested
+{
+  const $source = createStore({ first: '', last: {nested: '', other: ''} });
+  const first = createEvent<string>();
+  const nested = createEvent<string>();
+
+    spread({
+      source: $source,
+      targets: {
+        first,
+        last: spread({
+          targets: {
+            nested,
+          }
+        }),
+      },
+    }),
+}
