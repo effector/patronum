@@ -42,6 +42,30 @@ describe('arguments validation', () => {
   });
 });
 
+describe('timeout as store', () => {
+  test('new timeout is used after source trigger', async () => {
+    const watcher = jest.fn();
+    const trigger = createEvent();
+    const changeTimeout = createEvent<number>();
+    const $timeout = createStore(40).on(changeTimeout, (_, value) => value);
+    const debounced = debounce({ source: trigger, timeout: $timeout });
+    debounced.watch(watcher);
+
+    trigger();
+    await wait(30);
+    changeTimeout(100);
+    trigger();
+    await wait(10);
+    expect(watcher).toBeCalledTimes(0);
+    await wait(90);
+    expect(watcher).toBeCalledTimes(1);
+
+    trigger();
+    await wait(100);
+    expect(watcher).toBeCalledTimes(2);
+  });
+});
+
 describe('triple trigger one wait', () => {
   test('event', async () => {
     const watcher = jest.fn();
