@@ -43,22 +43,20 @@ export function spread<P>({
     if (hasOwnProp(targets, targetKey)) {
       const currentTarget = targets[targetKey];
 
-      if (currentTarget) {
-        const hasTargetKey = guard({
-          source,
-          filter: (object): object is any =>
-            typeof object === 'object' && object !== null && targetKey in object,
-        });
+      const hasTargetKey = guard({
+        source,
+        filter: (object): object is any =>
+          typeof object === 'object' && object !== null && targetKey in object,
+      });
 
-        if (is.store(currentTarget)) {
-          currentTarget.on(hasTargetKey, (prev, object) => object[targetKey]);
-        } else {
-          sample({
-            clock: hasTargetKey,
-            fn: (object: P) => object[targetKey],
-            target: currentTarget as Unit<any>,
-          });
-        }
+      if (is.store(currentTarget)) {
+        currentTarget.on(hasTargetKey, (prev, object) => object[targetKey]);
+      } else {
+        sample({
+          clock: hasTargetKey,
+          fn: (object: P) => object[targetKey],
+          target: currentTarget as Unit<any>,
+        });
       }
     }
   }
