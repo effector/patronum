@@ -74,10 +74,15 @@ export function debounce<T>({
       timeoutId: $timeoutId,
       rejectPromise: $rejecter,
     },
-    mapParams: (params: { parameter: T; timeout: number }, source) => {
+    mapParams: (
+      { parameter, timeout }: { parameter: T; timeout: number },
+      { timeoutId, rejectPromise },
+    ) => {
       return {
-        ...params,
-        ...source,
+        parameter,
+        timeout,
+        timeoutId,
+        rejectPromise,
       };
     },
     effect: timerBaseFx,
