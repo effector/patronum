@@ -45,19 +45,17 @@ export function spread<P>({
 
       const hasTargetKey = guard({
         source,
+        greedy: true,
         filter: (object): object is any =>
           typeof object === 'object' && object !== null && targetKey in object,
       });
 
-      if (is.store(currentTarget)) {
-        currentTarget.on(hasTargetKey, (prev, object) => object[targetKey]);
-      } else {
-        sample({
-          clock: hasTargetKey,
-          fn: (object: P) => object[targetKey],
-          target: currentTarget as Unit<any>,
-        });
-      }
+      sample({
+        greedy: true,
+        clock: hasTargetKey,
+        fn: (object: P) => object[targetKey],
+        target: currentTarget as Unit<any>,
+      });
     }
   }
 
