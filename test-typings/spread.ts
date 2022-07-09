@@ -138,15 +138,15 @@ import { spread } from '../src/spread';
 
 // Check target different units without source
 {
-  expectType<Event<{ foo?: string; bar?: number; baz?: boolean }>>(
-    spread({
-      targets: {
-        foo: createStore(''),
-        bar: createEffect<number, void>(),
-        baz: createEvent<boolean>(),
-      },
-    }),
-  );
+  const spreadToStores = spread({
+    targets: {
+      foo: createStore(''),
+      bar: createEffect<number, void>(),
+      baz: createEvent<boolean>(),
+    },
+  });
+
+  expectType<Event<{ foo?: string; bar?: number; baz?: boolean }>>(spreadToStores);
 }
 
 // Example from readme with nullability
@@ -195,19 +195,66 @@ import { spread } from '../src/spread';
 
 // allows nested
 {
-  const $source = createStore({ first: '', last: {nested: '', other: ''} });
+  const $source = createStore({ first: '', last: { nested: '', other: '' } });
   const first = createEvent<string>();
   const nested = createEvent<string>();
+  const other = createEvent<string>();
 
-    spread({
-      source: $source,
-      targets: {
-        first,
-        last: spread({
-          targets: {
-            nested,
-          }
-        }),
-      },
-    }),
+  // nested full match
+  spread({
+    source: $source,
+    targets: {
+      first,
+      last: spread({
+        targets: {
+          nested,
+          other,
+        },
+      }),
+    },
+  });
+
+  // nested partial match
+  spread({
+    source: $source,
+    targets: {
+      first,
+      last: spread({
+        targets: {
+          nested,
+        },
+      }),
+    },
+  });
+
+  // nested full match outer
+  const out = spread({
+    targets: {
+      nested,
+      other,
+    },
+  });
+
+  spread({
+    source: $source,
+    targets: {
+      first,
+      last: out,
+    },
+  });
+
+  // nested partial match outer
+  const outPart = spread({
+    targets: {
+      nested,
+    },
+  });
+
+  spread({
+    source: $source,
+    targets: {
+      first,
+      last: outPart,
+    },
+  });
 }
