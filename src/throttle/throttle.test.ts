@@ -417,6 +417,32 @@ describe('store', () => {
   });
 });
 
+describe('timeout as store', () => {
+  test('new timeout is used after previous timeout is over', async () => {
+    const watcher = jest.fn();
+    const changeTimeout = createEvent<number>();
+    const $timeout = createStore(40).on(changeTimeout, (_, value) => value);
+
+    const trigger = createEvent();
+    const throttled = throttle({ source: trigger, timeout: $timeout });
+
+    throttled.watch(watcher);
+
+    trigger();
+    await wait(30);
+    changeTimeout(100);
+    trigger();
+    await wait(10);
+    expect(watcher).toBeCalledTimes(1);
+
+    trigger();
+    await wait(50);
+    trigger();
+    await wait(50);
+    expect(watcher).toBeCalledTimes(2);
+  });
+});
+
 test('throttle do not affect another instance', async () => {
   const watcherFirst = jest.fn();
   const triggerFirst = createEvent<number>();
