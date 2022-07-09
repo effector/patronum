@@ -6,6 +6,7 @@ import {
   createStore,
   createEvent,
   createEffect,
+  sample,
 } from 'effector';
 import { spread } from '../src/spread';
 
@@ -227,6 +228,16 @@ import { spread } from '../src/spread';
     },
   });
 
+  // nested wrong match
+  // @ts-expect-error
+  spread({
+    source: $source,
+    targets: {
+      first,
+      last: other,
+    },
+  });
+
   // nested full match outer
   const out = spread({
     targets: {
@@ -256,5 +267,43 @@ import { spread } from '../src/spread';
       first,
       last: outPart,
     },
+  });
+
+  // sample partial match
+  sample({
+    clock: $source,
+    target: spread({
+      targets: {
+        first,
+      },
+    }),
+  });
+
+  // sample full match
+  sample({
+    clock: $source,
+    target: spread({
+      targets: {
+        first,
+        last: spread({
+          targets: {
+            nested,
+            other,
+          },
+        }),
+      },
+    }),
+  });
+
+  // sample wrong match
+  sample({
+    // @ts-expect-error
+    clock: $source,
+    target: spread({
+      targets: {
+        first,
+        last: other,
+      },
+    }),
   });
 }
