@@ -94,18 +94,18 @@ export function condition<State>({
         then: thenBranch,
         else: elseBranch,
       },
-    });
+    } as any);
   } else if (thenBranch) {
     guard({
       source,
       filter: checker,
-      target: thenBranch,
+      target: thenBranch as Unit<State>,
     });
   } else if (elseBranch) {
     guard({
       source,
       filter: inverse(checker as any),
-      target: elseBranch,
+      target: elseBranch as Unit<State>,
     });
   }
 

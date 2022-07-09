@@ -301,7 +301,12 @@ describe('edge', () => {
 
     const fn = jest.fn();
 
-    combine(targetA, targetB, targetC, ([a, b, c]) => [a, b, c]).watch(fn);
+    const final = combine(targetA, targetB, targetC, (a, b, c) => ({
+      first: a,
+      second: b,
+      third: c,
+    }));
+    final.updates.watch(fn);
 
     spread({
       source,
@@ -317,7 +322,12 @@ describe('edge', () => {
       second: 2,
       third: false,
     });
-    expect(fn).toBeCalledTimes(2);
+    expect(final.getState()).toEqual({
+      first: 'foo',
+      second: 2,
+      third: false,
+    });
+    expect(fn).toBeCalledTimes(1);
   });
 });
 

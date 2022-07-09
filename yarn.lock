@@ -8303,10 +8303,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"effector@npm:^22.1.1":
-  version: 22.1.1
-  resolution: "effector@npm:22.1.1"
-  checksum: 4c5ed06a6885ead2651a54d26e12cdef3d320651b989c8c5b61ab0da1a5baac93cf99a01f072acf6e6e4314fd6292013383c0a7693a29ec28e74d05d296b4e86
+"effector@npm:^22.3.0":
+  version: 22.3.0
+  resolution: "effector@npm:22.3.0"
+  checksum: a220699e03c680fcb13d8e05cd50b7d6ee7ec054b6b18f6ae87edc1b5599debdebe5dbf60e376e2236b5b30872d4d6388d5f02c64406b632d8f65b769538437f
   languageName: node
   linkType: hard
 
@@ -14410,7 +14410,7 @@ __metadata:
     camel-case: ^4.1.1
     commitizen: 4.0.3
     cz-conventional-changelog: 3.0.2
-    effector: ^22.1.1
+    effector: ^22.3.0
     eslint: ^7.9.0
     globby: ^11.0.0
     husky: 3.1.0
