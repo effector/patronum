@@ -8,6 +8,7 @@ import {
   sample,
   Store,
   Unit,
+  attach,
 } from 'effector';
 
 type EventAsReturnType<Payload> = any extends Payload ? Event<Payload> : never;
@@ -40,21 +41,47 @@ export function debounce<T>({
 
   const $timeout = toStoreNumber(timeout);
 
-  let rejectPromise: (() => void) | void;
-  let timeoutId: NodeJS.Timeout;
+  const saveTimeoutId = createEvent<NodeJS.Timeout>();
+  const $timeoutId = createStore<NodeJS.Timeout | null>(null, {
+    serialize: 'ignore',
+  }).on(saveTimeoutId, (_, id) => id);
+  const saveReject = createEvent<() => void>();
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  const $rejecter = createStore<(() => void) | null>(null, {
+    serialize: 'ignore',
+  }).on(saveReject, (_, rj) => rj);
 
   const tick = target ?? createEvent();
 
-  const timerFx = createEffect<{ parameter: T; timeout: number }, T>(
-    ({ parameter, timeout }) => {
-      clearTimeout(timeoutId);
-      if (rejectPromise) rejectPromise();
-      return new Promise((resolve, reject) => {
-        rejectPromise = reject;
-        timeoutId = setTimeout(resolve, timeout, parameter);
-      });
+  const timerBaseFx = createEffect<
+    {
+      parameter: T;
+      timeout: number;
+      rejectPromise: (() => void) | null;
+      timeoutId: NodeJS.Timeout | null;
     },
-  );
+    T
+  >(({ parameter, timeout, timeoutId, rejectPromise }) => {
+    if (timeoutId) clearTimeout(timeoutId);
+    if (rejectPromise) rejectPromise();
+    return new Promise((resolve, reject) => {
+      saveReject(reject);
+      saveTimeoutId(setTimeout(resolve, timeout, parameter));
+    });
+  });
+  const timerFx = attach({
+    source: {
+      timeoutId: $timeoutId,
+      rejectPromise: $rejecter,
+    },
+    mapParams: (params: { parameter: T; timeout: number }, source) => {
+      return {
+        ...params,
+        ...source,
+      };
+    },
+    effect: timerBaseFx,
+  });
 
   sample({
     source: $timeout,
