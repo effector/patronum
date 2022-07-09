@@ -1,4 +1,4 @@
-import { is, createEvent, Event, guard, sample, Unit, Store } from 'effector';
+import { createEvent, Event, guard, sample, Unit } from 'effector';
 
 const hasPropBase = {}.hasOwnProperty;
 const hasOwnProp = <O extends { [k: string]: unknown }>(object: O, key: string) =>
@@ -19,7 +19,9 @@ export function spread<
 >(config: {
   source: Source;
   targets: {
-    [Key in keyof Payload]?: Unit<NoInfer<Payload[Key]>>;
+    [Key in keyof Payload]?:
+      | EventAsReturnType<Partial<Payload[Key]>>
+      | Unit<NoInfer<Payload[Key]>>;
   };
 }): Source;
 
