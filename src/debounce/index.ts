@@ -82,6 +82,8 @@ export function debounce<T>({
     },
     effect: timerBaseFx,
   });
+  $rejecter.reset(timerFx.done);
+  $timeoutId.reset(timerFx.done);
 
   sample({
     source: $timeout,
