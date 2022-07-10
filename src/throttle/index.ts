@@ -41,12 +41,14 @@ export function throttle<T>({
     (timeout) => new Promise((resolve) => setTimeout(resolve, timeout)),
   );
 
+  const start = guard({
+    clock: source,
+    filter: timerFx.pending.map((pending) => !pending),
+  });
+
   sample({
     source: $timeout,
-    clock: guard({
-      source,
-      filter: timerFx.pending.map((pending) => !pending),
-    }),
+    clock: start as Unit<any>,
     target: timerFx,
   });
 
