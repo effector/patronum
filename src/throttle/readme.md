@@ -22,7 +22,7 @@ target = throttle({ source, timeout });
 ### Arguments
 
 1. `source` ([_`Event`_] | [_`Store`_] | [_`Effect`_]) — Source unit, data from this unit used by the `target`
-1. `timeout` ([_`number`_]) — time to wait before trigger `target` after last trigger or `source` trigger
+1. `timeout` ([_`number`_] | `Store<number>`) — time to wait before trigger `target` after last trigger or `source` trigger
 
 ### Returns
 
@@ -101,7 +101,7 @@ throttle({ source, timeout, target });
 ### Arguments
 
 1. `source` ([_`Event`_] | [_`Store`_] | [_`Effect`_]) — Source unit, data from this unit used by the `target`
-1. `timeout` ([_`number`_]) — time to wait before trigger `target` after last trigger or `source` trigger
+1. `timeout` ([_`number`_] | `Store<number>`) — time to wait before trigger `target` after last trigger or `source` trigger
 1. `target` ([_`Event`_] | [_`Store`_] | [_`Effect`_]) — Target unit, that triggered each time after triggering `source` with argument from `source`
 
 ### Returns
@@ -126,6 +126,42 @@ change();
 change();
 
 // after 40ms after first call, 3 will be saved to localStorage
+```
+
+### Example with timeout as store
+
+The new timeout will be used after the previous is over (if there was a delayed `target` trigger when the `timeout` store changed). 
+```ts
+import { createEvent } from 'effector';
+import { throttle } from 'patronum/throttle';
+
+const someHappened = createEvent<number>();
+const changeTimeout = createEvent<number>();
+const $timeout = createStore(200).on(changeTimeout, (_, value) => value);
+
+
+const throttled = throttle({
+  source: someHappened,
+  timeout: $timeout,
+});
+throttled.watch((payload) => {
+  console.info('someHappened now', payload);
+});
+
+someHappened(1);
+changeTimeout(300); // will be used for next timeout  
+someHappened(2);
+
+setTimout(() => {
+  // console.log: someHappened now 2
+  someHappened(3);
+  someHappened(4);
+}, 200);
+
+setTimeout(() => {
+  // console.log: someHappened now 4 
+}, 500)
+
 ```
 
 [_`event`_]: https://effector.dev/docs/api/effector/event
