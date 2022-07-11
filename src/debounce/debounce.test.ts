@@ -1,6 +1,6 @@
 import 'regenerator-runtime/runtime';
 import { createStore, createEvent, createEffect, createDomain } from 'effector';
-import { wait } from '../../test-library';
+import { wait, watch } from '../../test-library';
 import { debounce } from './index';
 
 describe('arguments validation', () => {
@@ -39,6 +39,29 @@ describe('arguments validation', () => {
     expect(() =>
       debounce({ source: createEvent(), timeout: -Infinity }),
     ).toThrowError(/must be positive/);
+  });
+});
+
+describe('timeout as store', () => {
+  test('new timeout is used after source trigger', async () => {
+    const trigger = createEvent();
+    const changeTimeout = createEvent<number>();
+    const $timeout = createStore(40).on(changeTimeout, (_, value) => value);
+    const debounced = debounce({ source: trigger, timeout: $timeout });
+    const watcher = watch(debounced);
+
+    trigger();
+    await wait(30);
+    changeTimeout(100);
+    trigger();
+    await wait(10);
+    expect(watcher).toBeCalledTimes(0);
+    await wait(90);
+    expect(watcher).toBeCalledTimes(1);
+
+    trigger();
+    await wait(100);
+    expect(watcher).toBeCalledTimes(2);
   });
 });
 

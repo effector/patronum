@@ -1,10 +1,10 @@
-# Patronum/CombineEvents
+# combineEvents
 
 ```ts
 import { combineEvents } from 'patronum/combine-events';
 ```
 
-## `combineEvents({ events: Record<key, Event<T>> })`
+## `combineEvents({ events: Record<key, Event<T>>, reset?: Unit<any> })`
 
 ### Formulae
 

@@ -1,4 +1,4 @@
-# Patronum/Snapshot
+# snapshot
 
 ```ts
 import { snapshot } from 'patronum/snapshot';
@@ -24,7 +24,7 @@ result = snapshot({ source, clock, fn });
 
 1. `source` ([_`Store`_]) — Source store, data from this unit passed to `fn`
 2. `clock` ([_`Event`_]) — Trigger event
-3. `fn` _(`(value: T) => U`)_ — Transformation function
+3. `fn` `((value: T) => U)` — Transformation function
 
 ### Returns
 

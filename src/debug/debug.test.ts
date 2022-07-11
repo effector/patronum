@@ -1,4 +1,14 @@
-import { createEvent, createEffect, createStore, createDomain } from 'effector';
+import {
+  createEvent,
+  createEffect,
+  createStore,
+  createDomain,
+  sample,
+  guard,
+  forward,
+  split,
+  merge,
+} from 'effector';
 import { argumentsHistory } from '../../test-library';
 import { debug } from './index';
 
@@ -7,14 +17,17 @@ const stringArguments = (ƒ: any) =>
     value.map((a) => (typeof a === 'object' ? JSON.stringify(a) : a)).join(' '),
   );
 
+const originalCollapsed = global.console.groupCollapsed;
 const original = global.console.info;
 let fn: any;
 
 beforeEach(() => {
   global.console.info = fn = jest.fn();
+  global.console.groupCollapsed = fn;
 });
 afterEach(() => {
   global.console.info = original;
+  global.console.groupCollapsed = originalCollapsed;
 });
 
 test('debug event, store, effect simultaneously', async () => {
@@ -111,6 +124,96 @@ test('debug domain', async () => {
       "[store] domain/_$store 5",
       "[effect] domain/effect.done {\\"params\\":\\"demo\\",\\"result\\":\\"resultdemo\\"}",
       "[store] domain/_$store 50",
+    ]
+  `);
+});
+
+test('trace support', async () => {
+  const buttonClicked = createEvent();
+  const inputChanged = createEvent();
+  const $form = createStore(0).on(inputChanged, (s) => s + 1);
+  const $formValid = $form.map((s) => s > 0);
+  const submitFx = createEffect(() => {});
+
+  $form.on(submitFx.doneData, (s) => s + 1);
+
+  sample({
+    source: $form,
+    clock: buttonClicked,
+    filter: $formValid,
+    target: submitFx,
+  });
+
+  debug({ trace: true }, $form, submitFx);
+
+  expect(stringArguments(fn)).toMatchInlineSnapshot(`
+    Array [
+      "[store] $form 0",
+    ]
+  `);
+
+  inputChanged();
+
+  expect(stringArguments(fn)).toMatchInlineSnapshot(`
+    Array [
+      "[store] $form 0",
+      "[store] $form 1",
+      "[store] $form trace",
+      "<- [store] $form 1",
+      "<- [$form.on] $form.on(inputChanged) 1",
+      "<- [event] inputChanged ",
+    ]
+  `);
+
+  buttonClicked();
+
+  expect(stringArguments(fn)).toMatchInlineSnapshot(`
+    Array [
+      "[store] $form 0",
+      "[store] $form 1",
+      "[store] $form trace",
+      "<- [store] $form 1",
+      "<- [$form.on] $form.on(inputChanged) 1",
+      "<- [event] inputChanged ",
+      "[effect] submitFx 1",
+      "[effect] submitFx trace",
+      "<- [effect] submitFx 1",
+      "<- [sample]  1",
+      "<- [event] buttonClicked ",
+      "[effect] submitFx.done {\\"params\\":1}",
+      "[store] $form 2",
+      "[store] $form trace",
+      "<- [store] $form 2",
+      "<- [$form.on] $form.on(submitFx.doneData) 2",
+      "<- [event] submitFx.doneData ",
+      "<- [map]  ",
+      "<- [event] submitFx.done {\\"params\\":1}",
+      "<- [filterMap]  {\\"params\\":1}",
+      "<- [event] submitFx.finally {\\"status\\":\\"done\\",\\"params\\":1}",
+    ]
+  `);
+});
+
+test('domain is traceable', async () => {
+  const d = createDomain();
+  const up = d.createEvent();
+  const $c = d.createStore(0).on(up, (s) => s + 1);
+
+  debug({ trace: true }, d);
+
+  up();
+
+  expect(stringArguments(fn)).toMatchInlineSnapshot(`
+    Array [
+      "[store] d/$c 0",
+      "[event] d/up ",
+      "[event] d/up trace",
+      "<- [event] up ",
+      "[store] d/$c 1",
+      "[store] d/$c trace",
+      "<- [store] $c 1",
+      "<- [$c.on] $c.on(up) 1",
+      "<- [event] up ",
     ]
   `);
 });

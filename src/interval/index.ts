@@ -6,6 +6,7 @@ import {
   createStore,
   guard,
   sample,
+  attach,
   is,
 } from 'effector';
 
@@ -28,16 +29,29 @@ export function interval<S extends unknown, F extends unknown>({
 
   const $notRunning = $isRunning.map((running) => !running);
 
-  let timeoutId: NodeJS.Timeout;
+  const saveTimeout = createEvent<NodeJS.Timeout>();
+  const $timeoutId = createStore<NodeJS.Timeout | null>(null).on(
+    saveTimeout,
+    (_, id) => id,
+  );
+  const saveReject = createEvent<() => void>();
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  const $rejecter = createStore<() => void>(() => {}).on(saveReject, (_, rj) => rj);
 
   const timeoutFx = createEffect<number, void>((timeout) => {
-    return new Promise((resolve) => {
-      timeoutId = setTimeout(resolve, timeout);
+    return new Promise((resolve, reject) => {
+      const timeoutId = setTimeout(resolve, timeout);
+      saveTimeout(timeoutId);
+      saveReject(reject);
     });
   });
 
-  const cleanupFx = createEffect(() => {
-    clearTimeout(timeoutId);
+  const cleanupFx = attach({
+    source: [$timeoutId, $rejecter],
+    effect: ([id, rj]) => {
+      rj();
+      if (id) clearTimeout(id);
+    },
   });
 
   guard({

@@ -21,3 +21,7 @@ export function waitFor<T>(unit: Unit<T>): Promise<T>;
 export function watch<T>(
   unit: Event<T> | Store<T> | Effect<T, any, any>,
 ): jest.Mock<T, [T]>;
+
+export function monitor(
+  units: Array<Event<any> | Store<any> | Effect<any, any, any>>,
+): () => Array<[string, any]>;

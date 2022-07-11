@@ -1,9 +1,16 @@
 import 'regenerator-runtime/runtime';
-import { createDomain, fork, serialize, allSettled } from 'effector';
+import {
+  createDomain,
+  fork,
+  serialize,
+  allSettled,
+  createEvent,
+  createStore,
+} from 'effector';
 
 import { every } from './index';
 
-test('throttle works in forked scope', async () => {
+test('every works in forked scope', async () => {
   const app = createDomain();
   const change = app.createEvent();
   const $first = app.createStore(0);
@@ -21,12 +28,12 @@ test('throttle works in forked scope', async () => {
 
   expect(serialize(scope)).toMatchInlineSnapshot(`
     Object {
-      "-ws9vwg": 0,
+      "-tgyj53": 0,
     }
   `);
 });
 
-test('throttle do not affect another forks', async () => {
+test('every do not affect another forks', async () => {
   const app = createDomain();
   const change = app.createEvent<number>();
   const $first = app.createStore(0);
@@ -63,17 +70,17 @@ test('throttle do not affect another forks', async () => {
 
   expect(serialize(scopeA)).toMatchInlineSnapshot(`
     Object {
-      "-20cg9t": 2,
+      "b8wyrn": 2,
     }
   `);
   expect(serialize(scopeB)).toMatchInlineSnapshot(`
     Object {
-      "-20cg9t": 200,
+      "b8wyrn": 200,
     }
   `);
 });
 
-test('throttle do not affect original store value', async () => {
+test('every do not affect original store value', async () => {
   const app = createDomain();
   const change = app.createEvent<number>();
   const $first = app.createStore(0);
@@ -99,9 +106,61 @@ test('throttle do not affect original store value', async () => {
 
   expect(serialize(scope)).toMatchInlineSnapshot(`
     Object {
-      "-12lybd": 2,
+      "28peg0": 2,
     }
   `);
 
   expect($result.getState()).toMatchInlineSnapshot(`false`);
+});
+
+test('allow predicate to use store', async () => {
+  const setSource = createEvent<boolean>();
+  const setPredicate = createEvent<boolean>();
+
+  const $predicate = createStore(false).on(setPredicate, (_, value) => value);
+
+  const $first = createStore(true);
+  const $second = createStore(false).on(setSource, (_, value) => value);
+  const $third = createStore(true);
+
+  const $result = every({ predicate: $predicate, stores: [$first, $second, $third] });
+
+  const scope = fork();
+
+  expect(scope.getState($result)).toBeFalsy();
+
+  await allSettled(setSource, { scope, params: true });
+  expect(scope.getState($result)).toBeFalsy();
+
+  await allSettled(setPredicate, { scope, params: true });
+  expect(scope.getState($result)).toBeTruthy();
+
+  await allSettled(setSource, { scope, params: false });
+  expect(scope.getState($result)).toBeFalsy();
+});
+
+test('allow predicate to use store in short form', async () => {
+  const setSource = createEvent<boolean>();
+  const setPredicate = createEvent<boolean>();
+
+  const $predicate = createStore(false).on(setPredicate, (_, value) => value);
+
+  const $first = createStore(true);
+  const $second = createStore(false).on(setSource, (_, value) => value);
+  const $third = createStore(true);
+
+  const $result = every([$first, $second, $third], $predicate);
+
+  const scope = fork();
+
+  expect(scope.getState($result)).toBeFalsy();
+
+  await allSettled(setSource, { scope, params: true });
+  expect(scope.getState($result)).toBeFalsy();
+
+  await allSettled(setPredicate, { scope, params: true });
+  expect(scope.getState($result)).toBeTruthy();
+
+  await allSettled(setSource, { scope, params: false });
+  expect(scope.getState($result)).toBeFalsy();
 });

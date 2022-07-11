@@ -1,15 +1,25 @@
-import { createEffect, createEvent, Event, guard, is, sample, Unit } from 'effector';
+import {
+  createEffect,
+  createEvent,
+  createStore,
+  Event,
+  guard,
+  is,
+  sample,
+  Store,
+  Unit,
+} from 'effector';
 
 type EventAsReturnType<Payload> = any extends Payload ? Event<Payload> : never;
 
 export function throttle<T>(_: {
   source: Unit<T>;
-  timeout: number;
+  timeout: number | Store<number>;
   name?: string;
 }): EventAsReturnType<T>;
 export function throttle<T, Target extends Unit<T>>(_: {
   source: Unit<T>;
-  timeout: number;
+  timeout: number | Store<number>;
   target: Target;
   name?: string;
 }): Target;
@@ -19,26 +29,45 @@ export function throttle<T>({
   target = createEvent<T>(),
 }: {
   source: Unit<T>;
-  timeout: number;
+  timeout: number | Store<number>;
   name?: string;
   target?: Unit<any>;
 }): EventAsReturnType<T> {
   if (!is.unit(source)) throw new TypeError('source must be unit from effector');
 
-  if (typeof timeout !== 'number' || timeout < 0)
-    throw new Error('timeout must be positive number or zero');
+  const $timeout = toStoreNumber(timeout);
 
-  const timerFx = createEffect(
-    () => new Promise((resolve) => setTimeout(resolve, timeout)),
+  const timerFx = createEffect<number, void>(
+    (timeout) => new Promise((resolve) => setTimeout(resolve, timeout)),
   );
 
-  guard({
-    source,
+  const start = guard({
+    clock: source,
     filter: timerFx.pending.map((pending) => !pending),
+  });
+
+  sample({
+    source: $timeout,
+    clock: start as Unit<any>,
     target: timerFx,
   });
 
   sample({ source, clock: timerFx.done, target });
 
   return target as any;
+}
+
+function toStoreNumber(value: number | Store<number> | unknown): Store<number> {
+  if (is.store(value)) return value;
+  if (typeof value === 'number') {
+    if (value < 0 || !Number.isFinite(value))
+      throw new Error(
+        `timeout must be positive number or zero. Received: "${value}"`,
+      );
+    return createStore(value, { name: '$timeout' });
+  }
+
+  throw new TypeError(
+    `timeout parameter should be number or Store. "${typeof value}" was passed`,
+  );
 }

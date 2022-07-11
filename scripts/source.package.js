@@ -3,9 +3,9 @@ module.exports = () => ({
   version: '0.0.0-real-version-will-be-set-on-ci',
   description: '☄️ Effector utility library delivering modularity and convenience',
   type: 'module',
-  main: 'patronum.cjs.js',
+  main: 'patronum.cjs',
   types: 'index.d.ts',
-  module: 'patronum.mjs',
+  module: 'patronum.js',
   browser: 'patronum.umd.js',
   sideEffects: false,
   repository: {

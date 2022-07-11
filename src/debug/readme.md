@@ -1,8 +1,10 @@
-# Patronum/Debug
+# debug
 
 ```ts
 import { debug } from 'patronum/debug';
 ```
+
+> Note: debug cannot be imported as `import { debug } from 'patronum'`
 
 It is helpful to debug your application's logic.
 
@@ -19,9 +21,7 @@ import { createStore, createEvent, createEffect } from 'effector';
 import { debug } from 'patronum/debug';
 
 const event = createEvent();
-const effect = createEffect().use((payload) =>
-  Promise.resolve('result' + payload),
-);
+const effect = createEffect().use((payload) => Promise.resolve('result' + payload));
 const $store = createStore(0)
   .on(event, (state, value) => state + value)
   .on(effect.done, (state) => state * 10);
@@ -37,4 +37,25 @@ effect('demo');
 // => [effect] effect demo
 // => [effect] effect.done {"params":"demo", "result": "resultdemo"}
 // => [store] $store 60
+```
+
+## Traces
+
+`patronum/debug` supports computation traces logging, if `{ trace: true }` is set.
+It is recommended to use this feature along with `effector/babel-plugin`.
+
+```ts
+const inputChanged = createEvent();
+const $form = createStore(0).on(inputChanged, (s) => s + 1);
+
+debug({ trace: true }, $form, submitFx);
+
+inputChanged();
+
+// "[store] $form 0",
+// "[store] $form 1",
+// "[store] $form trace",
+// "<- [store] $form 1",
+// "<- [$form.on] $form.on(inputChanged) 1",
+// "<- [event] inputChanged ",
 ```

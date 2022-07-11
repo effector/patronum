@@ -1,4 +1,5 @@
 const { performance } = require('perf_hooks');
+const { is } = require('effector');
 
 function waitFor(unit) {
   return new Promise((resolve) => {
@@ -63,6 +64,27 @@ function watch(unit) {
   return fn;
 }
 
+function monitor(units) {
+  // eslint-disable-next-line no-undef
+  const fn = jest.fn();
+
+  units.forEach((unit) => {
+    if (is.store(unit)) {
+      unit.watch((value) => fn(`Store ${unit.shortName}`, value));
+    }
+    if (is.event(unit)) {
+      unit.watch((value) => fn(`Event ${unit.shortName}`, value));
+    }
+    if (is.effect(unit)) {
+      unit.watch((value) => fn(`Effect ${unit.shortName}`, value));
+      unit.done.watch((value) => fn(`Effect ${unit.shortName}.done`, value));
+      unit.fail.watch((value) => fn(`Effect ${unit.shortName}.fail`, value));
+    }
+  });
+
+  return () => argumentsHistory(fn);
+}
+
 module.exports = {
   argumentHistory,
   argumentsHistory,
@@ -71,4 +93,5 @@ module.exports = {
   wait,
   waitFor,
   watch,
+  monitor,
 };

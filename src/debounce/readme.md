@@ -1,10 +1,10 @@
-# Patronum/Debounce
+# debounce
 
 ```ts
 import { debounce } from 'patronum/debounce';
 ```
 
-## `debounce({ source, timeout: number })`
+## `debounce({ source, timeout })`
 
 ### Motivation
 
@@ -14,19 +14,19 @@ It is useful when you want to pass created event immediately to another method a
 ### Formulae
 
 ```ts
-event = debounce({ source, timeout: number });
+event = debounce({ source, timeout });
 ```
 
 - Wait for `timeout` after the last time `source` was triggered, then trigger `event` with payload of the `source`
 
 ### Arguments
 
-1. `source` _(`Event<T>` | `Store<T>` | `Effect<T>`)_ — Source unit, data from this unit used by the `event`
-1. `timeout` _(`number`)_ — time to wait before trigger `event`
+1. `source` `(Event<T>` | `Store<T>` | `Effect<T>)` — Source unit, data from this unit used by the `event`
+1. `timeout` `(number | Store<number>)` — time to wait before trigger `event`
 
 ### Returns
 
-- `event` _(`Event<T>`)_ — New event, that triggered after delay
+- `event` `(Event<T>)` — New event, that triggered after delay
 
 ### Example
 
@@ -54,7 +54,7 @@ someHappened(4);
 // someHappened now 4
 ```
 
-## `debounce({ source, timeout: number, target })`
+## `debounce({ source, timeout, target })`
 
 ### Motivation
 
@@ -64,20 +64,20 @@ It is useful when you already have an unit that you need to trigger.
 ### Formulae
 
 ```ts
-event = debounce({ source, timeout: number, target });
+event = debounce({ source, timeout, target });
 ```
 
 - Wait for `timeout` after the last time `source` was triggered and call `target` with data from the `source`
 
 ### Arguments
 
-1. `source` _(`Event<T>` | `Store<T>` | `Effect<T>`)_ — Source unit, data from this unit used to trigger `target` with payload of the `source`
-1. `timeout` _(`number`)_ — time to wait before trigger `event`
-1. `target` _(`Event<T>` | `Store<T>` | `Effect<T>`)_ — Target unit, data from the `source` will be passed to this unit
+1. `source` `(Event<T>` | `Store<T>` | `Effect<T>)` — Source unit, data from this unit used to trigger `target` with payload of the `source`
+1. `timeout` `(number | Store<number>)` — time to wait before trigger `event`
+1. `target` `(Event<T>` | `Store<T>` | `Effect<T>)` — Target unit, data from the `source` will be passed to this unit
 
 ### Returns
 
-- `target` _(`Event<T>` | `Store<T>` | `Effect<T>`)_ — Target unit that was passed to input argument `target`
+- `target` `(Event<T>` | `Store<T>` | `Effect<T>)` — Target unit that was passed to input argument `target`
 
 ### Example
 
@@ -110,4 +110,37 @@ someHappened(4);
 
 // someHappened now 4
 // got data 4
+```
+
+### Example with timeout as store
+
+```ts
+import { createStore } from 'effector';
+import { debounce } from 'patronum';
+
+const DEBOUNCE_TIMEOUT_IN_MS = 200;
+
+const changeTimeout = createEvent<number>();
+const $timeout = createStore(DEBOUNCE_TIMEOUT_IN_MS).on(changeTimeout, (_, value) => value);
+const someHappened = createEvent<number>();
+const debounced = debounce({
+  source: someHappened,
+  timeout: $timeout,
+});
+
+debounced.watch((payload) => {
+  console.info('someHappened now', payload);
+});
+
+someHappened(1);
+changeTimeout(400); // will be applied after next source trigger
+someHappened(2);
+
+setTimout(() => {
+  // console clear
+}, 200);
+
+setTimout(() => {
+  // someHappened now 2
+}, 400)
 ```

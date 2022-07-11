@@ -1,4 +1,4 @@
-# Patronum/Status
+# status
 
 ```ts
 import { status } from 'patronum/status';
@@ -22,12 +22,12 @@ $status = status({ effect, defaultValue });
 
 ## Arguments
 
-1. `effect` _(Effect<P, R>)_ — any effect, that you need to watch status
-2. `defaultValue` _('initial' | 'pending' | 'done' | 'fail')_ _optional_ — when `$status` initializes, set initial value for it. By default value is `"initial"`
+1. `effect` `(Effect<P, R>)` — any effect, that you need to watch status
+2. `defaultValue` `('initial' | 'pending' | 'done' | 'fail')` _optional_ — when `$status` initializes, set initial value for it. By default value is `"initial"`
 
 ## Returns
 
-- `$status` _(Store<'initial' | 'pending' | 'done' | 'fail'>)_ — Store that saves current state of the effects
+- `$status` `(Store<'initial' | 'pending' | 'done' | 'fail'>)` — Store that saves current state of the effects
 
 > Note: use can manually reset status, just use `$status.reset(event)`
 

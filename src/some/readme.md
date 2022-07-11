@@ -1,4 +1,4 @@
-# Patronum/Some
+# some
 
 ```ts
 import { some } from 'patronum/some';
@@ -22,12 +22,12 @@ $result = some({ predicate: (value) => true, stores });
 
 ### Arguments
 
-1. `predicate` _(`(value: T) => boolean`)_ — Function to check store value
-1. `stores` _(`Array<Store<T>>`)_ — List of stores
+1. `predicate` `((value: T) => boolean)` — Function to check store value
+1. `stores` `(Array<Store<T>>)` — List of stores
 
 ### Return
 
-- `$result` _(`Store<boolean>`)_ — `true` if at least one store corresponds to `predicate`
+- `$result` `(Store<boolean>)` — `true` if at least one store corresponds to `predicate`
 
 ### Example
 
@@ -60,13 +60,13 @@ $result = some({ predicate: value, stores });
 
 ### Arguments
 
-1. `predicate` _(`T`)_ — Data to compare stores values with
-1. `stores` _(`Array<Store<T>>`)_ — List of stores to compare with `value`
+1. `predicate` `(T)` — Data to compare stores values with
+1. `stores` `(Array<Store<T>>)` — List of stores to compare with `value`
 1. type of `predicate` and `stores` should should be the same
 
 ### Return
 
-- `$result` _(`Store<boolean>`)_ — `true` if at least one store contains `value`
+- `$result` `(Store<boolean>)` — `true` if at least one store contains `value`
 
 ### Example
 
@@ -81,3 +81,59 @@ const $isFormFailed = some({
 
 console.assert(false === $isFormFailed.getState());
 ```
+
+## `some({ predicate: Store, stores })`
+
+### Motivation
+
+This overload compares each store to specific value in store `predicate`.
+It is useful when you write `combine` with `||` very often, for example to create an invalid form flag.
+
+### Formulae
+
+```ts
+$result = some({ predicate: $value, stores });
+```
+
+- `$result` will be `true` if at least one value in `stores` equals value in `$value`, otherwise it will be `false`
+
+### Arguments
+
+1. `predicate` `(Store<T>)` — Store contains value to compare values from `stores` with
+1. `stores` `(Array<Store<T>>)` — List of stores to compare with `value`
+1. type of `value` and `stores` should be the same
+
+### Return
+
+- `$result` `(Store<boolean>)` — `true` if at least one store contains `value`
+
+### Example
+
+```ts
+const $allowToCompare = createStore(true);
+
+const $isPasswordCorrect = createStore(true);
+const $isEmailCorrect = createStore(true);
+
+const $isFormFailed = some({
+  predicate: $allowToCompare,
+  stores: [$isPasswordCorrect, $isEmailCorrect],
+});
+
+console.assert(false === $isFormFailed.getState());
+```
+
+## Shorthands
+
+```ts
+$result = some(stores, value);
+$result = some(stores, (value) => false);
+$result = some(stores, $predicate);
+```
+
+Shorthand have the same rules as the main overrides, just it uses positional arguments instead of object-form.
+
+### Arguments
+
+1. `stores` `(Array<Store<T>>)` — List of stores to compare with predicate in the second argument
+2. `predicate` `(Store<T> | (value: T) => boolean | T)` — Predicate to compare with

@@ -1,4 +1,4 @@
-# Patronum/Spread
+# spread
 
 ```ts
 import { spread } from 'patronum/spread';
@@ -19,13 +19,13 @@ spread({ source, targets: { field: target, ... } })
 
 - When `source` is triggered with **object**, extract `field` from data, and trigger `target`
 - `targets` can have multiple properties
-- If `source` is triggered with not object, nothing will be happen.
+- If the `source` was triggered with non-object, nothing would be happening
 - If `source` is triggered with object but without propertpy `field`, target for this `field` will not be triggered
 
 ### Arguments
 
-1. `source` _(`Event<T>` | `Store<T>` | `Effect<T>`)_ — Source unit, data passed to it should be an object with fields from `targets`
-2. `targets` _(`Record<string, Event<T> | Store<T> | Effect<T>>`)_ — Flat object which key is key in `source` payload, and value is unit to store value to.
+1. `source` `(Event<T>` | `Store<T>` | `Effect<T>)` — Source unit, data passed to it should be an object with fields from `targets`
+2. `targets` `(Record<string, Event<T> | Store<T> | Effect<T>>)` — Flat object which key is key in `source` payload, and value is unit to store value to.
 
 ### Example
 
@@ -105,16 +105,16 @@ source = spread({ targets: { field: target, ... } })
 
 - When `source` is triggered with **object**, extract `field` from data, and trigger `target`
 - `targets` can have multiple properties
-- If `source` is triggered with not object, nothing will be happen.
+- If the `source` was triggered with non-object, nothing would be happening
 - If `source` is triggered with object but without propertpy `field`, target for this `field` will not be triggered
 
 ### Arguments
 
-1. `targets` _(`Record<string, Event<T> | Store<T> | Effect<T>>`)_ — Flat object which key is key in `source` payload, and value is unit to store value to.
+1. `targets` `(Record<string, Event<T> | Store<T> | Effect<T>>)` — Flat object which key is key in `source` payload, and value is unit to store value to.
 
 ### Returns
 
-- `source` _(`Event<T>` | `Store<T>` | `Effect<T>`)_ — Source unit, data passed to it should be an object with fields from `targets`
+- `source` `(Event<T>` | `Store<T>` | `Effect<T>)` — Source unit, data passed to it should be an object with fields from `targets`
 
 ### Example
 

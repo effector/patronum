@@ -1,4 +1,4 @@
-import { createEvent, Effect, Event, guard, is, Store, Unit } from 'effector';
+import { createEvent, Effect, Event, guard, is, Store, Unit, split } from 'effector';
 
 type NoInfer<T> = T & { [K in keyof T]: T[K] };
 type EventAsReturnType<Payload> = any extends Payload ? Event<Payload> : never;
@@ -83,19 +83,29 @@ export function condition<State>({
   const checker =
     is.unit(test) || isFunction(test) ? test : (value: State) => value === test;
 
-  if (thenBranch) {
+  if (thenBranch && elseBranch) {
+    split({
+      source,
+      match: {
+        then: checker,
+        else: inverse(checker),
+      },
+      cases: {
+        then: thenBranch,
+        else: elseBranch,
+      },
+    } as any);
+  } else if (thenBranch) {
     guard({
       source,
       filter: checker,
-      target: thenBranch,
+      target: thenBranch as Unit<State>,
     });
-  }
-
-  if (elseBranch) {
+  } else if (elseBranch) {
     guard({
       source,
       filter: inverse(checker as any),
-      target: elseBranch,
+      target: elseBranch as Unit<State>,
     });
   }
 
@@ -106,9 +116,9 @@ function isFunction<T>(value: unknown): value is (payload: T) => boolean {
   return typeof value === 'function';
 }
 
-function inverse<A extends boolean>(
-  fnOrUnit: Store<boolean> | ((payload: unknown) => boolean),
-): Store<boolean> | ((payload: unknown) => boolean) {
+function inverse<A extends boolean, T>(
+  fnOrUnit: Store<boolean> | ((payload: T) => boolean),
+): Store<boolean> | ((payload: T) => boolean) {
   if (is.unit(fnOrUnit)) {
     return fnOrUnit.map((value) => !value);
   }

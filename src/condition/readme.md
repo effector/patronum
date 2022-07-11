@@ -1,4 +1,4 @@
-# Patronum/Condition
+# condition
 
 ```ts
 import { condition } from 'patronum/condition';
@@ -28,14 +28,14 @@ result = condition({
 
 ### Arguments
 
-1. `source` _(`Unit<T>`)_ — Data from this unit will be passed to `then` or `else`
-1. `if` _(`Store<boolean>`)_ — Updates of this store will not trigger `then` and `else`
-1. `then` _(`Unit<T>`)_ — This unit will be triggered with data from `source` if `$checker` contains `true`. Required if `else` is not provided
-1. `else` _(`Unit<T>`)_ — This unit will be triggered with data from `source` if `$checker` contains `false`. Required if `then` is not provided
+1. `source` `(Unit<T>)` — Data from this unit will be passed to `then` or `else`
+1. `if` `(Store<boolean>)` — Updates of this store will not trigger `then` and `else`
+1. `then` `(Unit<T>)` — This unit will be triggered with data from `source` if `$checker` contains `true`. Required if `else` is not provided
+1. `else` `(Unit<T>)` — This unit will be triggered with data from `source` if `$checker` contains `false`. Required if `then` is not provided
 
 ### Returns
 
-1. _(`Unit<T>`)_ — The same unit type that passed to `source`
+1. `(Unit<T>)` — The same unit type that passed to `source`
 
 ### Example
 
@@ -84,14 +84,14 @@ result = condition({
 
 ### Arguments
 
-1. `source` _(`Unit<T>`)_ — Data from this unit will be passed to `then` or `else`
-1. `if` _(`T`)_ — Just value to compare with `source` payload. _Note: objects will be compared by reference_
-1. `then` _(`Unit<T>`)_ — This unit will be triggered with data from `source` if `$checker` contains `true`. Required if `else` is not provided
-1. `else` _(`Unit<T>`)_ — This unit will be triggered with data from `source` if `$checker` contains `false`. Required if `then` is not provided
+1. `source` `(Unit<T>)` — Data from this unit will be passed to `then` or `else`
+1. `if` `(T)` — Just value to compare with `source` payload. _Note: objects will be compared by reference_
+1. `then` `(Unit<T>)` — This unit will be triggered with data from `source` if `$checker` contains `true`. Required if `else` is not provided
+1. `else` `(Unit<T>)` — This unit will be triggered with data from `source` if `$checker` contains `false`. Required if `then` is not provided
 
 ### Returns
 
-1. _(`Unit<T>`)_ — The same unit type that passed to `source`
+1. `(Unit<T>)` — The same unit type that passed to `source`
 
 ### Example
 
@@ -138,14 +138,14 @@ result = condition({
 
 ### Arguments
 
-1. `source` _(`Unit<T>`)_ — Data from this unit will be passed to `then` or `else`
-1. `if` _(`(payload: T) => boolean`)_ — Function comparator. It should return boolean
-1. `then` _(`Unit<T>`)_ — This unit will be triggered with data from `source` if `$checker` contains `true`. Required if `else` is not provided
-1. `else` _(`Unit<T>`)_ — This unit will be triggered with data from `source` if `$checker` contains `false`. Required if `then` is not provided
+1. `source` `(Unit<T>)` — Data from this unit will be passed to `then` or `else`
+1. `if` `((payload: T) => boolean)` — Function comparator. It should return boolean
+1. `then` `(Unit<T>)` — This unit will be triggered with data from `source` if `$checker` contains `true`. Required if `else` is not provided
+1. `else` `(Unit<T>)` — This unit will be triggered with data from `source` if `$checker` contains `false`. Required if `then` is not provided
 
 ### Returns
 
-1. _(`Unit<T>`)_ — The same unit type that passed to `source`
+1. `(Unit<T>)` — The same unit type that passed to `source`
 
 ### Example
 

@@ -9,10 +9,9 @@ const {
   writeFile,
   createMjsIndex,
   createExportsMap,
+  resolveMethods,
 } = require('./libraries');
 const packageJson = require('./source.package.js');
-
-const packageMarker = 'index.ts';
 
 async function main() {
   const library = process.env.LIBRARY_NAME ?? 'patronum';
@@ -24,16 +23,14 @@ async function main() {
   await directory.copyList('./src', staticFiles);
   await directory.copyList('./', ['README.md', 'MIGRATION.md', 'LICENSE']);
 
-  const found = await globby(`./src/*/${packageMarker}`);
-  const names = found.map((name) =>
-    name.replace(`/${packageMarker}`, '').replace('./src/', ''),
-  );
+  const names = resolveMethods();
 
   pkg.exports = {
+    './package.json': './package.json',
     '.': {
-      require: './index.js',
-      import: './index.mjs',
-      default: './index.mjs',
+      require: './index.cjs',
+      import: './index.js',
+      default: './index.js',
     },
     './babel-preset': {
       require: './babel-preset.cjs',
@@ -44,8 +41,21 @@ async function main() {
     ...createExportsMap(names),
   };
 
-  await directory.write('index.js', createCommonJsIndex(names));
-  await directory.write('index.mjs', createMjsIndex(names));
+  const internalPkg = {
+    type: 'module',
+    main: 'index.cjs',
+    module: 'index.js',
+    types: 'index.d.ts',
+  };
+
+  await Promise.all(
+    names.map((name) =>
+      directory.write(`${name}/package.json`, JSON.stringify(internalPkg, null, 2)),
+    ),
+  );
+
+  await directory.write('index.cjs', createCommonJsIndex(names));
+  await directory.write('index.js', createMjsIndex(names));
   await directory.write('index.d.ts', createTypingsIndex(names));
   await directory.write('macro.d.ts', 'export * from "./index";');
 
@@ -55,7 +65,7 @@ async function main() {
   await writeFile(`./src/${fileName}`, JSON.stringify(factoriesJson, null, 2));
   await directory.copyList('./src', [fileName]);
 
-  await directory.write('package.json', JSON.stringify(pkg));
+  await directory.write('package.json', JSON.stringify(pkg, null, 2));
 }
 
 main().catch((error) => {

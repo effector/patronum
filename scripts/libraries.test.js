@@ -8,9 +8,9 @@ const {
 test('commonjs index with multiple words', () => {
   expect(createCommonJsIndex(['first', 'second-item', 'another-text-demo']))
     .toMatchInlineSnapshot(`
-    "module.exports.anotherTextDemo = require('./another-text-demo').anotherTextDemo;
-    module.exports.first = require('./first').first;
-    module.exports.secondItem = require('./second-item').secondItem;
+    "module.exports.anotherTextDemo = require('./another-text-demo/index.cjs').anotherTextDemo;
+    module.exports.first = require('./first/index.cjs').first;
+    module.exports.secondItem = require('./second-item/index.cjs').secondItem;
     "
   `);
 });

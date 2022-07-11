@@ -1,13 +1,22 @@
 {
   "factories": [
     "patronum",
+    "patronum/abort",
+    "patronum/and",
     "patronum/combine-events",
     "patronum/condition",
     "patronum/debounce",
     "patronum/delay",
+    "patronum/either",
+    "patronum/equals",
     "patronum/every",
+    "patronum/format",
     "patronum/in-flight",
+    "patronum/interval",
+    "patronum/not",
+    "patronum/or",
     "patronum/pending",
+    "patronum/reset",
     "patronum/reshape",
     "patronum/snapshot",
     "patronum/some",
@@ -15,16 +24,25 @@
     "patronum/spread",
     "patronum/status",
     "patronum/throttle",
-    "patronum/abort"
+    "patronum/time"
   ],
   "mapping": {
+    "abort": "abort",
+    "and": "and",
     "combineEvents": "combine-events",
     "condition": "condition",
     "debounce": "debounce",
     "delay": "delay",
+    "either": "either",
+    "equals": "equals",
     "every": "every",
+    "format": "format",
     "inFlight": "in-flight",
+    "interval": "interval",
+    "not": "not",
+    "or": "or",
     "pending": "pending",
+    "reset": "reset",
     "reshape": "reshape",
     "snapshot": "snapshot",
     "some": "some",
@@ -32,6 +50,6 @@
     "spread": "spread",
     "status": "status",
     "throttle": "throttle",
-    "abort": "abort"
+    "time": "time"
   }
 }

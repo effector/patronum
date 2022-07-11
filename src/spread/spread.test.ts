@@ -1,4 +1,4 @@
-import { createEvent, createStore, forward } from 'effector';
+import { combine, createEvent, createStore, forward } from 'effector';
 import { spread } from './index';
 
 describe('spread(source, targets)', () => {
@@ -248,11 +248,10 @@ describe('edge', () => {
   });
 
   test('nested targets', () => {
-    const source =
-      createEvent<{
-        first: string;
-        second: { foo: number; bar: boolean };
-      }>();
+    const source = createEvent<{
+      first: string;
+      second: { foo: number; bar: boolean };
+    }>();
     const targetA = createEvent<string>();
     const targetB = createEvent<number>();
     const targetC = createEvent<boolean>();
@@ -288,6 +287,47 @@ describe('edge', () => {
     expect(fnA).toBeCalledWith('Hello');
     expect(fnB).toBeCalledWith(200);
     expect(fnC).toBeCalledWith(true);
+  });
+
+  test('batch store updates', () => {
+    const source = createEvent<{
+      first: string;
+      second: number;
+      third: boolean;
+    }>();
+    const targetA = createStore<string>('');
+    const targetB = createStore<number>(1);
+    const targetC = createStore<boolean>(true);
+
+    const fn = jest.fn();
+
+    const final = combine(targetA, targetB, targetC, (a, b, c) => ({
+      first: a,
+      second: b,
+      third: c,
+    }));
+    final.updates.watch(fn);
+
+    spread({
+      source,
+      targets: {
+        first: targetA,
+        second: targetB,
+        third: targetC,
+      },
+    });
+
+    source({
+      first: 'foo',
+      second: 2,
+      third: false,
+    });
+    expect(final.getState()).toEqual({
+      first: 'foo',
+      second: 2,
+      third: false,
+    });
+    expect(fn).toBeCalledTimes(1);
   });
 });
 
@@ -342,11 +382,10 @@ describe('invalid', () => {
   });
 
   test('null/undefined in source', () => {
-    const source =
-      createEvent<null | void | {
-        first: number;
-        second: boolean;
-      }>();
+    const source = createEvent<null | void | {
+      first: number;
+      second: boolean;
+    }>();
     const targetA = createEvent<number>();
     const targetB = createEvent<boolean>();
 

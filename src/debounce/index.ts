@@ -1,15 +1,26 @@
-import { createEffect, createEvent, Event, forward, is, Unit } from 'effector';
+import {
+  createEffect,
+  createEvent,
+  createStore,
+  Event,
+  forward,
+  is,
+  sample,
+  Store,
+  Unit,
+  attach,
+} from 'effector';
 
 type EventAsReturnType<Payload> = any extends Payload ? Event<Payload> : never;
 
 export function debounce<T>(_: {
   source: Unit<T>;
-  timeout: number;
+  timeout: number | Store<number>;
   name?: string;
 }): EventAsReturnType<T>;
 export function debounce<T, Target extends Unit<T>>(_: {
   source: Unit<T>;
-  timeout: number;
+  timeout: number | Store<number>;
   target: Target;
   name?: string;
 }): Target;
@@ -19,7 +30,7 @@ export function debounce<T>({
   target,
 }: {
   source: Unit<T>;
-  timeout?: number;
+  timeout?: number | Store<number>;
   /** @deprecated */
   name?: string;
   target?: Unit<T>;
@@ -28,28 +39,62 @@ export function debounce<T>({
 
   if (is.domain(source)) throw new TypeError('source cannot be domain');
 
-  if (typeof timeout !== 'number' || timeout < 0 || !Number.isFinite(timeout))
-    throw new Error(
-      `timeout must be positive number or zero. Received: "${timeout}"`,
-    );
+  const $timeout = toStoreNumber(timeout);
 
-  let rejectPromise: (() => void) | void;
-  let timeoutId: NodeJS.Timeout;
+  const saveTimeoutId = createEvent<NodeJS.Timeout>();
+  const $timeoutId = createStore<NodeJS.Timeout | null>(null, {
+    serialize: 'ignore',
+  }).on(saveTimeoutId, (_, id) => id);
+  const saveReject = createEvent<() => void>();
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  const $rejecter = createStore<(() => void) | null>(null, {
+    serialize: 'ignore',
+  }).on(saveReject, (_, rj) => rj);
 
   const tick = target ?? createEvent();
 
-  const timerFx = createEffect<T, T>((parameter) => {
-    clearTimeout(timeoutId);
+  const timerBaseFx = createEffect<
+    {
+      parameter: T;
+      timeout: number;
+      rejectPromise: (() => void) | null;
+      timeoutId: NodeJS.Timeout | null;
+    },
+    T
+  >(({ parameter, timeout, timeoutId, rejectPromise }) => {
+    if (timeoutId) clearTimeout(timeoutId);
     if (rejectPromise) rejectPromise();
     return new Promise((resolve, reject) => {
-      rejectPromise = reject;
-      timeoutId = setTimeout(resolve, timeout, parameter);
+      saveReject(reject);
+      saveTimeoutId(setTimeout(resolve, timeout, parameter));
     });
   });
+  const timerFx = attach({
+    source: {
+      timeoutId: $timeoutId,
+      rejectPromise: $rejecter,
+    },
+    mapParams: (
+      { parameter, timeout }: { parameter: T; timeout: number },
+      { timeoutId, rejectPromise },
+    ) => {
+      return {
+        parameter,
+        timeout,
+        timeoutId,
+        rejectPromise,
+      };
+    },
+    effect: timerBaseFx,
+  });
+  $rejecter.reset(timerFx.done);
+  $timeoutId.reset(timerFx.done);
 
-  forward({
-    from: source,
-    to: timerFx,
+  sample({
+    source: $timeout,
+    clock: source,
+    fn: (timeout, parameter) => ({ timeout, parameter }),
+    target: timerFx,
   });
 
   forward({
@@ -58,4 +103,19 @@ export function debounce<T>({
   });
 
   return tick;
+}
+
+function toStoreNumber(value: number | Store<number> | unknown): Store<number> {
+  if (is.store(value)) return value;
+  if (typeof value === 'number') {
+    if (value < 0 || !Number.isFinite(value))
+      throw new Error(
+        `timeout must be positive number or zero. Received: "${value}"`,
+      );
+    return createStore(value, { name: '$timeout' });
+  }
+
+  throw new TypeError(
+    `timeout parameter in interval method should be number or Store. "${typeof value}" was passed`,
+  );
 }

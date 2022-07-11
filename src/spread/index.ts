@@ -1,5 +1,9 @@
 import { createEvent, Event, guard, sample, Unit } from 'effector';
 
+const hasPropBase = {}.hasOwnProperty;
+const hasOwnProp = <O extends { [k: string]: unknown }>(object: O, key: string) =>
+  hasPropBase.call(object, key);
+
 type NoInfer<T> = [T][T extends any ? 0 : never];
 type EventAsReturnType<Payload> = any extends Payload ? Event<Payload> : never;
 
@@ -7,7 +11,7 @@ export function spread<Payload>(config: {
   targets: {
     [Key in keyof Payload]?: Unit<Payload[Key]>;
   };
-}): EventAsReturnType<Payload>;
+}): EventAsReturnType<Partial<Payload>>;
 
 export function spread<
   Source,
@@ -15,7 +19,9 @@ export function spread<
 >(config: {
   source: Source;
   targets: {
-    [Key in keyof Payload]?: Unit<NoInfer<Payload[Key]>>;
+    [Key in keyof Payload]?:
+      | EventAsReturnType<Partial<Payload[Key]>>
+      | Unit<NoInfer<Payload[Key]>>;
   };
 }): Source;
 
@@ -36,17 +42,21 @@ export function spread<P>({
   source?: Unit<P>;
 }): EventAsReturnType<P> {
   for (const targetKey in targets) {
-    if (targetKey in targets) {
+    if (hasOwnProp(targets, targetKey)) {
+      const currentTarget = targets[targetKey];
+
       const hasTargetKey = guard({
         source,
-        filter: (object) =>
+        greedy: true,
+        filter: (object): object is any =>
           typeof object === 'object' && object !== null && targetKey in object,
       });
 
       sample({
-        source: hasTargetKey,
-        fn: (object) => object[targetKey],
-        target: targets[targetKey] as any,
+        greedy: true,
+        clock: hasTargetKey,
+        fn: (object: P) => object[targetKey],
+        target: currentTarget as Unit<any>,
       });
     }
   }

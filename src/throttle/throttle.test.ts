@@ -1,8 +1,7 @@
 import 'regenerator-runtime/runtime';
 import { createStore, createEvent, createEffect, createDomain, is } from 'effector';
 import { throttle } from './index';
-
-const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+import { wait } from '../../test-library';
 
 describe('event', () => {
   test('throttle event', async () => {
@@ -414,6 +413,32 @@ describe('store', () => {
     const throttledDemo = throttle({ source: $demo, timeout: 20 });
 
     expect(throttledDemo.shortName).toMatchInlineSnapshot(`"target"`);
+  });
+});
+
+describe('timeout as store', () => {
+  test('new timeout is used after previous timeout is over', async () => {
+    const watcher = jest.fn();
+    const changeTimeout = createEvent<number>();
+    const $timeout = createStore(40).on(changeTimeout, (_, value) => value);
+
+    const trigger = createEvent();
+    const throttled = throttle({ source: trigger, timeout: $timeout });
+
+    throttled.watch(watcher);
+
+    trigger();
+    await wait(30);
+    changeTimeout(100);
+    trigger();
+    await wait(10);
+    expect(watcher).toBeCalledTimes(1);
+
+    trigger();
+    await wait(50);
+    trigger();
+    await wait(50);
+    expect(watcher).toBeCalledTimes(2);
   });
 });
 

@@ -1,9 +1,9 @@
 # This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
 
-name: Intergration testing
+name: Integration testing
 
-on: [push, pull_request]
+on: [push]
 
 jobs:
   build:
@@ -13,14 +13,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Use Node.js v14.x
-        uses: actions/setup-node@v1
+      - name: Use Node.js v16.x
+        uses: actions/setup-node@v3
         with:
-          node-version: v14.x
+          node-version: v16.x
           registry-url: 'https://npm.pkg.github.com'
+          cache: 'yarn'
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build package
         run: yarn build
@@ -28,8 +31,16 @@ jobs:
           LIBRARY_NAME: '@effector/patronum'
 
       - name: Fetch latest package version
+        id: latest-package-json
+        run: echo "::set-output name=latest::$(yarn npm info @effector/patronum -f version --json)"
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Resolve latest package version from json
+        uses: sergeysova/jq-action@v2
         id: latest-package
-        run: echo "::set-output name=latest::$(npm info @effector/patronum version)"
+        with:
+          cmd: echo "::set-output name=latest-release::$(echo '${{ steps.latest-package-json.outputs.latest }}' | jq .version -r)"
 
       - name: Resolve latest release version
         if: ${{ steps.latest-package.outputs.latest-release == '' }}
@@ -52,7 +63,7 @@ jobs:
         working-directory: './dist/'
         run: npm publish
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Get version from package.json
         uses: sergeysova/jq-action@v2
@@ -74,23 +85,25 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Use Node.js 14.x
-        uses: actions/setup-node@v1
+      - name: Use Node.js 16.x
+        uses: actions/setup-node@v3
         with:
-          node-version: 14.x
+          node-version: 16.x
           registry-url: 'https://npm.pkg.github.com'
 
       - name: Install integration dependencies
         run: yarn
         working-directory: ./integration/custom
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Install patronum@${{ needs.build.outputs.version }} to integration package
         run: yarn add @effector/patronum@${{ needs.build.outputs.version }}
         working-directory: ./integration/custom
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Run intergration tests
+      - name: Run integration tests
         run: yarn test
         working-directory: ./integration/custom
 
@@ -102,22 +115,24 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Use Node.js 14.x
-        uses: actions/setup-node@v1
+      - name: Use Node.js 16.x
+        uses: actions/setup-node@v3
         with:
-          node-version: 14.x
+          node-version: 16.x
           registry-url: 'https://npm.pkg.github.com'
 
       - name: Install integration dependencies
         run: yarn
         working-directory: ./integration/cra
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Install patronum@${{ needs.build.outputs.version }} to integration package
         run: yarn add @effector/patronum@${{ needs.build.outputs.version }}
         working-directory: ./integration/cra
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Run intergration tests
+      - name: Run integration tests
         run: yarn test
         working-directory: ./integration/cra
