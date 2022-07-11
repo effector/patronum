@@ -68,6 +68,6 @@ function toStoreNumber(value: number | Store<number> | unknown): Store<number> {
   }
 
   throw new TypeError(
-    `timeout parameter in interval method should be number or Store. "${typeof value}" was passed`,
+    `timeout parameter should be number or Store. "${typeof value}" was passed`,
   );
 }
