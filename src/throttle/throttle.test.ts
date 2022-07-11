@@ -1,8 +1,7 @@
 import 'regenerator-runtime/runtime';
 import { createStore, createEvent, createEffect, createDomain, is } from 'effector';
 import { throttle } from './index';
-
-const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+import { wait } from '../../test-library';
 
 describe('event', () => {
   test('throttle event', async () => {

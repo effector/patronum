@@ -1,7 +1,15 @@
 import 'regenerator-runtime/runtime';
-import { createDomain, fork, serialize, allSettled } from 'effector';
+import {
+  createDomain,
+  fork,
+  serialize,
+  allSettled,
+  createEvent,
+  createStore,
+} from 'effector';
 
 import { throttle } from './index';
+import { wait } from '../../test-library';
 
 test('throttle works in forked scope', async () => {
   const app = createDomain();
@@ -22,7 +30,7 @@ test('throttle works in forked scope', async () => {
 
   expect(serialize(scope)).toMatchInlineSnapshot(`
     Object {
-      "-ccpdi1": 1,
+      "-8kcech": 1,
     }
   `);
 });
@@ -62,13 +70,13 @@ test('throttle do not affect another forks', async () => {
 
   expect(serialize(scopeA)).toMatchInlineSnapshot(`
     Object {
-      "hy6fqf": 2,
+      "vohh62": 2,
     }
   `);
 
   expect(serialize(scopeB)).toMatchInlineSnapshot(`
     Object {
-      "hy6fqf": 200,
+      "vohh62": 200,
     }
   `);
 });
@@ -96,9 +104,39 @@ test('throttle do not affect original store value', async () => {
 
   expect(serialize(scope)).toMatchInlineSnapshot(`
     Object {
-      "8gx90l": 2,
+      "m78ag8": 2,
     }
   `);
 
   expect($counter.getState()).toMatchInlineSnapshot(`0`);
+});
+
+describe('timeout as store', () => {
+  test('new timeout is used after previous timeout is over', async () => {
+    const watcher = jest.fn();
+    const changeTimeout = createEvent<number>();
+    const $timeout = createStore(40);
+
+    const trigger = createEvent();
+    const throttled = throttle({ source: trigger, timeout: $timeout });
+    $timeout.on(changeTimeout, (_, timeout) => timeout);
+
+    throttled.watch(watcher);
+
+    const scope = fork();
+
+    allSettled(trigger, { scope }).then(() => {});
+    await wait(30);
+    allSettled(changeTimeout, { scope, params: 100 }).then(() => {});
+
+    allSettled(trigger, { scope }).then(() => {});
+    await wait(10);
+    expect(watcher).toBeCalledTimes(1);
+
+    allSettled(trigger, { scope }).then(() => {});
+    await wait(50);
+    allSettled(trigger, { scope }).then(() => {});
+    await wait(50);
+    expect(watcher).toBeCalledTimes(2);
+  });
 });
