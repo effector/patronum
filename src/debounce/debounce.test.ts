@@ -1,6 +1,6 @@
 import 'regenerator-runtime/runtime';
 import { createStore, createEvent, createEffect, createDomain } from 'effector';
-import { wait } from '../../test-library';
+import { wait, watch } from '../../test-library';
 import { debounce } from './index';
 
 describe('arguments validation', () => {
@@ -44,12 +44,11 @@ describe('arguments validation', () => {
 
 describe('timeout as store', () => {
   test('new timeout is used after source trigger', async () => {
-    const watcher = jest.fn();
     const trigger = createEvent();
     const changeTimeout = createEvent<number>();
     const $timeout = createStore(40).on(changeTimeout, (_, value) => value);
     const debounced = debounce({ source: trigger, timeout: $timeout });
-    debounced.watch(watcher);
+    const watcher = watch(debounced);
 
     trigger();
     await wait(30);

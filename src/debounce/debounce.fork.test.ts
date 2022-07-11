@@ -1,5 +1,13 @@
 import 'regenerator-runtime/runtime';
-import { createDomain, fork, serialize, allSettled } from 'effector';
+import {
+  createDomain,
+  fork,
+  serialize,
+  allSettled,
+  createEvent,
+  createStore,
+} from 'effector';
+import { wait, watch } from '../../test-library';
 
 import { debounce } from './index';
 
@@ -22,7 +30,7 @@ test('debounce works in forked scope', async () => {
 
   expect(serialize(scope)).toMatchInlineSnapshot(`
     Object {
-      "-m5qxcs": 1,
+      "-3fze9r": 1,
     }
   `);
 });
@@ -62,13 +70,13 @@ test('debounce do not affect another forks', async () => {
 
   expect(serialize(scopeA)).toMatchInlineSnapshot(`
     Object {
-      "o0molj": 2,
+      "-xa6bxy": 2,
     }
   `);
 
   expect(serialize(scopeB)).toMatchInlineSnapshot(`
     Object {
-      "o0molj": 200,
+      "-xa6bxy": 200,
     }
   `);
 });
@@ -96,7 +104,7 @@ test('debounce do not affect original store value', async () => {
 
   expect(serialize(scope)).toMatchInlineSnapshot(`
     Object {
-      "ejdhvp": 2,
+      "s9ojbc": 2,
     }
   `);
 
@@ -150,5 +158,32 @@ test('debounce does not break parallel scopes', async () => {
 
   expect(serialize(scopeB)).toEqual({
     [$counter.sid!]: 20,
+  });
+});
+
+describe('timeout as store', () => {
+  test('new timeout is used after source trigger', async () => {
+    const trigger = createEvent();
+    const changeTimeout = createEvent<number>();
+    const $timeout = createStore(40);
+    const debounced = debounce({ source: trigger, timeout: $timeout });
+    $timeout.on(changeTimeout, (_, timeout) => timeout);
+    const watcher = watch(debounced);
+
+    const scope = fork();
+
+    allSettled(trigger, { scope }).then(() => {});
+    await wait(30);
+    allSettled(changeTimeout, { scope, params: 100 }).then(() => {});
+
+    allSettled(trigger, { scope }).then(() => {});
+    await wait(10);
+    expect(watcher).toBeCalledTimes(0);
+    await wait(90);
+    expect(watcher).toBeCalledTimes(1);
+
+    allSettled(trigger, { scope }).then(() => {});
+    await wait(100);
+    expect(watcher).toBeCalledTimes(2);
   });
 });
