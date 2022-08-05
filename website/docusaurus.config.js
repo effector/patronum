@@ -146,7 +146,7 @@ const config = {
       },
       algolia: {
         appId: 'OEOSWK083U',
-        apiKey: '9bd36cd63b76ad65baf1dc4cb0b872f4',
+        apiKey: 'd14c8069434613d33755df5cd29c3ded',
         indexName: 'crawler_Patronum',
         contextualSearch: true,
         searchPagePath: 'search',
