@@ -22,48 +22,6 @@
 [twitter-share]: https://twitter.com/intent/tweet?text=I%20used%20patronum!%0AGoing%20to%20Mars%20with%20%40effectorjs%20-%20data-flow%20powered%20tool%20to%20implement%20business%20logic.%0A%0Ahttps%3A%2F%2Fgithub.com%2Feffector%2Fpatronum%0A
 [documentation]: https://patronum.effector.dev
 
-## Table of contents
-
-### Predicate
-
-- [And](#and) — Checks all stores by truthy value.
-- [Condition](#condition) — Triggers then or else by condition.
-- [Either](#either) — Selects just one value based on condition.
-- [Empty](#empty) — Checks the store for `null`.
-- [Equals](#equals) — Checks the store for some value.
-- [Every](#every) — Checks the state in each store passes the predicate test.
-- [Not](#not) — Inverts store boolean-value.
-- [Or](#or) — Checks at least one store for truthy value.
-- [Reset](#reset) — Resets all passed stores by clock.
-- [Some](#some) — Checks the state in at least one store passes the predicate test.
-
-### Effect
-
-- [InFlight](#inflight) — Counts all pending effects
-- [Pending](#pending) — Checks that has effects in pending state.
-- [Status](#status) — Return text representation of effect state.
-
-### Timeouts
-
-- [Debounce](#debounce) — Creates event which waits until time passes after previous trigger.
-- [Delay](#delay) — Delays the call of the event by defined timeout.
-- [Interval](#interval) — Creates a dynamic interval with any timeout.
-- [Throttle](#throttle) — Creates event which triggers at most once per timeout.
-- [Time](#time) — Allows reading current timestamp by triggering clock.
-
-### Combination/Decomposition
-
-- [CombineEvents](#combineevents) — Wait for all passed events is triggered.
-- [Format](#format) — Combine stores to a string literal.
-- [Reshape](#reshape) — Destructure one store to different stores
-- [Snapshot](#snapshot) — Create store value snapshot.
-- [SplitMap](#splitmap) — Split event to different events and map data.
-- [Spread](#spread) — Send fields from object to same targets.
-
-### Debug
-
-- [Debug](#debug) — Log triggers of passed units.
-
 ## 💿 Install now
 
 > Please, review documentation for **YOUR** version of patronum not the latest. Find and [open tag/release](https://github.com/effector/patronum/releases) for your version and click on the tag [vA.B.C](https://github.com/effector/patronum/tree/v1.7.0) to view repo and documentation for that version, or use "Switch branches/tags" selector.
@@ -86,11 +44,13 @@ const userLoadFx = createEffect();
 const $status = status({ effect: userLoadFx });
 ```
 
+You can read more at [documentation](https://patronum.effector.dev/docs/installation).
+
 ## Migration guide
 
 Patronum had 3 breaking changes: 1) from `0.14` to `0.100`, 2) from `0.100` to `0.110`, 3) from `0.110` to `1.0`
 
-We have [migration guide](./migration-guide.md).
+We have [migration guide](https://patronum.effector.dev/docs/migration-guide).
 
 # Development
 
