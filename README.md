@@ -10,6 +10,7 @@
 - 🎲 Try it online: [StackBlitz](stackblitz) | [Codesandbox](codesandbox) | [Playground](try-patronum-share)
 - 📦 Source: [JSdeliver](jsdelivr) | [Unpkg](unpkg) | [NPM](npm) | [GitHub](github)
 - 🦉 Say about it: [Twitter](twitter-share)
+- 📚 Read documentation: [patronum.effector.dev](documentation)
 
 [stackblitz]: https://stackblitz.com/edit/effector-react
 [codesandbox]: https://codesandbox.io/s/effector-patronum-playground-zuqjx
@@ -19,6 +20,7 @@
 [npm]: https://www.npmjs.com/package/patronum
 [github]: https://github.com/effector/patronum
 [twitter-share]: https://twitter.com/intent/tweet?text=I%20used%20patronum!%0AGoing%20to%20Mars%20with%20%40effectorjs%20-%20data-flow%20powered%20tool%20to%20implement%20business%20logic.%0A%0Ahttps%3A%2F%2Fgithub.com%2Feffector%2Fpatronum%0A
+[documentation]: https://patronum.effector.dev
 
 ## Table of contents
 
