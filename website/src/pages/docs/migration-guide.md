@@ -1,11 +1,24 @@
-# Migration guide from `v0.14+`
+# Migration guide
+
+### v1.0.0
+
+Removed support of effector v21. Now the minimum supported version is `v22.1.2`.
+No breaking changes in code.
+
+### v0.110
+
+From `v0.110.0` patronum removed support of effector v20. Now minimum supported version is `v21.4`.
+
+Please, before upgrade review release notes of [`effector v21`](https://github.com/effector/effector/releases/tag/effector%4021.0.0).
+
+### v0.100
+
+From `v0.100.0` patronum introduced object arguments form with **BREAKING CHANGES**.
 
 ```shell
-npm install patronum@next
-```
-
-```shell
-yarn add patronum@next
+npm install patronum@0.14.3
+# or
+yarn add patronum@0.14.3
 ```
 
 <details>
@@ -15,20 +28,20 @@ yarn add patronum@next
 import { throttle } from 'patronum/throttle';
 ```
 
-### Previous version `v0.14.x`
+#### Previous version `v0.14.x`
 
 ```ts
 const throttled = throttle(source, timeout);
 ```
 
-### Current version `v0.102.x`
+#### Current version `v0.102.x`
 
 ```ts
 const throttled = throttle({ source, timeout });
 
 // Also you can set target
-const throttled = createEvent(); // or any unit
-throttle({ source, timeout, target: throttled });
+const throttled2 = createEvent(); // or any unit
+throttle({ source, timeout, target: throttled2 });
 ```
 
 - Wrap `source` and `timeout` arguments to object
@@ -45,13 +58,13 @@ https://github.com/sergeysova/patronum/pull/31
 import { debounce } from 'patronum/debounce';
 ```
 
-### Previous version `v0.14.x`
+#### Previous version `v0.14.x`
 
 ```ts
 const debounced = debounce(source, timeout);
 ```
 
-### Current version `v0.102.x`
+#### Current version `v0.102.x`
 
 ```ts
 const debounced = debounce({ source, timeout });
@@ -75,7 +88,7 @@ https://github.com/sergeysova/patronum/pull/38
 import { splitMap } from 'patronum/split-map';
 ```
 
-### Previous version `v0.14.x`
+#### Previous version `v0.14.x`
 
 ```ts
 const received = splitMap(nameReceived, {
@@ -84,7 +97,7 @@ const received = splitMap(nameReceived, {
 });
 ```
 
-### Current version `v0.102.x`
+#### Current version `v0.102.x`
 
 ```ts
 const received = splitMap({
@@ -92,7 +105,8 @@ const received = splitMap({
   cases: {
     firstName: (string) => string.split(' ')[0], // string | undefined
     lastName: (string) => string.split(' ')[1], // string | undefined
-  });
+  },
+});
 ```
 
 - First argument should be `source`
@@ -109,13 +123,13 @@ https://github.com/sergeysova/patronum/pull/41
 import { some } from 'patronum/some';
 ```
 
-### Previous version `v0.14.x`
+#### Previous version `v0.14.x`
 
 ```ts
 const $tooBig = some((size) => size > 800, [$width, $height]);
 ```
 
-### Current version `v0.102.x`
+#### Current version `v0.102.x`
 
 ```ts
 const $tooBig = some({
@@ -138,14 +152,14 @@ https://github.com/sergeysova/patronum/pull/43
 import { every } from 'patronum/every';
 ```
 
-### Previous version `v0.14.x`
+#### Previous version `v0.14.x`
 
 ```ts
 const $result = every(true, [$a, $b, $c]);
 const $result = every(() => true, [$a, $b, $c]);
 ```
 
-### Current version `v0.102.x`
+#### Current version `v0.102.x`
 
 ```ts
 const $result = every({ predicate: true, stores: [$a, $b, $c] });
@@ -166,14 +180,14 @@ https://github.com/sergeysova/patronum/pull/50
 import { delay } from 'patronum/delay';
 ```
 
-### Previous version `v0.14.x`
+#### Previous version `v0.14.x`
 
 ```ts
 const delayed = delay(unit, 100);
 const logDelayed = delay(unit, { time: (payload) => 100 });
 ```
 
-### Current version `v0.102.x`
+#### Current version `v0.102.x`
 
 ```ts
 const delayed = delay({
@@ -208,13 +222,13 @@ https://github.com/sergeysova/patronum/pull/51
 import { status } from 'patronum/status';
 ```
 
-### Previous version `v0.14.x`
+#### Previous version `v0.14.x`
 
 ```ts
 const $status = status(effect, 'initial');
 ```
 
-### Current version `v0.102.x`
+#### Current version `v0.102.x`
 
 ```ts
 const $status = status({ effect, defaultValue: 'initial' });
@@ -234,7 +248,7 @@ https://github.com/sergeysova/patronum/pull/55
 import { reshape } from 'patronum/reshape';
 ```
 
-### Previous version `v0.14.x`
+#### Previous version `v0.14.x`
 
 ```ts
 const parts = reshape($original, {
@@ -244,7 +258,7 @@ const parts = reshape($original, {
 });
 ```
 
-### Current version `v0.102.x`
+#### Current version `v0.102.x`
 
 ```ts
 const parts = reshape({
@@ -271,7 +285,7 @@ https://github.com/sergeysova/patronum/pull/57
 import { combineEvents } from 'patronum/combine-events';
 ```
 
-### Previous version `v0.14.x`
+#### Previous version `v0.14.x`
 
 ```ts
 const target = combineEvents([first, second, third]);
@@ -281,7 +295,7 @@ const target = combineEvents({
 });
 ```
 
-### Current version `v0.102.x`
+#### Current version `v0.102.x`
 
 ```ts
 const target = combineEvents({ events: [first, second, third] });
@@ -306,7 +320,7 @@ https://github.com/sergeysova/patronum/pull/58
 import { spread } from 'patronum/spread';
 ```
 
-### Previous version `v0.14.x`
+#### Previous version `v0.14.x`
 
 ```ts
 spread(formReceived, {
@@ -320,7 +334,7 @@ const source = spread({
 });
 ```
 
-### Current version `v0.102.x`
+#### Current version `v0.102.x`
 
 ```ts
 spread({
@@ -340,10 +354,13 @@ const source = spread({
 ```
 
 1. If you have two arguments:
-  - First argument should be `source` in object
-  - Second argument should be `targets`
+
+- First argument should be `source` in object
+- Second argument should be `targets`
+
 1. If only one argument:
-  - Wrap it to object and assign to `targets`
+
+- Wrap it to object and assign to `targets`
 
 https://github.com/sergeysova/patronum/pull/61
 
