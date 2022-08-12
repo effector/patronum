@@ -4,8 +4,6 @@
 import { debug } from 'patronum/debug';
 ```
 
-> Note: debug cannot be imported as `import { debug } from 'patronum'`
-
 It is helpful to debug your application's logic.
 
 Just pass any effector's unit to `debug`.
@@ -40,6 +38,10 @@ effect('demo');
 ```
 
 ## Traces
+
+:::note since
+patronum 1.9.0
+:::
 
 `patronum/debug` supports computation traces logging, if `{ trace: true }` is set.
 It is recommended to use this feature along with `effector/babel-plugin`.

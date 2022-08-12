@@ -8,7 +8,7 @@ import { every } from 'patronum/every';
 
 ### Motivation
 
-Method calculates boolean value if each store satisfies the condition in `predicate`.
+The method calculates boolean value if each store satisfies the condition in `predicate`.
 It is useful to check that user has correct values in each state.
 
 ### Formulae
@@ -21,12 +21,12 @@ $result = every({ predicate: fn, stores });
 
 ### Arguments
 
-1. `predicate` `((value: T) => boolean)` — Function to check store value
-1. `stores` `(Array<Store<T>>)` — List of stores
+1. `predicate: (value: T) => boolean` — Function to check store value
+1. `stores: Array<Store<T>>` — List of stores
 
 ### Return
 
-- `$result` `(Store<boolean>)` — `true` if each store corresponds to `predicate`
+- `$result: Store<boolean>` — `true` if each store corresponds to `predicate`
 
 ### Example
 
@@ -90,6 +90,10 @@ It is useful when you write `combine` with `&&` very often, for example to creat
 
 ### Formulae
 
+:::note since
+patronum 1.7.0
+:::
+
 ```ts
 $result = every({ predicate: $value, stores });
 ```
@@ -123,6 +127,10 @@ console.assert(true === $isFormCorrect.getState());
 ```
 
 ## Shorthands
+
+:::note since
+patronum 1.7.0
+:::
 
 ```ts
 $result = every(stores, value);

@@ -84,6 +84,10 @@ console.assert(false === $isFormFailed.getState());
 
 ## `some({ predicate: Store, stores })`
 
+:::note since
+patronum 1.8.0
+:::
+
 ### Motivation
 
 This overload compares each store to specific value in store `predicate`.

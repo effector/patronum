@@ -1,8 +1,10 @@
 # interval
 
-Creates a dynamic interval with events to start, stop interval, and handle tick.
+:::note since
+patronum 1.7.0
+:::
 
-> Since v1.3.0
+Creates a dynamic interval with events to start, stop interval, and handle tick.
 
 ```ts
 import { interval } from 'patronum';

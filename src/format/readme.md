@@ -1,5 +1,9 @@
 # format
 
+:::note since
+patronum 1.7.0
+:::
+
 ```ts
 import { format } from 'patronum/format';
 ```

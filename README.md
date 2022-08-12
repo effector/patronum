@@ -24,10 +24,16 @@
 
 ### Predicate
 
-- [Condition](#condition) — Trigger then or else by condition.
-- [Some](#some) — Checks that state in at least one store passes the predicate test.
-- [Every](#every) — Checks that state in each store passes the predicate test.
-- [Reset](#reset) — Reset all passed stores by clock.
+- [And](#and) — Checks all stores by truthy value.
+- [Condition](#condition) — Triggers then or else by condition.
+- [Either](#either) — Selects just one value based on condition.
+- [Empty](#empty) — Checks the store for `null`.
+- [Equals](#equals) — Checks the store for some value.
+- [Every](#every) — Checks the state in each store passes the predicate test.
+- [Not](#not) — Inverts store boolean-value.
+- [Or](#or) — Checks at least one store for truthy value.
+- [Reset](#reset) — Resets all passed stores by clock.
+- [Some](#some) — Checks the state in at least one store passes the predicate test.
 
 ### Effect
 
@@ -67,11 +73,11 @@ npm install patronum
 Next just import methods from `"patronum"` and use it:
 
 ```ts
-import { createEffect } from "effector"
-import { status } from "patronum"
+import { createEffect } from 'effector';
+import { status } from 'patronum';
 
-const userLoadFx = createEffect()
-const $status = status({ effect: userLoadFx })
+const userLoadFx = createEffect();
+const $status = status({ effect: userLoadFx });
 ```
 
 ## 🐞 Debug and log
@@ -102,12 +108,12 @@ This means we need to use [effector babel plugin](https://effector.dev/docs/api/
 ```json5
 // .babelrc
 {
-  "plugins": [
-    ["effector/babel-plugin", { "importName": "effector-logger" }], // Just add this line into your .babelrc or babel.config.js plugins section.
+  plugins: [
+    ['effector/babel-plugin', { importName: 'effector-logger' }], // Just add this line into your .babelrc or babel.config.js plugins section.
   ],
-  "presets": [
-    "patronum/babel-preset" // Add this line at the end of the all presets
-  ]
+  presets: [
+    'patronum/babel-preset', // Add this line at the end of the all presets
+  ],
 }
 ```
 
@@ -117,7 +123,6 @@ But some projects already use `effector/babel-plugin`, and for correct work with
 This means that [effector-logger has its own babel-plugin](https://github.com/effector/logger#usage).<br/>
 **Don't use `effector/babel-plugin` simultaneously with `effector-logger/babel-plugin`!** Use just one at the time, for example: for the dev environment use `effector-logger/babel-plugin`, but for production use `effector/babel-plugin`.
 
-
 <details>
   <summary>
     How to setup `.babelrc`
@@ -126,55 +131,62 @@ This means that [effector-logger has its own babel-plugin](https://github.com/ef
 ```json5
 // .babelrc
 {
-  "presets": [
-    "patronum/babel-preset" // Add this line at the end of the all presets in the root of the file
+  presets: [
+    'patronum/babel-preset', // Add this line at the end of the all presets in the root of the file
   ],
-  "env": {
-    "development": {
-      "plugins": [
-        ["effector-logger/babel-plugin", {}] // In the curly brackets you can pass options for logger AND effector
-      ]
+  env: {
+    development: {
+      plugins: [
+        ['effector-logger/babel-plugin', {}], // In the curly brackets you can pass options for logger AND effector
+      ],
     },
-    "production": {
-      "plugins": [
-        ["effector/babel-plugin", {}] // In the curly brackets you can pass options for effector
-      ]
+    production: {
+      plugins: [
+        ['effector/babel-plugin', {}], // In the curly brackets you can pass options for effector
+      ],
     },
   },
 }
 ```
-  
+
 If you need to pass factories, here you need to duplicate your array:
-  
+
 ```json5
 // .babelrc
 {
-  "env": {
-    "development": {
-      "plugins": [
-        ["effector-logger/babel-plugin", {
-          "effector": { "factories": ["src/shared/lib/compare", "src/shared/lib/timing"] }
-        }]
-      ]
+  env: {
+    development: {
+      plugins: [
+        [
+          'effector-logger/babel-plugin',
+          {
+            effector: {
+              factories: ['src/shared/lib/compare', 'src/shared/lib/timing'],
+            },
+          },
+        ],
+      ],
     },
-    "production": {
-      "plugins": [
-        ["effector/babel-plugin", { "factories": ["src/shared/lib/compare", "src/shared/lib/timing"] }]
-      ]
+    production: {
+      plugins: [
+        [
+          'effector/babel-plugin',
+          { factories: ['src/shared/lib/compare', 'src/shared/lib/timing'] },
+        ],
+      ],
     },
   },
 }
 ```
 
 Also, you need to build your project with `BABEL_ENV=development` for dev and `BABEL_ENV=production` for prod, to choose the appropriate option in the `"env"` section.
-  
-  
+
 Relative links:
+
 - https://babeljs.io/docs/en/options#env
 - https://babeljs.io/docs/en/config-files
-  
-</details>
 
+</details>
 
 <details>
   <summary>
@@ -183,53 +195,48 @@ Relative links:
 
 ```js
 module.exports = (api) => {
-  const isDev = api.env("development")
-  
+  const isDev = api.env('development');
+
   return {
     presets: [
       // Add next line at the end of presets list
-      "patronum/babel-preset",
+      'patronum/babel-preset',
     ],
     plugins: [
       // Add next lines at the end of the plugins list
-      isDev
-        ? ["effector-logger/babel-plugin", {}]
-        : ["effector/babel-plugin", {}]
-    ]
-  }
-}
+      isDev ? ['effector-logger/babel-plugin', {}] : ['effector/babel-plugin', {}],
+    ],
+  };
+};
 ```
-  
+
 If you want to pass factories to the effector plugin, you need just put it to the variable:
 
-  
 ```js
-
 module.exports = (api) => {
-  const isDev = api.env("development")
+  const isDev = api.env('development');
   // Here your factories
-  const factories = ["src/shared/lib/compare", "src/shared/lib/timing"]
-  
+  const factories = ['src/shared/lib/compare', 'src/shared/lib/timing'];
+
   return {
     plugins: [
       isDev
-        // All effector options passed into `effector` property
-        ? ["effector-logger/babel-plugin", { effector: { factories } }]
-        : ["effector/babel-plugin", { factories }]
-    ]
-  }
-}
+        ? // All effector options passed into `effector` property
+          ['effector-logger/babel-plugin', { effector: { factories } }]
+        : ['effector/babel-plugin', { factories }],
+    ],
+  };
+};
 ```
 
 Also, you need to build your project with `BABEL_ENV=development` for dev and `BABEL_ENV=production` for prod, to choose the appropriate option in the `"env"` section.
-  
-  
+
 Relative links:
+
 - https://babeljs.io/docs/en/options#env
 - https://babeljs.io/docs/en/config-files
 
 </details>
-
 
 ### 3. CRA support with [macros](https://github.com/kentcdodds/babel-plugin-macros)
 
@@ -238,8 +245,8 @@ Relative links:
 Just import from `patronum/macro` and `effector-logger/macro`, and use as early:
 
 ```ts
-import { createStore, createEffect, sample } from "effector-logger/macro"
-import { status, splitMap, combineEvents } from "patronum/macro";
+import { createStore, createEffect, sample } from 'effector-logger/macro';
+import { status, splitMap, combineEvents } from 'patronum/macro';
 ```
 
 > - Warning: babel-plugin-macros do not support `import * as name`!
@@ -252,7 +259,6 @@ import { status, splitMap, combineEvents } from "patronum/macro";
   <summary>
     show / hide
   </summary>
-
 
 ### v2.0.0
 
@@ -267,7 +273,7 @@ Please, before upgrade review release notes of [`effector v21`](https://github.c
 ### v0.100
 
 From `v0.100.0` patronum introduced object arguments form with **BREAKING CHANGES**. Please, review [migration guide](./MIGRATION.md) before upgrade from `v0.14.x` on your project.
-  
+
 </details>
 
 ---
@@ -752,6 +758,8 @@ $fullName.watch(console.log);
 
 ## Reset
 
+[Method documentation & API](/src/reset)
+
 ```ts
 import { createEvent, createStore } from 'effector';
 import { reset } from 'patronum/reset';
@@ -771,6 +779,91 @@ reset({
 
 [Try it](https://share.effector.dev/06hpVftG)
 
+## And
+
+[Method documentation & API](/src/and)
+
+```ts
+const $isAuthorized = createStore(true);
+const $isAdmin = createStore(false);
+const $orderFinished = createStore(true);
+
+const $showCancelButton = and($isAuthorized, $isAdmin, $orderFinished);
+console.assert(false === $showCancelButton.getState());
+```
+
+[Try it](https://share.effector.dev/YbahaYCO)
+
+## Empty
+
+[Method documentation & API](/src/empty)
+
+```ts
+const $account = createStore<Account | null>(null);
+const $anonymous = empty($account);
+const $authorized = not($anonymous);
+
+console.assert(true === $anonymous.getState());
+console.assert(false === $authorized.getState());
+```
+
+[Try it](https://share.effector.dev/aY8yRLP9)
+
+## Equals
+
+[Method documentation & API](/src/equals)
+
+```ts
+const $first = createStore('foo bar');
+const $isEquals = equals($first, 'foo bar');
+
+console.assert(true === $isEquals.getState());
+```
+
+[Try it](https://share.effector.dev/UtAWVd9r)
+
+## Not
+
+[Method documentation & API](/src/not)
+
+```ts
+const $isFinished = createStore(false);
+const $stillGoingOn = not($isFinished);
+
+console.assert(true === $stillGoingOn.getState());
+```
+
+[Try it](https://share.effector.dev/qpTZAzXC)
+
+## Or
+
+[Method documentation & API](/src/or)
+
+```ts
+const $isAuthorized = createStore(true);
+const $immediateOrder = createStore(false);
+const $mocksForDemo = createStore(false);
+
+const $allowedToShow = or($isAuthorized, $immediateOrder, $mocksForDemo);
+console.assert(true === $allowedToShow.getState());
+```
+
+[Try it](https://share.effector.dev/H9cDYEp5)
+
+## Either
+
+[Method documentation & API](/src/either)
+
+```ts
+const $showLatest = createStore(false);
+const $latestTweets = createStore<Tweet[]>([]);
+const $recommendedTweets = createStore<Tweet[]>([]);
+
+export const $tweets = either($showLatest, $latestTweets, $recommendedTweets);
+```
+
+[Try it](https://share.effector.dev/NGmPTxSG)
+
 # Development
 
 You can review [CONTRIBUTING.md](./CONTRIBUTING.md)
@@ -782,3 +875,7 @@ You can review [CONTRIBUTING.md](./CONTRIBUTING.md)
 1. Update labels for PRs and titles, next [manually run the release drafter action](https://github.com/effector/patronum/actions/workflows/release-drafter.yml) to regenerate the draft release.
 1. Review the new version and press "Publish"
 1. If required check "Create discussion for this release"
+
+```
+
+```

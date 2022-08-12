@@ -8,10 +8,16 @@ All methods split into categories.
 
 ### Predicate
 
+- [and](./and/readme.md) — Checks all stores by truthy value.
 - [condition](./condition/readme.md) — Trigger then or else by condition.
-- [some](./some/readme.md) — Checks that state in at least one store passes the predicate test.
+- [either](./either/readme.md) — Selects just one value based on condition.
+- [empty](./empty/readme.md) — Checks the store for `null`.
+- [equals](./equals/readme.md) — Checks the store for some value.
 - [every](./every/readme.md) — Checks that state in each store passes the predicate test.
+- [not](./not/readme.md) — Inverts store boolean-value.
+- [or](./or/readme.md) — Checks at least one store for truthy value.
 - [reset](./reset/readme.md) — Reset all passed stores by clock.
+- [some](./some/readme.md) — Checks that state in at least one store passes the predicate test.
 
 ### Effect
 
@@ -39,11 +45,3 @@ All methods split into categories.
 ### Debug
 
 - [debug](./debug/readme.md) — Log triggers of passed units.
-
-### Experimental
-
-- [and](./and/readme.md)
-- [either](./either/readme.md)
-- [equals](./equals/readme.md)
-- [not](./not/readme.md)
-- [or](./or/readme.md)

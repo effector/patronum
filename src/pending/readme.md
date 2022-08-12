@@ -26,6 +26,10 @@ $inProcess = pending({ effects: [fx1, fx2], of: Strategy });
 1. `of` `("some" | "every")` — Optional. Select strategy of combining pendings
    of differents effects. Default `"some"`
 
+:::note since
+The `of` argument was added since patronum 1.1.0
+:::
+
 ### Returns
 
 - `$inProcess` `(Store<boolean>)` - Store with boolean state
@@ -49,6 +53,10 @@ loadSecond();
 ```
 
 ## `pending({ domain })`
+
+:::note since
+patronum 1.1.0
+:::
 
 ### Motivation
 
