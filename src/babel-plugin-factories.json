@@ -8,6 +8,7 @@
     "patronum/delay",
     "patronum/either",
     "patronum/equals",
+    "patronum/empty",
     "patronum/every",
     "patronum/format",
     "patronum/in-flight",
