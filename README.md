@@ -37,26 +37,26 @@
 
 ### Effect
 
-- [Pending](#pending) — Checks that has effects in pending state.
 - [InFlight](#inflight) — Counts all pending effects
+- [Pending](#pending) — Checks that has effects in pending state.
 - [Status](#status) — Return text representation of effect state.
 
 ### Timeouts
 
 - [Debounce](#debounce) — Creates event which waits until time passes after previous trigger.
 - [Delay](#delay) — Delays the call of the event by defined timeout.
-- [Throttle](#throttle) — Creates event which triggers at most once per timeout.
 - [Interval](#interval) — Creates a dynamic interval with any timeout.
+- [Throttle](#throttle) — Creates event which triggers at most once per timeout.
 - [Time](#time) — Allows reading current timestamp by triggering clock.
 
 ### Combination/Decomposition
 
 - [CombineEvents](#combineevents) — Wait for all passed events is triggered.
+- [Format](#format) — Combine stores to a string literal.
 - [Reshape](#reshape) — Destructure one store to different stores
+- [Snapshot](#snapshot) — Create store value snapshot.
 - [SplitMap](#splitmap) — Split event to different events and map data.
 - [Spread](#spread) — Send fields from object to same targets.
-- [Snapshot](#snapshot) — Create store value snapshot.
-- [Format](#format) — Combine stores to a string literal.
 
 ### Debug
 
