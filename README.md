@@ -8,9 +8,9 @@
 ☄️ Effector operators library delivering modularity and convenience
 
 - 🎲 Try it online: [StackBlitz](stackblitz) | [Codesandbox](codesandbox) | [Playground](try-patronum-share)
+- 📚 Read documentation: [patronum.effector.dev](documentation)
 - 📦 Source: [JSdeliver](jsdelivr) | [Unpkg](unpkg) | [NPM](npm) | [GitHub](github)
 - 🦉 Say about it: [Twitter](twitter-share)
-- 📚 Read documentation: [patronum.effector.dev](documentation)
 
 [stackblitz]: https://stackblitz.com/edit/effector-react
 [codesandbox]: https://codesandbox.io/s/effector-patronum-playground-zuqjx
