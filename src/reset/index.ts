@@ -10,6 +10,6 @@ export function reset({
   const targets = Array.isArray(target) ? target : [target];
   const clocks = Array.isArray(clock) ? clock : [clock];
   targets.forEach((target) => {
-    target.reset.call(target, clocks);
+    target.reset(clocks);
   });
 }
