@@ -18,6 +18,9 @@ The method allow to read current time just as an effector method.
 $time = time({ clock, getNow, initial });
 ```
 
+- Initialize `$time` with `initial`, if not present call `getNow`, if not present call `Date.now()`
+- When `clock` is triggered, call `getNow` to update `$time` with results, if not present use `Date.now()`
+
 ### Arguments
 
 1. `clock: Event<any> | Effect<any, any, any> | Store<any>` — The unit triggers time reading and updates `$time` store
