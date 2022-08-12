@@ -21,7 +21,7 @@ async function main() {
 
   const directory = await createDistribution('./dist');
   await directory.copyList('./src', staticFiles);
-  await directory.copyList('./', ['README.md', 'MIGRATION.md', 'LICENSE']);
+  await directory.copyList('./', ['README.md', 'LICENSE']);
 
   const names = resolveMethods();
 
