@@ -1,18 +1,18 @@
 import { createEffect, Effect, Event, forward, restore, Store } from 'effector';
 
-const defaultNow = <T = number>() => Date.now() as unknown as T;
+const defaultNow = <Time = number>() => Date.now() as unknown as Time;
 
-export function time<T = number>({
+export function time<Time = number>({
   clock,
   getNow,
   initial,
 }: {
   clock: Event<any> | Effect<any, any, any> | Store<any>;
-  getNow?: () => T;
-  initial?: T;
-}): Store<T> {
+  getNow?: () => Time;
+  initial?: Time;
+}): Store<Time> {
   const timeReader = getNow ?? defaultNow;
-  const readNowFx = createEffect<void, T>(timeReader);
+  const readNowFx = createEffect<void, Time>(timeReader);
   const $time = restore(readNowFx, initial ?? timeReader());
   forward({ from: clock, to: readNowFx });
   return $time;
