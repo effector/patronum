@@ -94,5 +94,5 @@ test('does not leaves unresolved timeout effect, if stopped', async () => {
   const scope = fork();
   await allSettled(start, { scope });
 
-  expect(scope.getState($count)).toEqual(7);
+  expect(scope.getState($count)).toEqual(6);
 });
