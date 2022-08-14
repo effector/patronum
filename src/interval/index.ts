@@ -84,6 +84,7 @@ export function interval<S extends unknown, F extends unknown>({
 
   sample({
     clock: timeoutFx.done,
+    filter: $isRunning,
     fn: () => {
       /* to be sure, nothing passed to tick */
     },
