@@ -1,11 +1,5 @@
 import { expectType } from 'tsd';
-import {
-  Store,
-  createStore,
-  createDomain,
-  createEvent,
-  createEffect,
-} from 'effector';
+import { createStore, Store } from 'effector';
 import { equals } from '../src/equals';
 
 // Should receive stores with the same type
@@ -32,6 +26,20 @@ import { equals } from '../src/equals';
   equals(createStore([1]), createStore(['']));
   // @ts-expect-error
   equals(createStore({ b: 2 }), createStore({ a: 1 }));
+}
+
+// Should reject stores and literals with different types
+{
+  // @ts-expect-error
+  equals(createStore(true), 1);
+  // @ts-expect-error
+  equals('', createStore(1));
+  // @ts-expect-error
+  equals(createStore(''), true);
+  // @ts-expect-error
+  equals([1], createStore(['']));
+  // @ts-expect-error
+  equals(createStore({ b: 2 }), { a: 1 });
 }
 
 // Should allow to compare with literal
