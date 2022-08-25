@@ -24,3 +24,14 @@ it('should compare numbers', () => {
   increment();
   expect($result.getState()).toBe(true);
 });
+
+it('should compare with literals', () => {
+  const increment = createEvent();
+  const $a = createStore(1).on(increment, (a) => a + 1);
+  const $result = equals($a, 2);
+
+  expect($result.getState()).toBe(false);
+
+  increment();
+  expect($result.getState()).toBe(true);
+});

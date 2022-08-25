@@ -26,3 +26,15 @@ it('should compare numbers', async () => {
   await allSettled(increment, { scope });
   expect(scope.getState($result)).toBe(true);
 });
+
+it('should compare with literals', async () => {
+  const increment = createEvent();
+  const $a = createStore(1).on(increment, (a) => a + 1);
+  const $result = equals($a, 2);
+
+  const scope = fork();
+  expect(scope.getState($result)).toBe(false);
+
+  await allSettled(increment, { scope });
+  expect(scope.getState($result)).toBe(true);
+});
