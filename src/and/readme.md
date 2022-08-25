@@ -1,12 +1,7 @@
-# and (experimental)
+# and
 
 :::note since
-patronum 1.8.3
-:::
-
-:::caution experimental
-This is unstable operator.
-Declaration, documentation or name can be changed at any time.
+patronum 1.11.0
 :::
 
 ```ts
