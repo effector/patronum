@@ -1,4 +1,4 @@
-import { createDomain, fork, allSettled } from 'effector';
+import { createDomain, fork, allSettled, serialize, createEvent } from 'effector';
 
 import { combineEvents } from './index';
 
@@ -99,4 +99,17 @@ test('do not affects another scope', async () => {
       "e3": "that 3 for 2",
     }
   `);
+});
+
+test('do not interfere its internal state to serialized scope', async () => {
+  const one = createEvent();
+  const two = createEvent();
+  const scope = fork();
+
+  combineEvents({ events: { one, two } });
+
+  await allSettled(one, { scope });
+  await allSettled(two, { scope });
+
+  expect(serialize(scope, { onlyChanges: true })).toEqual({});
 });

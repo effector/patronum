@@ -59,8 +59,8 @@ export function combineEvents<P>({
     const keys = Object.keys(events);
     const defaultShape = Array.isArray(events) ? [...keys].fill('') : {};
 
-    const $counter = createStore(keys.length);
-    const $results = createStore(defaultShape);
+    const $counter = createStore(keys.length, { serialize: 'ignore' });
+    const $results = createStore(defaultShape, { serialize: 'ignore' });
 
     $counter.reset(sample(target));
     $results.reset(target);
@@ -71,7 +71,7 @@ export function combineEvents<P>({
     }
 
     for (const key of keys) {
-      const $isDone = createStore(false)
+      const $isDone = createStore(false, { serialize: 'ignore' })
         .on(events[key], () => true)
         .reset(target);
 
