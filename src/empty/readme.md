@@ -5,6 +5,8 @@ patronum 1.10.0
 :::
 
 ```ts
+import { empty } from 'patronum';
+// or
 import { empty } from 'patronum/empty';
 ```
 

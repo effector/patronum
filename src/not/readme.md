@@ -5,6 +5,8 @@ patronum 1.8.3
 :::
 
 ```ts
+import { not } from 'patronum';
+// or
 import { not } from 'patronum/not';
 ```
 

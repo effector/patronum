@@ -5,6 +5,8 @@ patronum 1.8.3
 :::
 
 ```ts
+import { either } from 'patronum';
+// or
 import { either } from 'patronum/either';
 ```
 

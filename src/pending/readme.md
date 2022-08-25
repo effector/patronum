@@ -1,6 +1,8 @@
 # pending
 
 ```ts
+import { pending } from 'patronum';
+// or
 import { pending } from 'patronum/pending';
 ```
 

@@ -1,6 +1,8 @@
 # spread
 
 ```ts
+import { spread } from 'patronum';
+// or
 import { spread } from 'patronum/spread';
 ```
 

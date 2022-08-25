@@ -4,14 +4,17 @@
 patronum 1.7.0
 :::
 
-Creates a dynamic interval with events to start, stop interval, and handle tick.
-
 ```ts
 import { interval } from 'patronum';
+// or
 import { interval } from 'patronum/interval';
 ```
 
 ## `interval({ timeout, start, stop })`
+
+### Motivation
+
+Creates a dynamic interval with events to start, stop interval, and handle tick.
 
 ### Formulae
 

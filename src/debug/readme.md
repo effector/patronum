@@ -1,6 +1,8 @@
 # debug
 
 ```ts
+import { debug } from 'patronum';
+// or
 import { debug } from 'patronum/debug';
 ```
 

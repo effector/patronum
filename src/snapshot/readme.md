@@ -5,6 +5,8 @@ patronum 1.7.0
 :::
 
 ```ts
+import { snapshot } from 'patronum';
+// or
 import { snapshot } from 'patronum/snapshot';
 ```
 

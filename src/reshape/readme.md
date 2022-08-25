@@ -1,6 +1,8 @@
 # reshape
 
 ```ts
+import { reshape } from 'patronum';
+// or
 import { reshape } from 'patronum/reshape';
 ```
 

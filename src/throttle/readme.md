@@ -1,6 +1,8 @@
 # throttle
 
 ```ts
+import { throttle } from 'patronum';
+// or
 import { throttle } from 'patronum/throttle';
 ```
 
@@ -130,7 +132,8 @@ change();
 
 ### Example with timeout as store
 
-The new timeout will be used after the previous is over (if there was a delayed `target` trigger when the `timeout` store changed). 
+The new timeout will be used after the previous is over (if there was a delayed `target` trigger when the `timeout` store changed).
+
 ```ts
 import { createEvent } from 'effector';
 import { throttle } from 'patronum/throttle';
@@ -138,7 +141,6 @@ import { throttle } from 'patronum/throttle';
 const someHappened = createEvent<number>();
 const changeTimeout = createEvent<number>();
 const $timeout = createStore(200).on(changeTimeout, (_, value) => value);
-
 
 const throttled = throttle({
   source: someHappened,
@@ -149,7 +151,7 @@ throttled.watch((payload) => {
 });
 
 someHappened(1);
-changeTimeout(300); // will be used for next timeout  
+changeTimeout(300); // will be used for next timeout
 someHappened(2);
 
 setTimout(() => {
@@ -159,9 +161,8 @@ setTimout(() => {
 }, 200);
 
 setTimeout(() => {
-  // console.log: someHappened now 4 
-}, 500)
-
+  // console.log: someHappened now 4
+}, 500);
 ```
 
 [_`event`_]: https://effector.dev/docs/api/effector/event

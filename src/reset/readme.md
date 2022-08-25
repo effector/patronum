@@ -4,6 +4,14 @@
 patronum 1.7.0
 :::
 
+```ts
+import { reset } from 'patronum';
+// or
+import { reset } from 'patronum/reset';
+```
+
+````
+
 ### Motivation
 
 The method allow to reset many stores by a single line
@@ -12,7 +20,7 @@ The method allow to reset many stores by a single line
 
 ```ts
 reset({ clock, target });
-```
+````
 
 - When `clock` is triggered, reset store/stores in `target` to the initial value.
 

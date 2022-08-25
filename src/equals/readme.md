@@ -5,6 +5,8 @@ patronum 1.8.3
 :::
 
 ```ts
+import { equals } from 'patronum';
+// or
 import { equals } from 'patronum/equals';
 ```
 

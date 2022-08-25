@@ -1,6 +1,8 @@
 # status
 
 ```ts
+import { status } from 'patronum';
+// or
 import { status } from 'patronum/status';
 ```
 

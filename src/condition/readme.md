@@ -1,6 +1,8 @@
 # condition
 
 ```ts
+import { condition } from 'patronum';
+// or
 import { condition } from 'patronum/condition';
 ```
 

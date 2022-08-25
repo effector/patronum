@@ -1,6 +1,8 @@
 # every
 
 ```ts
+import { every } from 'patronum';
+// or
 import { every } from 'patronum/every';
 ```
 

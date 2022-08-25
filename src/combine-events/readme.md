@@ -1,6 +1,8 @@
 # combineEvents
 
 ```ts
+import { combineEvents } from 'patronum';
+// or
 import { combineEvents } from 'patronum/combine-events';
 ```
 

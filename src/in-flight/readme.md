@@ -1,6 +1,8 @@
 # inFlight
 
 ```ts
+import { inFlight } from 'patronum';
+// or
 import { inFlight } from 'patronum/in-flight';
 ```
 

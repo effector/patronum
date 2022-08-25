@@ -5,6 +5,8 @@ patronum 1.8.3
 :::
 
 ```ts
+import { and } from 'patronum';
+// or
 import { and } from 'patronum/and';
 ```
 

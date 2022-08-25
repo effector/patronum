@@ -1,6 +1,8 @@
 # delay
 
 ```ts
+import { delay } from 'patronum';
+// or
 import { delay } from 'patronum/delay';
 ```
 

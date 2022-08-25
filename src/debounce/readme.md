@@ -1,6 +1,8 @@
 # debounce
 
 ```ts
+import { debounce } from 'patronum';
+// or
 import { debounce } from 'patronum/debounce';
 ```
 
@@ -121,7 +123,10 @@ import { debounce } from 'patronum';
 const DEBOUNCE_TIMEOUT_IN_MS = 200;
 
 const changeTimeout = createEvent<number>();
-const $timeout = createStore(DEBOUNCE_TIMEOUT_IN_MS).on(changeTimeout, (_, value) => value);
+const $timeout = createStore(DEBOUNCE_TIMEOUT_IN_MS).on(
+  changeTimeout,
+  (_, value) => value,
+);
 const someHappened = createEvent<number>();
 const debounced = debounce({
   source: someHappened,
@@ -142,5 +147,5 @@ setTimout(() => {
 
 setTimout(() => {
   // someHappened now 2
-}, 400)
+}, 400);
 ```

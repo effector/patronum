@@ -1,6 +1,8 @@
 # splitMap
 
 ```ts
+import { splitMap } from 'patronum';
+// or
 import { splitMap } from 'patronum/split-map';
 ```
 

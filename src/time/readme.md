@@ -5,6 +5,8 @@ patronum 1.7.0
 :::
 
 ```ts
+import { time } from 'patronum';
+// or
 import { time } from 'patronum/time';
 ```
 

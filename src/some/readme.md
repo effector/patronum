@@ -1,6 +1,8 @@
 # some
 
 ```ts
+import { some } from 'patronum';
+// or
 import { some } from 'patronum/some';
 ```
 
