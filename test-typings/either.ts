@@ -39,15 +39,15 @@ import { either } from '../src/either';
 {
   const $filter = createStore(true);
 
-  // TODO: fix that
+  // @ts-expect-error
   either($filter, createEvent(), createStore(''));
 
-  // TODO: fix that
+  // @ts-expect-error
   either($filter, createStore(''), createEvent());
 
-  // TODO: fix that
+  // @ts-expect-error
   either($filter, createEffect(), createEvent());
 
-  // TODO: fix that
+  // @ts-expect-error
   either($filter, createEffect(), createDomain());
 }
