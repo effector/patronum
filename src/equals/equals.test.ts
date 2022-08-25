@@ -1,7 +1,7 @@
 import { createEvent, createStore } from 'effector';
 import { equals } from './index';
 
-test('boolean', () => {
+it('should compare booleans', () => {
   const toggle = createEvent();
   const $a = createStore(true).on(toggle, (a) => !a);
   const $b = createStore(true);
@@ -13,7 +13,7 @@ test('boolean', () => {
   expect($result.getState()).toBe(false);
 });
 
-test('numbers', () => {
+it('should compare numbers', () => {
   const increment = createEvent();
   const $a = createStore(1).on(increment, (a) => a + 1);
   const $b = createStore(2);

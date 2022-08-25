@@ -1,7 +1,7 @@
 import { allSettled, createEvent, createStore, fork } from 'effector';
 import { equals } from './index';
 
-test('boolean', async () => {
+it('should compare booleans', async () => {
   const toggle = createEvent();
   const $a = createStore(true).on(toggle, (a) => !a);
   const $b = createStore(true);
@@ -14,7 +14,7 @@ test('boolean', async () => {
   expect(scope.getState($result)).toBe(false);
 });
 
-test('numbers', async () => {
+it('should compare numbers', async () => {
   const increment = createEvent();
   const $a = createStore(1).on(increment, (a) => a + 1);
   const $b = createStore(2);
