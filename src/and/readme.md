@@ -50,7 +50,7 @@ console.assert(false === $showCancelButton.getState());
 
 ```ts
 const $showRegisterLink = and(
-  not($authorized),
+  not($isAuthorized),
   or($isRegisterInProcess, $isEmailRecovering),
 );
 ```
@@ -58,16 +58,13 @@ const $showRegisterLink = and(
 ### Alternative
 
 ```ts
-import { createStore, combine } from 'effector';
-const $isAuthorized = createStore(true);
-const $isAdmin = createStore(false);
-const $orderFinished = createStore(true);
-
-const $showCancelButon = combine(
+const $showRegisterLink = combine(
   $isAuthorized,
-  $isAdmin,
-  $orderFinished,
-  (isAuthorized, isAdmin, orderFinished) => isAuthorized && isAdmin && orderFinished,
+  $isRegisterInProcess,
+  $isEmailRecovering,
+  (isAuthorized, isRegisterInProcess, isEmailRecovering) => {
+    return !isAuthorized && (isRegisterInProcess || isEmailRecovering);
+  }
 );
-console.assert(false === $showCancelButton.getState());
+console.assert(false === $showRegisterLink.getState());
 ```
