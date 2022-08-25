@@ -4,6 +4,11 @@
 patronum 1.8.3
 :::
 
+:::caution experimental
+This is unstable operator.
+Declaration, documentation or name can be changed at any time.
+:::
+
 ```ts
 import { equals } from 'patronum';
 // or

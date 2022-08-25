@@ -4,6 +4,10 @@
 patronum 1.10.0
 :::
 
+:::danger experimental
+Operator is going to be renamed. Please review [the discussion](https://github.com/effector/patronum/discussions/224).
+:::
+
 ```ts
 import { empty } from 'patronum';
 // or
