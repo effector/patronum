@@ -7,6 +7,6 @@ export function and(...stores: Array<Store<any>>): Store<boolean> {
         return false
       }
     }
-    return Boolean(values.length) // `false` if zero stores were given
+    return true
   }) as Store<boolean>;
 }
