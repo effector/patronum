@@ -35,3 +35,13 @@ test('When at least one store has falsy value result must be false', async () =>
   `);
   expect(scope.getState($result)).toBe(false);
 });
+
+test('Returns boolean value for single store', async () => {
+  const $storeOne = createStore('hello');
+
+  const $andIncorrect = and($storeOne);
+
+  const scope = fork();
+
+  expect(scope.getState($andIncorrect)).toBe(true);
+});
