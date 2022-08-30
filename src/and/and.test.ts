@@ -46,3 +46,10 @@ test('When at least one store has falsy value result must be false', () => {
     ]
   `);
 });
+
+test('should return true without arguments', () => {
+  const $result = and();
+  const fn = watch($result);
+  expect(fn).toHaveBeenCalledTimes(1);
+  expect(fn).toHaveBeenCalledWith(true);
+});

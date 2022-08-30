@@ -56,3 +56,10 @@ it('should be false if no truthy values is provided', () => {
   expect(fn).toHaveBeenCalledTimes(1);
   expect(fn).toHaveBeenCalledWith(false);
 });
+
+test('should return false without arguments', () => {
+  const $result = or();
+  const fn = watch($result);
+  expect(fn).toHaveBeenCalledTimes(1);
+  expect(fn).toHaveBeenCalledWith(false);
+});
