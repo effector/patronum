@@ -289,4 +289,37 @@ test('individual scope can be unregistered', () => {
   `);
 });
 
-test('traces have scope', () => {});
+test('traces have scope name', async () => {
+  const buttonClicked = createEvent();
+  const inputChanged = createEvent();
+  const $form = createStore(1).on(inputChanged, (s) => s + 1);
+  const $formValid = $form.map((s) => s > 0);
+  const submitFx = createEffect(() => {});
+
+  $form.on(submitFx.doneData, (s) => s + 1);
+
+  sample({
+    source: $form,
+    clock: buttonClicked,
+    filter: $formValid,
+    target: submitFx,
+  });
+
+  debug({ trace: true }, submitFx);
+
+  const scope = fork();
+  debug.registerScope(scope, { name: 'my_scope' });
+
+  await allSettled(buttonClicked, { scope });
+
+  expect(stringArguments(fn)).toMatchInlineSnapshot(`
+    Array [
+      "[effect] (scope: my_scope) submitFx 1",
+      "[effect] (scope: my_scope) submitFx trace",
+      "<- [effect] submitFx 1",
+      "<- [sample]  1",
+      "<- [event] buttonClicked ",
+      "[effect] (scope: my_scope) submitFx.done {\\"params\\":1}",
+    ]
+  `);
+});
