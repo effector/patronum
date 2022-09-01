@@ -32,4 +32,3 @@ export const scopes = {
   },
 } as const;
 
-export { scopes };
