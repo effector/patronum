@@ -163,7 +163,6 @@ test('can detect and save unknown scopes', async () => {
   const scopeB = fork();
 
   await allSettled(up, { scope: scopeA });
-  const firstRun = stringArguments(fn);
   expect(stringArguments(fn)).toMatchInlineSnapshot(`
     Array [
       "[effect] (scope: unknown_scope_3) fx []",
@@ -182,14 +181,12 @@ test('can detect and save unknown scopes', async () => {
   clearConsole();
 
   await allSettled(up, { scope: scopeA });
-  const secondRun = stringArguments(fn);
   expect(stringArguments(fn)).toMatchInlineSnapshot(`
     Array [
       "[effect] (scope: unknown_scope_3) fx []",
       "[effect] (scope: unknown_scope_3) fx.done {\\"params\\":[]}",
     ]
   `);
-  expect(firstRun).toContainEqual(secondRun);
 });
 
 test('can detect registered scopes', async () => {
@@ -222,7 +219,6 @@ test('can detect registered scopes', async () => {
   clearConsole();
 
   await allSettled(up, { scope: scopeA });
-  const firstRun = stringArguments(fn);
   expect(stringArguments(fn)).toMatchInlineSnapshot(`
     Array [
       "[effect] (scope: scope_a) fx []",
@@ -241,14 +237,12 @@ test('can detect registered scopes', async () => {
   clearConsole();
 
   await allSettled(up, { scope: scopeA });
-  const secondRun = stringArguments(fn);
   expect(stringArguments(fn)).toMatchInlineSnapshot(`
     Array [
       "[effect] (scope: scope_a) fx []",
       "[effect] (scope: scope_a) fx.done {\\"params\\":[]}",
     ]
   `);
-  expect(firstRun).toContainEqual(secondRun);
 });
 
 test('prints default state for store in each of the known scopes', () => {
