@@ -13,28 +13,49 @@ import {
 
 import { scopes } from './scope-cache';
 
+interface Config {
+  trace?: boolean;
+}
+
+function isConfig(
+  maybeConfig: Unit<any> | Record<string, Unit<any>> | Config,
+): maybeConfig is Config {
+  if (!is.unit(maybeConfig)) {
+    return !Object.values(maybeConfig).every(is.unit);
+  }
+
+  return false;
+}
+
 export function debug(
   ...units:
-    | Unit<any>[]
-    | [
-        {
-          trace: boolean;
-        },
-        ...Unit<any>[]
-      ]
+    | [Unit<any>, ...Unit<any>[]]
+    | [Config, ...Unit<any>[]]
+    | [Record<string, Unit<any>>]
+    | [Config, Record<string, Unit<any>>]
 ): void {
-  let config: { trace: boolean } = { trace: false };
+  let config: Config = { trace: false };
   const [maybeConfig, ...restUnits] = units;
 
-  if (!is.unit(maybeConfig)) {
+  if (isConfig(maybeConfig)) {
     config = maybeConfig;
+  } else if (!is.unit(maybeConfig)) {
+    for (const [name, unit] of Object.entries(maybeConfig)) {
+      customNames.set(unit, name);
+      logUnit(unit, config);
+    }
   } else {
     logUnit(maybeConfig);
   }
 
-  for (const unit of restUnits) {
-    if (is.unit(unit)) {
-      logUnit(unit, config);
+  for (const maybeUnit of restUnits) {
+    if (is.unit(maybeUnit)) {
+      logUnit(maybeUnit, config);
+    } else {
+      for (const [name, unit] of Object.entries(maybeUnit)) {
+        customNames.set(unit, name);
+        logUnit(unit, config);
+      }
     }
   }
 }
@@ -129,7 +150,14 @@ function getNode(node: Node | { graphite: Node }) {
   return actualNode;
 }
 
+const customNames = new Map<Unit<any>, string>();
+
 function getName(unit: any): string {
+  const custom = customNames.get(unit);
+  if (custom) {
+    return custom;
+  }
+
   if (unit.compositeName && unit.compositeName.fullName) {
     return unit.compositeName.fullName;
   }
@@ -158,7 +186,7 @@ function getLoc(unit: Node) {
   return `${loc.file ?? ''}:${loc.line}:${loc.column}`;
 }
 
-function logUnit(unit: Unit<any>, config?: { trace: boolean }) {
+function logUnit(unit: Unit<any>, config?: Config) {
   const type = getType(unit);
 
   if (is.store(unit) || is.effect(unit) || is.event(unit)) {
