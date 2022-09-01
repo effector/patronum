@@ -378,3 +378,67 @@ test('logs stores for newly registered scope', async () => {
     ]
   `);
 });
+
+test('custom names basic support', () => {
+  const event = createEvent<number>();
+  const effect = createEffect().use((payload) => Promise.resolve('result' + payload));
+  const $store = createStore(0)
+    .on(event, (state, value) => state + value)
+    .on(effect.done, (state) => state * 10);
+  sample({
+    clock: event,
+    target: effect,
+  });
+
+  debug({ $customName: $store, name: event, nameFx: effect });
+  clearConsole();
+
+  const scope = fork();
+
+  allSettled(event, { scope, params: 1 });
+
+  expect(stringArguments(fn)).toMatchInlineSnapshot(`
+    Array [
+      "[event] (scope: unknown_scope_5) name 1",
+      "[store] (scope: unknown_scope_5) $customName 1",
+      "[effect] (scope: unknown_scope_5) nameFx 1",
+    ]
+  `);
+});
+
+test('custom names with traces support', () => {
+  const event = createEvent<number>();
+  const effect = createEffect().use((payload) => Promise.resolve('result' + payload));
+  const $store = createStore(0)
+    .on(event, (state, value) => state + value)
+    .on(effect.done, (state) => state * 10);
+  sample({
+    clock: event,
+    target: effect,
+  });
+
+  debug({ trace: true }, { $customName: $store, name: event, nameFx: effect });
+  clearConsole();
+
+  const scope = fork();
+
+  allSettled(event, { scope, params: 1 });
+
+  expect(stringArguments(fn)).toMatchInlineSnapshot(`
+    Array [
+      "[event] (scope: unknown_scope_6) name 1",
+      "[event] (scope: unknown_scope_6) name trace",
+      "<- [event] event 1",
+      "[store] (scope: unknown_scope_6) $customName 1",
+      "[store] (scope: unknown_scope_6) $customName trace",
+      "<- [store] $store 1",
+      "<- [$store.on] $store.on(event) 1",
+      "<- [event] event 1",
+      "[effect] (scope: unknown_scope_6) nameFx 1",
+      "[effect] (scope: unknown_scope_6) nameFx trace",
+      "<- [effect] effect 1",
+      "<- [sample]  1",
+      "<- [event] event 1",
+    ]
+  `);
+});
