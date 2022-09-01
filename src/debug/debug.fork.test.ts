@@ -189,7 +189,7 @@ test('can detect and save unknown scopes', async () => {
       "[effect] (scope: unknown_scope_3) fx.done {\\"params\\":[]}",
     ]
   `);
-  expect(secondRun).toEqual(firstRun);
+  expect(firstRun).toContainEqual(secondRun);
 });
 
 test('can detect registered scopes', async () => {
@@ -206,8 +206,20 @@ test('can detect registered scopes', async () => {
   const scopeA = fork();
   const scopeB = fork();
 
+  debug.unregisterAllScopes();
   debug.registerScope(scopeA, { name: 'scope_a' });
   debug.registerScope(scopeB, { name: 'scope_b' });
+
+  expect(stringArguments(fn)).toMatchInlineSnapshot(`
+    Array [
+      "[store] (scope: scope_a) app/$store 0",
+      "[store] (scope: scope_a) $form 0",
+      "[store] (scope: scope_b) app/$store 0",
+      "[store] (scope: scope_b) $form 0",
+    ]
+  `);
+
+  clearConsole();
 
   await allSettled(up, { scope: scopeA });
   const firstRun = stringArguments(fn);
@@ -236,7 +248,7 @@ test('can detect registered scopes', async () => {
       "[effect] (scope: scope_a) fx.done {\\"params\\":[]}",
     ]
   `);
-  expect(secondRun).toEqual(firstRun);
+  expect(firstRun).toContainEqual(secondRun);
 });
 
 test('prints default state for store in each of the known scopes', () => {
@@ -257,6 +269,10 @@ test('prints default state for store in each of the known scopes', () => {
 
   expect(stringArguments(fn)).toMatchInlineSnapshot(`
     Array [
+      "[store] (scope: scope_42) app/$store 0",
+      "[store] (scope: scope_42) $form 0",
+      "[store] (scope: scope_1337) app/$store 0",
+      "[store] (scope: scope_1337) $form 0",
       "[store] $count 0",
       "[store] (scope: scope_42) $count 42",
       "[store] (scope: scope_1337) $count 1337",
@@ -283,6 +299,12 @@ test('individual scope can be unregistered', () => {
 
   expect(stringArguments(fn)).toMatchInlineSnapshot(`
     Array [
+      "[store] (scope: scope_42) app/$store 0",
+      "[store] (scope: scope_42) $form 0",
+      "[store] (scope: scope_42) $count 0",
+      "[store] (scope: scope_1337) app/$store 0",
+      "[store] (scope: scope_1337) $form 0",
+      "[store] (scope: scope_1337) $count 0",
       "[store] $count 0",
       "[store] (scope: scope_1337) $count 1337",
     ]
@@ -314,12 +336,51 @@ test('traces have scope name', async () => {
 
   expect(stringArguments(fn)).toMatchInlineSnapshot(`
     Array [
+      "[store] (scope: my_scope) app/$store 0",
+      "[store] (scope: my_scope) $form 0",
+      "[store] (scope: my_scope) $count 0",
+      "[store] (scope: my_scope) $count 0",
       "[effect] (scope: my_scope) submitFx 1",
       "[effect] (scope: my_scope) submitFx trace",
       "<- [effect] submitFx 1",
       "<- [sample]  1",
       "<- [event] buttonClicked ",
       "[effect] (scope: my_scope) submitFx.done {\\"params\\":1}",
+    ]
+  `);
+});
+
+test('logs stores for newly registered scope', async () => {
+  const $count = createStore(0);
+
+  const scopeA = fork({
+    values: [[$count, 42]],
+  });
+  const scopeB = fork({
+    values: [[$count, 1337]],
+  });
+
+  debug($count);
+
+  debug.unregisterAllScopes();
+  debug.registerScope(scopeA, { name: 'scope_42' });
+  debug.registerScope(scopeB, { name: 'scope_1337' });
+
+  expect(stringArguments(fn)).toMatchInlineSnapshot(`
+    Array [
+      "[store] $count 0",
+      "[store] (scope: scope_1337) $count 0",
+      "[store] (scope: my_scope) $count 0",
+      "[store] (scope: scope_42) app/$store 0",
+      "[store] (scope: scope_42) $form 0",
+      "[store] (scope: scope_42) $count 0",
+      "[store] (scope: scope_42) $count 0",
+      "[store] (scope: scope_42) $count 42",
+      "[store] (scope: scope_1337) app/$store 0",
+      "[store] (scope: scope_1337) $form 0",
+      "[store] (scope: scope_1337) $count 0",
+      "[store] (scope: scope_1337) $count 0",
+      "[store] (scope: scope_1337) $count 1337",
     ]
   `);
 });
