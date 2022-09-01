@@ -58,6 +58,8 @@ function getType(unit: Unit<any>) {
   return 'unknown';
 }
 
+const debugStores: Store<any>[] = [];
+
 function log(
   unit: Store<any> | Event<any> | Effect<any, any, any>,
   type: string,
@@ -67,10 +69,21 @@ function log(
 
   if (is.store(unit)) {
     // log initial state
-    console.info(`[${type}] ${name}`, unit.getState());
-    scopes.forEach((scope, meta) => {
-      console.info(`[${type}] (scope: ${meta.name}) ${name}`, scope.getState(unit));
+    logUpdate({
+      type,
+      name,
+      value: unit.getState(),
     });
+    scopes.forEach((scope, meta) => {
+      logUpdate({
+        type,
+        name,
+        scopeName: meta.name,
+        value: scope.getState(unit),
+      });
+    });
+
+    debugStores.push(unit);
   }
 
   createNode({
@@ -82,13 +95,22 @@ function log(
       step.run({
         fn(_data: any, _scope: any, stack: Stack) {
           if (!stack.scope) {
-            console.info(`[${type}] ${name}`, _data);
+            logUpdate({
+              type,
+              name,
+              value: _data,
+            });
           } else {
             if (!scopes.get(stack.scope)) {
               scopes.save(stack.scope);
             }
             const meta = scopes.get(stack.scope);
-            console.info(`[${type}] (scope: ${meta?.name}) ${name}`, _data);
+            logUpdate({
+              type,
+              name,
+              scopeName: meta?.name,
+              value: _data,
+            });
           }
         },
       }),
@@ -246,8 +268,18 @@ function logTrace(unit: Unit<any>) {
   });
 }
 
-function registerScope(scope: Scope, meta: { name: string }) {
-  scopes.save(scope, meta);
+function registerScope(scope: Scope, config: { name: string }) {
+  scopes.save(scope, { name: config.name });
+
+  debugStores.forEach((store) => {
+    logUpdate({
+      type: 'store',
+      name: getName(store),
+      scopeName: config.name,
+      value: scope.getState(store),
+    });
+  });
+
   return () => {
     scopes.delete(scope);
   };
@@ -259,3 +291,21 @@ function unregisterAllScopes() {
 
 debug.registerScope = registerScope;
 debug.unregisterAllScopes = unregisterAllScopes;
+
+function logUpdate({
+  type,
+  scopeName,
+  name,
+  value,
+}: {
+  type: string;
+  scopeName?: string;
+  name: string;
+  value: any;
+}) {
+  const typeString = `[${type}]`;
+  const scopeNameString = scopeName ? ` (scope: ${scopeName})` : '';
+  const nameString = ` ${name}`;
+
+  console.info(`${typeString}${scopeNameString}${nameString}`, value);
+}
