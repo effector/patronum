@@ -2,7 +2,6 @@ import {
   Event,
   Store,
   createEvent,
-  createEffect,
   createStore,
   guard,
   sample,
@@ -29,28 +28,37 @@ export function interval<S extends unknown, F extends unknown>({
 
   const $notRunning = $isRunning.map((running) => !running);
 
-  const saveTimeout = createEvent<NodeJS.Timeout>();
+  const saveTimeout =
+    createEvent<{ timeoutId: NodeJS.Timeout; reject: () => void }>();
   const $timeoutId = createStore<NodeJS.Timeout | null>(null).on(
     saveTimeout,
-    (_, id) => id,
+    (_, { timeoutId }) => timeoutId,
   );
-  const saveReject = createEvent<() => void>();
   // eslint-disable-next-line @typescript-eslint/no-empty-function
-  const $rejecter = createStore<() => void>(() => {}).on(saveReject, (_, rj) => rj);
+  const $rejecter = createStore<() => void>(() => {}).on(
+    saveTimeout,
+    (_, { reject }) => reject,
+  );
 
-  const timeoutFx = createEffect<number, void>((timeout) => {
-    return new Promise((resolve, reject) => {
-      const timeoutId = setTimeout(resolve, timeout);
-      saveTimeout(timeoutId);
-      saveReject(reject);
-    });
+  const timeoutFx = attach({
+    source: { timeout: $timeout, running: $isRunning },
+    effect: ({ timeout, running }) => {
+      if (!running) {
+        return Promise.reject();
+      }
+
+      return new Promise((resolve, reject) => {
+        const timeoutId = setTimeout(resolve, timeout);
+        saveTimeout({ timeoutId, reject });
+      });
+    },
   });
 
   const cleanupFx = attach({
-    source: [$timeoutId, $rejecter],
-    effect: ([id, rj]) => {
-      rj();
-      if (id) clearTimeout(id);
+    source: { timeoutId: $timeoutId, rejecter: $rejecter },
+    effect: ({ timeoutId, rejecter }) => {
+      rejecter();
+      if (timeoutId) clearTimeout(timeoutId);
     },
   });
 
@@ -82,13 +90,12 @@ export function interval<S extends unknown, F extends unknown>({
     target: timeoutFx,
   });
 
-  sample({
+  guard({
     clock: timeoutFx.done,
     filter: $isRunning,
-    fn: () => {
+    target: tick.prepend(() => {
       /* to be sure, nothing passed to tick */
-    },
-    target: tick,
+    }),
   });
 
   if (stop) {
@@ -100,7 +107,11 @@ export function interval<S extends unknown, F extends unknown>({
     }
 
     $isRunning.on(stop, () => false);
-    sample({ clock: stop, target: cleanupFx });
+
+    sample({
+      clock: stop,
+      target: cleanupFx,
+    });
   }
 
   return { tick, isRunning: $isRunning };
