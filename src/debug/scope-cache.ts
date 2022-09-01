@@ -11,7 +11,7 @@ function getDefaultName() {
   unknownScopes += 1;
   return `unknown_scope_${unknownScopes}`;
 }
-const scopes = {
+export const scopes = {
   save(scope: Scope, meta?: Meta) {
     if (!scopes.get(scope)) {
       cache.set(scope, meta ?? { name: getDefaultName() });
