@@ -8,7 +8,10 @@ import {
   Unit,
   createNode,
   step,
+  Scope,
 } from 'effector';
+
+import { scopes } from './scope-cache';
 
 export function debug(
   ...units:
@@ -55,6 +58,8 @@ function getType(unit: Unit<any>) {
   return 'unknown';
 }
 
+const debugStores: Store<any>[] = [];
+
 function log(
   unit: Store<any> | Event<any> | Effect<any, any, any>,
   type: string,
@@ -62,8 +67,54 @@ function log(
 ) {
   const name = prefix + getName(unit);
 
-  unit.watch((payload) => {
-    console.info(`[${type}] ${name}`, payload);
+  if (is.store(unit)) {
+    // log initial state
+    logUpdate({
+      type,
+      name,
+      value: unit.getState(),
+    });
+    scopes.forEach((scope, meta) => {
+      logUpdate({
+        type,
+        name,
+        scopeName: meta.name,
+        value: scope.getState(unit),
+      });
+    });
+
+    debugStores.push(unit);
+  }
+
+  createNode({
+    parent: [unit],
+    meta: { op: 'watch' },
+    family: { owners: unit },
+    regional: true,
+    node: [
+      step.run({
+        fn(_data: any, _scope: any, stack: Stack) {
+          if (!stack.scope) {
+            logUpdate({
+              type,
+              name,
+              value: _data,
+            });
+          } else {
+            if (!scopes.get(stack.scope)) {
+              scopes.save(stack.scope);
+            }
+            const meta = scopes.get(stack.scope);
+            logUpdate({
+              type,
+              name,
+              scopeName: meta?.name,
+              value: _data,
+            });
+          }
+        },
+      }),
+    ],
   });
 }
 
@@ -186,7 +237,9 @@ function logTrace(unit: Unit<any>) {
       step.run({
         fn(_data: any, _scope: any, stack: Stack) {
           let parent = stack?.parent;
-          const groupName = `[${type}] ${name} trace`;
+          const scopeMeta = scopes.get(stack?.scope);
+          const scopeName = scopeMeta ? ` (scope: ${scopeMeta.name})` : '';
+          const groupName = `[${type}]${scopeName} ${name} trace`;
           // eslint-disable-next-line no-console
           console.groupCollapsed(groupName);
           while (parent) {
@@ -213,4 +266,46 @@ function logTrace(unit: Unit<any>) {
       }),
     ],
   });
+}
+
+function registerScope(scope: Scope, config: { name: string }) {
+  scopes.save(scope, { name: config.name });
+
+  debugStores.forEach((store) => {
+    logUpdate({
+      type: 'store',
+      name: getName(store),
+      scopeName: config.name,
+      value: scope.getState(store),
+    });
+  });
+
+  return () => {
+    scopes.delete(scope);
+  };
+}
+
+function unregisterAllScopes() {
+  scopes.clear();
+}
+
+debug.registerScope = registerScope;
+debug.unregisterAllScopes = unregisterAllScopes;
+
+function logUpdate({
+  type,
+  scopeName,
+  name,
+  value,
+}: {
+  type: string;
+  scopeName?: string;
+  name: string;
+  value: any;
+}) {
+  const typeString = `[${type}]`;
+  const scopeNameString = scopeName ? ` (scope: ${scopeName})` : '';
+  const nameString = ` ${name}`;
+
+  console.info(`${typeString}${scopeNameString}${nameString}`, value);
 }
