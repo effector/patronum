@@ -64,6 +64,33 @@ inputChanged();
 // "<- [event] inputChanged ",
 ```
 
+## Custom names
+
+Sometimes unit name in specific context may be different from the one it was initially created with.
+e.g., an unit may be exported under an alias for explicitness:
+
+```ts
+export const $productsListVisible = productsPageModel.$open;
+
+debug($productsListVisible, productAdded);
+// or
+debug({ trace: true }, $productsListVisible, productAdded);
+```
+
+In this case, because of `effector/babel-plugin` which provided `productsPageModel.$open` store its name at the moment of its creation, public name in the `debug` logs will be `$open` instead of `$productsListVisible`.
+
+It can be fixed with custom name, which can be provided by using `Record<string, Unit>` istead of a list of units:
+
+```ts
+export const $productsListVisible = productsPageModel.$open;
+
+debug({ $productsListVisible, customEventName: productAdded });
+// or
+debug({ trace: true }, { $productsListVisible, customEventName: productAdded });
+```
+
+This way `$productsListVisible` name in the logs will be the same, as the one which was provided to `debug`.
+
 ## Fork API and Scope
 
 Effector can run multiple "instances" of the app simultaniosly via Fork API - it is useful for tests and SSR. Usually you would also use scope on the client in the case of SSR. `debug` will log "scoped" updates in such case:
@@ -123,9 +150,8 @@ unregister();
 Or unregister all scopes at once:
 
 ```ts
-debug.unregisterAllScopes()
+debug.unregisterAllScopes();
 ```
-
 
 ### Initial store state
 
