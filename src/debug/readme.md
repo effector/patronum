@@ -63,3 +63,91 @@ inputChanged();
 // "<- [$form.on] $form.on(inputChanged) 1",
 // "<- [event] inputChanged ",
 ```
+
+## Fork API and Scope
+
+Effector can run multiple "instances" of the app simultaniosly via Fork API - it is useful for tests and SSR. Usually you would also use scope on the client in the case of SSR. `debug` will log "scoped" updates in such case:
+
+```ts
+const up = createEvent();
+const $count = createStore(0).on(up, (s) => s + 1);
+const fx = createEffect(() => {});
+sample({
+  clock: $count,
+  target: fx,
+});
+
+debug(fx);
+
+const scopeA = fork();
+
+await allSettled(up, { scope: scopeA });
+
+// "[effect] (scope: unknown_scope_3) fx 1",
+// "[effect] (scope: unknown_scope_3) fx.done {\\"params\\":1}",
+```
+
+By default detected scope will be given default name.
+
+### Scope registration
+
+It is possible to explicitly register scope with given name to have a more explicit logs.
+
+It can work like this:
+
+```ts
+const scope = fork({ values: window.__SSR_VALUES__ });
+
+// this way we can commit this to our repo and be sure,
+// that bundler will cut this out of production bundle
+if (process.env.NODE_ENV === 'development') {
+  debug.registerScope(scope, { name: 'my_client_scope' });
+}
+```
+
+This way scope will be given explicit name in the logs.
+
+```ts
+// "[effect] (scope: my_client_scope) fx 1",
+// "[effect] (scope: my_client_scope) fx.done {\\"params\\":1}",
+```
+
+It is also possible to unregister scope to prevent memory leak, if scope is no longer needed:
+
+```ts
+const unregister = debug.registerScope(scope, { name: `my_scope` });
+
+unregister();
+```
+
+Or unregister all scopes at once:
+
+```ts
+debug.unregisterAllScopes()
+```
+
+
+### Initial store state
+
+`debug($store)` always immediatly prints current state of the store, but this state can be different in different scopes.
+It is recommened to register scopes explicitly, since `debug` will print current state of the store in every known scope:
+
+```ts
+const $count = createStore(0);
+
+const scopeA = fork({
+  values: [[$count, 42]],
+});
+const scopeB = fork({
+  values: [[$count, 1337]],
+});
+
+debug.registerScope(scopeA, { name: 'scope_42' });
+debug.registerScope(scopeB, { name: 'scope_1337' });
+
+debug($count);
+
+// "[store] $count 0",
+// "[store] (scope: scope_42) $count 42",
+// "[store] (scope: scope_1337) $count 1337",
+```
