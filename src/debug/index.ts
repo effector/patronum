@@ -8,7 +8,10 @@ import {
   Unit,
   createNode,
   step,
+  Scope,
 } from 'effector';
+
+import { scopes } from './scope-cache';
 
 export function debug(
   ...units:
@@ -62,8 +65,34 @@ function log(
 ) {
   const name = prefix + getName(unit);
 
-  unit.watch((payload) => {
-    console.info(`[${type}] ${name}`, payload);
+  if (is.store(unit)) {
+    // log initial state
+    console.info(`[${type}] ${name}`, unit.getState());
+    scopes.forEach((scope, meta) => {
+      console.info(`[${type}] (scope: ${meta.name}) ${name}`, scope.getState(unit));
+    });
+  }
+
+  createNode({
+    parent: [unit],
+    meta: { op: 'watch' },
+    family: { owners: unit },
+    regional: true,
+    node: [
+      step.run({
+        fn(_data: any, _scope: any, stack: Stack) {
+          if (!stack.scope) {
+            console.info(`[${type}] ${name}`, _data);
+          } else {
+            if (!scopes.get(stack.scope)) {
+              scopes.save(stack.scope);
+            }
+            const meta = scopes.get(stack.scope);
+            console.info(`[${type}] (scope: ${meta?.name}) ${name}`, _data);
+          }
+        },
+      }),
+    ],
   });
 }
 
@@ -186,7 +215,9 @@ function logTrace(unit: Unit<any>) {
       step.run({
         fn(_data: any, _scope: any, stack: Stack) {
           let parent = stack?.parent;
-          const groupName = `[${type}] ${name} trace`;
+          const scopeMeta = scopes.get(stack?.scope);
+          const scopeName = scopeMeta ? ` (scope: ${scopeMeta.name})` : '';
+          const groupName = `[${type}]${scopeName} ${name} trace`;
           // eslint-disable-next-line no-console
           console.groupCollapsed(groupName);
           while (parent) {
@@ -214,3 +245,17 @@ function logTrace(unit: Unit<any>) {
     ],
   });
 }
+
+function registerScope(scope: Scope, meta: { name: string }) {
+  scopes.save(scope, meta);
+  return () => {
+    scopes.delete(scope);
+  };
+}
+
+function unregisterAllScopes() {
+  scopes.clear();
+}
+
+debug.registerScope = registerScope;
+debug.unregisterAllScopes = unregisterAllScopes;
