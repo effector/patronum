@@ -7,7 +7,7 @@ on: [push]
 
 jobs:
   build:
-    runs-on: ubuntu-22ti.04
+    runs-on: ubuntu-22.04
 
     steps:
       - name: Checkout
