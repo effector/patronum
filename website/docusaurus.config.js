@@ -105,6 +105,10 @@ const config = {
                 label: 'Installation',
                 to: '/docs/installation',
               },
+              {
+                label: 'Migration guide',
+                to: '/docs/migration-guide',
+              },
             ],
           },
           {
