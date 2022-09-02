@@ -261,17 +261,17 @@ test('custom names with traces support', () => {
       "[store] $customName 0",
       "[event] name 1",
       "[event] name trace",
-      "<- [event] event 1",
+      "<- [event] name 1",
       "[store] $customName 1",
       "[store] $customName trace",
-      "<- [store] $store 1",
-      "<- [$store.on] $store.on(event) 1",
-      "<- [event] event 1",
+      "<- [store] $customName 1",
+      "<- [$customName.on] $customName.on(name) 1",
+      "<- [event] name 1",
       "[effect] nameFx 1",
       "[effect] nameFx trace",
-      "<- [effect] effect 1",
+      "<- [effect] nameFx 1",
       "<- [sample]  1",
-      "<- [event] event 1",
+      "<- [event] name 1",
     ]
   `);
 });

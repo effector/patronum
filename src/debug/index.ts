@@ -41,7 +41,7 @@ export function debug(
     config = maybeConfig;
   } else if (!is.unit(maybeConfig)) {
     for (const [name, unit] of Object.entries(maybeConfig)) {
-      customNames.set(unit, name);
+      customNames.set(getGraph(unit as any).id, name);
       logUnit(unit, config);
     }
   } else {
@@ -53,7 +53,7 @@ export function debug(
       logUnit(maybeUnit, config);
     } else {
       for (const [name, unit] of Object.entries(maybeUnit)) {
-        customNames.set(unit, name);
+        customNames.set(getGraph(unit as any).id, name);
         logUnit(unit, config);
       }
     }
@@ -150,10 +150,10 @@ function getNode(node: Node | { graphite: Node }) {
   return actualNode;
 }
 
-const customNames = new Map<Unit<any>, string>();
+const customNames = new Map<Node['id'], string>();
 
 function getName(unit: any): string {
-  const custom = customNames.get(unit);
+  const custom = customNames.get(getGraph(unit as any).id);
   if (custom) {
     return custom;
   }
@@ -237,7 +237,13 @@ function isEffectChild(node: Node | { graphite: Node }) {
 function getNodeName(node?: Node): string {
   if (!node) return '';
 
-  const { meta } = node;
+  const { meta, id } = node;
+
+  const customName = customNames.get(id);
+
+  if (customName) {
+    return customName;
+  }
 
   if (!isEffectChild(node)) {
     return meta.name;
@@ -337,3 +343,7 @@ function logUpdate({
 
   console.info(`${typeString}${scopeNameString}${nameString}`, value);
 }
+
+type NodeUnit = { graphite: Node } | Node;
+const getGraph = (graph: NodeUnit): Node =>
+  (graph as { graphite: Node }).graphite || graph;
