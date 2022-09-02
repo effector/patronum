@@ -13,15 +13,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+
       - name: Use Node.js v18.x
         uses: actions/setup-node@v3
         with:
           node-version: v18.x
           registry-url: 'https://npm.pkg.github.com'
           cache: 'pnpm'
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
 
       - name: Install dependencies
         run: pnpm install
