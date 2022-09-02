@@ -217,3 +217,61 @@ test('domain is traceable', async () => {
     ]
   `);
 });
+
+test('custom names basic support', () => {
+  const event = createEvent<number>();
+  const effect = createEffect().use((payload) => Promise.resolve('result' + payload));
+  const $store = createStore(0)
+    .on(event, (state, value) => state + value)
+    .on(effect.done, (state) => state * 10);
+  sample({
+    clock: event,
+    target: effect,
+  });
+
+  debug({ $customName: $store, name: event, nameFx: effect });
+  event(1);
+
+  expect(stringArguments(fn)).toMatchInlineSnapshot(`
+    Array [
+      "[store] $customName 0",
+      "[event] name 1",
+      "[store] $customName 1",
+      "[effect] nameFx 1",
+    ]
+  `);
+});
+
+test('custom names with traces support', () => {
+  const event = createEvent<number>();
+  const effect = createEffect().use((payload) => Promise.resolve('result' + payload));
+  const $store = createStore(0)
+    .on(event, (state, value) => state + value)
+    .on(effect.done, (state) => state * 10);
+  sample({
+    clock: event,
+    target: effect,
+  });
+
+  debug({ trace: true }, { $customName: $store, name: event, nameFx: effect });
+  event(1);
+
+  expect(stringArguments(fn)).toMatchInlineSnapshot(`
+    Array [
+      "[store] $customName 0",
+      "[event] name 1",
+      "[event] name trace",
+      "<- [event] name 1",
+      "[store] $customName 1",
+      "[store] $customName trace",
+      "<- [store] $customName 1",
+      "<- [$customName.on] $customName.on(name) 1",
+      "<- [event] name 1",
+      "[effect] nameFx 1",
+      "[effect] nameFx trace",
+      "<- [effect] nameFx 1",
+      "<- [sample]  1",
+      "<- [event] name 1",
+    ]
+  `);
+});
