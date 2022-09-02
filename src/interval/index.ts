@@ -28,8 +28,10 @@ export function interval<S extends unknown, F extends unknown>({
 
   const $notRunning = $isRunning.map((running) => !running);
 
-  const saveTimeout =
-    createEvent<{ timeoutId: NodeJS.Timeout; reject: () => void }>();
+  const saveTimeout = createEvent<{
+    timeoutId: NodeJS.Timeout;
+    reject: () => void;
+  }>();
   const $timeoutId = createStore<NodeJS.Timeout | null>(null).on(
     saveTimeout,
     (_, { timeoutId }) => timeoutId,
@@ -70,11 +72,8 @@ export function interval<S extends unknown, F extends unknown>({
   });
 
   if (leading) {
-    guard({
-      clock: start,
-      filter: $notRunning,
-      target: tick,
-    });
+    const onReady = guard({ clock: start, filter: $notRunning }) as Event<S>;
+    sample({ clock: onReady, target: tick });
   }
 
   sample({
