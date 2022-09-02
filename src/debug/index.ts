@@ -285,15 +285,15 @@ function logTrace(unit: Unit<any>) {
               unitName = getLoc(node) ?? '';
             }
             if (opName === 'on') {
-              const parentStore = getNodeName(node?.next?.[0]);
+              const parentStore = getNodeName(node.next[0]);
               opName = `${parentStore}.${meta.op}`;
               unitName = `${parentStore}.${meta.op}(${getNodeName(
-                parent?.parent?.node,
+                parent.parent?.node,
               )})`;
             }
 
             console.info(`<- [${opName}] ${unitName}`, value);
-            parent = parent?.parent;
+            parent = parent.parent;
           }
           console.groupEnd();
         },

@@ -29,14 +29,14 @@ test('factories json with multiple words', () => {
   expect(
     createFactoriesJson('patronum', ['first', 'second-item', 'another-text-demo']),
   ).toMatchInlineSnapshot(`
-    Object {
-      "factories": Array [
+    {
+      "factories": [
         "patronum",
         "patronum/another-text-demo",
         "patronum/first",
         "patronum/second-item",
       ],
-      "mapping": Object {
+      "mapping": {
         "anotherTextDemo": "another-text-demo",
         "first": "first",
         "secondItem": "second-item",
@@ -53,14 +53,14 @@ test('factories json with scoped name', () => {
       'another-text-demo',
     ]),
   ).toMatchInlineSnapshot(`
-    Object {
-      "factories": Array [
+    {
+      "factories": [
         "@effector/patronum",
         "@effector/patronum/another-text-demo",
         "@effector/patronum/first",
         "@effector/patronum/second-item",
       ],
-      "mapping": Object {
+      "mapping": {
         "anotherTextDemo": "another-text-demo",
         "first": "first",
         "secondItem": "second-item",

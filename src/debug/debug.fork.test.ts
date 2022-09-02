@@ -47,7 +47,7 @@ test('works in forked scope', async () => {
 
   await allSettled(event, { scope, params: 5 });
   expect(stringArguments(fn)).toMatchInlineSnapshot(`
-    Array [
+    [
       "[store] app/$store 0",
       "[event] (scope: unknown_scope_1) app/event 5",
       "[store] (scope: unknown_scope_1) app/$store 5",
@@ -56,7 +56,7 @@ test('works in forked scope', async () => {
 
   allSettled(effect, { scope, params: 'demo' });
   expect(stringArguments(fn)).toMatchInlineSnapshot(`
-    Array [
+    [
       "[store] app/$store 0",
       "[event] (scope: unknown_scope_1) app/event 5",
       "[store] (scope: unknown_scope_1) app/$store 5",
@@ -66,12 +66,12 @@ test('works in forked scope', async () => {
 
   await 1;
   expect(stringArguments(fn)).toMatchInlineSnapshot(`
-    Array [
+    [
       "[store] app/$store 0",
       "[event] (scope: unknown_scope_1) app/event 5",
       "[store] (scope: unknown_scope_1) app/$store 5",
       "[effect] (scope: unknown_scope_1) app/effect demo",
-      "[effect] (scope: unknown_scope_1) app/effect.done {\\"params\\":\\"demo\\",\\"result\\":\\"result demo\\"}",
+      "[effect] (scope: unknown_scope_1) app/effect.done {"params":"demo","result":"result demo"}",
       "[store] (scope: unknown_scope_1) app/$store 500",
     ]
   `);
@@ -96,7 +96,7 @@ test('trace support', async () => {
   debug({ trace: true }, $form, submitFx);
 
   expect(stringArguments(fn)).toMatchInlineSnapshot(`
-    Array [
+    [
       "[store] $form 0",
       "[store] (scope: unknown_scope_1) $form 0",
     ]
@@ -107,7 +107,7 @@ test('trace support', async () => {
   await allSettled(inputChanged, { scope });
 
   expect(stringArguments(fn)).toMatchInlineSnapshot(`
-    Array [
+    [
       "[store] $form 0",
       "[store] (scope: unknown_scope_1) $form 0",
       "[store] (scope: unknown_scope_2) $form 1",
@@ -121,7 +121,7 @@ test('trace support', async () => {
   await allSettled(buttonClicked, { scope });
 
   expect(stringArguments(fn)).toMatchInlineSnapshot(`
-    Array [
+    [
       "[store] $form 0",
       "[store] (scope: unknown_scope_1) $form 0",
       "[store] (scope: unknown_scope_2) $form 1",
@@ -134,16 +134,16 @@ test('trace support', async () => {
       "<- [effect] submitFx 1",
       "<- [sample]  1",
       "<- [event] buttonClicked ",
-      "[effect] (scope: unknown_scope_2) submitFx.done {\\"params\\":1}",
+      "[effect] (scope: unknown_scope_2) submitFx.done {"params":1}",
       "[store] (scope: unknown_scope_2) $form 2",
       "[store] (scope: unknown_scope_2) $form trace",
       "<- [store] $form 2",
       "<- [$form.on] $form.on(submitFx.doneData) 2",
       "<- [event] submitFx.doneData ",
       "<- [map]  ",
-      "<- [event] submitFx.done {\\"params\\":1}",
-      "<- [filterMap]  {\\"params\\":1}",
-      "<- [event] submitFx.finally {\\"status\\":\\"done\\",\\"params\\":1}",
+      "<- [event] submitFx.done {"params":1}",
+      "<- [filterMap]  {"params":1}",
+      "<- [event] submitFx.finally {"status":"done","params":1}",
     ]
   `);
 });
@@ -164,27 +164,27 @@ test('can detect and save unknown scopes', async () => {
 
   await allSettled(up, { scope: scopeA });
   expect(stringArguments(fn)).toMatchInlineSnapshot(`
-    Array [
+    [
       "[effect] (scope: unknown_scope_3) fx []",
-      "[effect] (scope: unknown_scope_3) fx.done {\\"params\\":[]}",
+      "[effect] (scope: unknown_scope_3) fx.done {"params":[]}",
     ]
   `);
   clearConsole();
 
   await allSettled(up, { scope: scopeB });
   expect(stringArguments(fn)).toMatchInlineSnapshot(`
-    Array [
+    [
       "[effect] (scope: unknown_scope_4) fx []",
-      "[effect] (scope: unknown_scope_4) fx.done {\\"params\\":[]}",
+      "[effect] (scope: unknown_scope_4) fx.done {"params":[]}",
     ]
   `);
   clearConsole();
 
   await allSettled(up, { scope: scopeA });
   expect(stringArguments(fn)).toMatchInlineSnapshot(`
-    Array [
+    [
       "[effect] (scope: unknown_scope_3) fx []",
-      "[effect] (scope: unknown_scope_3) fx.done {\\"params\\":[]}",
+      "[effect] (scope: unknown_scope_3) fx.done {"params":[]}",
     ]
   `);
 });
@@ -208,7 +208,7 @@ test('can detect registered scopes', async () => {
   debug.registerScope(scopeB, { name: 'scope_b' });
 
   expect(stringArguments(fn)).toMatchInlineSnapshot(`
-    Array [
+    [
       "[store] (scope: scope_a) app/$store 0",
       "[store] (scope: scope_a) $form 0",
       "[store] (scope: scope_b) app/$store 0",
@@ -220,27 +220,27 @@ test('can detect registered scopes', async () => {
 
   await allSettled(up, { scope: scopeA });
   expect(stringArguments(fn)).toMatchInlineSnapshot(`
-    Array [
+    [
       "[effect] (scope: scope_a) fx []",
-      "[effect] (scope: scope_a) fx.done {\\"params\\":[]}",
+      "[effect] (scope: scope_a) fx.done {"params":[]}",
     ]
   `);
   clearConsole();
 
   await allSettled(up, { scope: scopeB });
   expect(stringArguments(fn)).toMatchInlineSnapshot(`
-    Array [
+    [
       "[effect] (scope: scope_b) fx []",
-      "[effect] (scope: scope_b) fx.done {\\"params\\":[]}",
+      "[effect] (scope: scope_b) fx.done {"params":[]}",
     ]
   `);
   clearConsole();
 
   await allSettled(up, { scope: scopeA });
   expect(stringArguments(fn)).toMatchInlineSnapshot(`
-    Array [
+    [
       "[effect] (scope: scope_a) fx []",
-      "[effect] (scope: scope_a) fx.done {\\"params\\":[]}",
+      "[effect] (scope: scope_a) fx.done {"params":[]}",
     ]
   `);
 });
@@ -262,7 +262,7 @@ test('prints default state for store in each of the known scopes', () => {
   debug($count);
 
   expect(stringArguments(fn)).toMatchInlineSnapshot(`
-    Array [
+    [
       "[store] (scope: scope_42) app/$store 0",
       "[store] (scope: scope_42) $form 0",
       "[store] (scope: scope_1337) app/$store 0",
@@ -292,7 +292,7 @@ test('individual scope can be unregistered', () => {
   debug($count);
 
   expect(stringArguments(fn)).toMatchInlineSnapshot(`
-    Array [
+    [
       "[store] (scope: scope_42) app/$store 0",
       "[store] (scope: scope_42) $form 0",
       "[store] (scope: scope_42) $count 0",
@@ -329,7 +329,7 @@ test('traces have scope name', async () => {
   await allSettled(buttonClicked, { scope });
 
   expect(stringArguments(fn)).toMatchInlineSnapshot(`
-    Array [
+    [
       "[store] (scope: my_scope) app/$store 0",
       "[store] (scope: my_scope) $form 0",
       "[store] (scope: my_scope) $count 0",
@@ -339,7 +339,7 @@ test('traces have scope name', async () => {
       "<- [effect] submitFx 1",
       "<- [sample]  1",
       "<- [event] buttonClicked ",
-      "[effect] (scope: my_scope) submitFx.done {\\"params\\":1}",
+      "[effect] (scope: my_scope) submitFx.done {"params":1}",
     ]
   `);
 });
@@ -361,7 +361,7 @@ test('logs stores for newly registered scope', async () => {
   debug.registerScope(scopeB, { name: 'scope_1337' });
 
   expect(stringArguments(fn)).toMatchInlineSnapshot(`
-    Array [
+    [
       "[store] $count 0",
       "[store] (scope: scope_1337) $count 0",
       "[store] (scope: my_scope) $count 0",
@@ -398,7 +398,7 @@ test('custom names basic support', () => {
   allSettled(event, { scope, params: 1 });
 
   expect(stringArguments(fn)).toMatchInlineSnapshot(`
-    Array [
+    [
       "[event] (scope: unknown_scope_5) name 1",
       "[store] (scope: unknown_scope_5) $customName 1",
       "[effect] (scope: unknown_scope_5) nameFx 1",
@@ -425,7 +425,7 @@ test('custom names with traces support', () => {
   allSettled(event, { scope, params: 1 });
 
   expect(stringArguments(fn)).toMatchInlineSnapshot(`
-    Array [
+    [
       "[event] (scope: unknown_scope_6) name 1",
       "[event] (scope: unknown_scope_6) name trace",
       "<- [event] name 1",

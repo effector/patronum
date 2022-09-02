@@ -1,5 +1,4 @@
 /* eslint-disable unicorn/no-process-exit, prefer-template */
-const globby = require('globby');
 
 const {
   createCommonJsIndex,
@@ -11,7 +10,7 @@ const {
   createExportsMap,
   resolveMethods,
 } = require('./libraries');
-const packageJson = require('./source.package.js');
+const packageJson = require('./source.package');
 
 async function main() {
   const library = process.env.LIBRARY_NAME ?? 'patronum';

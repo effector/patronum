@@ -400,8 +400,8 @@ describe('source and target type combinations', () => {
     await wait(40);
     expect(watcher).toBeCalledTimes(1);
     expect(watcher.mock.calls).toMatchInlineSnapshot(`
-      Array [
-        Array [
+      [
+        [
           3,
         ],
       ]
@@ -423,8 +423,8 @@ describe('source and target type combinations', () => {
     await wait(40);
     expect(watcher).toBeCalledTimes(1);
     expect(watcher.mock.calls).toMatchInlineSnapshot(`
-      Array [
-        Array [
+      [
+        [
           2,
         ],
       ]
@@ -447,8 +447,8 @@ describe('source and target type combinations', () => {
     await wait(40);
     expect(watcher).toBeCalledTimes(1);
     expect(watcher.mock.calls).toMatchInlineSnapshot(`
-      Array [
-        Array [
+      [
+        [
           3,
         ],
       ]

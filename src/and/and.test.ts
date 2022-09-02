@@ -41,7 +41,7 @@ test('When at least one store has falsy value result must be false', () => {
 
   expect(fn).toHaveBeenCalledTimes(1);
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
+    [
       false,
     ]
   `);

@@ -4,28 +4,33 @@ on:
   push:
     branches:
       - main
+      - migration
   workflow_dispatch:
 
 jobs:
   build:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-22.04
 
     steps:
       - name: 🛎️ Checkout
         uses: actions/checkout@v3
 
-      - name: 🐧 Use Node.js v16.x
+      - name: 📦 Setup pnpm
+        uses: pnpm/action-setup@v2
+
+      - name: 🐧 Use Node.js v18.x
         uses: actions/setup-node@v3
         with:
-          node-version: v16.x
-          cache: 'yarn'
+          node-version: v18.x
+          cache: 'pnpm'
+          cache-dependency-path: website/pnpm-lock.yaml
 
       - name: 🔍 Installation
-        run: yarn install
+        run: pnpm install
         working-directory: ./website
 
       - name: 🔧 Build
-        run: yarn build
+        run: pnpm build
         working-directory: ./website
 
       - name: 🚀 Deploy

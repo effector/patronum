@@ -28,7 +28,7 @@ test('When at least one store has falsy value result must be false', async () =>
 
   expect(fn).toHaveBeenCalledTimes(2); // twice because of the scope and initial
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
+    [
       false,
       false,
     ]

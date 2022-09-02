@@ -31,4 +31,3 @@ export const scopes = {
     cache.clear();
   },
 } as const;
-

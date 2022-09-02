@@ -10,7 +10,7 @@ const plugins = [
 
 const input = 'dist/index.cjs';
 
-// eslint-disable-next-line import/no-anonymous-default-export
+// eslint-disable-next-line import/no-anonymous-default-export, import/no-default-export
 export default [
   {
     input: 'dist/index.js',

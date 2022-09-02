@@ -29,7 +29,7 @@ test('delay event with number', async () => {
   expect(fn).toBeCalledTimes(1);
 
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
+    [
       1,
     ]
   `);
@@ -51,7 +51,7 @@ test('delay event with number with target', async () => {
   expect(fn).toBeCalledTimes(1);
 
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
+    [
       1,
     ]
   `);
@@ -80,7 +80,7 @@ test('double delay event with number', async () => {
   expect(fn).toBeCalledTimes(2);
 
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
+    [
       1,
       2,
     ]
@@ -101,7 +101,7 @@ test('delay event with function', async () => {
   expect(fn).toBeCalledTimes(1);
 
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
+    [
       1,
     ]
   `);
@@ -132,7 +132,7 @@ test('delay event with function of argument', async () => {
   expect(fn).toBeCalledTimes(2);
 
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
+    [
       1,
       2,
     ]
@@ -168,7 +168,7 @@ test('delay event with store as timeout', async () => {
   expect(fn).toBeCalledTimes(2);
 
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
+    [
       1,
       2,
     ]
@@ -199,7 +199,7 @@ test('delay store', async () => {
   expect(fn).toBeCalledTimes(2);
 
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
+    [
       1,
       2,
     ]
@@ -228,7 +228,7 @@ test('double delay effect', async () => {
   expect(fn).toBeCalledTimes(2);
 
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
+    [
       1,
       2,
     ]

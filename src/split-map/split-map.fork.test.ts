@@ -26,7 +26,7 @@ test('works in forked scope', async () => {
     params: { first: 15 },
   });
   expect(serialize(scope)).toMatchInlineSnapshot(`
-    Object {
+    {
       "xwy4bm": 15,
     }
   `);
@@ -36,7 +36,7 @@ test('works in forked scope', async () => {
     params: { another: true },
   });
   expect(serialize(scope)).toMatchInlineSnapshot(`
-    Object {
+    {
       "xwy4bm": -15,
     }
   `);
@@ -66,7 +66,7 @@ test('do not affect another fork', async () => {
     params: { first: 200 },
   });
   expect(serialize(scopeA)).toMatchInlineSnapshot(`
-    Object {
+    {
       "l4dkuf": 200,
     }
   `);
@@ -76,7 +76,7 @@ test('do not affect another fork', async () => {
     params: { first: -5 },
   });
   expect(serialize(scopeB)).toMatchInlineSnapshot(`
-    Object {
+    {
       "l4dkuf": -5,
     }
   `);
@@ -105,7 +105,7 @@ test('do not affect original store value', async () => {
     params: { first: 15 },
   });
   expect(serialize(scope)).toMatchInlineSnapshot(`
-    Object {
+    {
       "8sunrf": 15,
     }
   `);

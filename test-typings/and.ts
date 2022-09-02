@@ -37,7 +37,7 @@ import { and } from '../src/and';
 {
   const $source = createStore(1);
   const $derived = $source.map((i) => i * 100);
-  const fx = createEffect();
+  const sampleFx = createEffect();
 
-  expectType<Store<boolean>>(and($derived, fx.pending));
+  expectType<Store<boolean>>(and($derived, sampleFx.pending));
 }

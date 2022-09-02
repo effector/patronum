@@ -44,8 +44,8 @@ test('default case from event', () => {
 
   expect(fnDefault).toBeCalledTimes(1);
   expect(argumentHistory(fnDefault)).toMatchInlineSnapshot(`
-    Array [
-      Object {
+    [
+      {
         "another": "Demo",
       },
     ]
@@ -75,14 +75,14 @@ test('fall through from event', () => {
 
   source({ first: 'Demo' });
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
+    [
       "first",
     ]
   `);
 
   source({ second: true });
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
+    [
       "first",
       "second",
     ]
@@ -90,10 +90,10 @@ test('fall through from event', () => {
 
   source({ default: 1000 });
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
+    [
       "first",
       "second",
-      Object {
+      {
         "default": 1000,
       },
     ]
@@ -123,16 +123,16 @@ test('map from store', () => {
 
   change('Demo');
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
+    [
       "Demo",
     ]
   `);
 
   change('Hello World');
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
+    [
       "Demo",
-      Array [
+      [
         "Hello",
         "World",
       ],
@@ -166,34 +166,34 @@ test('from readme', () => {
 
   serverActionReceived({ type: 'created', value: 1 });
   expect(argumentHistory(watchCreated)).toMatchInlineSnapshot(`
-    Array [
+    [
       1,
     ]
   `);
-  expect(argumentHistory(watchUpdate)).toMatchInlineSnapshot(`Array []`);
-  expect(argumentHistory(watchDefault)).toMatchInlineSnapshot(`Array []`);
+  expect(argumentHistory(watchUpdate)).toMatchInlineSnapshot(`[]`);
+  expect(argumentHistory(watchDefault)).toMatchInlineSnapshot(`[]`);
   watchCreated.mockClear();
   watchUpdate.mockClear();
   watchDefault.mockClear();
 
   serverActionReceived({ type: 'update', content: 'demo' });
-  expect(argumentHistory(watchCreated)).toMatchInlineSnapshot(`Array []`);
+  expect(argumentHistory(watchCreated)).toMatchInlineSnapshot(`[]`);
   expect(argumentHistory(watchUpdate)).toMatchInlineSnapshot(`
-    Array [
+    [
       "demo",
     ]
   `);
-  expect(argumentHistory(watchDefault)).toMatchInlineSnapshot(`Array []`);
+  expect(argumentHistory(watchDefault)).toMatchInlineSnapshot(`[]`);
   watchCreated.mockClear();
   watchUpdate.mockClear();
   watchDefault.mockClear();
 
   serverActionReceived({ type: 'another' });
-  expect(argumentHistory(watchCreated)).toMatchInlineSnapshot(`Array []`);
-  expect(argumentHistory(watchUpdate)).toMatchInlineSnapshot(`Array []`);
+  expect(argumentHistory(watchCreated)).toMatchInlineSnapshot(`[]`);
+  expect(argumentHistory(watchUpdate)).toMatchInlineSnapshot(`[]`);
   expect(argumentHistory(watchDefault)).toMatchInlineSnapshot(`
-    Array [
-      Object {
+    [
+      {
         "type": "another",
       },
     ]

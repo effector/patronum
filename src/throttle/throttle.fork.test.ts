@@ -29,7 +29,7 @@ test('throttle works in forked scope', async () => {
   });
 
   expect(serialize(scope)).toMatchInlineSnapshot(`
-    Object {
+    {
       "-8kcech": 1,
     }
   `);
@@ -69,13 +69,13 @@ test('throttle do not affect another forks', async () => {
   });
 
   expect(serialize(scopeA)).toMatchInlineSnapshot(`
-    Object {
+    {
       "vohh62": 2,
     }
   `);
 
   expect(serialize(scopeB)).toMatchInlineSnapshot(`
-    Object {
+    {
       "vohh62": 200,
     }
   `);
@@ -103,7 +103,7 @@ test('throttle do not affect original store value', async () => {
   });
 
   expect(serialize(scope)).toMatchInlineSnapshot(`
-    Object {
+    {
       "m78ag8": 2,
     }
   `);

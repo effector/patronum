@@ -62,11 +62,11 @@ export function combineEvents<P>({
     const $counter = createStore(keys.length, { serialize: 'ignore' });
     const $results = createStore(defaultShape, { serialize: 'ignore' });
 
-    $counter.reset(sample(target));
+    $counter.reset(sample({ source: target }));
     $results.reset(target);
 
     if (reset) {
-      $counter.reset(sample(reset));
+      $counter.reset(sample({ source: reset }));
       $results.reset(reset);
     }
 
@@ -88,7 +88,7 @@ export function combineEvents<P>({
     }
 
     guard({
-      source: sample($results, merge(Object.values(events))),
+      source: sample({ source: $results, clock: merge(Object.values(events)) }),
       filter: $counter.map((value) => value === 0),
       target,
     });

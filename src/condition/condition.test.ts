@@ -16,13 +16,13 @@ test('source: event, if: store, then: event', () => {
   });
 
   source('bar');
-  expect(argumentHistory(fn)).toMatchInlineSnapshot(`Array []`);
+  expect(argumentHistory(fn)).toMatchInlineSnapshot(`[]`);
 
   // @ts-expect-error setState is internal
   $if.setState(true);
   source('foo');
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
+    [
       "foo",
     ]
   `);
@@ -44,7 +44,7 @@ test('source: event, if: store, then: event, else: event', () => {
 
   source('bar');
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
+    [
       "else: bar",
     ]
   `);
@@ -53,7 +53,7 @@ test('source: event, if: store, then: event, else: event', () => {
   $if.setState(true);
   source('foo');
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
+    [
       "else: bar",
       "then: foo",
     ]
@@ -80,7 +80,7 @@ test('source: store, if: store, then: event, else: event', () => {
 
   change(1);
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
+    [
       "else: 1",
     ]
   `);
@@ -88,7 +88,7 @@ test('source: store, if: store, then: event, else: event', () => {
   setCond(true);
   change(2);
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
+    [
       "else: 1",
       "then: 2",
     ]
@@ -112,14 +112,14 @@ test('source: store, if: function, then: event, else: event', () => {
 
   change(1);
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
+    [
       "else: 1",
     ]
   `);
 
   change(3);
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
+    [
       "else: 1",
       "then: 3",
     ]
@@ -143,14 +143,14 @@ test('source: store, if: literal, then: event, else: event', () => {
 
   change(1);
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
+    [
       "else: 1",
     ]
   `);
 
   change(2);
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
+    [
       "else: 1",
       "then: 2",
     ]
@@ -176,14 +176,14 @@ test('source: event, if: store, then: event, else: condition', () => {
 
   source(1);
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
+    [
       "1 < 2",
     ]
   `);
 
   source(3);
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
+    [
       "1 < 2",
       "2 <= 3 < 4",
     ]
@@ -191,7 +191,7 @@ test('source: event, if: store, then: event, else: condition', () => {
 
   source(5);
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
+    [
       "1 < 2",
       "2 <= 3 < 4",
       "4 <= 5",
@@ -223,20 +223,20 @@ test('does not trigger twice if branch change predicate state', () => {
   randomTrigger();
 
   expect(history()).toMatchInlineSnapshot(`
-    Array [
-      Array [
+    [
+      [
         "Store $predicate",
         true,
       ],
-      Array [
+      [
         "Event randomTrigger",
         undefined,
       ],
-      Array [
+      [
         "Event thenEvent",
         undefined,
       ],
-      Array [
+      [
         "Store $predicate",
         false,
       ],

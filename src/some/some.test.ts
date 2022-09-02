@@ -16,14 +16,14 @@ test('boolean predicate', () => {
   $result.watch(fn);
   expect(fn).toHaveBeenCalledWith(false);
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
+    [
       false,
     ]
   `);
 
   changeOne();
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
+    [
       false,
       true,
     ]
@@ -31,7 +31,7 @@ test('boolean predicate', () => {
 
   changeAnother();
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
+    [
       false,
       true,
     ]
@@ -53,7 +53,7 @@ test('number predicate', () => {
 
   change();
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
+    [
       true,
       false,
     ]
@@ -78,7 +78,7 @@ test('function predicate', () => {
 
   change();
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
+    [
       false,
       true,
     ]
@@ -123,26 +123,26 @@ describe('Shorthand form', () => {
     $result.watch(fn);
     expect(fn).toHaveBeenCalledWith(false);
     expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
-      false,
-    ]
-  `);
+      [
+        false,
+      ]
+    `);
 
     changeOne();
     expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
-      false,
-      true,
-    ]
-  `);
+      [
+        false,
+        true,
+      ]
+    `);
 
     changeAnother();
     expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
-      false,
-      true,
-    ]
-  `);
+      [
+        false,
+        true,
+      ]
+    `);
   });
 
   test('number predicate', () => {
@@ -160,11 +160,11 @@ describe('Shorthand form', () => {
 
     change();
     expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
-      true,
-      false,
-    ]
-  `);
+      [
+        true,
+        false,
+      ]
+    `);
   });
 
   test('function predicate', () => {
@@ -182,11 +182,11 @@ describe('Shorthand form', () => {
 
     change();
     expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
-      false,
-      true,
-    ]
-  `);
+      [
+        false,
+        true,
+      ]
+    `);
   });
 
   test('allow predicate to use store', () => {

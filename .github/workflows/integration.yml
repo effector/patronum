@@ -7,26 +7,29 @@ on: [push]
 
 jobs:
   build:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-22.04
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
-      - name: Use Node.js v16.x
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+
+      - name: Use Node.js v18.x
         uses: actions/setup-node@v3
         with:
-          node-version: v16.x
+          node-version: v18.x
           registry-url: 'https://npm.pkg.github.com'
-          cache: 'yarn'
+          cache: 'pnpm'
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: pnpm install
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build package
-        run: yarn build
+        run: pnpm build
         env:
           LIBRARY_NAME: '@effector/patronum'
 
@@ -79,60 +82,66 @@ jobs:
 
   custom:
     needs: build
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-22.04
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
-      - name: Use Node.js 16.x
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+
+      - name: Use Node.js 18.x
         uses: actions/setup-node@v3
         with:
-          node-version: 16.x
+          node-version: 18.x
           registry-url: 'https://npm.pkg.github.com'
 
       - name: Install integration dependencies
-        run: yarn
+        run: pnpm install
         working-directory: ./integration/custom
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Install patronum@${{ needs.build.outputs.version }} to integration package
-        run: yarn add @effector/patronum@${{ needs.build.outputs.version }}
+        run: pnpm add @effector/patronum@${{ needs.build.outputs.version }}
         working-directory: ./integration/custom
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Run integration tests
-        run: yarn test
+        run: pnpm test
         working-directory: ./integration/custom
 
   cra:
     needs: build
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-22.04
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
-      - name: Use Node.js 16.x
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+
+      - name: Use Node.js 18.x
         uses: actions/setup-node@v3
         with:
-          node-version: 16.x
+          node-version: 18.x
           registry-url: 'https://npm.pkg.github.com'
 
       - name: Install integration dependencies
-        run: yarn
+        run: pnpm install
         working-directory: ./integration/cra
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Install patronum@${{ needs.build.outputs.version }} to integration package
-        run: yarn add @effector/patronum@${{ needs.build.outputs.version }}
+        run: pnpm add @effector/patronum@${{ needs.build.outputs.version }}
         working-directory: ./integration/cra
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Run integration tests
-        run: yarn test
+        run: pnpm test
         working-directory: ./integration/cra

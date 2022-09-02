@@ -28,7 +28,7 @@ it('should be true when at least one store has truthy value', async () => {
 
   expect(fn).toHaveBeenCalledTimes(2); // twice because of scope and initial
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
+    [
       true,
       true,
     ]

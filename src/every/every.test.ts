@@ -17,7 +17,7 @@ test('boolean predicate', () => {
 
   change();
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
+    [
       false,
       true,
     ]
@@ -39,7 +39,7 @@ test('number predicate', () => {
 
   change();
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
+    [
       false,
       true,
     ]
@@ -64,7 +64,7 @@ test('function predicate', () => {
 
   change();
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
+    [
       false,
       true,
     ]
@@ -126,11 +126,11 @@ describe('short', () => {
 
     change();
     expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
-      false,
-      true,
-    ]
-  `);
+      [
+        false,
+        true,
+      ]
+    `);
   });
 
   test('number predicate', () => {
@@ -148,11 +148,11 @@ describe('short', () => {
 
     change();
     expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
-      false,
-      true,
-    ]
-  `);
+      [
+        false,
+        true,
+      ]
+    `);
   });
 
   test('function predicate', () => {
@@ -170,11 +170,11 @@ describe('short', () => {
 
     change();
     expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
-      false,
-      true,
-    ]
-  `);
+      [
+        false,
+        true,
+      ]
+    `);
   });
 
   test('initially true', () => {

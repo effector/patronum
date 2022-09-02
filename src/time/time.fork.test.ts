@@ -35,18 +35,18 @@ test('store must correctly serializes', async () => {
   const scopeA = fork();
   const scopeB = fork();
 
-  expect(serialize(scopeA)).toMatchInlineSnapshot(`Object {}`);
-  expect(serialize(scopeB)).toMatchInlineSnapshot(`Object {}`);
+  expect(serialize(scopeA)).toMatchInlineSnapshot(`{}`);
+  expect(serialize(scopeB)).toMatchInlineSnapshot(`{}`);
 
   await allSettled(clock, { scope: scopeA });
   await allSettled(clock, { scope: scopeB });
   expect(serialize(scopeA)).toMatchInlineSnapshot(`
-    Object {
+    {
       "-9m03zk|-ys9vce": 2,
     }
   `);
   expect(serialize(scopeB)).toMatchInlineSnapshot(`
-    Object {
+    {
       "-9m03zk|-ys9vce": 3,
     }
   `);

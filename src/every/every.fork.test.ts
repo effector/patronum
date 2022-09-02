@@ -27,7 +27,7 @@ test('every works in forked scope', async () => {
   });
 
   expect(serialize(scope)).toMatchInlineSnapshot(`
-    Object {
+    {
       "-tgyj53": 0,
     }
   `);
@@ -69,12 +69,12 @@ test('every do not affect another forks', async () => {
   });
 
   expect(serialize(scopeA)).toMatchInlineSnapshot(`
-    Object {
+    {
       "b8wyrn": 2,
     }
   `);
   expect(serialize(scopeB)).toMatchInlineSnapshot(`
-    Object {
+    {
       "b8wyrn": 200,
     }
   `);
@@ -105,7 +105,7 @@ test('every do not affect original store value', async () => {
   });
 
   expect(serialize(scope)).toMatchInlineSnapshot(`
-    Object {
+    {
       "28peg0": 2,
     }
   `);
