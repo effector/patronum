@@ -26,6 +26,7 @@ jobs:
 
       - name: 🔍 Installation
         run: pnpm install
+        working-directory: ./website
 
       - name: 🔧 Build
         run: pnpm build
