@@ -35,7 +35,7 @@ test('isRunning works in fork', async () => {
 
   await wait(30);
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
+    [
       false,
       true,
     ]
@@ -45,7 +45,7 @@ test('isRunning works in fork', async () => {
 
   await wait(30);
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
+    [
       false,
       true,
       false,

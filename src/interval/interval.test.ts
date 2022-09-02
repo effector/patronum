@@ -73,14 +73,14 @@ describe('timeout', () => {
     const fn = watch(isRunning);
 
     expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-      Array [
+      [
         false,
       ]
     `);
 
     start();
     expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-      Array [
+      [
         false,
         true,
       ]
@@ -88,7 +88,7 @@ describe('timeout', () => {
 
     await wait(10);
     expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-      Array [
+      [
         false,
         true,
       ]
@@ -96,7 +96,7 @@ describe('timeout', () => {
 
     await wait(10);
     expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-      Array [
+      [
         false,
         true,
       ]
@@ -105,7 +105,7 @@ describe('timeout', () => {
     stop();
     await wait(20);
     expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-      Array [
+      [
         false,
         true,
         false,

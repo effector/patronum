@@ -11,14 +11,14 @@ test('change status: initial -> pending -> done', async () => {
 
   $status.watch(fn);
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
+    [
       "initial",
     ]
   `);
 
   effect();
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
+    [
       "initial",
       "pending",
     ]
@@ -26,7 +26,7 @@ test('change status: initial -> pending -> done', async () => {
 
   await waitFor(effect.finally);
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
+    [
       "initial",
       "pending",
       "done",
@@ -44,7 +44,7 @@ test('change status: initial -> pending -> fail', async () => {
 
   effect();
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
+    [
       "initial",
       "pending",
     ]
@@ -52,7 +52,7 @@ test('change status: initial -> pending -> fail', async () => {
 
   await waitFor(effect.finally);
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
+    [
       "initial",
       "pending",
       "fail",
@@ -76,7 +76,7 @@ test('change status: initial -> pending -> fail -> initial (clear)', async () =>
 
   clear();
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
+    [
       "initial",
       "pending",
       "done",
@@ -98,7 +98,7 @@ test('set default status effect', async () => {
   await waitFor(effect.finally);
 
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
+    [
       "pending",
       "done",
     ]

@@ -27,7 +27,7 @@ test('condition works in forked scope', async () => {
   });
 
   expect(serialize(scope)).toMatchInlineSnapshot(`
-    Object {
+    {
       "tdeurd": "Demo",
     }
   `);
@@ -71,17 +71,17 @@ test('do not affect another forks', async () => {
   await Promise.all([promise1, promise2, promise3]);
 
   expect(serialize(scope1)).toMatchInlineSnapshot(`
-    Object {
+    {
       "-e3rnr5": "First",
     }
   `);
   expect(serialize(scope2)).toMatchInlineSnapshot(`
-    Object {
+    {
       "2dhngc": "Second",
     }
   `);
   expect(serialize(scope3)).toMatchInlineSnapshot(`
-    Object {
+    {
       "-e3rnr5": "Third",
     }
   `);

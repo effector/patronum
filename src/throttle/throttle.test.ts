@@ -63,8 +63,8 @@ describe('event', () => {
     await wait(40);
 
     expect(watcher.mock.calls).toMatchInlineSnapshot(`
-      Array [
-        Array [
+      [
+        [
           2,
         ],
       ]
@@ -88,8 +88,8 @@ describe('event', () => {
     await wait(40);
 
     expect(watcher.mock.calls).toMatchInlineSnapshot(`
-      Array [
-        Array [
+      [
+        [
           2,
         ],
       ]
@@ -101,11 +101,11 @@ describe('event', () => {
     await wait(50);
 
     expect(watcher.mock.calls).toMatchInlineSnapshot(`
-      Array [
-        Array [
+      [
+        [
           2,
         ],
-        Array [
+        [
           4,
         ],
       ]
@@ -211,8 +211,8 @@ describe('effect', () => {
 
     expect(watcher).toBeCalledTimes(1);
     expect(watcher.mock.calls).toMatchInlineSnapshot(`
-      Array [
-        Array [
+      [
+        [
           2,
         ],
       ]
@@ -246,11 +246,11 @@ describe('effect', () => {
 
     expect(watcher).toBeCalledTimes(2);
     expect(watcher.mock.calls).toMatchInlineSnapshot(`
-      Array [
-        Array [
+      [
+        [
           2,
         ],
-        Array [
+        [
           4,
         ],
       ]
@@ -277,8 +277,8 @@ describe('effect', () => {
 
     expect(watcher).toBeCalledTimes(1);
     expect(watcher.mock.calls).toMatchInlineSnapshot(`
-      Array [
-        Array [
+      [
+        [
           2,
         ],
       ]
@@ -305,8 +305,8 @@ describe('effect', () => {
 
     expect(watcher).toBeCalledTimes(1);
     expect(watcher.mock.calls).toMatchInlineSnapshot(`
-      Array [
-        Array [
+      [
+        [
           2,
         ],
       ]
@@ -358,8 +358,8 @@ describe('store', () => {
 
     expect(watcher).toBeCalledTimes(1);
     expect(watcher.mock.calls).toMatchInlineSnapshot(`
-      Array [
-        Array [
+      [
+        [
           2,
         ],
       ]
@@ -387,11 +387,11 @@ describe('store', () => {
     await wait(40);
 
     expect(watcher.mock.calls).toMatchInlineSnapshot(`
-      Array [
-        Array [
+      [
+        [
           0,
         ],
-        Array [
+        [
           3,
         ],
       ]
@@ -460,8 +460,8 @@ test('throttle do not affect another instance', async () => {
 
   expect(watcherFirst).toBeCalledTimes(1);
   expect(watcherFirst.mock.calls).toMatchInlineSnapshot(`
-    Array [
-      Array [
+    [
+      [
         0,
       ],
     ]
@@ -477,14 +477,14 @@ test('throttle do not affect another instance', async () => {
 
   expect(watcherFirst).toBeCalledTimes(3);
   expect(watcherFirst.mock.calls).toMatchInlineSnapshot(`
-    Array [
-      Array [
+    [
+      [
         0,
       ],
-      Array [
+      [
         1,
       ],
-      Array [
+      [
         2,
       ],
     ]
@@ -495,8 +495,8 @@ test('throttle do not affect another instance', async () => {
 
   expect(watcherSecond).toBeCalledTimes(1);
   expect(watcherSecond.mock.calls).toMatchInlineSnapshot(`
-    Array [
-      Array [
+    [
+      [
         "foo",
       ],
     ]
@@ -542,8 +542,8 @@ test('source event, target effect', async () => {
 
   expect(watcher).toBeCalledTimes(1);
   expect(watcher.mock.calls).toMatchInlineSnapshot(`
-    Array [
-      Array [
+    [
+      [
         2,
       ],
     ]
@@ -571,8 +571,8 @@ test('source store, target effect', async () => {
 
   expect(watcher).toBeCalledTimes(1);
   expect(watcher.mock.calls).toMatchInlineSnapshot(`
-    Array [
-      Array [
+    [
+      [
         3,
       ],
     ]

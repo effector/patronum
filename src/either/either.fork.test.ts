@@ -82,7 +82,7 @@ test('result updates with the selected argument', async () => {
 
   const scope = fork();
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
+    [
       "first",
     ]
   `);
@@ -93,7 +93,7 @@ test('result updates with the selected argument', async () => {
   await allSettled(updateSecond, { scope, params: 2 });
 
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
+    [
       "first",
       "second",
       0,
@@ -116,7 +116,7 @@ test('result don`t updates for not selected argument', async () => {
   const scope = fork();
   const fn = watch($result);
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
+    [
       "first",
     ]
   `);
@@ -128,7 +128,7 @@ test('result don`t updates for not selected argument', async () => {
 
   // Second update of the first looks like a bug in effector
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
+    [
       "first",
       "first",
       2,

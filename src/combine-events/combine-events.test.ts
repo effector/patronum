@@ -42,8 +42,8 @@ test('source: shape', () => {
   event5('e');
 
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
-      Object {
+    [
+      {
         "event1": undefined,
         "event2": undefined,
         "event3": "c",
@@ -60,8 +60,8 @@ test('source: shape', () => {
   event3();
 
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
-      Object {
+    [
+      {
         "event1": undefined,
         "event2": undefined,
         "event3": "c",
@@ -75,15 +75,15 @@ test('source: shape', () => {
   event5('e');
 
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
-      Object {
+    [
+      {
         "event1": undefined,
         "event2": undefined,
         "event3": "c",
         "event4": "d",
         "event5": "e",
       },
-      Object {
+      {
         "event1": "a",
         "event2": "b",
         "event3": undefined,
@@ -102,15 +102,15 @@ test('source: shape', () => {
   event4('4');
 
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
-      Object {
+    [
+      {
         "event1": undefined,
         "event2": undefined,
         "event3": "c",
         "event4": "d",
         "event5": "e",
       },
-      Object {
+      {
         "event1": "a",
         "event2": "b",
         "event3": undefined,
@@ -124,22 +124,22 @@ test('source: shape', () => {
   event5('-');
 
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
-      Object {
+    [
+      {
         "event1": undefined,
         "event2": undefined,
         "event3": "c",
         "event4": "d",
         "event5": "e",
       },
-      Object {
+      {
         "event1": "a",
         "event2": "b",
         "event3": undefined,
         "event4": undefined,
         "event5": "e",
       },
-      Object {
+      {
         "event1": "1",
         "event2": "2",
         "event3": "3",
@@ -199,22 +199,22 @@ test('source: array', () => {
   event5('-');
 
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
-      Array [
+    [
+      [
         undefined,
         undefined,
         "c",
         "d",
         "e",
       ],
-      Array [
+      [
         "a",
         "b",
         undefined,
         undefined,
         "e",
       ],
-      Array [
+      [
         "1",
         "2",
         "3",
@@ -249,15 +249,15 @@ test('example from readme', () => {
   event.watch(fn);
 
   event1(true);
-  expect(argumentHistory(fn)).toMatchInlineSnapshot(`Array []`);
+  expect(argumentHistory(fn)).toMatchInlineSnapshot(`[]`);
 
   event2('demo');
-  expect(argumentHistory(fn)).toMatchInlineSnapshot(`Array []`);
+  expect(argumentHistory(fn)).toMatchInlineSnapshot(`[]`);
 
   event3(5);
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
-      Object {
+    [
+      {
         "event1": true,
         "event2": "demo",
         "event3": 5,
@@ -294,7 +294,7 @@ test('reset', () => {
   event3('c');
   event2('b');
 
-  expect(argumentHistory(fn)).toMatchInlineSnapshot(`Array []`);
+  expect(argumentHistory(fn)).toMatchInlineSnapshot(`[]`);
 
   event2();
   event4();
@@ -303,7 +303,7 @@ test('reset', () => {
   event4('d');
   event5('e');
 
-  expect(argumentHistory(fn)).toMatchInlineSnapshot(`Array []`);
+  expect(argumentHistory(fn)).toMatchInlineSnapshot(`[]`);
 
   event1('a');
   event2('-');
@@ -312,8 +312,8 @@ test('reset', () => {
   event3(); // triggers
 
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
-      Array [
+    [
+      [
         "a",
         "-",
         undefined,
@@ -328,8 +328,8 @@ test('reset', () => {
   event5('e');
 
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
-      Array [
+    [
+      [
         "a",
         "-",
         undefined,
@@ -348,8 +348,8 @@ test('reset', () => {
   event3('3');
 
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
-      Array [
+    [
+      [
         "a",
         "-",
         undefined,
@@ -365,15 +365,15 @@ test('reset', () => {
   event5('-');
 
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
-      Array [
+    [
+      [
         "a",
         "-",
         undefined,
         "d",
         "e",
       ],
-      Array [
+      [
         "1",
         "2",
         "3",
@@ -411,15 +411,15 @@ test('reset', () => {
   a({ x: 0 });
 
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
-      Array [
+    [
+      [
         "a",
         "-",
         undefined,
         "d",
         "e",
       ],
-      Array [
+      [
         "1",
         "2",
         "3",
@@ -433,23 +433,23 @@ test('reset', () => {
   c();
 
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
-      Array [
+    [
+      [
         "a",
         "-",
         undefined,
         "d",
         "e",
       ],
-      Array [
+      [
         "1",
         "2",
         "3",
         "4",
         "5",
       ],
-      Object {
-        "a": Object {
+      {
+        "a": {
           "x": 0,
         },
         "b": [Function],
@@ -465,23 +465,23 @@ test('reset', () => {
   a({ x: 2 });
 
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
-      Array [
+    [
+      [
         "a",
         "-",
         undefined,
         "d",
         "e",
       ],
-      Array [
+      [
         "1",
         "2",
         "3",
         "4",
         "5",
       ],
-      Object {
-        "a": Object {
+      {
+        "a": {
           "x": 0,
         },
         "b": [Function],
@@ -493,30 +493,30 @@ test('reset', () => {
   b(() => true);
 
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
-      Array [
+    [
+      [
         "a",
         "-",
         undefined,
         "d",
         "e",
       ],
-      Array [
+      [
         "1",
         "2",
         "3",
         "4",
         "5",
       ],
-      Object {
-        "a": Object {
+      {
+        "a": {
           "x": 0,
         },
         "b": [Function],
         "c": undefined,
       },
-      Object {
-        "a": Object {
+      {
+        "a": {
           "x": 2,
         },
         "b": [Function],
@@ -570,7 +570,7 @@ test('target', () => {
   event3('c');
   event2('b');
 
-  expect(argumentHistory(fn)).toMatchInlineSnapshot(`Array []`);
+  expect(argumentHistory(fn)).toMatchInlineSnapshot(`[]`);
 
   event2();
   event4();
@@ -579,7 +579,7 @@ test('target', () => {
   event4('d');
   event5('e');
 
-  expect(argumentHistory(fn)).toMatchInlineSnapshot(`Array []`);
+  expect(argumentHistory(fn)).toMatchInlineSnapshot(`[]`);
 
   event1('a');
   event2('-');
@@ -588,8 +588,8 @@ test('target', () => {
   event3(); // triggers
 
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
-      Array [
+    [
+      [
         "a",
         "-",
         undefined,
@@ -604,8 +604,8 @@ test('target', () => {
   event5('e');
 
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
-      Array [
+    [
+      [
         "a",
         "-",
         undefined,
@@ -624,8 +624,8 @@ test('target', () => {
   event3('3');
 
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
-      Array [
+    [
+      [
         "a",
         "-",
         undefined,
@@ -641,15 +641,15 @@ test('target', () => {
   event5('-');
 
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
-      Array [
+    [
+      [
         "a",
         "-",
         undefined,
         "d",
         "e",
       ],
-      Array [
+      [
         "1",
         "2",
         "3",
@@ -681,15 +681,15 @@ test('target', () => {
   a({ x: 0 });
 
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
-      Array [
+    [
+      [
         "a",
         "-",
         undefined,
         "d",
         "e",
       ],
-      Array [
+      [
         "1",
         "2",
         "3",
@@ -703,23 +703,23 @@ test('target', () => {
   c();
 
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
-      Array [
+    [
+      [
         "a",
         "-",
         undefined,
         "d",
         "e",
       ],
-      Array [
+      [
         "1",
         "2",
         "3",
         "4",
         "5",
       ],
-      Object {
-        "a": Object {
+      {
+        "a": {
           "x": 0,
         },
         "b": [Function],
@@ -735,23 +735,23 @@ test('target', () => {
   a({ x: 2 });
 
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
-      Array [
+    [
+      [
         "a",
         "-",
         undefined,
         "d",
         "e",
       ],
-      Array [
+      [
         "1",
         "2",
         "3",
         "4",
         "5",
       ],
-      Object {
-        "a": Object {
+      {
+        "a": {
           "x": 0,
         },
         "b": [Function],
@@ -763,30 +763,30 @@ test('target', () => {
   b(() => true);
 
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
-      Array [
+    [
+      [
         "a",
         "-",
         undefined,
         "d",
         "e",
       ],
-      Array [
+      [
         "1",
         "2",
         "3",
         "4",
         "5",
       ],
-      Object {
-        "a": Object {
+      {
+        "a": {
           "x": 0,
         },
         "b": [Function],
         "c": undefined,
       },
-      Object {
-        "a": Object {
+      {
+        "a": {
           "x": 2,
         },
         "b": [Function],

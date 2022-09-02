@@ -38,7 +38,7 @@ it('should be true when at least one store has truthy value', () => {
 
   expect(fn).toHaveBeenCalledTimes(1);
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
+    [
       true,
     ]
   `);

@@ -12,10 +12,10 @@ describe('effects', () => {
 
     $count.watch(fn);
     expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
-      0,
-    ]
-  `);
+      [
+        0,
+      ]
+    `);
   });
 
   test('Run effect to get 1, after effect get 0', async () => {
@@ -27,27 +27,27 @@ describe('effects', () => {
 
     $count.watch(fn);
     expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
-      0,
-    ]
-  `);
+      [
+        0,
+      ]
+    `);
 
     effect();
     expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
-      0,
-      1,
-    ]
-  `);
+      [
+        0,
+        1,
+      ]
+    `);
 
     await waitFor(effect.finally);
     expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
-      0,
-      1,
-      0,
-    ]
-  `);
+      [
+        0,
+        1,
+        0,
+      ]
+    `);
   });
 
   test('Concurrent runs works simultaneously', async () => {
@@ -59,35 +59,35 @@ describe('effects', () => {
 
     $count.watch(fn);
     expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
-      0,
-    ]
-  `);
+      [
+        0,
+      ]
+    `);
 
     effect();
     effect();
     effect();
     expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
-      0,
-      1,
-      2,
-      3,
-    ]
-  `);
+      [
+        0,
+        1,
+        2,
+        3,
+      ]
+    `);
 
     await waitFor(effect.inFlight.updates.filter({ fn: (c) => c === 0 }));
     expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
-      0,
-      1,
-      2,
-      3,
-      2,
-      1,
-      0,
-    ]
-  `);
+      [
+        0,
+        1,
+        2,
+        3,
+        2,
+        1,
+        0,
+      ]
+    `);
   });
 
   test('Different effects works simultaneously', async () => {
@@ -105,48 +105,48 @@ describe('effects', () => {
 
     $count.watch(fn);
     expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
-      0,
-    ]
-  `);
+      [
+        0,
+      ]
+    `);
 
     effect1();
     expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
-      0,
-      1,
-    ]
-  `);
+      [
+        0,
+        1,
+      ]
+    `);
 
     await waitFor(effect1.inFlight.updates.filter({ fn: (c) => c === 0 }));
     expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
-      0,
-      1,
-      0,
-    ]
-  `);
+      [
+        0,
+        1,
+        0,
+      ]
+    `);
 
     effect2();
     expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
-      0,
-      1,
-      0,
-      1,
-    ]
-  `);
+      [
+        0,
+        1,
+        0,
+        1,
+      ]
+    `);
 
     await waitFor(effect2.inFlight.updates.filter({ fn: (c) => c === 0 }));
     expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
-      0,
-      1,
-      0,
-      1,
-      0,
-    ]
-  `);
+      [
+        0,
+        1,
+        0,
+        1,
+        0,
+      ]
+    `);
   });
 
   test('Different concurrent effect runs works simultaneously', async () => {
@@ -164,20 +164,20 @@ describe('effects', () => {
 
     $count.watch(fn);
     expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
-      0,
-    ]
-  `);
+      [
+        0,
+      ]
+    `);
 
     effect1();
     effect2();
     expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
-      0,
-      1,
-      2,
-    ]
-  `);
+      [
+        0,
+        1,
+        2,
+      ]
+    `);
 
     await waitFor(
       combine(effect2.inFlight, effect1.inFlight, (a, b) => a + b).updates.filter({
@@ -185,14 +185,14 @@ describe('effects', () => {
       }),
     );
     expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
-      0,
-      1,
-      2,
-      1,
-      0,
-    ]
-  `);
+      [
+        0,
+        1,
+        2,
+        1,
+        0,
+      ]
+    `);
   });
 });
 
@@ -207,10 +207,10 @@ describe('domain', () => {
 
     $count.watch(fn);
     expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
-      0,
-    ]
-  `);
+      [
+        0,
+      ]
+    `);
   });
 
   test('Run effect to get 1, after effect get 0', async () => {
@@ -223,27 +223,27 @@ describe('domain', () => {
 
     $count.watch(fn);
     expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
-      0,
-    ]
-  `);
+      [
+        0,
+      ]
+    `);
 
     effect();
     expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
-      0,
-      1,
-    ]
-  `);
+      [
+        0,
+        1,
+      ]
+    `);
 
     await waitFor(effect.finally);
     expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
-      0,
-      1,
-      0,
-    ]
-  `);
+      [
+        0,
+        1,
+        0,
+      ]
+    `);
   });
 
   test('Concurrent runs works simultaneously', async () => {
@@ -256,35 +256,35 @@ describe('domain', () => {
 
     $count.watch(fn);
     expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
-      0,
-    ]
-  `);
+      [
+        0,
+      ]
+    `);
 
     effect();
     effect();
     effect();
     expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
-      0,
-      1,
-      2,
-      3,
-    ]
-  `);
+      [
+        0,
+        1,
+        2,
+        3,
+      ]
+    `);
 
     await waitFor(effect.inFlight.updates.filter({ fn: (c) => c === 0 }));
     expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
-      0,
-      1,
-      2,
-      3,
-      2,
-      1,
-      0,
-    ]
-  `);
+      [
+        0,
+        1,
+        2,
+        3,
+        2,
+        1,
+        0,
+      ]
+    `);
   });
 
   test('Different effects works simultaneously', async () => {
@@ -303,48 +303,48 @@ describe('domain', () => {
 
     $count.watch(fn);
     expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
-      0,
-    ]
-  `);
+      [
+        0,
+      ]
+    `);
 
     effect1();
     expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
-      0,
-      1,
-    ]
-  `);
+      [
+        0,
+        1,
+      ]
+    `);
 
     await waitFor(effect1.inFlight.updates.filter({ fn: (c) => c === 0 }));
     expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
-      0,
-      1,
-      0,
-    ]
-  `);
+      [
+        0,
+        1,
+        0,
+      ]
+    `);
 
     effect2();
     expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
-      0,
-      1,
-      0,
-      1,
-    ]
-  `);
+      [
+        0,
+        1,
+        0,
+        1,
+      ]
+    `);
 
     await waitFor(effect2.inFlight.updates.filter({ fn: (c) => c === 0 }));
     expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
-      0,
-      1,
-      0,
-      1,
-      0,
-    ]
-  `);
+      [
+        0,
+        1,
+        0,
+        1,
+        0,
+      ]
+    `);
   });
 
   test('Different concurrent effect runs works simultaneously', async () => {
@@ -363,20 +363,20 @@ describe('domain', () => {
 
     $count.watch(fn);
     expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
-      0,
-    ]
-  `);
+      [
+        0,
+      ]
+    `);
 
     effect1();
     effect2();
     expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
-      0,
-      1,
-      2,
-    ]
-  `);
+      [
+        0,
+        1,
+        2,
+      ]
+    `);
 
     await waitFor(
       combine(effect2.inFlight, effect1.inFlight, (a, b) => a + b).updates.filter({
@@ -384,13 +384,13 @@ describe('domain', () => {
       }),
     );
     expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
-      0,
-      1,
-      2,
-      1,
-      0,
-    ]
-  `);
+      [
+        0,
+        1,
+        2,
+        1,
+        0,
+      ]
+    `);
   });
 });

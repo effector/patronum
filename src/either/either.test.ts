@@ -76,7 +76,7 @@ test('result updates with the selected argument', () => {
   const fn = watch($result);
 
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
+    [
       "first",
     ]
   `);
@@ -87,7 +87,7 @@ test('result updates with the selected argument', () => {
   updateSecond(2);
 
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
+    [
       "first",
       "second",
       0,
@@ -109,7 +109,7 @@ test('result don`t updates for not selected argument', () => {
   const fn = watch($result);
 
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
+    [
       "first",
     ]
   `);
@@ -120,7 +120,7 @@ test('result don`t updates for not selected argument', () => {
   updateFirst('second');
 
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
+    [
       "first",
       2,
     ]

@@ -22,7 +22,7 @@ test('format works in forked scope', async () => {
   await allSettled(changeName, { scope });
 
   expect(serialize(scope)).toMatchInlineSnapshot(`
-    Object {
+    {
       "c710t": "Bob",
     }
   `);
@@ -41,7 +41,7 @@ test('format works without domain', async () => {
   await allSettled(changeName, { scope });
 
   expect(serialize(scope)).toMatchInlineSnapshot(`
-    Object {
+    {
       "t7xz2o": "Bob",
     }
   `);
@@ -83,13 +83,13 @@ test('format do not affect another forks', async () => {
   });
 
   expect(serialize(firstScope)).toMatchInlineSnapshot(`
-    Object {
+    {
       "-bia9o0": "Bob",
       "-lsyf4s": 30,
     }
   `);
   expect(serialize(secondScope)).toMatchInlineSnapshot(`
-    Object {
+    {
       "-bia9o0": "Kate",
       "-lsyf4s": 18,
     }
@@ -112,7 +112,7 @@ test('format do not affect original store value', async () => {
   await allSettled(changeName, { scope });
 
   expect(serialize(scope)).toMatchInlineSnapshot(`
-    Object {
+    {
       "-1mgzy9": "Bob",
     }
   `);

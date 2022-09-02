@@ -15,7 +15,7 @@ test('works with same type of storage', () => {
 
   changeName();
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
+    [
       "My name is Mike",
       "My name is Bob",
     ]
@@ -38,7 +38,7 @@ test('works with different type of storage', () => {
   changeName();
   changeAge();
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
+    [
       "That Mike is a 28 old",
       "That Bob is a 28 old",
       "That Bob is a 30 old",
@@ -70,7 +70,7 @@ test('works with primitives', () => {
 
   switchPortToProd();
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    Array [
+    [
       "Server is running at https://site.com:8080",
       "Server is running at https://site.com:443",
     ]

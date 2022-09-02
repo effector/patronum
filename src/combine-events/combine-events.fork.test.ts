@@ -20,7 +20,7 @@ test('works in forked scope', async () => {
     allSettled(e3, { scope, params: 'WOOOOO' }),
   ]);
   expect(scope.getState($store)).toMatchInlineSnapshot(`
-    Object {
+    {
       "e1": "hi1",
       "e2": "hi2",
       "e3": "WOOOOO",
@@ -46,14 +46,14 @@ test('do not affects original store state', async () => {
     allSettled(e3, { scope, params: 'WOOOOO' }),
   ]);
   expect(scope.getState($store)).toMatchInlineSnapshot(`
-    Object {
+    {
       "e1": "hi1",
       "e2": "hi2",
       "e3": "WOOOOO",
     }
   `);
   expect($store.getState()).toMatchInlineSnapshot(`
-    Object {
+    {
       "e1": "",
       "e2": "",
       "e3": "",
@@ -86,14 +86,14 @@ test('do not affects another scope', async () => {
   ]);
 
   expect(scope1.getState($store)).toMatchInlineSnapshot(`
-    Object {
+    {
       "e1": "hi1",
       "e2": "1hi2",
       "e3": "WOOOOO",
     }
   `);
   expect(scope2.getState($store)).toMatchInlineSnapshot(`
-    Object {
+    {
       "e1": "WOOOOO it 1 for 2",
       "e2": "2 demo 2",
       "e3": "that 3 for 2",
