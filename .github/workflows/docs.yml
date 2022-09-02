@@ -23,6 +23,7 @@ jobs:
         with:
           node-version: v18.x
           cache: 'pnpm'
+          cache-dependency-path: website/pnpm-lock.yaml
 
       - name: 🔍 Installation
         run: pnpm install
