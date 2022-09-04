@@ -11,8 +11,6 @@ import {
   Scope,
 } from 'effector';
 
-import { scopes } from './scope-cache';
-
 interface Config {
   trace?: boolean;
 }
@@ -347,3 +345,42 @@ function logUpdate({
 type NodeUnit = { graphite: Node } | Node;
 const getGraph = (graph: NodeUnit): Node =>
   (graph as { graphite: Node }).graphite || graph;
+
+/**
+ * This is inlined in the index file because "./scope-cache" import
+ * does not work correctly with esm imports
+ * since in the resulting build scope-cache does not have explicit "js" extension
+ * 
+ * TODO: fix this at the level of build configuration
+ */
+interface Meta {
+  name: string;
+}
+
+const cache = new Map<Scope, Meta>();
+
+let unknownScopes = 0;
+function getDefaultName() {
+  unknownScopes += 1;
+  return `unknown_scope_${unknownScopes}`;
+}
+const scopes = {
+  save(scope: Scope, meta?: Meta) {
+    if (!scopes.get(scope)) {
+      cache.set(scope, meta ?? { name: getDefaultName() });
+    }
+  },
+  get(scope?: Scope): Meta | null {
+    if (!scope) return null;
+    return cache.get(scope) ?? null;
+  },
+  delete(scope: Scope) {
+    cache.delete(scope);
+  },
+  forEach(callback: (scope: Scope, meta: Meta) => void) {
+    cache.forEach((meta, scope) => callback(scope, meta));
+  },
+  clear() {
+    cache.clear();
+  },
+} as const;
