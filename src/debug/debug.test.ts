@@ -112,6 +112,7 @@ test('debug domain', async () => {
       "[store] domain/_$store 0",
       "[event] domain/event 5",
       "[store] domain/_$store 5",
+      "[effect] domain/effect demo",
     ]
   `);
 
@@ -122,6 +123,7 @@ test('debug domain', async () => {
       "[store] domain/_$store 0",
       "[event] domain/event 5",
       "[store] domain/_$store 5",
+      "[effect] domain/effect demo",
       "[effect] domain/effect.done {"params":"demo","result":"resultdemo"}",
       "[store] domain/_$store 50",
     ]
@@ -198,6 +200,12 @@ test('domain is traceable', async () => {
   const d = createDomain();
   const up = d.createEvent();
   const $c = d.createStore(0).on(up, (s) => s + 1);
+  const fx = d.createEffect(() => {});
+
+  sample({
+    clock: $c,
+    target: fx
+  })
 
   debug({ trace: true }, d);
 
@@ -214,6 +222,14 @@ test('domain is traceable', async () => {
       "<- [store] $c 1",
       "<- [$c.on] $c.on(up) 1",
       "<- [event] up ",
+      "[effect] d/fx 1",
+      "[effect] d/fx trace",
+      "<- [effect] fx 1",
+      "<- [sample]  1",
+      "<- [store] $c 1",
+      "<- [$c.on] $c.on(up) 1",
+      "<- [event] up ",
+      "[effect] d/fx.done {"params":1}",
     ]
   `);
 });

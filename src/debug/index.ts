@@ -212,7 +212,13 @@ function logUnit(unit: Unit<any>, config?: Config) {
         logTrace(store);
       }
     });
-    unit.onCreateEffect(logEffect);
+    unit.onCreateEffect(effect => {
+      log(effect, 'effect');
+      logEffect(effect);
+      if (config?.trace) {
+        logTrace(effect);
+      }
+    });
   }
 }
 
@@ -350,7 +356,7 @@ const getGraph = (graph: NodeUnit): Node =>
  * This is inlined in the index file because "./scope-cache" import
  * does not work correctly with esm imports
  * since in the resulting build scope-cache does not have explicit "js" extension
- * 
+ *
  * TODO: fix this at the level of build configuration
  */
 interface Meta {
