@@ -213,7 +213,8 @@ function logUnit(unit: Unit<any>, config?: Config) {
       }
     });
     unit.onCreateEffect(effect => {
-      logEffect(effect)
+      log(effect, 'effect');
+      logEffect(effect);
       if (config?.trace) {
         logTrace(effect);
       }
