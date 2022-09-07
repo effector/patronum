@@ -198,6 +198,12 @@ test('domain is traceable', async () => {
   const d = createDomain();
   const up = d.createEvent();
   const $c = d.createStore(0).on(up, (s) => s + 1);
+  const fx = d.createEffect(() => {});
+
+  sample({
+    clock: $c,
+    target: fx
+  })
 
   debug({ trace: true }, d);
 
@@ -214,6 +220,13 @@ test('domain is traceable', async () => {
       "<- [store] $c 1",
       "<- [$c.on] $c.on(up) 1",
       "<- [event] up ",
+      "[effect] d/fx trace",
+      "<- [effect] fx 1",
+      "<- [sample]  1",
+      "<- [store] $c 1",
+      "<- [$c.on] $c.on(up) 1",
+      "<- [event] up ",
+      "[effect] d/fx.done {"params":1}",
     ]
   `);
 });
