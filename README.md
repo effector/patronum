@@ -4,6 +4,7 @@
 [![LICENSE](https://badgen.net/github/license/effector/patronum?color=green)](/LICENSE)
 [![Stars](https://badgen.net/github/stars/effector/patronum?color=green)](https://github.com/effector/patronum)
 [![Downloads](https://badgen.net/npm/dt/patronum)](https://npmjs.com/package/patronum)
+[![kandi X-Ray](https://kandi.openweaver.com/badges/xray.svg)](https://kandi.openweaver.com/typescript/effector/patronum)
 
 ☄️ Effector operators library delivering modularity and convenience
 
