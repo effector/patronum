@@ -6,6 +6,7 @@ import {
   allSettled,
   createEvent,
   createStore,
+  sample,
 } from 'effector';
 import { wait, watch } from '../../test-library';
 
@@ -186,4 +187,26 @@ describe('timeout as store', () => {
     await wait(100);
     expect(watcher).toBeCalledTimes(2);
   });
+});
+
+test('does not call target twice for sample chain', async () => {
+  const someEvent = createEvent();
+  const targetEvent = createEvent();
+
+  const callOne = createEvent();
+  const callTwo = createEvent();
+
+  sample({ clock: callOne, target: [callTwo, someEvent] });
+  sample({ clock: callTwo, target: targetEvent });
+
+  const listener = jest.fn();
+  targetEvent.watch(listener);
+
+  debounce({ source: someEvent, timeout: 100 });
+
+  const scope = fork();
+
+  await Promise.all([allSettled(callOne, { scope }), allSettled(callTwo, { scope })]);
+
+  expect(listener).toBeCalledTimes(1);
 });
