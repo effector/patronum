@@ -71,6 +71,7 @@ e.g., an unit may be exported under an alias for explicitness:
 
 ```ts
 export const $productsListVisible = productsPageModel.$open;
+const productAdded = createEvent();
 
 debug($productsListVisible, productAdded);
 // or
@@ -79,17 +80,18 @@ debug({ trace: true }, $productsListVisible, productAdded);
 
 In this case, because of `effector/babel-plugin` which provided `productsPageModel.$open` store its name at the moment of its creation, public name in the `debug` logs will be `$open` instead of `$productsListVisible`.
 
-It can be fixed with custom name, which can be provided by using `Record<string, Unit>` istead of a list of units:
+It can be fixed with custom name, which can be provided by using `Record<string, Unit>` instead of a list of units:
 
 ```ts
 export const $productsListVisible = productsPageModel.$open;
+const productAdded = createEvent();
 
 debug({ $productsListVisible, customEventName: productAdded });
 // or
 debug({ trace: true }, { $productsListVisible, customEventName: productAdded });
 ```
 
-This way `$productsListVisible` name in the logs will be the same, as the one which was provided to `debug`.
+This way `$productsListVisible` name in the logs will be the same, as the one which was provided to `debug`. The `productAdded` event will be named `customEventName`.
 
 ## Fork API and Scope
 
