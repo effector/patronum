@@ -1,0 +1,42 @@
+name: SizeCompare CI
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    types: [opened, reopened, synchronize, ready_for_review]
+  workflow_dispatch:
+
+jobs:
+  test-package:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        run: pnpm build
+
+      - name: 🚛 Size compare
+        uses: effector/size-compare@v1.0.0
+        with:
+          gist_id: fddb552974fd892cb987ba14a090dbb4
+          gist_token: ${{ secrets.SIZE_COMPARE_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          files: |
+            dist/**.js
+            dist/**.cjs
+            dist/**.mjs
