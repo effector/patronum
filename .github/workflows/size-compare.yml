@@ -40,3 +40,6 @@ jobs:
             dist/**.js
             dist/**.cjs
             dist/**.mjs
+            dist/**/*.js
+            dist/**/*.cjs
+            dist/**/*.mjs
