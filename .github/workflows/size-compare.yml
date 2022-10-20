@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-  pull_request:
+  pull_request_target:
     types: [opened, reopened, synchronize, ready_for_review]
   workflow_dispatch:
 
@@ -18,10 +18,10 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@v2
 
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Use Node.js 18.x
         uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 18.x
           cache: 'pnpm'
 
       - name: Install dependencies
@@ -31,7 +31,7 @@ jobs:
         run: pnpm build
 
       - name: 🚛 Size compare
-        uses: effector/size-compare@v1.0.0
+        uses: effector/size-compare@v1.1.0
         with:
           gist_id: fddb552974fd892cb987ba14a090dbb4
           gist_token: ${{ secrets.SIZE_COMPARE_TOKEN }}
