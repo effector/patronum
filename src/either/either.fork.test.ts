@@ -136,12 +136,16 @@ test('result don`t updates for not selected argument', async () => {
   `);
 });
 
-test('do not make infinite loop', async () => {
+test('supports object config as well', async () => {
   const $isMobile = createStore(true);
 
-  either({ filter: $isMobile, then: 250, other: 0 });
+  const $result = either({ filter: $isMobile, then: 250, other: 0 });
 
   const scope = fork();
 
+  expect(scope.getState($result)).toBe(250);
+
   await allSettled($isMobile, { scope, params: false });
+
+  expect(scope.getState($result)).toBe(0);
 });
