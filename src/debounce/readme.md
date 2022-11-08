@@ -141,11 +141,11 @@ someHappened(1);
 changeTimeout(400); // will be applied after next source trigger
 someHappened(2);
 
-setTimout(() => {
+setTimeout(() => {
   // console clear
 }, 200);
 
-setTimout(() => {
+setTimeout(() => {
   // someHappened now 2
 }, 400);
 ```
