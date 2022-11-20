@@ -275,7 +275,8 @@ test('reset', () => {
   const event4 = createEvent<string | void>();
   const event5 = createEvent<string | void>();
 
-  const reset = createEvent();
+  const reset1 = createEvent();
+  const reset2 = createEvent();
 
   type Target = Event<
     [string | void, string | void, string | void, string | void, string | void]
@@ -283,7 +284,7 @@ test('reset', () => {
 
   const event: Target = combineEvents({
     events: [event1, event2, event3, event4, event5],
-    reset,
+    reset: [reset1, reset2],
   });
 
   event.watch(fn);
@@ -298,7 +299,7 @@ test('reset', () => {
 
   event2();
   event4();
-  reset(); // reset
+  reset1(); // reset
 
   event4('d');
   event5('e');
@@ -339,7 +340,7 @@ test('reset', () => {
     ]
   `);
 
-  reset();
+  reset2();
 
   event1('1');
   event2('-');
@@ -385,7 +386,7 @@ test('reset', () => {
 
   event4('-');
   event4('4');
-  reset();
+  reset1();
   event5('5');
   event5('-');
 
@@ -394,6 +395,7 @@ test('reset', () => {
   const c = createEvent<void>();
   const renew = createEvent<number>();
   const store = restore(renew, null);
+  const reset = createEvent();
 
   type ABCTarget = Event<{
     a: { x: number };
@@ -403,7 +405,7 @@ test('reset', () => {
 
   const abc: ABCTarget = combineEvents({
     events: { a, b, c },
-    reset: store,
+    reset: [store, reset],
   });
 
   abc.watch(fn);
@@ -490,7 +492,37 @@ test('reset', () => {
     ]
   `);
 
+  reset();
   b(() => true);
+
+  expect(argumentHistory(fn)).toMatchInlineSnapshot(`
+    [
+      [
+        "a",
+        "-",
+        undefined,
+        "d",
+        "e",
+      ],
+      [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+      ],
+      {
+        "a": {
+          "x": 0,
+        },
+        "b": [Function],
+        "c": undefined,
+      },
+    ]
+  `);
+
+  c();
+  a({ x: 3 });
 
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
     [
@@ -517,7 +549,7 @@ test('reset', () => {
       },
       {
         "a": {
-          "x": 2,
+          "x": 3,
         },
         "b": [Function],
         "c": undefined,
