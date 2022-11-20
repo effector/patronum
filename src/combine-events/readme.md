@@ -6,7 +6,7 @@ import { combineEvents } from 'patronum';
 import { combineEvents } from 'patronum/combine-events';
 ```
 
-## `combineEvents({ events: Record<key, Event<T>>, reset?: Unit<any> })`
+## `combineEvents({ events: Record<key, Event<T>>, reset?: Unit<any> | Array<Unit<any>> })`
 
 ### Formulae
 

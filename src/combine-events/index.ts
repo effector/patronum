@@ -35,13 +35,13 @@ type ReturnTarget<Result, Target> = Target extends Store<infer S>
 
 export function combineEvents<P extends Shape>(config: {
   events: Events<P>;
-  reset?: Unit<any>;
+  reset?: Array<Unit<any>> | Unit<any>;
 }): Event<P>;
 
 export function combineEvents<
   P extends Shape,
   T extends Unit<P extends Tuple ? P : Partial<P>>,
->(config: { events: Events<P>; target: T; reset?: Unit<any> }): ReturnTarget<P, T>;
+>(config: { events: Events<P>; target: T; reset?: Array<Unit<any>> | Unit<any> }): ReturnTarget<P, T>;
 
 export function combineEvents<P>({
   events,
@@ -49,11 +49,12 @@ export function combineEvents<P>({
   target = createEvent(),
 }: {
   events: Events<P>;
-  reset?: Unit<any>;
+  reset?: Array<Unit<any>> | Unit<any>;
   target?: Unit<any>;
 }) {
   if (!is.unit(target)) throwError('target should be a unit');
-  if (reset && !is.unit(reset)) throwError('reset should be a unit');
+  if (reset && Array.isArray(reset) && reset.some(i => !is.unit(i))) throwError('reset should be a unit or an array of units');
+  if (reset && !Array.isArray(reset) && !is.unit(reset)) throwError('reset should be a unit or an array of units');
 
   withRegion(target, () => {
     const keys = Object.keys(events);
@@ -62,12 +63,14 @@ export function combineEvents<P>({
     const $counter = createStore(keys.length, { serialize: 'ignore' });
     const $results = createStore(defaultShape, { serialize: 'ignore' });
 
+    const resets = Array.isArray(reset) ? sample({ clock: reset }) : reset;
+
     $counter.reset(sample({ source: target }));
     $results.reset(target);
 
-    if (reset) {
-      $counter.reset(sample({ source: reset }));
-      $results.reset(reset);
+    if (resets) {
+      $counter.reset(sample({ source: resets }));
+      $results.reset(resets);
     }
 
     for (const key of keys) {
@@ -75,8 +78,8 @@ export function combineEvents<P>({
         .on(events[key], () => true)
         .reset(target);
 
-      if (reset) {
-        $isDone.reset(reset);
+      if (resets) {
+        $isDone.reset(resets);
       }
 
       $counter.on($isDone, (value) => value - 1);
