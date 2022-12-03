@@ -11,8 +11,39 @@ import {
   Scope,
 } from 'effector';
 
+type LogContext =
+  | {
+      type: 'log';
+      /** common */
+      scope: Scope | null;
+      scopeName: string | null;
+      node: Node;
+      value: unknown;
+      name: string;
+      timestamp: number;
+      /** trace only */
+      trace?: never;
+    }
+  | {
+      type: 'traceStart' | 'traceEnd' | 'trace';
+      /** common */
+      scope: Scope | null;
+      scopeName: string | null;
+      node: Node;
+      value: unknown;
+      name: string;
+      timestamp: number;
+      /** trace only */
+      trace: {
+        ofNode: Node;
+        ofValue: unknown;
+      };
+    };
+
 interface Config {
   trace?: boolean;
+  now?: () => number;
+  handler?: (context: LogContext) => void;
 }
 
 function isConfig(

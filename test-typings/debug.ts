@@ -1,5 +1,12 @@
 import { expectType } from 'tsd';
-import { createEvent, createDomain, createEffect, createStore } from 'effector';
+import {
+  createEvent,
+  createDomain,
+  createEffect,
+  createStore,
+  type Node,
+  type Scope,
+} from 'effector';
 import { debug } from '../src/debug';
 
 // Allows each unit of effector
@@ -43,4 +50,100 @@ import { debug } from '../src/debug';
 
   // @ts-expect-error
   debug(event, { trace: true }, $store, fx, domain);
+}
+
+// Allows shape of units
+{
+  const event = createEvent<number>();
+  const $store = createStore('');
+  const fx = createEffect<boolean, void, number>();
+  const domain = createDomain();
+
+  debug({ event, $store, fx, domain });
+}
+
+// Allows shape of units with config
+{
+  const event = createEvent<number>();
+  const $store = createStore('');
+  const fx = createEffect<boolean, void, number>();
+  const domain = createDomain();
+  debug({ trace: true }, { event, $store, fx, domain });
+}
+
+// Allows custom handler
+{
+  const event = createEvent<number>();
+  const $store = createStore('');
+  const fx = createEffect<boolean, void, number>();
+  const domain = createDomain();
+
+  debug(
+    {
+      trace: true,
+      handler: (context) => {
+        expectType<'log' | 'traceStart' | 'traceEnd' | 'trace'>(context.type);
+        expectType<string>(context.name);
+        expectType<Node>(context.node);
+        expectType<Scope | null>(context.scope);
+        expectType<string | null>(context.scopeName);
+        expectType<unknown>(context.value);
+        expectType<number>(context.timestamp);
+
+        if (context.type === 'log') {
+          expectType<undefined>(context.trace);
+        }
+
+        if (context.type === 'trace') {
+          expectType<Node>(context.trace.ofNode);
+          expectType<unknown>(context.trace.ofValue);
+        }
+
+        if (context.type === 'traceStart' || context.type === 'traceEnd') {
+          expectType<Node>(context.trace.ofNode);
+          expectType<unknown>(context.trace.ofValue);
+        }
+      },
+    },
+    { event, $store, fx, domain },
+  );
+}
+
+// Allows custom timer for handler
+{
+  const event = createEvent<number>();
+  const $store = createStore('');
+  const fx = createEffect<boolean, void, number>();
+  const domain = createDomain();
+
+  debug(
+    {
+      trace: true,
+      now: () => 42,
+      handler: (context) => {
+        expectType<'log' | 'traceStart' | 'traceEnd' | 'trace'>(context.type);
+        expectType<string>(context.name);
+        expectType<Node>(context.node);
+        expectType<Scope | null>(context.scope);
+        expectType<string | null>(context.scopeName);
+        expectType<unknown>(context.value);
+        expectType<number>(context.timestamp);
+
+        if (context.type === 'log') {
+          expectType<undefined>(context.trace);
+        }
+
+        if (context.type === 'trace') {
+          expectType<Node>(context.trace.ofNode);
+          expectType<unknown>(context.trace.ofValue);
+        }
+
+        if (context.type === 'traceStart' || context.type === 'traceEnd') {
+          expectType<Node>(context.trace.ofNode);
+          expectType<unknown>(context.trace.ofValue);
+        }
+      },
+    },
+    { event, $store, fx, domain },
+  );
 }
