@@ -243,7 +243,7 @@ function logUnit(unit: Unit<any>, config?: Config) {
         logTrace(store);
       }
     });
-    unit.onCreateEffect(effect => {
+    unit.onCreateEffect((effect) => {
       log(effect, 'effect');
       logEffect(effect);
       if (config?.trace) {
