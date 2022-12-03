@@ -179,3 +179,53 @@ debug($count);
 // "[store] (scope: scope_42) $count 42",
 // "[store] (scope: scope_1337) $count 1337",
 ```
+
+### Custom log handler
+
+You can provide custom log handler in the config. It can be useful, if `console.log` somehow doesn't fit your use-case: e.g. you want advanced info from `patronum/debug` to built your own dev-tools, debug especially hard case, etc.
+
+Handler is called for each update with context object like this:
+
+Common fields:
+
+- **type** - `"log" | "traceStart" | "traceEnd" | "trace"` - describes which kind of log it is - basic unit update log or trace log.
+- **scope** - `Scope | null` - effector's `Scope` context object, which owns this particular update
+- **scopeName** - `string | null` - name of the `Scope`, if registered and `null` otherwise.
+- **node** - `Node` - effector's internal node, which update is being logged.
+- **name** - `string` - node's name for convenience.
+- **value** - `unknown` - value of the update.
+- **timestamp** - `number` - timestamp of this update, calculated via `performance.now` by default, can be customized by proiding custom `now` function in the `debug` config.
+
+Special field for `type: "trace"` is `trace` object, which contains fields like:
+
+- **trace.ofNode** - `Node` - effector's node, which update trace is being logged.
+- **trace.ofValue** - `unknown` - value of effector's node, which update trace is being logged.
+
+The `trace` field is not provided`, if `debug`'s config does not have `trace: true`.
+
+```ts
+debug({
+  trace: true,
+  // custom timer
+  now: () => Date.now(),
+  // custom log handler
+  handler: ({ type, trace, scope, scopeName, node, value }) => {
+    if (type === 'log') {
+      // your own way to log updates
+      doStuff(node, value);
+    }
+
+    if (type === 'traceStart') {
+      // log something like "trace of $store"
+    }
+
+    if (type === 'trace') {
+      // log trace part
+    }
+
+    if (type === 'traceEnd') {
+      // log the end of the trace
+    }
+  },
+});
+```
