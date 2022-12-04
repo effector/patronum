@@ -82,65 +82,25 @@ import { debug } from '../src/debug';
     {
       trace: true,
       handler: (context) => {
-        expectType<'log' | 'traceStart' | 'traceEnd' | 'trace'>(context.type);
+        expectType<'log' | 'trace'>(context.type);
         expectType<string>(context.name);
         expectType<Node>(context.node);
         expectType<Scope | null>(context.scope);
         expectType<string | null>(context.scopeName);
         expectType<unknown>(context.value);
-        expectType<number>(context.timestamp);
 
         if (context.type === 'log') {
           expectType<undefined>(context.trace);
         }
 
         if (context.type === 'trace') {
-          expectType<Node>(context.trace.ofNode);
-          expectType<unknown>(context.trace.ofValue);
-        }
+          expectType<Array<any>>(context.trace);
 
-        if (context.type === 'traceStart' || context.type === 'traceEnd') {
-          expectType<Node>(context.trace.ofNode);
-          expectType<unknown>(context.trace.ofValue);
-        }
-      },
-    },
-    { event, $store, fx, domain },
-  );
-}
-
-// Allows custom timer for handler
-{
-  const event = createEvent<number>();
-  const $store = createStore('');
-  const fx = createEffect<boolean, void, number>();
-  const domain = createDomain();
-
-  debug(
-    {
-      trace: true,
-      now: () => 42,
-      handler: (context) => {
-        expectType<'log' | 'traceStart' | 'traceEnd' | 'trace'>(context.type);
-        expectType<string>(context.name);
-        expectType<Node>(context.node);
-        expectType<Scope | null>(context.scope);
-        expectType<string | null>(context.scopeName);
-        expectType<unknown>(context.value);
-        expectType<number>(context.timestamp);
-
-        if (context.type === 'log') {
-          expectType<undefined>(context.trace);
-        }
-
-        if (context.type === 'trace') {
-          expectType<Node>(context.trace.ofNode);
-          expectType<unknown>(context.trace.ofValue);
-        }
-
-        if (context.type === 'traceStart' || context.type === 'traceEnd') {
-          expectType<Node>(context.trace.ofNode);
-          expectType<unknown>(context.trace.ofValue);
+          context.trace.forEach((update) => {
+            expectType<Node>(update.node);
+            expectType<string>(update.name);
+            expectType<unknown>(update.value);
+          });
         }
       },
     },

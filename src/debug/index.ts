@@ -20,29 +20,27 @@ type LogContext =
       node: Node;
       value: unknown;
       name: string;
-      timestamp: number;
       /** trace only */
       trace?: never;
     }
   | {
-      type: 'traceStart' | 'traceEnd' | 'trace';
+      type: 'trace';
       /** common */
       scope: Scope | null;
       scopeName: string | null;
       node: Node;
       value: unknown;
       name: string;
-      timestamp: number;
       /** trace only */
       trace: {
-        ofNode: Node;
-        ofValue: unknown;
-      };
+        node: Node;
+        name: string;
+        value: unknown;
+      }[];
     };
 
 interface Config {
   trace?: boolean;
-  now?: () => number;
   handler?: (context: LogContext) => void;
 }
 
