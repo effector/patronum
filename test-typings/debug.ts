@@ -82,18 +82,13 @@ import { debug } from '../src/debug';
     {
       trace: true,
       handler: (context) => {
-        expectType<'log' | 'trace'>(context.type);
         expectType<string>(context.name);
         expectType<Node>(context.node);
         expectType<Scope | null>(context.scope);
         expectType<string | null>(context.scopeName);
         expectType<unknown>(context.value);
 
-        if (context.type === 'log') {
-          expectType<undefined>(context.trace);
-        }
-
-        if (context.type === 'trace') {
+        if (context.trace) {
           expectType<Array<any>>(context.trace);
 
           context.trace.forEach((update) => {

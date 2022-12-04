@@ -11,33 +11,20 @@ import {
   Scope,
 } from 'effector';
 
-type LogContext =
-  | {
-      type: 'log';
-      /** common */
-      scope: Scope | null;
-      scopeName: string | null;
-      node: Node;
-      value: unknown;
-      name: string;
-      /** trace only */
-      trace?: never;
-    }
-  | {
-      type: 'trace';
-      /** common */
-      scope: Scope | null;
-      scopeName: string | null;
-      node: Node;
-      value: unknown;
-      name: string;
-      /** trace only */
-      trace: {
-        node: Node;
-        name: string;
-        value: unknown;
-      }[];
-    };
+type LogContext = {
+  /** common */
+  scope: Scope | null;
+  scopeName: string | null;
+  node: Node;
+  value: unknown;
+  name: string;
+  /** trace only */
+  trace?: {
+    node: Node;
+    name: string;
+    value: unknown;
+  }[];
+};
 
 interface Config {
   trace?: boolean;

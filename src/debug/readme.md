@@ -188,7 +188,6 @@ Handler is called for each update with context object like this:
 
 Common fields:
 
-- **type** - `"log" | "trace"` - describes which kind of log it is - basic unit update log or trace log.
 - **scope** - `Scope | null` - effector's `Scope` context object, which owns this particular update
 - **scopeName** - `string | null` - name of the `Scope`, if registered and `null` otherwise.
 - **node** - `Node` - effector's internal node, which update is being logged.
@@ -196,21 +195,20 @@ Common fields:
 - **value** - `unknown` - value of the update.
 
 Special field for `type: "trace"`:
-- **trace** - `{ node: Node; name: string; value: unknown; }[]` - trace of updates.
 
-The `trace` field is not provided`, if `debug`'s config does not have `trace: true`.
+- **trace** - `undefined | { node: Node; name: string; value: unknown; }[]` - trace of updates.
+
+The `trace` field is not provided, if `debug`'s config does not have `trace: true`.
 
 ```ts
 debug({
   trace: true,
   // custom log handler
   handler: ({ type, trace, scope, scopeName, node, value }) => {
-    if (type === 'log') {
-      // your own way to log updates
-      doStuff(node, value);
-    }
+    // your own way to log updates
+    doStuff(node, value);
 
-    if (type === 'trace') {
+    if (trace) {
       // log trace part
       trace.forEach(({ name, node, value }) => doStuff(node, value));
     }
