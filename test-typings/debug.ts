@@ -83,6 +83,7 @@ import { debug } from '../src/debug';
       trace: true,
       handler: (context) => {
         expectType<string>(context.name);
+        expectType<string>(context.kind);
         expectType<Node>(context.node);
         expectType<Scope | null>(context.scope);
         expectType<string | null>(context.scopeName);
@@ -94,6 +95,7 @@ import { debug } from '../src/debug';
           context.trace.forEach((update) => {
             expectType<Node>(update.node);
             expectType<string>(update.name);
+            expectType<string>(context.kind);
             expectType<unknown>(update.value);
           });
         }

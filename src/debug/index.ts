@@ -12,13 +12,12 @@ import {
 } from 'effector';
 
 type LogContext = {
-  /** common */
   scope: Scope | null;
   scopeName: string | null;
   node: Node;
+  kind: string;
   value: unknown;
   name: string;
-  /** trace only */
   trace?: {
     node: Node;
     name: string;

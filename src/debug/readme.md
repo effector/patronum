@@ -192,11 +192,12 @@ Common fields:
 - **scopeName** - `string | null` - name of the `Scope`, if registered and `null` otherwise.
 - **node** - `Node` - effector's internal node, which update is being logged.
 - **name** - `string` - node's name for convenience.
+- **kind** - `string` - node's kind for convenience. It can be unit's kind (e.g. `store` or `event`) or operation kind (e.g. `sample`, `split`, etc).
 - **value** - `unknown` - value of the update.
 
 Special field for `type: "trace"`:
 
-- **trace** - `undefined | { node: Node; name: string; value: unknown; }[]` - trace of updates.
+- **trace** - `undefined | { node: Node; name: string; kind: string; value: unknown; }[]` - trace of updates.
 
 The `trace` field is not provided, if `debug`'s config does not have `trace: true`.
 
@@ -204,13 +205,13 @@ The `trace` field is not provided, if `debug`'s config does not have `trace: tru
 debug({
   trace: true,
   // custom log handler
-  handler: ({ type, trace, scope, scopeName, node, value }) => {
+  handler: ({ trace, scope, scopeName, node, value, name, kind }) => {
     // your own way to log updates
     doStuff(node, value);
 
     if (trace) {
       // log trace part
-      trace.forEach(({ name, node, value }) => doStuff(node, value));
+      trace.forEach(({ name, kind, node, value }) => doStuff(node, value));
     }
   },
 });
