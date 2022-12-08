@@ -1,11 +1,11 @@
-const { terser } = require('rollup-plugin-terser');
+const terser = require('@rollup/plugin-terser');
 const { nodeResolve } = require('@rollup/plugin-node-resolve');
 const commonjs = require('@rollup/plugin-commonjs');
 
 const plugins = [
   nodeResolve({ jsnext: true, skip: ['effector'], extensions: ['.js', '.mjs'] }),
   commonjs({ extensions: ['.js', '.mjs'] }),
-  terser({}),
+  terser(),
 ];
 
 const input = 'dist/index.cjs';
