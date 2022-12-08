@@ -2,8 +2,11 @@ import { Store, StoreValue, is } from 'effector';
 
 export function remap<T extends Record<string, any>>(
   source: Store<T | null>,
-  key: keyof T | (keyof T)[],
-): Store<T[string] | null> | Store<T[string]>[] {
+  key:
+    | keyof T
+    | (keyof T | ((v: T) => any))[]
+    | Record<string, keyof T | ((v: T) => any)>,
+): Store<T[string] | null> | Store<T[string]>[] | Record<string, Store<T[string]>> {
   if (!is.store(source)) {
     throw new TypeError('[patronum/remap] first argument must be a store');
   }
@@ -83,6 +86,7 @@ export function remap<T extends Record<string, any>>(
               '[patronum/remap] value of the store should contain only objects',
             );
           }
+          // @ts-ignore
           return value?.[key[keyName]] ?? null;
         });
       } else if (typeof key[keyName] === 'function' && !is.unit(key[keyName])) {
@@ -93,6 +97,7 @@ export function remap<T extends Record<string, any>>(
             );
           }
           if (value === null) return null;
+          // @ts-ignore
           return key[keyName](value) ?? null;
         });
       } else {
