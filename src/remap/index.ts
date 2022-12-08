@@ -73,7 +73,36 @@ export function remap<T extends Record<string, any>>(
       );
     }
 
-    return {};
+    const object = {};
+    Object.keys(key).forEach((keyName) => {
+      let result;
+      if (typeof key[keyName] === 'string') {
+        result = source.map((value) => {
+          if (typeof value !== 'object') {
+            throw new TypeError(
+              '[patronum/remap] value of the store should contain only objects',
+            );
+          }
+          return value?.[key[keyName]] ?? null;
+        });
+      } else if (typeof key[keyName] === 'function' && !is.unit(key[keyName])) {
+        result = source.map((value) => {
+          if (typeof value !== 'object') {
+            throw new TypeError(
+              '[patronum/remap] value of the store should contain only objects',
+            );
+          }
+          if (value === null) return null;
+          return key[keyName](value) ?? null;
+        });
+      } else {
+        throw new TypeError(
+          '[patronum/remap] key in the object mapper must be a string mapper or function',
+        );
+      }
+      object[keyName] = result;
+    });
+    return object;
   }
 
   throw new TypeError('[patronum/remap] key for remap must be a mapper');
