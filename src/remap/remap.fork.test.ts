@@ -225,16 +225,13 @@ describe('list mapper', () => {
   });
 });
 
-describe.skip('object mapper', () => {
+describe('object mapper', () => {
   it('throws when second argument not a string object', () => {
     expect(() => remap(createStore(0), { a: 1 })).toThrowError(/be a string mapper/);
     expect(() => remap(createStore(0), { a: true })).toThrowError(
       /be a string mapper/,
     );
     expect(() => remap(createStore(0), { a: null })).toThrowError(
-      /be a string mapper/,
-    );
-    expect(() => remap(createStore(0), { a: () => null })).toThrowError(
       /be a string mapper/,
     );
     expect(() => remap(createStore(0), { a: Symbol() })).toThrowError(
@@ -326,7 +323,7 @@ describe.skip('object mapper', () => {
     await allSettled(update, { scope, params: 10 });
     await allSettled(update, { scope, params: 11 });
     await allSettled(update, { scope, params: 12 });
-    expect($resultB).toBe(2);
+    expect(scope.getState($resultB)).toBe(2);
     expect(fn).toBeCalledTimes(1);
   });
 });
