@@ -124,18 +124,21 @@ describe('single mapper', () => {
   });
 });
 
-describe.skip('list mapper', () => {
+describe('list mapper', () => {
   it('throws when second argument not a string list', () => {
-    expect(() => remap(createStore(0), [1])).toThrowError(/be a string mapper/);
-    expect(() => remap(createStore(0), [true])).toThrowError(/be a string mapper/);
-    expect(() => remap(createStore(0), [null])).toThrowError(/be a string mapper/);
-    expect(() => remap(createStore(0), [() => null])).toThrowError(
+    expect(() => remap(createStore({ a: 0 }), [1])).toThrowError(
       /be a string mapper/,
     );
-    expect(() => remap(createStore(0), [Symbol()])).toThrowError(
+    expect(() => remap(createStore({ a: 0 }), [true])).toThrowError(
       /be a string mapper/,
     );
-    expect(() => remap(createStore(0), [createEvent()])).toThrowError(
+    expect(() => remap(createStore({ a: 0 }), [null])).toThrowError(
+      /be a string mapper/,
+    );
+    expect(() => remap(createStore({ a: 0 }), [Symbol()])).toThrowError(
+      /be a string mapper/,
+    );
+    expect(() => remap(createStore({ a: 0 }), [createEvent()])).toThrowError(
       /be a string mapper/,
     );
   });
@@ -217,7 +220,7 @@ describe.skip('list mapper', () => {
     await allSettled(update, { scope, params: 10 });
     await allSettled(update, { scope, params: 11 });
     await allSettled(update, { scope, params: 12 });
-    expect($resultB).toBe(2);
+    expect(scope.getState($resultB)).toBe(2);
     expect(fn).toBeCalledTimes(1);
   });
 });
