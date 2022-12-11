@@ -95,7 +95,7 @@ import { debug } from '../src/debug';
           context.trace.forEach((update) => {
             expectType<Node>(update.node);
             expectType<string>(update.name);
-            expectType<string>(context.kind);
+            expectType<string>(update.kind);
             expectType<unknown>(update.value);
           });
         }

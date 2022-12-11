@@ -14,6 +14,7 @@ import {
 type LogContext = {
   scope: Scope | null;
   scopeName: string | null;
+  /** node, kind, value, name - common fields for logs and traces */
   node: Node;
   kind: string;
   value: unknown;
@@ -21,6 +22,7 @@ type LogContext = {
   trace?: {
     node: Node;
     name: string;
+    kind: string;
     value: unknown;
   }[];
 };
