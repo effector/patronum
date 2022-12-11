@@ -195,7 +195,7 @@ Common fields:
 - **kind** - `string` - node's kind for convenience. It can be unit's kind (e.g. `store` or `event`) or operation kind (e.g. `sample`, `split`, etc).
 - **value** - `unknown` - value of the update.
 
-Special field for `type: "trace"`:
+Special field if `trace: true` provided:
 
 - **trace** - `undefined | { node: Node; name: string; kind: string; value: unknown; }[]` - trace of updates.
 
@@ -214,5 +214,5 @@ debug({
       trace.forEach(({ name, kind, node, value }) => doStuff(node, value));
     }
   },
-});
+}, { $a, $b, c });
 ```
