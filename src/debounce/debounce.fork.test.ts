@@ -193,13 +193,14 @@ describe('edge cases', () => {
     const start = createEvent();
     const secondTrigger = createEvent();
 
-    sample({ clock: start, target: [secondTrigger, trigger] });
-    sample({ clock: secondTrigger, target: [trigger] });
+    sample({ clock: start, fn: () => "one", target: [secondTrigger, trigger] });
+    sample({ clock: secondTrigger, fn: () => "two", target: [trigger] });
 
     const scope = fork();
 
     await allSettled(start, { scope });
 
     expect(listener).toBeCalledTimes(1);
+    expect(listener).toBeCalledWith("two");
   });
 });

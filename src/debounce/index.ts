@@ -3,7 +3,6 @@ import {
   createEvent,
   createStore,
   Event,
-  forward,
   is,
   sample,
   Store,
@@ -97,9 +96,10 @@ export function debounce<T>({
     target: timerFx,
   });
 
-  forward({
-    from: timerFx.done.map(({ result }) => result),
-    to: tick,
+  sample({
+    clock: timerFx.done,
+    fn: ({ result }) => result,
+    target: tick,
   });
 
   return tick;
