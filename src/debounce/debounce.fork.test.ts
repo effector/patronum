@@ -28,11 +28,9 @@ test('debounce works in forked scope', async () => {
     params: undefined,
   });
 
-  expect(serialize(scope)).toMatchInlineSnapshot(`
-    {
-      "-3fze9r": 1,
-    }
-  `);
+  expect(serialize(scope)).toMatchObject({
+    [$counter.sid!]: 1,
+  });
 });
 
 test('debounce do not affect another forks', async () => {
@@ -68,17 +66,13 @@ test('debounce do not affect another forks', async () => {
     params: 100,
   });
 
-  expect(serialize(scopeA)).toMatchInlineSnapshot(`
-    {
-      "-xa6bxy": 2,
-    }
-  `);
+  expect(serialize(scopeA)).toMatchObject({
+    [$counter.sid!]: 2,
+  });
 
-  expect(serialize(scopeB)).toMatchInlineSnapshot(`
-    {
-      "-xa6bxy": 200,
-    }
-  `);
+  expect(serialize(scopeB)).toMatchObject({
+    [$counter.sid!]: 200,
+  });
 });
 
 test('debounce do not affect original store value', async () => {
@@ -102,11 +96,9 @@ test('debounce do not affect original store value', async () => {
     params: 1,
   });
 
-  expect(serialize(scope)).toMatchInlineSnapshot(`
-    {
-      "s9ojbc": 2,
-    }
-  `);
+  expect(serialize(scope)).toMatchObject({
+    [$counter.sid!]: 2,
+  });
 
   expect($counter.getState()).toMatchInlineSnapshot(`0`);
 });
