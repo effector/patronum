@@ -9,6 +9,7 @@ import {
   Unit,
   attach,
   guard,
+  merge,
 } from 'effector';
 
 type EventAsReturnType<Payload> = any extends Payload ? Event<Payload> : never;
@@ -108,12 +109,14 @@ export function debounce<T>({
       () => true,
     );
 
+  const requestTick = merge([
+    source,
+    // debounce timeout is restarted on timeout change
+    $timeout,
+  ]);
+
   guard({
-    clock: [
-      source as Unit<void>,
-      // debounce timeout is restarted on timeout change
-      $timeout,
-    ],
+    clock: requestTick,
     filter: $canTick,
     target: triggerTick,
   });

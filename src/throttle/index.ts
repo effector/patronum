@@ -47,14 +47,14 @@ export function throttle<T>({
     (_, payload) => payload,
   );
 
-  const triggerTick = createEvent();
+  const triggerTick = createEvent<T>();
 
   const $canTick = createStore(true, { serialize: 'ignore' })
     .on(triggerTick, () => false)
     .on(target, () => true);
 
   guard({
-    clock: source as Unit<void>,
+    clock: source,
     filter: $canTick,
     target: triggerTick,
   });
