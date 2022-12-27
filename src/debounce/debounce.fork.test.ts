@@ -182,7 +182,7 @@ describe('timeout as store', () => {
 });
 
 describe('edge cases', () => {
-  test('does not call target twice for sample chain doubles', async () => {
+  test.only('does not call target twice for sample chain doubles', async () => {
     const trigger = createEvent();
 
     const db = debounce({ source: trigger, timeout: 100 });

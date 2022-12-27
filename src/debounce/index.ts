@@ -89,9 +89,11 @@ export function debounce<T>({
   $rejecter.reset(timerFx.done);
   $timeoutId.reset(timerFx.done);
 
+  const triggerTick = forceSyncBatch(source);
+
   sample({
     source: $timeout,
-    clock: source,
+    clock: triggerTick,
     fn: (timeout, parameter) => ({ timeout, parameter }),
     target: timerFx,
   });
@@ -118,4 +120,45 @@ function toStoreNumber(value: number | Store<number> | unknown): Store<number> {
   throw new TypeError(
     `timeout parameter in interval method should be number or Store. "${typeof value}" was passed`,
   );
+}
+
+/**
+ * A dirty workaround for sync batching race bug
+ */
+function forceSyncBatch<T>(source: Unit<T>): Event<T> {
+  const event = createEvent<T>();
+
+  const $latestCallRef = createStore<{ ref: T | void }>(
+    { ref: undefined },
+    { serialize: 'ignore' },
+  ).on(source, (_, payload) => ({ ref: payload }));
+
+  const $callStateRef = createStore({ called: false }, { serialize: 'ignore' }).on(
+    source,
+    () => ({ called: false }),
+  );
+
+  const batchCallsFx = attach({
+    source: { valueRef: $latestCallRef, stateRef: $callStateRef },
+    effect: ({ valueRef, stateRef }) => {
+      if (stateRef.called) {
+        throw Error('skip');
+      }
+      stateRef.called = true;
+
+      return valueRef.ref;
+    },
+  });
+
+  sample({
+    clock: source,
+    target: batchCallsFx,
+  });
+
+  sample({
+    clock: batchCallsFx.doneData,
+    target: event.prepend((p) => p as T),
+  });
+
+  return event;
 }
