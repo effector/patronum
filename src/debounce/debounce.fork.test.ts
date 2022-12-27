@@ -182,7 +182,7 @@ describe('timeout as store', () => {
 });
 
 describe('edge cases', () => {
-  test.only('does not call target twice for sample chain doubles', async () => {
+  test('does not call target twice for sample chain doubles', async () => {
     const trigger = createEvent();
 
     const db = debounce({ source: trigger, timeout: 100 });
@@ -193,14 +193,14 @@ describe('edge cases', () => {
     const start = createEvent();
     const secondTrigger = createEvent();
 
-    sample({ clock: start, fn: () => "one", target: [secondTrigger, trigger] });
-    sample({ clock: secondTrigger, fn: () => "two", target: [trigger] });
+    sample({ clock: start, fn: () => 'one', target: [secondTrigger, trigger] });
+    sample({ clock: secondTrigger, fn: () => 'two', target: [trigger] });
 
     const scope = fork();
 
     await allSettled(start, { scope });
 
     expect(listener).toBeCalledTimes(1);
-    expect(listener).toBeCalledWith("two");
+    expect(listener).toBeCalledWith('two');
   });
 });
