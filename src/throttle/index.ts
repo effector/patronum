@@ -41,7 +41,8 @@ export function throttle<T>({
     (timeout) => new Promise((resolve) => setTimeout(resolve, timeout)),
   );
 
-  const $payload = createStore<T>(null as T, { serialize: 'ignore' }).on(
+  // It's ok - nothing will ever start unless source is triggered
+  const $payload = createStore<T>(null as unknown as T, { serialize: 'ignore' }).on(
     source,
     (_, payload) => payload,
   );

@@ -85,7 +85,8 @@ export function debounce<T>({
   $rejecter.reset(timerFx.done);
   $timeoutId.reset(timerFx.done);
 
-  const $payload = createStore<T>(null as T, { serialize: 'ignore' }).on(
+  // It's ok - nothing will ever start unless source is triggered
+  const $payload = createStore<T>(null as unknown as T, { serialize: 'ignore' }).on(
     source,
     (_, payload) => payload,
   );
