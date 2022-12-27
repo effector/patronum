@@ -3,12 +3,13 @@ import {
   createEvent,
   createStore,
   Event,
-  forward,
   is,
   sample,
   Store,
   Unit,
   attach,
+  guard,
+  merge,
 } from 'effector';
 
 type EventAsReturnType<Payload> = any extends Payload ? Event<Payload> : never;
@@ -55,18 +56,17 @@ export function debounce<T>({
 
   const timerBaseFx = createEffect<
     {
-      parameter: T;
       timeout: number;
       rejectPromise: (() => void) | null;
       timeoutId: NodeJS.Timeout | null;
     },
-    T
-  >(({ parameter, timeout, timeoutId, rejectPromise }) => {
+    void
+  >(({ timeout, timeoutId, rejectPromise }) => {
     if (timeoutId) clearTimeout(timeoutId);
     if (rejectPromise) rejectPromise();
     return new Promise((resolve, reject) => {
       saveReject(reject);
-      saveTimeoutId(setTimeout(resolve, timeout, parameter));
+      saveTimeoutId(setTimeout(resolve, timeout));
     });
   });
   const timerFx = attach({
@@ -74,12 +74,8 @@ export function debounce<T>({
       timeoutId: $timeoutId,
       rejectPromise: $rejecter,
     },
-    mapParams: (
-      { parameter, timeout }: { parameter: T; timeout: number },
-      { timeoutId, rejectPromise },
-    ) => {
+    mapParams: (timeout: number, { timeoutId, rejectPromise }) => {
       return {
-        parameter,
         timeout,
         timeoutId,
         rejectPromise,
@@ -90,16 +86,51 @@ export function debounce<T>({
   $rejecter.reset(timerFx.done);
   $timeoutId.reset(timerFx.done);
 
+  // It's ok - nothing will ever start unless source is triggered
+  const $payload = createStore<T>(null as unknown as T, { serialize: 'ignore' }).on(
+    source,
+    (_, payload) => payload,
+  );
+
+  const $canTick = createStore(true, { serialize: 'ignore' });
+
+  const triggerTick = createEvent();
+
+  $canTick
+    .on(triggerTick, () => false)
+    .on(
+      [
+        tick,
+        // debounce timeout should be restarted on timeout change
+        $timeout,
+        // debounce timeout can be restarted in later ticks
+        timerFx,
+      ],
+      () => true,
+    );
+
+  const requestTick = merge([
+    source,
+    // debounce timeout is restarted on timeout change
+    $timeout,
+  ]);
+
+  guard({
+    clock: requestTick,
+    filter: $canTick,
+    target: triggerTick,
+  });
+
   sample({
     source: $timeout,
-    clock: source,
-    fn: (timeout, parameter) => ({ timeout, parameter }),
+    clock: triggerTick,
     target: timerFx,
   });
 
-  forward({
-    from: timerFx.done.map(({ result }) => result),
-    to: tick,
+  sample({
+    source: $payload,
+    clock: timerFx.done,
+    target: tick,
   });
 
   return tick;

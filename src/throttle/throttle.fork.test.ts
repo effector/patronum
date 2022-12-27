@@ -6,6 +6,7 @@ import {
   allSettled,
   createEvent,
   createStore,
+  sample,
 } from 'effector';
 
 import { throttle } from './index';
@@ -28,11 +29,9 @@ test('throttle works in forked scope', async () => {
     params: undefined,
   });
 
-  expect(serialize(scope)).toMatchInlineSnapshot(`
-    {
-      "-8kcech": 1,
-    }
-  `);
+  expect(serialize(scope)).toMatchObject({
+    [$counter.sid!]: 1
+  });
 });
 
 test('throttle do not affect another forks', async () => {
@@ -68,17 +67,13 @@ test('throttle do not affect another forks', async () => {
     params: 100,
   });
 
-  expect(serialize(scopeA)).toMatchInlineSnapshot(`
-    {
-      "vohh62": 2,
-    }
-  `);
+  expect(serialize(scopeA)).toMatchObject({
+    [$counter.sid!]: 2
+  });
 
-  expect(serialize(scopeB)).toMatchInlineSnapshot(`
-    {
-      "vohh62": 200,
-    }
-  `);
+  expect(serialize(scopeB)).toMatchObject({
+    [$counter.sid!]: 200
+  });
 });
 
 test('throttle do not affect original store value', async () => {
@@ -102,11 +97,9 @@ test('throttle do not affect original store value', async () => {
     params: 1,
   });
 
-  expect(serialize(scope)).toMatchInlineSnapshot(`
-    {
-      "m78ag8": 2,
-    }
-  `);
+  expect(serialize(scope)).toMatchObject({
+    [$counter.sid!]: 2
+  });
 
   expect($counter.getState()).toMatchInlineSnapshot(`0`);
 });
@@ -140,3 +133,27 @@ describe('timeout as store', () => {
     expect(watcher).toBeCalledTimes(2);
   });
 });
+
+describe('edge cases', () => {
+  test('does not call target twice for sample chain doubles', async () => {
+    const trigger = createEvent();
+
+    const tr = throttle({ source: trigger, timeout: 100 });
+
+    const listener = jest.fn();
+    tr.watch(listener);
+
+    const start = createEvent();
+    const secondTrigger = createEvent();
+
+    sample({ clock: start, fn: () => 'one', target: [secondTrigger, trigger] });
+    sample({ clock: secondTrigger, fn: () => 'two', target: [trigger] });
+
+    const scope = fork();
+
+    await allSettled(start, { scope });
+
+    expect(listener).toBeCalledTimes(1);
+    expect(listener).toBeCalledWith('two');
+  });
+})

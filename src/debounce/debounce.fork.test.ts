@@ -6,6 +6,7 @@ import {
   allSettled,
   createEvent,
   createStore,
+  sample,
 } from 'effector';
 import { wait, watch } from '../../test-library';
 
@@ -28,11 +29,9 @@ test('debounce works in forked scope', async () => {
     params: undefined,
   });
 
-  expect(serialize(scope)).toMatchInlineSnapshot(`
-    {
-      "-3fze9r": 1,
-    }
-  `);
+  expect(serialize(scope)).toMatchObject({
+    [$counter.sid!]: 1,
+  });
 });
 
 test('debounce do not affect another forks', async () => {
@@ -68,17 +67,13 @@ test('debounce do not affect another forks', async () => {
     params: 100,
   });
 
-  expect(serialize(scopeA)).toMatchInlineSnapshot(`
-    {
-      "-xa6bxy": 2,
-    }
-  `);
+  expect(serialize(scopeA)).toMatchObject({
+    [$counter.sid!]: 2,
+  });
 
-  expect(serialize(scopeB)).toMatchInlineSnapshot(`
-    {
-      "-xa6bxy": 200,
-    }
-  `);
+  expect(serialize(scopeB)).toMatchObject({
+    [$counter.sid!]: 200,
+  });
 });
 
 test('debounce do not affect original store value', async () => {
@@ -102,11 +97,9 @@ test('debounce do not affect original store value', async () => {
     params: 1,
   });
 
-  expect(serialize(scope)).toMatchInlineSnapshot(`
-    {
-      "s9ojbc": 2,
-    }
-  `);
+  expect(serialize(scope)).toMatchObject({
+    [$counter.sid!]: 2,
+  });
 
   expect($counter.getState()).toMatchInlineSnapshot(`0`);
 });
@@ -185,5 +178,29 @@ describe('timeout as store', () => {
     allSettled(trigger, { scope }).then(() => {});
     await wait(100);
     expect(watcher).toBeCalledTimes(2);
+  });
+});
+
+describe('edge cases', () => {
+  test('does not call target twice for sample chain doubles', async () => {
+    const trigger = createEvent();
+
+    const db = debounce({ source: trigger, timeout: 100 });
+
+    const listener = jest.fn();
+    db.watch(listener);
+
+    const start = createEvent();
+    const secondTrigger = createEvent();
+
+    sample({ clock: start, fn: () => 'one', target: [secondTrigger, trigger] });
+    sample({ clock: secondTrigger, fn: () => 'two', target: [trigger] });
+
+    const scope = fork();
+
+    await allSettled(start, { scope });
+
+    expect(listener).toBeCalledTimes(1);
+    expect(listener).toBeCalledWith('two');
   });
 });

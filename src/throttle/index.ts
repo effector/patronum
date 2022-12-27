@@ -41,18 +41,35 @@ export function throttle<T>({
     (timeout) => new Promise((resolve) => setTimeout(resolve, timeout)),
   );
 
-  const start = guard({
+  // It's ok - nothing will ever start unless source is triggered
+  const $payload = createStore<T>(null as unknown as T, { serialize: 'ignore' }).on(
+    source,
+    (_, payload) => payload,
+  );
+
+  const triggerTick = createEvent<T>();
+
+  const $canTick = createStore(true, { serialize: 'ignore' })
+    .on(triggerTick, () => false)
+    .on(target, () => true);
+
+  guard({
     clock: source,
-    filter: timerFx.pending.map((pending) => !pending),
+    filter: $canTick,
+    target: triggerTick,
   });
 
   sample({
     source: $timeout,
-    clock: start as Unit<any>,
+    clock: triggerTick as Unit<any>,
     target: timerFx,
   });
 
-  sample({ source, clock: timerFx.done, target });
+  sample({
+    source: $payload,
+    clock: timerFx.done,
+    target,
+  });
 
   return target as any;
 }
