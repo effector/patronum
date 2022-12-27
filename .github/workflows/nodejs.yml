@@ -42,7 +42,7 @@ jobs:
         run: pnpm build
 
       - name: Test code
-        run: pnpm test:code --detectOpenHandles
+        run: pnpm test:code
         env:
           CI: true
 
