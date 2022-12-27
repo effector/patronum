@@ -6,6 +6,7 @@ import {
   allSettled,
   createEvent,
   createStore,
+  sample,
 } from 'effector';
 
 import { throttle } from './index';
@@ -132,3 +133,27 @@ describe('timeout as store', () => {
     expect(watcher).toBeCalledTimes(2);
   });
 });
+
+describe('edge cases', () => {
+  test('does not call target twice for sample chain doubles', async () => {
+    const trigger = createEvent();
+
+    const tr = throttle({ source: trigger, timeout: 100 });
+
+    const listener = jest.fn();
+    tr.watch(listener);
+
+    const start = createEvent();
+    const secondTrigger = createEvent();
+
+    sample({ clock: start, fn: () => 'one', target: [secondTrigger, trigger] });
+    sample({ clock: secondTrigger, fn: () => 'two', target: [trigger] });
+
+    const scope = fork();
+
+    await allSettled(start, { scope });
+
+    expect(listener).toBeCalledTimes(1);
+    expect(listener).toBeCalledWith('two');
+  });
+})
