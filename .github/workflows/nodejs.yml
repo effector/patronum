@@ -42,7 +42,7 @@ jobs:
         run: pnpm build
 
       - name: Test code
-        run: pnpm test:code
+        run: node ./scripts/tests_ci.mjs
         env:
           CI: true
 
