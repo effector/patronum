@@ -6,6 +6,7 @@ import {
   is,
   Store,
   Unit,
+  Domain,
   createNode,
   step,
   Scope,
@@ -32,7 +33,10 @@ interface Config {
   handler?: (context: LogContext) => void;
 }
 
-const defaultConfig: Config = {};
+const defaultConfig: Config = {
+  trace: false,
+  handler: console.log,
+};
 
 export function debug(
   ...entries:
@@ -43,7 +47,103 @@ export function debug(
 ): void {
   const { config, units } = resolveParams(...entries);
 
-  // log
+  units.forEach((unit) => {
+    if (is.store(unit) || is.event(unit) || is.effect(unit)) {
+      watchUnit(unit, config);
+    } else if (is.domain(unit)) {
+      watchDomain(unit, config);
+    } else {
+      /**
+       * Let unknown stuff pass through as noop
+       *
+       * It's useful for debug of custom entities:
+       * debug(myFarfetchedQuery)
+       */
+    }
+  });
+}
+
+// Log node
+function watchDomain(domain: Domain, config: Config) {
+  domain.onCreateStore((store) => watchUnit(store, config));
+  domain.onCreateEvent((event) => watchUnit(event, config));
+  domain.onCreateEffect((effect) => watchUnit(effect, config));
+  domain.onCreateDomain((domain) => watchDomain(domain, config));
+}
+
+function watchUnit(
+  unit: Store<any> | Event<any> | Effect<any, any, any>,
+  config: Config,
+) {
+  if (is.store(unit)) {
+    watch(unit, config);
+  } else if (is.event(unit)) {
+    watch(unit, config);
+  } else if (is.effect(unit)) {
+    watch(unit, config);
+    watch(unit.done, config);
+    watch(unit.fail, config);
+  }
+}
+
+function watch(unit: Unit<any>, config: Config) {
+  createNode({
+    parent: [unit],
+    // debug watchers should behave like normal watchers
+    meta: { op: 'watch' },
+    family: { owners: unit },
+    regional: true,
+    // node only gets all required data
+    node: [
+      step.run({
+        fn(value: unknown, _internal: unknown, stack: Stack) {
+          const scope = stack?.scope ?? null;
+
+          const context: LogContext = {
+            scope,
+            scopeName: getScopeName(scope),
+            node: getNode(unit),
+            kind: getType(unit),
+            value,
+            name: getName(unit),
+            trace: config.trace ? collectTrace(stack) : undefined,
+          };
+
+          if (!config.handler) {
+            throw Error('patronum/debug must have the handler');
+          }
+
+          config.handler(context);
+        },
+      }),
+    ],
+  });
+}
+
+type Trace = NonNullable<LogContext['trace']>;
+type TraceEntry = Trace[number];
+
+function collectTrace(stack: Stack): Trace {
+  const trace: Trace = [];
+
+  let parent = stack?.parent;
+
+  while (parent) {
+    const { node, value } = parent;
+
+    const entry: TraceEntry = {
+      node,
+      value,
+      name: getNodeName(node),
+      kind: getType(node),
+    };
+
+    trace.push(entry);
+
+    parent = parent.parent;
+  }
+
+  return trace;
 }
 
 // Config
@@ -58,7 +158,7 @@ function resolveParams(...entry: Parameters<typeof debug>): {
   const units = [];
 
   if (isConfig(maybeConfig)) {
-    config = maybeConfig;
+    config = { ...defaultConfig, ...maybeConfig };
   } else if (!is.unit(maybeConfig)) {
     for (const [name, unit] of Object.entries(maybeConfig)) {
       customNames.set(getGraph(unit as any).id, name);
@@ -146,6 +246,16 @@ const scopes = {
 debug.registerScope = registerScope;
 debug.unregisterAllScopes = unregisterAllScopes;
 
+function getScopeName(scope: Scope | null) {
+  if (!scope) return null;
+
+  const meta = scopes.get(scope);
+
+  if (!meta) return null;
+
+  return meta.name;
+}
+
 // Utils
 
 function isEffectChild(node: Node | { graphite: Node }) {
@@ -188,7 +298,7 @@ function getNodeName(node?: Node): string {
   return meta.named;
 }
 
-function getType(unit: Unit<any>) {
+function getType(unit: Unit<any> | Node) {
   if (is.store(unit)) {
     return 'store';
   }
@@ -204,6 +314,13 @@ function getType(unit: Unit<any>) {
   if (is.unit(unit)) {
     return 'unit';
   }
+
+  const node = getNode(unit);
+
+  if (node.meta.op) {
+    return node.meta.op;
+  }
+
   return 'unknown';
 }
 
@@ -247,8 +364,8 @@ function getLoc(unit: Node) {
   return `${loc.file ?? ''}:${loc.line}:${loc.column}`;
 }
 
-function getNode(node: Node | { graphite: Node }) {
-  const actualNode = 'graphite' in node ? node.graphite : node;
+function getNode(node: Node | { graphite: Node } | Unit<any>): Node {
+  const actualNode = 'graphite' in node ? node.graphite : (node as Node);
 
   return actualNode;
 }
