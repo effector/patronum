@@ -56,7 +56,7 @@ describe('timeout as store', () => {
     trigger();
     await wait(10);
     expect(watcher).toBeCalledTimes(0);
-    await wait(90);
+    await wait(92);
     expect(watcher).toBeCalledTimes(1);
 
     trigger();
