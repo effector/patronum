@@ -32,6 +32,59 @@ interface Config {
   handler?: (context: LogContext) => void;
 }
 
+const defaultConfig: Config = {};
+
+export function debug(
+  ...entries:
+    | [Unit<any>, ...Unit<any>[]]
+    | [Config, ...Unit<any>[]]
+    | [Record<string, Unit<any>>]
+    | [Config, Record<string, Unit<any>>]
+): void {
+  const { config, units } = resolveParams(...entries);
+
+  // log
+}
+
+// Config
+
+function resolveParams(...entry: Parameters<typeof debug>): {
+  config: Config;
+  units: Unit<any>[];
+} {
+  let config: Config = defaultConfig;
+  const [maybeConfig, ...restUnits] = entry;
+
+  const units = [];
+
+  if (isConfig(maybeConfig)) {
+    config = maybeConfig;
+  } else if (!is.unit(maybeConfig)) {
+    for (const [name, unit] of Object.entries(maybeConfig)) {
+      customNames.set(getGraph(unit as any).id, name);
+      if (is.store(unit)) debugStores.push(unit);
+      units.push(unit);
+    }
+  } else {
+    units.push(maybeConfig);
+  }
+
+  for (const maybeUnit of restUnits) {
+    if (is.unit(maybeUnit)) {
+      if (is.store(maybeUnit)) debugStores.push(maybeUnit);
+      units.push(maybeUnit);
+    } else {
+      for (const [name, unit] of Object.entries(maybeUnit)) {
+        customNames.set(getGraph(unit as any).id, name);
+        if (is.store(unit)) debugStores.push(unit);
+        units.push(unit);
+      }
+    }
+  }
+
+  return { config, units };
+}
+
 function isConfig(
   maybeConfig: Unit<any> | Record<string, Unit<any>> | Config,
 ): maybeConfig is Config {
@@ -42,223 +95,12 @@ function isConfig(
   return false;
 }
 
-export function debug(
-  ...units:
-    | [Unit<any>, ...Unit<any>[]]
-    | [Config, ...Unit<any>[]]
-    | [Record<string, Unit<any>>]
-    | [Config, Record<string, Unit<any>>]
-): void {
-  let config: Config = { trace: false };
-  const [maybeConfig, ...restUnits] = units;
-
-  if (isConfig(maybeConfig)) {
-    config = maybeConfig;
-  } else if (!is.unit(maybeConfig)) {
-    for (const [name, unit] of Object.entries(maybeConfig)) {
-      customNames.set(getGraph(unit as any).id, name);
-      logUnit(unit, config);
-    }
-  } else {
-    logUnit(maybeConfig);
-  }
-
-  for (const maybeUnit of restUnits) {
-    if (is.unit(maybeUnit)) {
-      logUnit(maybeUnit, config);
-    } else {
-      for (const [name, unit] of Object.entries(maybeUnit)) {
-        customNames.set(getGraph(unit as any).id, name);
-        logUnit(unit, config);
-      }
-    }
-  }
-}
+// Scopes
 
 const debugStores: Store<any>[] = [];
 
-function log(
-  unit: Store<any> | Event<any> | Effect<any, any, any>,
-  type: string,
-  prefix = '',
-) {
-  const name = prefix + getName(unit);
-
-  if (is.store(unit)) {
-    // log initial state
-    logUpdate({
-      type,
-      name,
-      value: unit.getState(),
-    });
-    scopes.forEach((scope, meta) => {
-      logUpdate({
-        type,
-        name,
-        scopeName: meta.name,
-        value: scope.getState(unit),
-      });
-    });
-
-    debugStores.push(unit);
-  }
-
-  createNode({
-    parent: [unit],
-    meta: { op: 'watch' },
-    family: { owners: unit },
-    regional: true,
-    node: [
-      step.run({
-        fn(_data: any, _scope: any, stack: Stack) {
-          if (!stack.scope) {
-            logUpdate({
-              type,
-              name,
-              value: _data,
-            });
-          } else {
-            if (!scopes.get(stack.scope)) {
-              scopes.save(stack.scope);
-            }
-            const meta = scopes.get(stack.scope);
-            logUpdate({
-              type,
-              name,
-              scopeName: meta?.name,
-              value: _data,
-            });
-          }
-        },
-      }),
-    ],
-  });
-}
-
-function logEffect(unit: Effect<any, any, any>) {
-  log(unit.done, 'effect', getName(unit) + '.');
-  log(unit.fail, 'effect', getName(unit) + '.');
-}
-
-function getNode(node: Node | { graphite: Node }) {
-  const actualNode = 'graphite' in node ? node.graphite : node;
-
-  return actualNode;
-}
-
-function logUnit(unit: Unit<any>, config?: Config) {
-  const type = getType(unit);
-
-  if (is.store(unit) || is.effect(unit) || is.event(unit)) {
-    log(unit, type);
-
-    if (config?.trace) {
-      logTrace(unit);
-    }
-  }
-
-  if (is.effect(unit)) {
-    logEffect(unit);
-  }
-
-  if (is.domain(unit)) {
-    unit.onCreateEvent((event) => {
-      log(event, 'event');
-      if (config?.trace) {
-        logTrace(event);
-      }
-    });
-    unit.onCreateStore((store) => {
-      log(store, 'store');
-      if (config?.trace) {
-        logTrace(store);
-      }
-    });
-    unit.onCreateEffect((effect) => {
-      log(effect, 'effect');
-      logEffect(effect);
-      if (config?.trace) {
-        logTrace(effect);
-      }
-    });
-  }
-}
-
-function logTrace(unit: Unit<any>) {
-  const type = getType(unit);
-  const name = getName(unit);
-
-  createNode({
-    parent: [unit],
-    meta: { op: 'watch' },
-    family: { owners: unit },
-    regional: true,
-    node: [
-      step.run({
-        fn(_data: any, _scope: any, stack: Stack) {
-          let parent = stack?.parent;
-          const scopeMeta = scopes.get(stack?.scope);
-          const scopeName = scopeMeta ? ` (scope: ${scopeMeta.name})` : '';
-          const groupName = `[${type}]${scopeName} ${name} trace`;
-          // eslint-disable-next-line no-console
-          console.groupCollapsed(groupName);
-          while (parent) {
-            const { node, value } = parent;
-            const { meta } = node;
-            let opName = meta.op;
-            let unitName = getNodeName(node);
-            if (!unitName) {
-              unitName = getLoc(node) ?? '';
-            }
-            if (opName === 'on') {
-              const parentStore = getNodeName(node.next[0]);
-              opName = `${parentStore}.${meta.op}`;
-              unitName = `${parentStore}.${meta.op}(${getNodeName(
-                parent.parent?.node,
-              )})`;
-            }
-
-            console.info(`<- [${opName}] ${unitName}`, value);
-            parent = parent.parent;
-          }
-          console.groupEnd();
-        },
-      }),
-    ],
-  });
-}
-
-function logUpdate({
-  type,
-  scopeName,
-  name,
-  value,
-}: {
-  type: string;
-  scopeName?: string;
-  name: string;
-  value: any;
-}) {
-  const typeString = `[${type}]`;
-  const scopeNameString = scopeName ? ` (scope: ${scopeName})` : '';
-  const nameString = ` ${name}`;
-
-  console.info(`${typeString}${scopeNameString}${nameString}`, value);
-}
-
-// Scopes
-
 function registerScope(scope: Scope, config: { name: string }) {
   scopes.save(scope, { name: config.name });
-
-  debugStores.forEach((store) => {
-    logUpdate({
-      type: 'store',
-      name: getName(store),
-      scopeName: config.name,
-      value: scope.getState(store),
-    });
-  });
 
   return () => {
     scopes.delete(scope);
@@ -403,4 +245,10 @@ function getLoc(unit: Node) {
   if (!loc) return null;
 
   return `${loc.file ?? ''}:${loc.line}:${loc.column}`;
+}
+
+function getNode(node: Node | { graphite: Node }) {
+  const actualNode = 'graphite' in node ? node.graphite : node;
+
+  return actualNode;
 }
