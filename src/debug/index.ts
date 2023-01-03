@@ -75,25 +75,6 @@ export function debug(
   }
 }
 
-function getType(unit: Unit<any>) {
-  if (is.store(unit)) {
-    return 'store';
-  }
-  if (is.effect(unit)) {
-    return 'effect';
-  }
-  if (is.event(unit)) {
-    return 'event';
-  }
-  if (is.domain(unit)) {
-    return 'domain';
-  }
-  if (is.unit(unit)) {
-    return 'unit';
-  }
-  return 'unknown';
-}
-
 const debugStores: Store<any>[] = [];
 
 function log(
@@ -165,42 +146,6 @@ function getNode(node: Node | { graphite: Node }) {
   return actualNode;
 }
 
-const customNames = new Map<Node['id'], string>();
-
-function getName(unit: any): string {
-  const custom = customNames.get(getGraph(unit as any).id);
-  if (custom) {
-    return custom;
-  }
-
-  if (unit.compositeName && unit.compositeName.fullName) {
-    return unit.compositeName.fullName;
-  }
-  if (unit.shortName) {
-    return unit.shortName;
-  }
-  if (unit.name) {
-    return unit.name;
-  }
-  return '';
-}
-
-function readLoc({
-  meta,
-}: Node): void | { file?: string; line: number; column: number } {
-  const loc = 'config' in meta ? meta.config.loc : meta.loc;
-
-  return loc;
-}
-
-function getLoc(unit: Node) {
-  const loc = readLoc(unit);
-
-  if (!loc) return null;
-
-  return `${loc.file ?? ''}:${loc.line}:${loc.column}`;
-}
-
 function logUnit(unit: Unit<any>, config?: Config) {
   const type = getType(unit);
 
@@ -237,46 +182,6 @@ function logUnit(unit: Unit<any>, config?: Config) {
       }
     });
   }
-}
-
-function isEffectChild(node: Node | { graphite: Node }) {
-  const actualNode = getNode(node);
-  const { sid, named } = actualNode.meta;
-
-  return Boolean(
-    !sid &&
-      (named === 'finally' ||
-        named === 'done' ||
-        named === 'doneData' ||
-        named === 'fail' ||
-        named === 'failData' ||
-        named === 'inFlight' ||
-        named === 'pending'),
-  );
-}
-
-function getNodeName(node?: Node): string {
-  if (!node) return '';
-
-  const { meta, id } = node;
-
-  const customName = customNames.get(id);
-
-  if (customName) {
-    return customName;
-  }
-
-  if (!isEffectChild(node)) {
-    return meta.name;
-  }
-
-  const parentEffect = node.family.owners.find((n) => n.meta.op === 'effect');
-
-  if (parentEffect) {
-    return `${getNodeName(parentEffect)}.${meta.named}`;
-  }
-
-  return meta.named;
 }
 
 function logTrace(unit: Unit<any>) {
@@ -323,6 +228,26 @@ function logTrace(unit: Unit<any>) {
   });
 }
 
+function logUpdate({
+  type,
+  scopeName,
+  name,
+  value,
+}: {
+  type: string;
+  scopeName?: string;
+  name: string;
+  value: any;
+}) {
+  const typeString = `[${type}]`;
+  const scopeNameString = scopeName ? ` (scope: ${scopeName})` : '';
+  const nameString = ` ${name}`;
+
+  console.info(`${typeString}${scopeNameString}${nameString}`, value);
+}
+
+// Scopes
+
 function registerScope(scope: Scope, config: { name: string }) {
   scopes.save(scope, { name: config.name });
 
@@ -344,38 +269,6 @@ function unregisterAllScopes() {
   scopes.clear();
 }
 
-debug.registerScope = registerScope;
-debug.unregisterAllScopes = unregisterAllScopes;
-
-function logUpdate({
-  type,
-  scopeName,
-  name,
-  value,
-}: {
-  type: string;
-  scopeName?: string;
-  name: string;
-  value: any;
-}) {
-  const typeString = `[${type}]`;
-  const scopeNameString = scopeName ? ` (scope: ${scopeName})` : '';
-  const nameString = ` ${name}`;
-
-  console.info(`${typeString}${scopeNameString}${nameString}`, value);
-}
-
-type NodeUnit = { graphite: Node } | Node;
-const getGraph = (graph: NodeUnit): Node =>
-  (graph as { graphite: Node }).graphite || graph;
-
-/**
- * This is inlined in the index file because "./scope-cache" import
- * does not work correctly with esm imports
- * since in the resulting build scope-cache does not have explicit "js" extension
- *
- * TODO: fix this at the level of build configuration
- */
 interface Meta {
   name: string;
 }
@@ -407,3 +300,107 @@ const scopes = {
     cache.clear();
   },
 } as const;
+
+debug.registerScope = registerScope;
+debug.unregisterAllScopes = unregisterAllScopes;
+
+// Utils
+
+function isEffectChild(node: Node | { graphite: Node }) {
+  const actualNode = getNode(node);
+  const { sid, named } = actualNode.meta;
+
+  return Boolean(
+    !sid &&
+      (named === 'finally' ||
+        named === 'done' ||
+        named === 'doneData' ||
+        named === 'fail' ||
+        named === 'failData' ||
+        named === 'inFlight' ||
+        named === 'pending'),
+  );
+}
+
+function getNodeName(node?: Node): string {
+  if (!node) return '';
+
+  const { meta, id } = node;
+
+  const customName = customNames.get(id);
+
+  if (customName) {
+    return customName;
+  }
+
+  if (!isEffectChild(node)) {
+    return meta.name;
+  }
+
+  const parentEffect = node.family.owners.find((n) => n.meta.op === 'effect');
+
+  if (parentEffect) {
+    return `${getNodeName(parentEffect)}.${meta.named}`;
+  }
+
+  return meta.named;
+}
+
+function getType(unit: Unit<any>) {
+  if (is.store(unit)) {
+    return 'store';
+  }
+  if (is.effect(unit)) {
+    return 'effect';
+  }
+  if (is.event(unit)) {
+    return 'event';
+  }
+  if (is.domain(unit)) {
+    return 'domain';
+  }
+  if (is.unit(unit)) {
+    return 'unit';
+  }
+  return 'unknown';
+}
+
+type NodeUnit = { graphite: Node } | Node;
+const getGraph = (graph: NodeUnit): Node =>
+  (graph as { graphite: Node }).graphite || graph;
+
+const customNames = new Map<Node['id'], string>();
+
+function getName(unit: any): string {
+  const custom = customNames.get(getGraph(unit as any).id);
+  if (custom) {
+    return custom;
+  }
+
+  if (unit.compositeName && unit.compositeName.fullName) {
+    return unit.compositeName.fullName;
+  }
+  if (unit.shortName) {
+    return unit.shortName;
+  }
+  if (unit.name) {
+    return unit.name;
+  }
+  return '';
+}
+
+function readLoc({
+  meta,
+}: Node): void | { file?: string; line: number; column: number } {
+  const loc = 'config' in meta ? meta.config.loc : meta.loc;
+
+  return loc;
+}
+
+function getLoc(unit: Node) {
+  const loc = readLoc(unit);
+
+  if (!loc) return null;
+
+  return `${loc.file ?? ''}:${loc.line}:${loc.column}`;
+}
