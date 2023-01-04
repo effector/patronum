@@ -20,7 +20,7 @@ type LogContext = {
   node: Node;
   kind: string;
   value: unknown;
-  name: string;
+  name: string | null;
   loc?: {
     file?: string;
     line: number;
@@ -28,7 +28,7 @@ type LogContext = {
   };
   trace?: {
     node: Node;
-    name: string;
+    name: string | null;
     kind: string;
     value: unknown;
     loc?: {
@@ -46,7 +46,34 @@ interface Config {
 
 const defaultConfig: Config = {
   trace: false,
-  handler: console.log,
+  // default logger to console.info
+  handler: (context) => {
+    const { scope, scopeName, name, kind, value, loc, trace, node } = context;
+    const scopeLog = scope ? ` (scope: ${scopeName})` : '';
+
+    const logName = name ?? (loc ? `${loc.file}:${loc.line}:${loc.column}` : '');
+
+    console.info(`[${kind}]${scopeLog} ${logName}`, value);
+
+    if (
+      // logging trace only if there is something to log
+      trace &&
+      trace.length > 0 &&
+      // do not log trace for effect children, as it is always the same effect internals
+      !isEffectChild(node)
+    ) {
+      console.groupCollapsed(`[${kind}]${scopeLog} ${logName} trace`);
+      trace.forEach((update) => {
+        const { name: traceName, kind, value, loc } = update;
+
+        const logTraceName =
+          traceName ?? (loc ? `${loc.file}:${loc.line}:${loc.column}` : '');
+
+        console.info(`<- [${kind}] ${logTraceName}`, value);
+      });
+      console.groupEnd();
+    }
+  },
 };
 
 export function debug(
@@ -362,7 +389,7 @@ function getType(unit: Unit<any> | Node) {
   if (is.store(unit)) {
     return 'store';
   }
-  if (is.effect(unit)) {
+  if (is.effect(unit) || isEffectChild(unit)) {
     return 'effect';
   }
   if (is.event(unit)) {
@@ -390,7 +417,7 @@ const getGraph = (graph: NodeUnit): Node =>
 
 const customNames = new Map<Node['id'], string>();
 
-function getName(unit: Node | Unit<any>): string {
+function getName(unit: Node | Unit<any>): string | null {
   const custom = customNames.get(getGraph(unit as any).id);
   if (custom) {
     return custom;
@@ -431,7 +458,7 @@ function getName(unit: Node | Unit<any>): string {
     return getNode(unit).meta.name;
   }
 
-  return '_unknown_';
+  return null;
 }
 
 function readLoc({

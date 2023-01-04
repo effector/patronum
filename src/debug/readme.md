@@ -191,14 +191,14 @@ Common fields:
 - **scope** - `Scope | null` - effector's `Scope` context object, which owns this particular update
 - **scopeName** - `string | null` - name of the `Scope`, if registered and `null` otherwise.
 - **node** - `Node` - effector's internal node, which update is being logged.
-- **name** - `string` - node's name for convenience.
+- **name** - `string | null` - node's name for convenience. `null` - if node doesn't have own name (like `sample` calls).
 - **kind** - `string` - node's kind for convenience. It can be unit's kind (e.g. `store` or `event`) or operation kind (e.g. `sample`, `split`, etc).
 - **value** - `unknown` - value of the update.
 - **loc** - `{ file?: string; line: number; column: number; }` - location in the source code, if known
 
 Special field if `trace: true` provided:
 
-- **trace** - `undefined | { node: Node; name: string; kind: string; value: unknown; loc?: Loc }[]` - trace of updates.
+- **trace** - `undefined | { node: Node; name: string | null; kind: string; value: unknown; loc?: Loc }[]` - trace of updates.
 
 The `trace` field is not provided, if `debug`'s config does not have `trace: true`.
 
