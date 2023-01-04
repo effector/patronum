@@ -87,6 +87,7 @@ function watchUnit(
   config: Config,
 ) {
   if (is.store(unit)) {
+    // store has its initial/current value - we can log it right away
     watchStoreInitial(unit, config);
     watch(unit, config);
   } else if (is.event(unit)) {
@@ -111,6 +112,7 @@ function watch(unit: Unit<any>, config: Config) {
         fn(value: unknown, _internal: unknown, stack: Stack) {
           const scope = stack?.scope ?? null;
 
+          // If new unknown scope is found - save it
           if (scope && !scopes.get(scope)) {
             scopes.save(scope);
           }
@@ -122,6 +124,7 @@ function watch(unit: Unit<any>, config: Config) {
             kind: getType(unit),
             value,
             name: getName(unit),
+            loc: getLoc(unit),
             trace: config.trace ? collectTrace(stack) : undefined,
           };
 
@@ -153,6 +156,7 @@ function collectTrace(stack: Stack): Trace {
       node,
       value,
       name: getNodeName(node),
+      loc: getLoc(node),
       kind: getType(node),
     };
 
@@ -179,6 +183,7 @@ function watchStoreInitial(store: Store<any>, config: Config) {
     kind: getType(store),
     value: store.getState(),
     name: getName(store),
+    loc: getLoc(store),
     trace: config.trace ? [] : undefined,
   };
 
@@ -205,6 +210,7 @@ function watchStoreInitialInScope(store: Store<any>, config: Config, scope: Scop
     kind: getType(store),
     value: scope.getState(store),
     name: getName(store),
+    loc: getLoc(store),
     trace: config.trace ? [] : undefined,
   };
 
@@ -429,7 +435,7 @@ function readLoc({
 function getLoc(unit: Node | Unit<any>) {
   const loc = readLoc(getNode(unit));
 
-  if (!loc) return null;
+  if (!loc) return undefined;
 
   return loc;
 }
