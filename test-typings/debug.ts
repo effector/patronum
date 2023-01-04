@@ -82,7 +82,7 @@ import { debug } from '../src/debug';
     {
       trace: true,
       handler: (context) => {
-        expectType<'storeInit' | 'update'>(context.logType);
+        expectType<'initial' | 'update'>(context.logType);
         expectType<string | null>(context.name);
         expectType<string>(context.kind);
         expectType<Node>(context.node);

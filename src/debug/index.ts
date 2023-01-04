@@ -14,7 +14,7 @@ import {
 } from 'effector';
 
 type LogContext = {
-  logType: 'storeInit' | 'update';
+  logType: 'initial' | 'update';
   scope: Scope | null;
   scopeName: string | null;
   /** node, kind, value, name - common fields for logs and traces */
@@ -116,7 +116,7 @@ function watchUnit(
 ) {
   if (is.store(unit)) {
     // store has its initial/current value - we can log it right away
-    watchStoreInitial(unit, config);
+    watchinitialial(unit, config);
     watch(unit, config);
   } else if (is.event(unit)) {
     watch(unit, config);
@@ -146,6 +146,7 @@ function watch(unit: Unit<any>, config: Config) {
           }
 
           const context: LogContext = {
+            logType: 'update',
             scope,
             scopeName: getScopeName(scope),
             node: getNode(unit),
@@ -196,7 +197,7 @@ function collectTrace(stack: Stack): Trace {
   return trace;
 }
 
-function watchStoreInitial(store: Store<any>, config: Config) {
+function watchinitialial(store: Store<any>, config: Config) {
   if (!config.handler) {
     throw Error('patronum/debug must have the handler');
   }
@@ -205,6 +206,7 @@ function watchStoreInitial(store: Store<any>, config: Config) {
 
   // current state
   const context: LogContext = {
+    logType: 'initial',
     scope: null,
     scopeName: null,
     node,
@@ -218,12 +220,12 @@ function watchStoreInitial(store: Store<any>, config: Config) {
   config.handler(context);
 
   // current state in every known scope
-  scopes.forEach((scope) => watchStoreInitialInScope(store, config, scope));
+  scopes.forEach((scope) => watchinitialialInScope(store, config, scope));
   // subscribe to new scopes
-  watchScopeRegister((newScope) => watchStoreInitialInScope(store, config, newScope));
+  watchScopeRegister((newScope) => watchinitialialInScope(store, config, newScope));
 }
 
-function watchStoreInitialInScope(store: Store<any>, config: Config, scope: Scope) {
+function watchinitialialInScope(store: Store<any>, config: Config, scope: Scope) {
   if (!config.handler) {
     throw Error('patronum/debug must have the handler');
   }
@@ -232,6 +234,7 @@ function watchStoreInitialInScope(store: Store<any>, config: Config, scope: Scop
 
   // current state
   const context: LogContext = {
+    logType: 'initial',
     scope,
     scopeName: getScopeName(scope),
     node,

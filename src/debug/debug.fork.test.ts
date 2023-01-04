@@ -488,19 +488,19 @@ test('allow custom handlers', async () => {
   expect(argumentsHistory(mockLog)).toMatchInlineSnapshot(`
     [
       [
-        "null.store.$customName.0",
+        "initial.null.store.$customName.0",
       ],
       [
-        "my_scope.store.$customName.0",
+        "initial.my_scope.store.$customName.0",
       ],
       [
-        "my_scope.event.name.1",
+        "update.my_scope.event.name.1",
       ],
       [
         "trace.my_scope.event.name.1",
       ],
       [
-        "my_scope.store.$customName.1",
+        "update.my_scope.store.$customName.1",
       ],
       [
         "trace.my_scope.store.$customName.1",
@@ -512,7 +512,7 @@ test('allow custom handlers', async () => {
         "trace.my_scope.event.name.1",
       ],
       [
-        "my_scope.effect.nameFx.1",
+        "update.my_scope.effect.nameFx.1",
       ],
       [
         "trace.my_scope.effect.nameFx.1",
