@@ -468,7 +468,7 @@ test('allow custom handlers', async () => {
         expect(typeof context.scope).toEqual('object');
 
         mockLog(
-          `${context.scopeName}.${context.kind}.${context.name}.${context.value}`,
+          `${context.logType}.${context.scopeName}.${context.kind}.${context.name}.${context.value}`,
         );
 
         context.trace?.forEach((trace) => {
