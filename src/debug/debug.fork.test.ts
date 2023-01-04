@@ -442,3 +442,87 @@ test('custom names with traces support', () => {
     ]
   `);
 });
+
+test('allow custom handlers', async () => {
+  const event = createEvent<number>();
+  const effect = createEffect().use((payload) => Promise.resolve('result' + payload));
+  const $store = createStore(0)
+    .on(event, (state, value) => state + value)
+    .on(effect.done, (state) => state * 10);
+  sample({
+    clock: event,
+    target: effect,
+  });
+
+  const mockLog = jest.fn();
+
+  const scope = fork();
+  debug.unregisterAllScopes();
+  debug.registerScope(scope, { name: 'my_scope' });
+
+  debug(
+    {
+      trace: true,
+      handler: (context) => {
+        expect(typeof context.node).toEqual('object');
+        expect(typeof context.scope).toEqual('object');
+
+        mockLog(
+          `${context.scopeName}.${context.kind}.${context.name}.${context.value}`,
+        );
+
+        context.trace?.forEach((trace) => {
+          expect(typeof trace.node).toEqual('object');
+          expect(context.scopeName).toEqual('my_scope');
+          mockLog(
+            `trace.${context.scopeName}.${trace.kind}.${trace.name}.${trace.value}`,
+          );
+        });
+      },
+    },
+    { $customName: $store, name: event, nameFx: effect },
+  );
+
+  allSettled(event, { scope, params: 1 });
+
+  expect(argumentsHistory(mockLog)).toMatchInlineSnapshot(`
+    [
+      [
+        "null.store.$customName.0",
+      ],
+      [
+        "my_scope.store.$customName.0",
+      ],
+      [
+        "my_scope.event.name.1",
+      ],
+      [
+        "trace.my_scope.event.name.1",
+      ],
+      [
+        "my_scope.store.$customName.1",
+      ],
+      [
+        "trace.my_scope.store.$customName.1",
+      ],
+      [
+        "trace.my_scope.on.$customName.on(name).1",
+      ],
+      [
+        "trace.my_scope.event.name.1",
+      ],
+      [
+        "my_scope.effect.nameFx.1",
+      ],
+      [
+        "trace.my_scope.effect.nameFx.1",
+      ],
+      [
+        "trace.my_scope.sample.null.1",
+      ],
+      [
+        "trace.my_scope.event.name.1",
+      ],
+    ]
+  `);
+});
