@@ -155,7 +155,7 @@ function collectTrace(stack: Stack): Trace {
     const entry: TraceEntry = {
       node,
       value,
-      name: getNodeName(node),
+      name: getName(node),
       loc: getLoc(node),
       kind: getType(node),
     };
@@ -334,7 +334,7 @@ function getScopeName(scope: Scope | null) {
 
 // Utils
 
-function isEffectChild(node: Node | { graphite: Node }) {
+function isEffectChild(node: Node | Unit<any>) {
   const actualNode = getNode(node);
   const { sid, named } = actualNode.meta;
 
@@ -348,30 +348,6 @@ function isEffectChild(node: Node | { graphite: Node }) {
         named === 'inFlight' ||
         named === 'pending'),
   );
-}
-
-function getNodeName(node?: Node): string {
-  if (!node) return '';
-
-  const { meta, id } = node;
-
-  const customName = customNames.get(id);
-
-  if (customName) {
-    return customName;
-  }
-
-  if (!isEffectChild(node)) {
-    return meta.name;
-  }
-
-  const parentEffect = node.family.owners.find((n) => n.meta.op === 'effect');
-
-  if (parentEffect) {
-    return `${getNodeName(parentEffect)}.${meta.named}`;
-  }
-
-  return meta.named;
 }
 
 function getType(unit: Unit<any> | Node) {
@@ -406,22 +382,40 @@ const getGraph = (graph: NodeUnit): Node =>
 
 const customNames = new Map<Node['id'], string>();
 
-function getName(unit: any): string {
+function getName(unit: Node | Unit<any>): string {
   const custom = customNames.get(getGraph(unit as any).id);
   if (custom) {
     return custom;
   }
 
-  if (unit.compositeName && unit.compositeName.fullName) {
-    return unit.compositeName.fullName;
+  if (isEffectChild(unit)) {
+    const node = getNode(unit);
+    const parentEffect = node.family.owners.find((n) => n.meta.op === 'effect');
+
+    if (parentEffect) {
+      return `${getName(parentEffect)}.${node.meta.named}`;
+    }
+
+    return node.meta.named;
   }
-  if (unit.shortName) {
-    return unit.shortName;
+
+  if (is.unit(unit)) {
+    if ((unit as any)?.compositeName?.fullName) {
+      return (unit as any).compositeName.fullName;
+    }
+    if ((unit as any)?.shortName) {
+      return (unit as any).shortName;
+    }
+    if ((unit as any)?.name) {
+      return (unit as any).name;
+    }
   }
-  if (unit.name) {
-    return unit.name;
+
+  if (getNode(unit)?.meta?.name) {
+    return getNode(unit).meta.name;
   }
-  return '';
+
+  return '_unknown_';
 }
 
 function readLoc({
