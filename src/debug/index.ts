@@ -428,7 +428,12 @@ function getName(unit: Node | Unit<any>): string | null {
     const parentEffect = node.family.owners.find((n) => n.meta.op === 'effect');
 
     if (parentEffect) {
-      return `${getName(parentEffect)}.${node.meta.named}`;
+      const closestParentDomainName = getOwningDomainName(parentEffect);
+      const formattedDomainName = closestParentDomainName
+        ? `${closestParentDomainName}/`
+        : '';
+
+      return `${formattedDomainName}${getName(parentEffect)}.${node.meta.named}`;
     }
 
     return node.meta.named;
@@ -446,11 +451,17 @@ function getName(unit: Node | Unit<any>): string | null {
     if ((unit as any)?.compositeName?.fullName) {
       return (unit as any).compositeName.fullName;
     }
+
+    const closestParentDomainName = getOwningDomainName(unit);
+    const formattedDomainName = closestParentDomainName
+      ? `${closestParentDomainName}/`
+      : '';
+
     if ((unit as any)?.shortName) {
-      return (unit as any).shortName;
+      return `${formattedDomainName}${(unit as any).shortName}`;
     }
     if ((unit as any)?.name) {
-      return (unit as any).name;
+      return `${formattedDomainName}${(unit as any).name}`;
     }
   }
 
@@ -459,6 +470,16 @@ function getName(unit: Node | Unit<any>): string | null {
   }
 
   return null;
+}
+
+function getOwningDomainName(unit: Node | Unit<any>): string | null {
+  const closestParentDomain = getNode(unit).family.owners.find(
+    (n) => n.meta.op === 'domain',
+  );
+
+  if (!closestParentDomain) return null;
+
+  return getName(closestParentDomain);
 }
 
 function readLoc({
