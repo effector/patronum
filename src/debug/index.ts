@@ -61,6 +61,10 @@ export function debug(
        */
     }
   });
+
+  watchScopeRegister((newScope) => {
+    debugStores.forEach((store) => watchStoreInitialInScope(store, config, newScope));
+  });
 }
 
 // Log node
@@ -76,6 +80,7 @@ function watchUnit(
   config: Config,
 ) {
   if (is.store(unit)) {
+    watchStoreInitial(unit, config);
     watch(unit, config);
   } else if (is.event(unit)) {
     watch(unit, config);
@@ -98,6 +103,10 @@ function watch(unit: Unit<any>, config: Config) {
       step.run({
         fn(value: unknown, _internal: unknown, stack: Stack) {
           const scope = stack?.scope ?? null;
+
+          if (scope && !scopes.get(scope)) {
+            scopes.save(scope);
+          }
 
           const context: LogContext = {
             scope,
@@ -146,6 +155,55 @@ function collectTrace(stack: Stack): Trace {
   return trace;
 }
 
+const debugStores: Set<Store<any>> = new Set();
+
+function watchStoreInitial(store: Store<any>, config: Config) {
+  if (!config.handler) {
+    throw Error('patronum/debug must have the handler');
+  }
+
+  debugStores.add(store);
+
+  const node = getNode(store);
+
+  // current state
+  const context: LogContext = {
+    scope: null,
+    scopeName: null,
+    node,
+    kind: getType(store),
+    value: store.getState(),
+    name: getName(store),
+    trace: config.trace ? [] : undefined,
+  };
+
+  config.handler(context);
+
+  // current state in every known scope
+  scopes.forEach((scope) => watchStoreInitialInScope(store, config, scope));
+}
+
+function watchStoreInitialInScope(store: Store<any>, config: Config, scope: Scope) {
+  if (!config.handler) {
+    throw Error('patronum/debug must have the handler');
+  }
+
+  const node = getNode(store);
+
+  // current state
+  const context: LogContext = {
+    scope,
+    scopeName: getScopeName(scope),
+    node,
+    kind: getType(store),
+    value: scope.getState(store),
+    name: getName(store),
+    trace: config.trace ? [] : undefined,
+  };
+
+  config.handler(context);
+}
+
 // Config
 
 function resolveParams(...entry: Parameters<typeof debug>): {
@@ -162,7 +220,7 @@ function resolveParams(...entry: Parameters<typeof debug>): {
   } else if (!is.unit(maybeConfig)) {
     for (const [name, unit] of Object.entries(maybeConfig)) {
       customNames.set(getGraph(unit as any).id, name);
-      if (is.store(unit)) debugStores.push(unit);
+      if (is.store(unit)) debugStores.add(unit);
       units.push(unit);
     }
   } else {
@@ -171,12 +229,12 @@ function resolveParams(...entry: Parameters<typeof debug>): {
 
   for (const maybeUnit of restUnits) {
     if (is.unit(maybeUnit)) {
-      if (is.store(maybeUnit)) debugStores.push(maybeUnit);
+      if (is.store(maybeUnit)) debugStores.add(maybeUnit);
       units.push(maybeUnit);
     } else {
       for (const [name, unit] of Object.entries(maybeUnit)) {
         customNames.set(getGraph(unit as any).id, name);
-        if (is.store(unit)) debugStores.push(unit);
+        if (is.store(unit)) debugStores.add(unit);
         units.push(unit);
       }
     }
@@ -196,11 +254,19 @@ function isConfig(
 }
 
 // Scopes
+const watchers = new Set<(scope: Scope) => void>();
+const watchScopeRegister = (cb: (scope: Scope) => void) => {
+  watchers.add(cb);
 
-const debugStores: Store<any>[] = [];
+  return () => {
+    watchers.delete(cb);
+  };
+};
 
 function registerScope(scope: Scope, config: { name: string }) {
   scopes.save(scope, { name: config.name });
+
+  watchers.forEach((cb) => cb(scope));
 
   return () => {
     scopes.delete(scope);
