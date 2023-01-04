@@ -194,25 +194,29 @@ Common fields:
 - **name** - `string` - node's name for convenience.
 - **kind** - `string` - node's kind for convenience. It can be unit's kind (e.g. `store` or `event`) or operation kind (e.g. `sample`, `split`, etc).
 - **value** - `unknown` - value of the update.
+- **loc** - `{ file?: string; line: number; column: number; }` - location in the source code, if known
 
 Special field if `trace: true` provided:
 
-- **trace** - `undefined | { node: Node; name: string; kind: string; value: unknown; }[]` - trace of updates.
+- **trace** - `undefined | { node: Node; name: string; kind: string; value: unknown; loc?: Loc }[]` - trace of updates.
 
 The `trace` field is not provided, if `debug`'s config does not have `trace: true`.
 
 ```ts
-debug({
-  trace: true,
-  // custom log handler
-  handler: ({ trace, scope, scopeName, node, value, name, kind }) => {
-    // your own way to log updates
-    doStuff(node, value);
+debug(
+  {
+    trace: true,
+    // custom log handler
+    handler: ({ trace, scope, scopeName, node, value, name, kind }) => {
+      // your own way to log updates
+      doStuff(node, value);
 
-    if (trace) {
-      // log trace part
-      trace.forEach(({ name, kind, node, value }) => doStuff(node, value));
-    }
+      if (trace) {
+        // log trace part
+        trace.forEach(({ name, kind, node, value }) => doStuff(node, value));
+      }
+    },
   },
-}, { $a, $b, c });
+  { $a, $b, c },
+);
 ```

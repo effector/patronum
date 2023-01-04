@@ -88,6 +88,11 @@ import { debug } from '../src/debug';
         expectType<Scope | null>(context.scope);
         expectType<string | null>(context.scopeName);
         expectType<unknown>(context.value);
+        expectType<undefined | {
+          file?: string;
+          line: number;
+          column: number;
+        }>(context.loc)
 
         if (context.trace) {
           expectType<Array<any>>(context.trace);
@@ -97,6 +102,11 @@ import { debug } from '../src/debug';
             expectType<string>(update.name);
             expectType<string>(update.kind);
             expectType<unknown>(update.value);
+            expectType<undefined | {
+              file?: string;
+              line: number;
+              column: number;
+            }>(update.loc)
           });
         }
       },

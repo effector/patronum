@@ -10,6 +10,7 @@ import {
   createNode,
   step,
   Scope,
+  clearNode,
 } from 'effector';
 
 type LogContext = {
@@ -20,11 +21,21 @@ type LogContext = {
   kind: string;
   value: unknown;
   name: string;
+  loc?: {
+    file?: string;
+    line: number;
+    column: number;
+  };
   trace?: {
     node: Node;
     name: string;
     kind: string;
     value: unknown;
+    loc?: {
+      file?: string;
+      line: number;
+      column: number;
+    };
   }[];
 };
 
@@ -61,10 +72,6 @@ export function debug(
        */
     }
   });
-
-  watchScopeRegister((newScope) => {
-    debugStores.forEach((store) => watchStoreInitialInScope(store, config, newScope));
-  });
 }
 
 // Log node
@@ -92,7 +99,7 @@ function watchUnit(
 }
 
 function watch(unit: Unit<any>, config: Config) {
-  createNode({
+  const watcher = createNode({
     parent: [unit],
     // debug watchers should behave like normal watchers
     meta: { op: 'watch' },
@@ -127,6 +134,8 @@ function watch(unit: Unit<any>, config: Config) {
       }),
     ],
   });
+
+  return () => clearNode(watcher);
 }
 
 type Trace = NonNullable<LogContext['trace']>;
@@ -155,14 +164,10 @@ function collectTrace(stack: Stack): Trace {
   return trace;
 }
 
-const debugStores: Set<Store<any>> = new Set();
-
 function watchStoreInitial(store: Store<any>, config: Config) {
   if (!config.handler) {
     throw Error('patronum/debug must have the handler');
   }
-
-  debugStores.add(store);
 
   const node = getNode(store);
 
@@ -181,6 +186,8 @@ function watchStoreInitial(store: Store<any>, config: Config) {
 
   // current state in every known scope
   scopes.forEach((scope) => watchStoreInitialInScope(store, config, scope));
+  // subscribe to new scopes
+  watchScopeRegister((newScope) => watchStoreInitialInScope(store, config, newScope));
 }
 
 function watchStoreInitialInScope(store: Store<any>, config: Config, scope: Scope) {
@@ -220,7 +227,6 @@ function resolveParams(...entry: Parameters<typeof debug>): {
   } else if (!is.unit(maybeConfig)) {
     for (const [name, unit] of Object.entries(maybeConfig)) {
       customNames.set(getGraph(unit as any).id, name);
-      if (is.store(unit)) debugStores.add(unit);
       units.push(unit);
     }
   } else {
@@ -229,12 +235,10 @@ function resolveParams(...entry: Parameters<typeof debug>): {
 
   for (const maybeUnit of restUnits) {
     if (is.unit(maybeUnit)) {
-      if (is.store(maybeUnit)) debugStores.add(maybeUnit);
       units.push(maybeUnit);
     } else {
       for (const [name, unit] of Object.entries(maybeUnit)) {
         customNames.set(getGraph(unit as any).id, name);
-        if (is.store(unit)) debugStores.add(unit);
         units.push(unit);
       }
     }
@@ -422,12 +426,12 @@ function readLoc({
   return loc;
 }
 
-function getLoc(unit: Node) {
-  const loc = readLoc(unit);
+function getLoc(unit: Node | Unit<any>) {
+  const loc = readLoc(getNode(unit));
 
   if (!loc) return null;
 
-  return `${loc.file ?? ''}:${loc.line}:${loc.column}`;
+  return loc;
 }
 
 function getNode(node: Node | { graphite: Node } | Unit<any>): Node {
