@@ -82,17 +82,21 @@ import { debug } from '../src/debug';
     {
       trace: true,
       handler: (context) => {
+        expectType<'storeInit' | 'update'>(context.logType);
         expectType<string | null>(context.name);
         expectType<string>(context.kind);
         expectType<Node>(context.node);
         expectType<Scope | null>(context.scope);
         expectType<string | null>(context.scopeName);
         expectType<unknown>(context.value);
-        expectType<undefined | {
-          file?: string;
-          line: number;
-          column: number;
-        }>(context.loc)
+        expectType<
+          | undefined
+          | {
+              file?: string;
+              line: number;
+              column: number;
+            }
+        >(context.loc);
 
         if (context.trace) {
           expectType<Array<any>>(context.trace);
@@ -102,11 +106,14 @@ import { debug } from '../src/debug';
             expectType<string | null>(update.name);
             expectType<string>(update.kind);
             expectType<unknown>(update.value);
-            expectType<undefined | {
-              file?: string;
-              line: number;
-              column: number;
-            }>(update.loc)
+            expectType<
+              | undefined
+              | {
+                  file?: string;
+                  line: number;
+                  column: number;
+                }
+            >(update.loc);
           });
         }
       },

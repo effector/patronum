@@ -188,6 +188,7 @@ Handler is called for each update with context object like this:
 
 Common fields:
 
+- **logType** - `storeInit | update` - log type for convenience. All provided stores current values are logged with `storeInit` for all known scopes right away. Same after new scope was registered. All other updates are of `update` type.
 - **scope** - `Scope | null` - effector's `Scope` context object, which owns this particular update
 - **scopeName** - `string | null` - name of the `Scope`, if registered and `null` otherwise.
 - **node** - `Node` - effector's internal node, which update is being logged.
