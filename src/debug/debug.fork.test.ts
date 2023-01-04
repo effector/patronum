@@ -48,7 +48,7 @@ test('works in forked scope', async () => {
   await allSettled(event, { scope, params: 5 });
   expect(stringArguments(fn)).toMatchInlineSnapshot(`
     [
-      "[store] app/$store 0",
+      "[store] app/$store [getState] 0",
       "[event] (scope: unknown_1) app/event 5",
       "[store] (scope: unknown_1) app/$store 5",
     ]
@@ -57,7 +57,7 @@ test('works in forked scope', async () => {
   allSettled(effect, { scope, params: 'demo' });
   expect(stringArguments(fn)).toMatchInlineSnapshot(`
     [
-      "[store] app/$store 0",
+      "[store] app/$store [getState] 0",
       "[event] (scope: unknown_1) app/event 5",
       "[store] (scope: unknown_1) app/$store 5",
       "[effect] (scope: unknown_1) app/effect demo",
@@ -67,7 +67,7 @@ test('works in forked scope', async () => {
   await 1;
   expect(stringArguments(fn)).toMatchInlineSnapshot(`
     [
-      "[store] app/$store 0",
+      "[store] app/$store [getState] 0",
       "[event] (scope: unknown_1) app/event 5",
       "[store] (scope: unknown_1) app/$store 5",
       "[effect] (scope: unknown_1) app/effect demo",
@@ -97,8 +97,8 @@ test('trace support', async () => {
 
   expect(stringArguments(fn)).toMatchInlineSnapshot(`
     [
-      "[store] $form 0",
-      "[store] (scope: unknown_1) $form 0",
+      "[store] $form [getState] 0",
+      "[store] (scope: unknown_1) $form [getState] 0",
     ]
   `);
 
@@ -108,8 +108,8 @@ test('trace support', async () => {
 
   expect(stringArguments(fn)).toMatchInlineSnapshot(`
     [
-      "[store] $form 0",
-      "[store] (scope: unknown_1) $form 0",
+      "[store] $form [getState] 0",
+      "[store] (scope: unknown_1) $form [getState] 0",
       "[store] (scope: unknown_2) $form 1",
       "[store] (scope: unknown_2) $form trace",
       "<- [store] $form 1",
@@ -122,8 +122,8 @@ test('trace support', async () => {
 
   expect(stringArguments(fn)).toMatchInlineSnapshot(`
     [
-      "[store] $form 0",
-      "[store] (scope: unknown_1) $form 0",
+      "[store] $form [getState] 0",
+      "[store] (scope: unknown_1) $form [getState] 0",
       "[store] (scope: unknown_2) $form 1",
       "[store] (scope: unknown_2) $form trace",
       "<- [store] $form 1",
@@ -209,10 +209,10 @@ test('can detect registered scopes', async () => {
 
   expect(stringArguments(fn)).toMatchInlineSnapshot(`
     [
-      "[store] (scope: scope_a) app/$store 0",
-      "[store] (scope: scope_a) $form 0",
-      "[store] (scope: scope_b) app/$store 0",
-      "[store] (scope: scope_b) $form 0",
+      "[store] (scope: scope_a) app/$store [getState] 0",
+      "[store] (scope: scope_a) $form [getState] 0",
+      "[store] (scope: scope_b) app/$store [getState] 0",
+      "[store] (scope: scope_b) $form [getState] 0",
     ]
   `);
 
@@ -263,13 +263,13 @@ test('prints default state for store in each of the known scopes', () => {
 
   expect(stringArguments(fn)).toMatchInlineSnapshot(`
     [
-      "[store] (scope: scope_42) app/$store 0",
-      "[store] (scope: scope_42) $form 0",
-      "[store] (scope: scope_1337) app/$store 0",
-      "[store] (scope: scope_1337) $form 0",
-      "[store] $count 0",
-      "[store] (scope: scope_42) $count 42",
-      "[store] (scope: scope_1337) $count 1337",
+      "[store] (scope: scope_42) app/$store [getState] 0",
+      "[store] (scope: scope_42) $form [getState] 0",
+      "[store] (scope: scope_1337) app/$store [getState] 0",
+      "[store] (scope: scope_1337) $form [getState] 0",
+      "[store] $count [getState] 0",
+      "[store] (scope: scope_42) $count [getState] 42",
+      "[store] (scope: scope_1337) $count [getState] 1337",
     ]
   `);
 });
@@ -293,14 +293,14 @@ test('individual scope can be unregistered', () => {
 
   expect(stringArguments(fn)).toMatchInlineSnapshot(`
     [
-      "[store] (scope: scope_42) app/$store 0",
-      "[store] (scope: scope_42) $form 0",
-      "[store] (scope: scope_42) $count 0",
-      "[store] (scope: scope_1337) app/$store 0",
-      "[store] (scope: scope_1337) $form 0",
-      "[store] (scope: scope_1337) $count 0",
-      "[store] $count 0",
-      "[store] (scope: scope_1337) $count 1337",
+      "[store] (scope: scope_42) app/$store [getState] 0",
+      "[store] (scope: scope_42) $form [getState] 0",
+      "[store] (scope: scope_42) $count [getState] 0",
+      "[store] (scope: scope_1337) app/$store [getState] 0",
+      "[store] (scope: scope_1337) $form [getState] 0",
+      "[store] (scope: scope_1337) $count [getState] 0",
+      "[store] $count [getState] 0",
+      "[store] (scope: scope_1337) $count [getState] 1337",
     ]
   `);
 });
@@ -330,10 +330,10 @@ test('traces have scope name', async () => {
 
   expect(stringArguments(fn)).toMatchInlineSnapshot(`
     [
-      "[store] (scope: my_scope) app/$store 0",
-      "[store] (scope: my_scope) $form 0",
-      "[store] (scope: my_scope) $count 0",
-      "[store] (scope: my_scope) $count 0",
+      "[store] (scope: my_scope) app/$store [getState] 0",
+      "[store] (scope: my_scope) $form [getState] 0",
+      "[store] (scope: my_scope) $count [getState] 0",
+      "[store] (scope: my_scope) $count [getState] 0",
       "[effect] (scope: my_scope) submitFx 1",
       "[effect] (scope: my_scope) submitFx trace",
       "<- [effect] submitFx 1",
@@ -362,19 +362,19 @@ test('logs stores for newly registered scope', async () => {
 
   expect(stringArguments(fn)).toMatchInlineSnapshot(`
     [
-      "[store] $count 0",
-      "[store] (scope: scope_1337) $count 0",
-      "[store] (scope: my_scope) $count 0",
-      "[store] (scope: scope_42) app/$store 0",
-      "[store] (scope: scope_42) $form 0",
-      "[store] (scope: scope_42) $count 0",
-      "[store] (scope: scope_42) $count 0",
-      "[store] (scope: scope_42) $count 42",
-      "[store] (scope: scope_1337) app/$store 0",
-      "[store] (scope: scope_1337) $form 0",
-      "[store] (scope: scope_1337) $count 0",
-      "[store] (scope: scope_1337) $count 0",
-      "[store] (scope: scope_1337) $count 1337",
+      "[store] $count [getState] 0",
+      "[store] (scope: scope_1337) $count [getState] 0",
+      "[store] (scope: my_scope) $count [getState] 0",
+      "[store] (scope: scope_42) app/$store [getState] 0",
+      "[store] (scope: scope_42) $form [getState] 0",
+      "[store] (scope: scope_42) $count [getState] 0",
+      "[store] (scope: scope_42) $count [getState] 0",
+      "[store] (scope: scope_42) $count [getState] 42",
+      "[store] (scope: scope_1337) app/$store [getState] 0",
+      "[store] (scope: scope_1337) $form [getState] 0",
+      "[store] (scope: scope_1337) $count [getState] 0",
+      "[store] (scope: scope_1337) $count [getState] 0",
+      "[store] (scope: scope_1337) $count [getState] 1337",
     ]
   `);
 });

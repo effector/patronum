@@ -49,12 +49,13 @@ const defaultConfig: Config = {
   trace: false,
   // default logger to console.info
   handler: (context) => {
-    const { scope, scopeName, name, kind, value, loc, trace, node } = context;
+    const { scope, scopeName, name, kind, value, loc, trace, node, logType } = context;
     const scopeLog = scope ? ` (scope: ${scopeName})` : '';
 
     const logName = name ?? (loc ? `${loc.file}:${loc.line}:${loc.column}` : '');
+    const logPrintType = logType === 'initial' ? ' [getState]' : '';
 
-    console.info(`[${kind}]${scopeLog} ${logName}`, value);
+    console.info(`[${kind}]${scopeLog} ${logName}${logPrintType}`, value);
 
     if (
       // logging trace only if there is something to log
