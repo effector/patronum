@@ -323,7 +323,7 @@ const cache = new Map<Scope, Meta>();
 let unknownScopes = 0;
 function getDefaultName() {
   unknownScopes += 1;
-  return `unknown_scope_${unknownScopes}`;
+  return `unknown_${unknownScopes}`;
 }
 const scopes = {
   save(scope: Scope, meta?: Meta) {
