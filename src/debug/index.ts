@@ -333,7 +333,6 @@ function getScopeName(scope: Scope | null) {
 }
 
 // Utils
-
 function isEffectChild(node: Node | Unit<any>) {
   const actualNode = getNode(node);
   const { sid, named } = actualNode.meta;
@@ -348,6 +347,15 @@ function isEffectChild(node: Node | Unit<any>) {
         named === 'inFlight' ||
         named === 'pending'),
   );
+}
+
+function isStoreOn(node: Node | Unit<any>) {
+  const actualNode = getNode(node);
+  const { op } = actualNode.meta;
+
+  if (op === 'on') return true;
+
+  return false;
 }
 
 function getType(unit: Unit<any> | Node) {
@@ -397,6 +405,14 @@ function getName(unit: Node | Unit<any>): string {
     }
 
     return node.meta.named;
+  }
+
+  if (isStoreOn(unit)) {
+    const node = getNode(unit);
+    const targetStoreName = getName(node.next[0]);
+    const triggerEventName = getName(node.family.owners[0]);
+
+    return `${targetStoreName}.on(${triggerEventName})`;
   }
 
   if (is.unit(unit)) {
