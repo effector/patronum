@@ -117,7 +117,7 @@ function watchUnit(
 ) {
   if (is.store(unit)) {
     // store has its initial/current value - we can log it right away
-    watchinitialial(unit, config);
+    watchStoreInit(unit, config);
     watch(unit, config);
   } else if (is.event(unit)) {
     watch(unit, config);
@@ -198,7 +198,7 @@ function collectTrace(stack: Stack): Trace {
   return trace;
 }
 
-function watchinitialial(store: Store<any>, config: Config) {
+function watchStoreInit(store: Store<any>, config: Config) {
   if (!config.handler) {
     throw Error('patronum/debug must have the handler');
   }
@@ -221,12 +221,12 @@ function watchinitialial(store: Store<any>, config: Config) {
   config.handler(context);
 
   // current state in every known scope
-  scopes.forEach((scope) => watchinitialialInScope(store, config, scope));
+  scopes.forEach((scope) => watchStoreInitInScope(store, config, scope));
   // subscribe to new scopes
-  watchScopeRegister((newScope) => watchinitialialInScope(store, config, newScope));
+  watchScopeRegister((newScope) => watchStoreInitInScope(store, config, newScope));
 }
 
-function watchinitialialInScope(store: Store<any>, config: Config, scope: Scope) {
+function watchStoreInitInScope(store: Store<any>, config: Config, scope: Scope) {
   if (!config.handler) {
     throw Error('patronum/debug must have the handler');
   }
