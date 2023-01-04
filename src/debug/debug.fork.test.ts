@@ -113,7 +113,7 @@ test('trace support', async () => {
       "[store] (scope: unknown_scope_2) $form 1",
       "[store] (scope: unknown_scope_2) $form trace",
       "<- [store] $form 1",
-      "<- [$form.on] $form.on(inputChanged) 1",
+      "<- [on] $form.on(inputChanged) 1",
       "<- [event] inputChanged ",
     ]
   `);
@@ -127,7 +127,7 @@ test('trace support', async () => {
       "[store] (scope: unknown_scope_2) $form 1",
       "[store] (scope: unknown_scope_2) $form trace",
       "<- [store] $form 1",
-      "<- [$form.on] $form.on(inputChanged) 1",
+      "<- [on] $form.on(inputChanged) 1",
       "<- [event] inputChanged ",
       "[effect] (scope: unknown_scope_2) submitFx 1",
       "[effect] (scope: unknown_scope_2) submitFx trace",
@@ -138,12 +138,12 @@ test('trace support', async () => {
       "[store] (scope: unknown_scope_2) $form 2",
       "[store] (scope: unknown_scope_2) $form trace",
       "<- [store] $form 2",
-      "<- [$form.on] $form.on(submitFx.doneData) 2",
-      "<- [event] submitFx.doneData ",
+      "<- [on] $form.on(submitFx.doneData) 2",
+      "<- [effect] submitFx.doneData ",
       "<- [map]  ",
-      "<- [event] submitFx.done {"params":1}",
+      "<- [effect] submitFx.done {"params":1}",
       "<- [filterMap]  {"params":1}",
-      "<- [event] submitFx.finally {"status":"done","params":1}",
+      "<- [effect] submitFx.finally {"status":"done","params":1}",
     ]
   `);
 });
@@ -432,7 +432,7 @@ test('custom names with traces support', () => {
       "[store] (scope: unknown_scope_6) $customName 1",
       "[store] (scope: unknown_scope_6) $customName trace",
       "<- [store] $customName 1",
-      "<- [$customName.on] $customName.on(name) 1",
+      "<- [on] $customName.on(name) 1",
       "<- [event] name 1",
       "[effect] (scope: unknown_scope_6) nameFx 1",
       "[effect] (scope: unknown_scope_6) nameFx trace",

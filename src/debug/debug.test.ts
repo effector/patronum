@@ -162,7 +162,7 @@ test('trace support', async () => {
       "[store] $form 1",
       "[store] $form trace",
       "<- [store] $form 1",
-      "<- [$form.on] $form.on(inputChanged) 1",
+      "<- [on] $form.on(inputChanged) 1",
       "<- [event] inputChanged ",
     ]
   `);
@@ -175,7 +175,7 @@ test('trace support', async () => {
       "[store] $form 1",
       "[store] $form trace",
       "<- [store] $form 1",
-      "<- [$form.on] $form.on(inputChanged) 1",
+      "<- [on] $form.on(inputChanged) 1",
       "<- [event] inputChanged ",
       "[effect] submitFx 1",
       "[effect] submitFx trace",
@@ -186,12 +186,12 @@ test('trace support', async () => {
       "[store] $form 2",
       "[store] $form trace",
       "<- [store] $form 2",
-      "<- [$form.on] $form.on(submitFx.doneData) 2",
-      "<- [event] submitFx.doneData ",
+      "<- [on] $form.on(submitFx.doneData) 2",
+      "<- [effect] submitFx.doneData ",
       "<- [map]  ",
-      "<- [event] submitFx.done {"params":1}",
+      "<- [effect] submitFx.done {"params":1}",
       "<- [filterMap]  {"params":1}",
-      "<- [event] submitFx.finally {"status":"done","params":1}",
+      "<- [effect] submitFx.finally {"status":"done","params":1}",
     ]
   `);
 });
@@ -204,8 +204,8 @@ test('domain is traceable', async () => {
 
   sample({
     clock: $c,
-    target: fx
-  })
+    target: fx,
+  });
 
   debug({ trace: true }, d);
 
@@ -220,14 +220,14 @@ test('domain is traceable', async () => {
       "[store] d/$c 1",
       "[store] d/$c trace",
       "<- [store] $c 1",
-      "<- [$c.on] $c.on(up) 1",
+      "<- [on] $c.on(up) 1",
       "<- [event] up ",
       "[effect] d/fx 1",
       "[effect] d/fx trace",
       "<- [effect] fx 1",
       "<- [sample]  1",
       "<- [store] $c 1",
-      "<- [$c.on] $c.on(up) 1",
+      "<- [on] $c.on(up) 1",
       "<- [event] up ",
       "[effect] d/fx.done {"params":1}",
     ]
@@ -281,7 +281,7 @@ test('custom names with traces support', () => {
       "[store] $customName 1",
       "[store] $customName trace",
       "<- [store] $customName 1",
-      "<- [$customName.on] $customName.on(name) 1",
+      "<- [on] $customName.on(name) 1",
       "<- [event] name 1",
       "[effect] nameFx 1",
       "[effect] nameFx trace",
