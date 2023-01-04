@@ -98,24 +98,22 @@ import { debug } from '../src/debug';
             }
         >(context.loc);
 
-        if (context.trace) {
-          expectType<Array<any>>(context.trace);
+        expectType<Array<any>>(context.trace);
 
-          context.trace.forEach((update) => {
-            expectType<Node>(update.node);
-            expectType<string | null>(update.name);
-            expectType<string>(update.kind);
-            expectType<unknown>(update.value);
-            expectType<
-              | undefined
-              | {
-                  file?: string;
-                  line: number;
-                  column: number;
-                }
-            >(update.loc);
-          });
-        }
+        context.trace.forEach((update) => {
+          expectType<Node>(update.node);
+          expectType<string | null>(update.name);
+          expectType<string>(update.kind);
+          expectType<unknown>(update.value);
+          expectType<
+            | undefined
+            | {
+                file?: string;
+                line: number;
+                column: number;
+              }
+          >(update.loc);
+        });
       },
     },
     { event, $store, fx, domain },

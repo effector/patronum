@@ -471,7 +471,7 @@ test('allow custom handlers', async () => {
           `${context.logType}.${context.scopeName}.${context.kind}.${context.name}.${context.value}`,
         );
 
-        context.trace?.forEach((trace) => {
+        context.trace.forEach((trace) => {
           expect(typeof trace.node).toEqual('object');
           expect(context.scopeName).toEqual('my_scope');
           mockLog(

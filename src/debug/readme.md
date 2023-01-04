@@ -199,9 +199,9 @@ Common fields:
 
 Special field if `trace: true` provided:
 
-- **trace** - `undefined | { node: Node; name: string | null; kind: string; value: unknown; loc?: Loc }[]` - trace of updates.
+- **trace** - `Array<{ node: Node; name: string | null; kind: string; value: unknown; loc?: Loc }>` - trace of updates.
 
-The `trace` field is not provided, if `debug`'s config does not have `trace: true`.
+The `trace` array is always empty (i.e. trace is not collected), if `debug`'s config does not have `trace: true`.
 
 ```ts
 debug(

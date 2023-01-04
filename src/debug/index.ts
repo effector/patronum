@@ -27,7 +27,7 @@ type LogContext = {
     line: number;
     column: number;
   };
-  trace?: {
+  trace: {
     node: Node;
     name: string | null;
     kind: string;
@@ -49,7 +49,8 @@ const defaultConfig: Config = {
   trace: false,
   // default logger to console.info
   handler: (context) => {
-    const { scope, scopeName, name, kind, value, loc, trace, node, logType } = context;
+    const { scope, scopeName, name, kind, value, loc, trace, node, logType } =
+      context;
     const scopeLog = scope ? ` (scope: ${scopeName})` : '';
 
     const logName = name ?? (loc ? `${loc.file}:${loc.line}:${loc.column}` : '');
@@ -155,7 +156,7 @@ function watch(unit: Unit<any>, config: Config) {
             value,
             name: getName(unit),
             loc: getLoc(unit),
-            trace: config.trace ? collectTrace(stack) : undefined,
+            trace: config.trace ? collectTrace(stack) : [],
           };
 
           if (!config.handler) {
@@ -215,7 +216,8 @@ function watchStoreInit(store: Store<any>, config: Config) {
     value: store.getState(),
     name: getName(store),
     loc: getLoc(store),
-    trace: config.trace ? [] : undefined,
+    // nothing to trace for store.getState() - it is one-step call
+    trace: [],
   };
 
   config.handler(context);
@@ -243,7 +245,8 @@ function watchStoreInitInScope(store: Store<any>, config: Config, scope: Scope) 
     value: scope.getState(store),
     name: getName(store),
     loc: getLoc(store),
-    trace: config.trace ? [] : undefined,
+    // nothing to trace for scope.getState(store) - it is one-step call
+    trace: [],
   };
 
   config.handler(context);
