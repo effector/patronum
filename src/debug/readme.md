@@ -179,3 +179,45 @@ debug($count);
 // "[store] (scope: scope_42) $count 42",
 // "[store] (scope: scope_1337) $count 1337",
 ```
+
+### Custom log handler
+
+You can provide custom log handler in the config. It can be useful, if `console.log` somehow doesn't fit your use-case: e.g. you want advanced info from `patronum/debug` to built your own dev-tools, debug especially hard case, etc.
+
+Handler is called for each update with context object like this:
+
+Common fields:
+
+- **logType** - `initial | update` - log type for convenience. All provided stores current values are logged with `initial` for all known scopes right away. Same after new scope was registered. All other updates are of `update` type.
+- **scope** - `Scope | null` - effector's `Scope` context object, which owns this particular update
+- **scopeName** - `string | null` - name of the `Scope`, if registered and `null` otherwise.
+- **node** - `Node` - effector's internal node, which update is being logged.
+- **name** - `string | null` - node's name for convenience. `null` - if node doesn't have own name (like `sample` calls).
+- **kind** - `string` - node's kind for convenience. It can be unit's kind (e.g. `store` or `event`) or operation kind (e.g. `sample`, `split`, etc).
+- **value** - `unknown` - value of the update.
+- **loc** - `{ file?: string; line: number; column: number; }` - location in the source code, if known
+
+Special field if `trace: true` provided:
+
+- **trace** - `Array<{ node: Node; name: string | null; kind: string; value: unknown; loc?: Loc }>` - trace of updates.
+
+The `trace` array is always empty (i.e. trace is not collected), if `debug`'s config does not have `trace: true`.
+
+```ts
+debug(
+  {
+    trace: true,
+    // custom log handler
+    handler: ({ trace, scope, scopeName, node, value, name, kind }) => {
+      // your own way to log updates
+      doStuff(node, value);
+
+      if (trace) {
+        // log trace part
+        trace.forEach(({ name, kind, node, value }) => doStuff(node, value));
+      }
+    },
+  },
+  { $a, $b, c },
+);
+```
