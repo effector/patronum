@@ -12,7 +12,7 @@ test('works in forked scope', async () => {
   allSettled(start, { scope });
   expect(fn).not.toBeCalled();
 
-  await wait(32);
+  await wait(28);
   expect(fn).toBeCalledTimes(2);
 
   allSettled(stop, { scope });
@@ -24,7 +24,7 @@ test('works in forked scope', async () => {
 test('isRunning works in fork', async () => {
   const start = createEvent();
   const stop = createEvent();
-  const { tick, isRunning } = interval({ timeout: 10, start, stop });
+  const { isRunning } = interval({ timeout: 10, start, stop });
   const fn = watch(isRunning);
 
   const scope = fork();
