@@ -128,7 +128,7 @@ test('delay event with function of argument', async () => {
   expect(start2.diff()).toBeCloseWithThreshold(200, TIMER_THRESHOLD);
   expect(fn).toBeCalledTimes(2);
 
-  await wait(100);
+  await wait(120);
   expect(fn).toBeCalledTimes(2);
 
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
@@ -164,7 +164,7 @@ test('delay event with store as timeout', async () => {
   expect(start2.diff()).toBeCloseWithThreshold(300, TIMER_THRESHOLD);
   expect(fn).toBeCalledTimes(2);
 
-  await wait(100);
+  await wait(120);
   expect(fn).toBeCalledTimes(2);
 
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`

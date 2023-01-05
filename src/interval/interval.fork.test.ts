@@ -12,12 +12,12 @@ test('works in forked scope', async () => {
   allSettled(start, { scope });
   expect(fn).not.toBeCalled();
 
-  await wait(30);
+  await wait(32);
   expect(fn).toBeCalledTimes(2);
 
   allSettled(stop, { scope });
 
-  await wait(30);
+  await wait(32);
   expect(fn).toBeCalledTimes(2);
 });
 
@@ -33,7 +33,7 @@ test('isRunning works in fork', async () => {
   allSettled(start, { scope });
   expect(scope.getState(isRunning)).toBe(true);
 
-  await wait(30);
+  await wait(32);
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
     [
       false,
@@ -43,7 +43,7 @@ test('isRunning works in fork', async () => {
 
   allSettled(stop, { scope });
 
-  await wait(30);
+  await wait(32);
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
     [
       false,

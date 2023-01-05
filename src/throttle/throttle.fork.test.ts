@@ -119,11 +119,11 @@ describe('timeout as store', () => {
     const scope = fork();
 
     allSettled(trigger, { scope }).then(() => {});
-    await wait(30);
+    await wait(32);
     allSettled(changeTimeout, { scope, params: 100 }).then(() => {});
 
     allSettled(trigger, { scope }).then(() => {});
-    await wait(10);
+    await wait(12);
     expect(watcher).toBeCalledTimes(1);
 
     allSettled(trigger, { scope }).then(() => {});

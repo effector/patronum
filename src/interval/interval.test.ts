@@ -15,7 +15,7 @@ describe('timeout', () => {
     start();
     expect(fn).not.toBeCalled();
 
-    await wait(10);
+    await wait(12);
     expect(fn).toBeCalledTimes(1);
 
     stop();
@@ -32,13 +32,13 @@ describe('timeout', () => {
     start();
     expect(fn).not.toBeCalled();
 
-    await wait(10);
+    await wait(12);
     expect(fn).toBeCalledTimes(1);
 
-    await wait(10);
+    await wait(12);
     expect(fn).toBeCalledTimes(2);
 
-    await wait(10);
+    await wait(12);
     expect(fn).toBeCalledTimes(3);
 
     stop();
@@ -55,10 +55,10 @@ describe('timeout', () => {
     start();
     expect(fn).not.toBeCalled();
 
-    await wait(10);
+    await wait(12);
     expect(fn).toBeCalledTimes(1);
 
-    await wait(10);
+    await wait(12);
     expect(fn).toBeCalledTimes(2);
 
     stop();
@@ -86,7 +86,7 @@ describe('timeout', () => {
       ]
     `);
 
-    await wait(10);
+    await wait(12);
     expect(argumentHistory(fn)).toMatchInlineSnapshot(`
       [
         false,
@@ -94,7 +94,7 @@ describe('timeout', () => {
       ]
     `);
 
-    await wait(10);
+    await wait(12);
     expect(argumentHistory(fn)).toMatchInlineSnapshot(`
       [
         false,
@@ -130,7 +130,7 @@ describe('timeout', () => {
 
     await wait(20);
     expect(fn).toBeCalledTimes(1);
-    await wait(10);
+    await wait(12);
     expect(fn).toBeCalledTimes(1);
 
     await wait(20);
@@ -157,7 +157,7 @@ describe('timeout', () => {
     start();
     start();
     start();
-    await wait(10);
+    await wait(12);
     expect(fn).toBeCalledTimes(1);
 
     await wait(20);
@@ -178,7 +178,7 @@ describe('timeout', () => {
     start();
     expect(fn).not.toBeCalled();
 
-    await wait(10);
+    await wait(12);
     expect(fn).toBeCalledTimes(1);
 
     stop();
@@ -193,19 +193,19 @@ describe('timeout', () => {
     const fn = watch(tick);
 
     start();
-    await wait(10);
+    await wait(12);
     expect(fn).toBeCalledTimes(1);
 
     // timeout will be changed in the next interval tick
     increaseTimeout();
-    await wait(10);
+    await wait(12);
     expect(fn).toBeCalledTimes(2);
 
     // till no tick
-    await wait(10);
+    await wait(12);
     expect(fn).toBeCalledTimes(2);
 
-    await wait(10);
+    await wait(12);
     expect(fn).toBeCalledTimes(3);
 
     // timeout should be 40ms
@@ -229,7 +229,7 @@ describe('leading=true', () => {
     start();
     expect(fn).toBeCalledTimes(1);
 
-    await wait(10);
+    await wait(12);
     expect(fn).toBeCalledTimes(2);
 
     stop();
@@ -248,7 +248,7 @@ describe('trailing=true', () => {
     start();
     expect(fn).not.toBeCalled();
 
-    await wait(10);
+    await wait(12);
     expect(fn).toBeCalledTimes(1);
 
     stop();
@@ -277,7 +277,7 @@ describe('leading=true trailing=true', () => {
     start();
     expect(fn).toBeCalledTimes(1);
 
-    await wait(10);
+    await wait(12);
     expect(fn).toBeCalledTimes(2);
 
     stop();

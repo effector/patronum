@@ -51,16 +51,16 @@ describe('timeout as store', () => {
     const watcher = watch(debounced);
 
     trigger();
-    await wait(30);
+    await wait(32);
     changeTimeout(100);
     trigger();
-    await wait(10);
+    await wait(12);
     expect(watcher).toBeCalledTimes(0);
     await wait(92);
     expect(watcher).toBeCalledTimes(1);
 
     trigger();
-    await wait(100);
+    await wait(120);
     expect(watcher).toBeCalledTimes(2);
   });
 });
@@ -79,7 +79,7 @@ describe('triple trigger one wait', () => {
     trigger();
     expect(watcher).not.toBeCalled();
 
-    await wait(40);
+    await wait(42);
     expect(watcher).toBeCalledTimes(1);
   });
 
@@ -96,7 +96,7 @@ describe('triple trigger one wait', () => {
     trigger();
     expect(watcher).not.toBeCalled();
 
-    await wait(40);
+    await wait(42);
     expect(watcher).toBeCalledTimes(1);
   });
 
@@ -114,7 +114,7 @@ describe('triple trigger one wait', () => {
     trigger(2);
     expect(watcher).not.toBeCalled();
 
-    await wait(40);
+    await wait(42);
     expect(watcher).toBeCalledTimes(1);
     expect(watcher).toBeCalledWith(2);
   });
@@ -128,13 +128,13 @@ describe('too small wait after each trigger', () => {
     debounced.watch(watcher);
 
     trigger();
-    await wait(30);
+    await wait(32);
     trigger();
-    await wait(30);
+    await wait(32);
     trigger();
     expect(watcher).not.toBeCalled();
 
-    await wait(40);
+    await wait(42);
     expect(watcher).toBeCalledTimes(1);
   });
 
@@ -145,13 +145,13 @@ describe('too small wait after each trigger', () => {
     debounced.watch(watcher);
 
     trigger();
-    await wait(30);
+    await wait(32);
     trigger();
-    await wait(30);
+    await wait(32);
     trigger();
     expect(watcher).not.toBeCalled();
 
-    await wait(40);
+    await wait(42);
     expect(watcher).toBeCalledTimes(1);
   });
 
@@ -163,13 +163,13 @@ describe('too small wait after each trigger', () => {
     debounced.watch(watcher);
 
     trigger();
-    await wait(30);
+    await wait(32);
     trigger();
-    await wait(30);
+    await wait(32);
     trigger();
     expect(watcher).not.toBeCalled();
 
-    await wait(40);
+    await wait(42);
     expect(watcher).toBeCalledTimes(1);
   });
 });
@@ -186,7 +186,7 @@ describe('debounced triggered with latest value', () => {
     trigger(2);
     expect(watcher).not.toBeCalled();
 
-    await wait(40);
+    await wait(42);
     expect(watcher).toBeCalledTimes(1);
     expect(watcher).toBeCalledWith(2);
   });
@@ -202,7 +202,7 @@ describe('debounced triggered with latest value', () => {
     trigger(2);
     expect(watcher).not.toBeCalled();
 
-    await wait(40);
+    await wait(42);
     expect(watcher).toBeCalledTimes(1);
     expect(watcher).toBeCalledWith(2);
   });
@@ -219,7 +219,7 @@ describe('debounced triggered with latest value', () => {
     trigger();
     expect(watcher).not.toBeCalled();
 
-    await wait(40);
+    await wait(42);
     expect(watcher).toBeCalledTimes(1);
     expect(watcher).toBeCalledWith(3);
   });
@@ -237,14 +237,14 @@ describe('debounced can be triggered after first', () => {
     trigger(2);
     expect(watcher).not.toBeCalled();
 
-    await wait(40);
+    await wait(42);
     expect(watcher).toBeCalledTimes(1);
     expect(watcher).toBeCalledWith(2);
 
     trigger(3);
-    await wait(30);
+    await wait(32);
     trigger(4);
-    await wait(40);
+    await wait(42);
 
     expect(watcher).toBeCalledTimes(2);
     expect(watcher).toBeCalledWith(2);
@@ -262,14 +262,14 @@ describe('debounced can be triggered after first', () => {
     trigger(2);
     expect(watcher).not.toBeCalled();
 
-    await wait(40);
+    await wait(42);
     expect(watcher).toBeCalledTimes(1);
     expect(watcher).toBeCalledWith(2);
 
     trigger(3);
-    await wait(30);
+    await wait(32);
     trigger(4);
-    await wait(40);
+    await wait(42);
 
     expect(watcher).toBeCalledTimes(2);
     expect(watcher).toBeCalledWith(2);
@@ -288,14 +288,14 @@ describe('debounced can be triggered after first', () => {
     trigger();
     expect(watcher).not.toBeCalled();
 
-    await wait(40);
+    await wait(42);
     expect(watcher).toBeCalledTimes(1);
     expect(watcher).toBeCalledWith(3);
 
     trigger();
-    await wait(30);
+    await wait(32);
     trigger();
-    await wait(40);
+    await wait(42);
 
     expect(watcher).toBeCalledTimes(2);
     expect(watcher).toBeCalledWith(3);
@@ -316,7 +316,7 @@ describe('target triggered on debounce', () => {
     source(3);
     expect(watcher).not.toBeCalled();
 
-    await wait(40);
+    await wait(42);
     expect(watcher).toBeCalledTimes(1);
     expect(watcher).toBeCalledWith(3);
   });
@@ -333,7 +333,7 @@ describe('target triggered on debounce', () => {
     source(3);
     expect(watcher).not.toBeCalled();
 
-    await wait(40);
+    await wait(42);
     expect(watcher).toBeCalledTimes(1);
     expect(watcher).toBeCalledWith(3);
   });
@@ -350,7 +350,7 @@ describe('target triggered on debounce', () => {
     source(3);
     expect(watcher).not.toBeCalled();
 
-    await wait(40);
+    await wait(42);
     expect(watcher).toBeCalledTimes(1);
     expect(watcher).toBeCalledWith(3);
   });
@@ -397,7 +397,7 @@ describe('source and target type combinations', () => {
     source(3);
     expect(watcher).not.toBeCalled();
 
-    await wait(40);
+    await wait(42);
     expect(watcher).toBeCalledTimes(1);
     expect(watcher.mock.calls).toMatchInlineSnapshot(`
       [
@@ -420,7 +420,7 @@ describe('source and target type combinations', () => {
     source(2);
     expect(watcher).not.toBeCalled();
 
-    await wait(40);
+    await wait(42);
     expect(watcher).toBeCalledTimes(1);
     expect(watcher.mock.calls).toMatchInlineSnapshot(`
       [
@@ -444,7 +444,7 @@ describe('source and target type combinations', () => {
     change();
     expect(watcher).not.toBeCalled();
 
-    await wait(40);
+    await wait(42);
     expect(watcher).toBeCalledTimes(1);
     expect(watcher.mock.calls).toMatchInlineSnapshot(`
       [

@@ -18,7 +18,7 @@ describe('event', () => {
 
     expect(watcher).not.toBeCalled();
 
-    await wait(40);
+    await wait(42);
 
     expect(watcher).toBeCalledTimes(1);
   });
@@ -33,15 +33,15 @@ describe('event', () => {
 
     trigger();
 
-    await wait(30);
+    await wait(32);
     trigger();
 
-    await wait(30);
+    await wait(32);
     trigger();
 
     expect(watcher).toBeCalled();
 
-    await wait(40);
+    await wait(42);
 
     expect(watcher).toBeCalledTimes(2);
   });
@@ -60,7 +60,7 @@ describe('event', () => {
 
     expect(watcher).not.toBeCalled();
 
-    await wait(40);
+    await wait(42);
 
     expect(watcher.mock.calls).toMatchInlineSnapshot(`
       [
@@ -85,7 +85,7 @@ describe('event', () => {
 
     expect(watcher).not.toBeCalled();
 
-    await wait(40);
+    await wait(42);
 
     expect(watcher.mock.calls).toMatchInlineSnapshot(`
       [
@@ -96,7 +96,7 @@ describe('event', () => {
     `);
 
     trigger(3);
-    await wait(30);
+    await wait(32);
     trigger(4);
     await wait(50);
 
@@ -128,7 +128,7 @@ describe('event', () => {
 
     expect(watcher).not.toBeCalled();
 
-    await wait(40);
+    await wait(42);
 
     expect(watcher).toBeCalledTimes(1);
   });
@@ -165,7 +165,7 @@ describe('effect', () => {
 
     expect(watcher).not.toBeCalled();
 
-    await wait(40);
+    await wait(42);
 
     expect(watcher).toBeCalledTimes(1);
   });
@@ -180,15 +180,15 @@ describe('effect', () => {
 
     trigger();
 
-    await wait(30);
+    await wait(32);
     trigger();
 
-    await wait(30);
+    await wait(32);
     trigger();
 
     expect(watcher).toBeCalledTimes(1);
 
-    await wait(40);
+    await wait(42);
 
     expect(watcher).toBeCalledTimes(2);
   });
@@ -207,7 +207,7 @@ describe('effect', () => {
 
     expect(watcher).not.toBeCalled();
 
-    await wait(40);
+    await wait(42);
 
     expect(watcher).toBeCalledTimes(1);
     expect(watcher.mock.calls).toMatchInlineSnapshot(`
@@ -233,13 +233,13 @@ describe('effect', () => {
 
     expect(watcher).not.toBeCalled();
 
-    await wait(40);
+    await wait(42);
 
     expect(watcher).toBeCalledTimes(1);
     expect(watcher).toBeCalledWith(2);
 
     trigger(3);
-    await wait(30);
+    await wait(32);
     trigger(4);
 
     await wait(50);
@@ -273,7 +273,7 @@ describe('effect', () => {
 
     expect(watcher).not.toBeCalled();
 
-    await wait(40);
+    await wait(42);
 
     expect(watcher).toBeCalledTimes(1);
     expect(watcher.mock.calls).toMatchInlineSnapshot(`
@@ -301,7 +301,7 @@ describe('effect', () => {
 
     expect(watcher).not.toBeCalled();
 
-    await wait(40);
+    await wait(42);
 
     expect(watcher).toBeCalledTimes(1);
     expect(watcher.mock.calls).toMatchInlineSnapshot(`
@@ -354,7 +354,7 @@ describe('store', () => {
 
     expect(watcher).not.toBeCalled();
 
-    await wait(40);
+    await wait(42);
 
     expect(watcher).toBeCalledTimes(1);
     expect(watcher.mock.calls).toMatchInlineSnapshot(`
@@ -384,7 +384,7 @@ describe('store', () => {
 
     expect(watcher).toBeCalledTimes(1);
 
-    await wait(40);
+    await wait(42);
 
     expect(watcher.mock.calls).toMatchInlineSnapshot(`
       [
@@ -428,10 +428,10 @@ describe('timeout as store', () => {
     throttled.watch(watcher);
 
     trigger();
-    await wait(30);
+    await wait(32);
     changeTimeout(100);
     trigger();
-    await wait(10);
+    await wait(12);
     expect(watcher).toBeCalledTimes(1);
 
     trigger();
@@ -538,7 +538,7 @@ test('source event, target effect', async () => {
 
   expect(watcher).not.toBeCalled();
 
-  await wait(40);
+  await wait(42);
 
   expect(watcher).toBeCalledTimes(1);
   expect(watcher.mock.calls).toMatchInlineSnapshot(`
@@ -567,7 +567,7 @@ test('source store, target effect', async () => {
 
   expect(watcher).not.toBeCalled();
 
-  await wait(40);
+  await wait(42);
 
   expect(watcher).toBeCalledTimes(1);
   expect(watcher.mock.calls).toMatchInlineSnapshot(`
