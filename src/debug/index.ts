@@ -51,6 +51,12 @@ const defaultConfig: Config = {
   trace: false,
   // default logger to console.info
   handler: (context) => {
+
+    if (isEffectChild(context.node) && context.node.meta.named === 'finally') {
+      // skip effect.finally logs, it can be useful for other custom handlers
+      // but not for default console.info logger
+      return;
+    }
     const { scope, scopeName, name, kind, value, loc, trace, node, logType } =
       context;
     const scopeLog = scope ? ` (scope: ${scopeName})` : '';
@@ -126,6 +132,7 @@ function watchUnit(
     watch(unit, config);
   } else if (is.effect(unit)) {
     watch(unit, config);
+    watch(unit.finally, config);
     watch(unit.done, config);
     watch(unit.fail, config);
   }
@@ -158,7 +165,8 @@ function watch(unit: Unit<any>, config: Config) {
             value,
             name: getName(unit),
             loc: getLoc(unit),
-            stackMeta: getStackMeta(stack),
+            // Use stack meta of actual unit, not of debug node
+            stackMeta: getStackMeta(stack.parent),
             trace: config.trace ? collectTrace(stack) : [],
           };
 
@@ -520,7 +528,9 @@ function getNode(node: Node | { graphite: Node } | Unit<any>): Node {
   return actualNode;
 }
 
-function getStackMeta(stack: Stack) {
+function getStackMeta(stack?: Stack): Record<string, unknown> {
+  if (!stack) return {};
+
   const meta = (stack as any).meta || {};
 
   return meta as Record<string, unknown>;
