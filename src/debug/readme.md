@@ -200,7 +200,7 @@ Common fields:
 - **kind** - `string` - node's kind for convenience. It can be unit's kind (e.g. `store` or `event`) or operation kind (e.g. `sample`, `split`, etc).
 - **value** - `unknown` - value of the update.
 - **loc** - `{ file?: string; line: number; column: number; }` - location in the source code, if known
-- **stackMeta** - `{ Record<string, unknown> }` - effector's internal stack metadata, available if provided. For example, effect calls provide an `fxID` that is stable between `fx` and `fx.finally` updates - this allows you to associate a `fx.finally` update with a particular `fx` call.
+- **stackMeta** - `{ Record<string, unknown> }` - effector's internal stack metadata, available if provided. For example, effect calls provide an `fxID` that is stable between `fx` and `fx.finally` updates - this allows you to associate a `fx.finally` update with a particular `fx` call (available since **effector@22.5.0**)
 
 Special field if `trace: true` provided:
 
