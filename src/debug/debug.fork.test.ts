@@ -71,6 +71,7 @@ test('works in forked scope', async () => {
       "[event] (scope: unknown_1) app/event 5",
       "[store] (scope: unknown_1) app/$store 5",
       "[effect] (scope: unknown_1) app/effect demo",
+      "[effect] (scope: unknown_1) app/effect.finally {"status":"done","params":"demo","result":"result demo"}",
       "[effect] (scope: unknown_1) app/effect.done {"params":"demo","result":"result demo"}",
       "[store] (scope: unknown_1) app/$store 500",
     ]
@@ -134,6 +135,7 @@ test('trace support', async () => {
       "<- [effect] submitFx 1",
       "<- [sample]  1",
       "<- [event] buttonClicked ",
+      "[effect] (scope: unknown_2) submitFx.finally {"status":"done","params":1}",
       "[effect] (scope: unknown_2) submitFx.done {"params":1}",
       "[store] (scope: unknown_2) $form 2",
       "[store] (scope: unknown_2) $form trace",
@@ -166,6 +168,7 @@ test('can detect and save unknown scopes', async () => {
   expect(stringArguments(fn)).toMatchInlineSnapshot(`
     [
       "[effect] (scope: unknown_3) fx []",
+      "[effect] (scope: unknown_3) fx.finally {"status":"done","params":[]}",
       "[effect] (scope: unknown_3) fx.done {"params":[]}",
     ]
   `);
@@ -175,6 +178,7 @@ test('can detect and save unknown scopes', async () => {
   expect(stringArguments(fn)).toMatchInlineSnapshot(`
     [
       "[effect] (scope: unknown_4) fx []",
+      "[effect] (scope: unknown_4) fx.finally {"status":"done","params":[]}",
       "[effect] (scope: unknown_4) fx.done {"params":[]}",
     ]
   `);
@@ -184,6 +188,7 @@ test('can detect and save unknown scopes', async () => {
   expect(stringArguments(fn)).toMatchInlineSnapshot(`
     [
       "[effect] (scope: unknown_3) fx []",
+      "[effect] (scope: unknown_3) fx.finally {"status":"done","params":[]}",
       "[effect] (scope: unknown_3) fx.done {"params":[]}",
     ]
   `);
@@ -222,6 +227,7 @@ test('can detect registered scopes', async () => {
   expect(stringArguments(fn)).toMatchInlineSnapshot(`
     [
       "[effect] (scope: scope_a) fx []",
+      "[effect] (scope: scope_a) fx.finally {"status":"done","params":[]}",
       "[effect] (scope: scope_a) fx.done {"params":[]}",
     ]
   `);
@@ -231,6 +237,7 @@ test('can detect registered scopes', async () => {
   expect(stringArguments(fn)).toMatchInlineSnapshot(`
     [
       "[effect] (scope: scope_b) fx []",
+      "[effect] (scope: scope_b) fx.finally {"status":"done","params":[]}",
       "[effect] (scope: scope_b) fx.done {"params":[]}",
     ]
   `);
@@ -240,6 +247,7 @@ test('can detect registered scopes', async () => {
   expect(stringArguments(fn)).toMatchInlineSnapshot(`
     [
       "[effect] (scope: scope_a) fx []",
+      "[effect] (scope: scope_a) fx.finally {"status":"done","params":[]}",
       "[effect] (scope: scope_a) fx.done {"params":[]}",
     ]
   `);
@@ -339,6 +347,7 @@ test('traces have scope name', async () => {
       "<- [effect] submitFx 1",
       "<- [sample]  1",
       "<- [event] buttonClicked ",
+      "[effect] (scope: my_scope) submitFx.finally {"status":"done","params":1}",
       "[effect] (scope: my_scope) submitFx.done {"params":1}",
     ]
   `);
