@@ -180,9 +180,13 @@ debug($count);
 // "[store] (scope: scope_1337) $count 1337",
 ```
 
-### Custom log handler
+## Customization
 
-You can provide custom log handler in the config. It can be useful, if `console.log` somehow doesn't fit your use-case: e.g. you want advanced info from `patronum/debug` to built your own dev-tools, debug especially hard case, etc.
+The `patronum/debug` package extracts quite a lot of low-level effector data in a universal format that may be useful for other dev tools or monitoring tools, so there is a special API to add your own way of handling this data.
+
+### Custom handler
+
+You can provide custom log handler in the config. It can be useful, if `console.info` somehow doesn't fit your use-case: e.g. you want advanced info from `patronum/debug` to built your own dev-tools, debug especially hard case, etc.
 
 Handler is called for each update with context object like this:
 
@@ -196,10 +200,11 @@ Common fields:
 - **kind** - `string` - node's kind for convenience. It can be unit's kind (e.g. `store` or `event`) or operation kind (e.g. `sample`, `split`, etc).
 - **value** - `unknown` - value of the update.
 - **loc** - `{ file?: string; line: number; column: number; }` - location in the source code, if known
+- **stackMeta** - `{ Record<string, unknown> }` - effector's internal stack metadata, available if provided. For example, effect calls provide an `fxID` that is stable between `fx` and `fx.finally` updates - this allows you to associate a `fx.finally` update with a particular `fx` call.
 
 Special field if `trace: true` provided:
 
-- **trace** - `Array<{ node: Node; name: string | null; kind: string; value: unknown; loc?: Loc }>` - trace of updates.
+- **trace** - `Array<{ node: Node; name: string | null; kind: string; value: unknown; loc?: Loc; stackMeta?: Record<string, unknown> }>` - trace of updates.
 
 The `trace` array is always empty (i.e. trace is not collected), if `debug`'s config does not have `trace: true`.
 

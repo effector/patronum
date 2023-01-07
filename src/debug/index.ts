@@ -27,6 +27,7 @@ type LogContext = {
     line: number;
     column: number;
   };
+  stackMeta: Record<string, unknown>;
   trace: {
     node: Node;
     name: string | null;
@@ -37,6 +38,7 @@ type LogContext = {
       line: number;
       column: number;
     };
+    stackMeta: Record<string, unknown>;
   }[];
 };
 
@@ -156,6 +158,7 @@ function watch(unit: Unit<any>, config: Config) {
             value,
             name: getName(unit),
             loc: getLoc(unit),
+            stackMeta: getStackMeta(stack),
             trace: config.trace ? collectTrace(stack) : [],
           };
 
@@ -189,6 +192,7 @@ function collectTrace(stack: Stack): Trace {
       name: getName(node),
       loc: getLoc(node),
       kind: getType(node),
+      stackMeta: getStackMeta(parent),
     };
 
     trace.push(entry);
@@ -218,6 +222,8 @@ function watchStoreInit(store: Store<any>, config: Config) {
     loc: getLoc(store),
     // nothing to trace for store.getState() - it is one-step call
     trace: [],
+    // no stackMeta for initial state
+    stackMeta: {},
   };
 
   config.handler(context);
@@ -247,6 +253,8 @@ function watchStoreInitInScope(store: Store<any>, config: Config, scope: Scope) 
     loc: getLoc(store),
     // nothing to trace for scope.getState(store) - it is one-step call
     trace: [],
+    // no stackMeta for initial state
+    stackMeta: {},
   };
 
   config.handler(context);
@@ -510,4 +518,10 @@ function getNode(node: Node | { graphite: Node } | Unit<any>): Node {
   const actualNode = 'graphite' in node ? node.graphite : (node as Node);
 
   return actualNode;
+}
+
+function getStackMeta(stack: Stack) {
+  const meta = (stack as any).meta || {};
+
+  return meta as Record<string, unknown>;
 }
