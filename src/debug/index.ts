@@ -51,6 +51,12 @@ const defaultConfig: Config = {
   trace: false,
   // default logger to console.info
   handler: (context) => {
+
+    if (isEffectChild(context.node) && context.node.meta.named === 'finally') {
+      // skip effect.finally logs, it can be useful for other custom handlers
+      // but not for default console.info logger
+      return;
+    }
     const { scope, scopeName, name, kind, value, loc, trace, node, logType } =
       context;
     const scopeLog = scope ? ` (scope: ${scopeName})` : '';
