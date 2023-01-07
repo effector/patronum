@@ -526,3 +526,64 @@ test('allow custom handlers', async () => {
     ]
   `);
 });
+
+test('effect ids support', async () => {
+  const event = createEvent<number>();
+  const effect = createEffect((t: number) => new Promise((r) => setTimeout(r, t)));
+  sample({
+    clock: event,
+    target: effect,
+  });
+
+  const mockLog = jest.fn();
+
+  const scope = fork();
+  debug.unregisterAllScopes();
+  debug.registerScope(scope, { name: 'my_scope' });
+
+  debug(
+    {
+      handler: (context) => {
+        if (context.kind === 'effect' && context.node.meta.op === 'effect') {
+          mockLog(`start:${context.stackMeta.fxID}`);
+        }
+
+        if (context.kind === 'effect' && context.node.meta.named === 'finally') {
+          mockLog(`end:${context.stackMeta.fxID}`);
+        }
+      },
+    },
+    {
+      effect,
+    },
+  );
+
+  allSettled(event, { scope, params: 20 });
+  allSettled(event, { scope, params: 15 });
+  allSettled(event, { scope, params: 5 });
+
+  await allSettled(scope);
+
+  expect(argumentsHistory(mockLog)).toMatchInlineSnapshot(`
+    [
+      [
+        "start:13",
+      ],
+      [
+        "start:14",
+      ],
+      [
+        "start:15",
+      ],
+      [
+        "end:15",
+      ],
+      [
+        "end:14",
+      ],
+      [
+        "end:13",
+      ],
+    ]
+  `);
+});
