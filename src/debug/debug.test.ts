@@ -72,6 +72,7 @@ test('debug event, store, effect simultaneously', async () => {
       "[event] event 5",
       "[store] $store 5",
       "[effect] effect demo",
+      "[effect] effect.finally {"status":"done","params":"demo","result":"resultdemo"}",
       "[effect] effect.done {"params":"demo","result":"resultdemo"}",
       "[store] $store 50",
     ]
@@ -124,6 +125,7 @@ test('debug domain', async () => {
       "[event] domain/event 5",
       "[store] domain/_$store 5",
       "[effect] domain/effect demo",
+      "[effect] domain/effect.finally {"status":"done","params":"demo","result":"resultdemo"}",
       "[effect] domain/effect.done {"params":"demo","result":"resultdemo"}",
       "[store] domain/_$store 50",
     ]
@@ -182,6 +184,7 @@ test('trace support', async () => {
       "<- [effect] submitFx 1",
       "<- [sample]  1",
       "<- [event] buttonClicked ",
+      "[effect] submitFx.finally {"status":"done","params":1}",
       "[effect] submitFx.done {"params":1}",
       "[store] $form 2",
       "[store] $form trace",
@@ -229,6 +232,7 @@ test('domain is traceable', async () => {
       "<- [store] $c 1",
       "<- [on] $c.on(up) 1",
       "<- [event] up ",
+      "[effect] d/fx.finally {"status":"done","params":1}",
       "[effect] d/fx.done {"params":1}",
     ]
   `);
