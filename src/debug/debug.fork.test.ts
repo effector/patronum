@@ -32,6 +32,7 @@ beforeEach(() => {
 afterEach(() => {
   global.console.info = original;
   global.console.groupCollapsed = originalCollapsed;
+  clearConsole();
 });
 
 test('works in forked scope', async () => {
@@ -98,7 +99,6 @@ test('trace support', async () => {
   expect(stringArguments(fn)).toMatchInlineSnapshot(`
     [
       "[store] $form [getState] 0",
-      "[store] (scope: unknown_1) $form [getState] 0",
     ]
   `);
 
@@ -109,7 +109,6 @@ test('trace support', async () => {
   expect(stringArguments(fn)).toMatchInlineSnapshot(`
     [
       "[store] $form [getState] 0",
-      "[store] (scope: unknown_1) $form [getState] 0",
       "[store] (scope: unknown_2) $form 1",
       "[store] (scope: unknown_2) $form trace",
       "<- [store] $form 1",
@@ -123,7 +122,6 @@ test('trace support', async () => {
   expect(stringArguments(fn)).toMatchInlineSnapshot(`
     [
       "[store] $form [getState] 0",
-      "[store] (scope: unknown_1) $form [getState] 0",
       "[store] (scope: unknown_2) $form 1",
       "[store] (scope: unknown_2) $form trace",
       "<- [store] $form 1",
