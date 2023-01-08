@@ -32,6 +32,7 @@ beforeEach(() => {
 afterEach(() => {
   global.console.info = original;
   global.console.groupCollapsed = originalCollapsed;
+  clearConsole();
 });
 
 test('works in forked scope', async () => {
