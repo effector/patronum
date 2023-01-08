@@ -50,8 +50,8 @@ test('works in forked scope', async () => {
   expect(stringArguments(fn)).toMatchInlineSnapshot(`
     [
       "[store] app/$store [getState] 0",
-      "[event] (scope: unknown_1) app/event 5",
-      "[store] (scope: unknown_1) app/$store 5",
+      "[event] (scope: unknown_50) app/event 5",
+      "[store] (scope: unknown_50) app/$store 5",
     ]
   `);
 
@@ -59,9 +59,9 @@ test('works in forked scope', async () => {
   expect(stringArguments(fn)).toMatchInlineSnapshot(`
     [
       "[store] app/$store [getState] 0",
-      "[event] (scope: unknown_1) app/event 5",
-      "[store] (scope: unknown_1) app/$store 5",
-      "[effect] (scope: unknown_1) app/effect demo",
+      "[event] (scope: unknown_50) app/event 5",
+      "[store] (scope: unknown_50) app/$store 5",
+      "[effect] (scope: unknown_50) app/effect demo",
     ]
   `);
 
@@ -69,11 +69,11 @@ test('works in forked scope', async () => {
   expect(stringArguments(fn)).toMatchInlineSnapshot(`
     [
       "[store] app/$store [getState] 0",
-      "[event] (scope: unknown_1) app/event 5",
-      "[store] (scope: unknown_1) app/$store 5",
-      "[effect] (scope: unknown_1) app/effect demo",
-      "[effect] (scope: unknown_1) app/effect.done {"params":"demo","result":"result demo"}",
-      "[store] (scope: unknown_1) app/$store 500",
+      "[event] (scope: unknown_50) app/event 5",
+      "[store] (scope: unknown_50) app/$store 5",
+      "[effect] (scope: unknown_50) app/effect demo",
+      "[effect] (scope: unknown_50) app/effect.done {"params":"demo","result":"result demo"}",
+      "[store] (scope: unknown_50) app/$store 500",
     ]
   `);
 });
@@ -99,7 +99,6 @@ test('trace support', async () => {
   expect(stringArguments(fn)).toMatchInlineSnapshot(`
     [
       "[store] $form [getState] 0",
-      "[store] (scope: unknown_1) $form [getState] 0",
     ]
   `);
 
@@ -110,9 +109,8 @@ test('trace support', async () => {
   expect(stringArguments(fn)).toMatchInlineSnapshot(`
     [
       "[store] $form [getState] 0",
-      "[store] (scope: unknown_1) $form [getState] 0",
-      "[store] (scope: unknown_2) $form 1",
-      "[store] (scope: unknown_2) $form trace",
+      "[store] (scope: unknown_94) $form 1",
+      "[store] (scope: unknown_94) $form trace",
       "<- [store] $form 1",
       "<- [on] $form.on(inputChanged) 1",
       "<- [event] inputChanged ",
@@ -124,20 +122,19 @@ test('trace support', async () => {
   expect(stringArguments(fn)).toMatchInlineSnapshot(`
     [
       "[store] $form [getState] 0",
-      "[store] (scope: unknown_1) $form [getState] 0",
-      "[store] (scope: unknown_2) $form 1",
-      "[store] (scope: unknown_2) $form trace",
+      "[store] (scope: unknown_94) $form 1",
+      "[store] (scope: unknown_94) $form trace",
       "<- [store] $form 1",
       "<- [on] $form.on(inputChanged) 1",
       "<- [event] inputChanged ",
-      "[effect] (scope: unknown_2) submitFx 1",
-      "[effect] (scope: unknown_2) submitFx trace",
+      "[effect] (scope: unknown_94) submitFx 1",
+      "[effect] (scope: unknown_94) submitFx trace",
       "<- [effect] submitFx 1",
       "<- [sample]  1",
       "<- [event] buttonClicked ",
-      "[effect] (scope: unknown_2) submitFx.done {"params":1}",
-      "[store] (scope: unknown_2) $form 2",
-      "[store] (scope: unknown_2) $form trace",
+      "[effect] (scope: unknown_94) submitFx.done {"params":1}",
+      "[store] (scope: unknown_94) $form 2",
+      "[store] (scope: unknown_94) $form trace",
       "<- [store] $form 2",
       "<- [on] $form.on(submitFx.doneData) 2",
       "<- [effect] submitFx.doneData ",
@@ -166,8 +163,8 @@ test('can detect and save unknown scopes', async () => {
   await allSettled(up, { scope: scopeA });
   expect(stringArguments(fn)).toMatchInlineSnapshot(`
     [
-      "[effect] (scope: unknown_3) fx []",
-      "[effect] (scope: unknown_3) fx.done {"params":[]}",
+      "[effect] (scope: unknown_132) fx []",
+      "[effect] (scope: unknown_132) fx.done {"params":[]}",
     ]
   `);
   clearConsole();
@@ -175,8 +172,8 @@ test('can detect and save unknown scopes', async () => {
   await allSettled(up, { scope: scopeB });
   expect(stringArguments(fn)).toMatchInlineSnapshot(`
     [
-      "[effect] (scope: unknown_4) fx []",
-      "[effect] (scope: unknown_4) fx.done {"params":[]}",
+      "[effect] (scope: unknown_136) fx []",
+      "[effect] (scope: unknown_136) fx.done {"params":[]}",
     ]
   `);
   clearConsole();
@@ -184,8 +181,8 @@ test('can detect and save unknown scopes', async () => {
   await allSettled(up, { scope: scopeA });
   expect(stringArguments(fn)).toMatchInlineSnapshot(`
     [
-      "[effect] (scope: unknown_3) fx []",
-      "[effect] (scope: unknown_3) fx.done {"params":[]}",
+      "[effect] (scope: unknown_132) fx []",
+      "[effect] (scope: unknown_132) fx.done {"params":[]}",
     ]
   `);
 });
@@ -400,9 +397,9 @@ test('custom names basic support', () => {
 
   expect(stringArguments(fn)).toMatchInlineSnapshot(`
     [
-      "[event] (scope: unknown_5) name 1",
-      "[store] (scope: unknown_5) $customName 1",
-      "[effect] (scope: unknown_5) nameFx 1",
+      "[event] (scope: unknown_302) name 1",
+      "[store] (scope: unknown_302) $customName 1",
+      "[effect] (scope: unknown_302) nameFx 1",
     ]
   `);
 });
@@ -427,16 +424,16 @@ test('custom names with traces support', () => {
 
   expect(stringArguments(fn)).toMatchInlineSnapshot(`
     [
-      "[event] (scope: unknown_6) name 1",
-      "[event] (scope: unknown_6) name trace",
+      "[event] (scope: unknown_344) name 1",
+      "[event] (scope: unknown_344) name trace",
       "<- [event] name 1",
-      "[store] (scope: unknown_6) $customName 1",
-      "[store] (scope: unknown_6) $customName trace",
+      "[store] (scope: unknown_344) $customName 1",
+      "[store] (scope: unknown_344) $customName trace",
       "<- [store] $customName 1",
       "<- [on] $customName.on(name) 1",
       "<- [event] name 1",
-      "[effect] (scope: unknown_6) nameFx 1",
-      "[effect] (scope: unknown_6) nameFx trace",
+      "[effect] (scope: unknown_344) nameFx 1",
+      "[effect] (scope: unknown_344) nameFx trace",
       "<- [effect] nameFx 1",
       "<- [sample]  1",
       "<- [event] name 1",
