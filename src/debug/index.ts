@@ -51,7 +51,7 @@ const defaultConfig: Config = {
   trace: false,
   // default logger to console.info
   handler: (context) => {
-
+    
     if (isEffectChild(context.node) && context.node.meta.named === 'finally') {
       // skip effect.finally logs, it can be useful for other custom handlers
       // but not for default console.info logger
@@ -150,11 +150,6 @@ function watch(unit: Unit<any>, config: Config) {
       step.run({
         fn(value: unknown, _internal: unknown, stack: Stack) {
           const scope = stack?.scope ?? null;
-
-          // If new unknown scope is found - save it
-          if (scope && !scopes.get(scope)) {
-            scopes.save(scope);
-          }
 
           const context: LogContext = {
             logType: 'update',
@@ -343,16 +338,10 @@ interface Meta {
 }
 
 const cache = new Map<Scope, Meta>();
-
-let unknownScopes = 0;
-function getDefaultName() {
-  unknownScopes += 1;
-  return `unknown_${unknownScopes}`;
-}
 const scopes = {
-  save(scope: Scope, meta?: Meta) {
+  save(scope: Scope, meta: Meta) {
     if (!scopes.get(scope)) {
-      cache.set(scope, meta ?? { name: getDefaultName() });
+      cache.set(scope, meta);
     }
   },
   get(scope?: Scope): Meta | null {
@@ -378,7 +367,7 @@ function getScopeName(scope: Scope | null) {
 
   const meta = scopes.get(scope);
 
-  if (!meta) return null;
+  if (!meta) return `unknown_${getNode(scope).id}`;
 
   return meta.name;
 }
