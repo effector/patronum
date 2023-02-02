@@ -87,7 +87,7 @@ export function debounce<T>({
   $timeoutId.reset(timerFx.done);
 
   // It's ok - nothing will ever start unless source is triggered
-  const $payload = createStore<[T?]>([], { serialize: 'ignore' }).on(
+  const $payload = createStore<T[]>([], { serialize: 'ignore' }).on(
     source,
     (_, payload) => [payload],
   );
@@ -130,7 +130,7 @@ export function debounce<T>({
   sample({
     source: $payload,
     clock: timerFx.done,
-    fn: ([payload]) => payload as T,
+    fn: ([payload]) => payload,
     target: tick,
   });
 
