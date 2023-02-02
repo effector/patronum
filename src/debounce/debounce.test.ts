@@ -569,3 +569,17 @@ test('debounce do not affect another instance of debounce', async () => {
   await wait(20);
   expect(watcherSecond).toBeCalledWith('foo');
 });
+
+test('debounced event should be triggered with undefined', async () => {
+  const trigger = createEvent();
+  const debounced = debounce({ source: trigger, timeout: 10 });
+
+  const listener = jest.fn();
+  debounced.watch(listener);
+
+  trigger();
+  await wait(20);
+
+  expect(listener).toBeCalledTimes(1);
+  expect(listener).toBeCalledWith(undefined);
+});
