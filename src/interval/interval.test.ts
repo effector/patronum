@@ -192,26 +192,25 @@ describe('timeout', () => {
     const { tick } = interval({ timeout: $timeout, start, stop });
     const fn = watch(tick);
 
-    start();
-    await wait(12);
-    expect(fn).toBeCalledTimes(1);
+    start(); // t=0
+    await wait(12); // t=12
+    expect(fn).toBeCalledTimes(1); // ticked at t=10
 
-    // timeout will be changed in the next interval tick
-    increaseTimeout();
-    await wait(12);
-    expect(fn).toBeCalledTimes(2);
+    increaseTimeout(); // timeout will change to 20 for next tick
+    await wait(12); // t=24
+    expect(fn).toBeCalledTimes(2); // ticked at t=20
 
     // till no tick
-    await wait(12);
-    expect(fn).toBeCalledTimes(2);
+    await wait(12); // t=36
+    expect(fn).toBeCalledTimes(2); // next tick should be at t=40
 
-    await wait(12);
-    expect(fn).toBeCalledTimes(3);
+    await wait(12); // t=48
+    expect(fn).toBeCalledTimes(3); // ticked at t=40
 
-    // timeout should be 40ms
-    increaseTimeout();
-    await wait(50);
-    expect(fn).toBeCalledTimes(4);
+    increaseTimeout(); // timeout will change to 40 for next tick
+    await wait(32); // t=80
+    expect(fn).toBeCalledTimes(4); // ticked at t=60
+                                   // and next tick should be at t=100
 
     stop();
   });
