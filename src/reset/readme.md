@@ -20,14 +20,26 @@ The method allow to reset many stores by a single line
 
 ```ts
 reset({ clock, target });
+
+or
+
+const resetEvent = reset({ target });
 ````
 
-- When `clock` is triggered, reset store/stores in `target` to the initial value.
+- When `clock` or `resetEvent` is triggered, reset store/stores in `target` to the initial value.
+
+:::note since
+The `clock` argument became optional since patronum 1.15.0
+:::
 
 ### Arguments
 
-1. `clock: Unit<any> | Array<Unit<any>>` — Any kind of units is accepted (Store, Event, Effect).
+1. `clock: Unit<any> | Array<Unit<any>>` _optional_ — Any kind of units is accepted (Store, Event, Effect).
 2. `target: Store<any> | Array<Store<any>>` — Each of these stores will be reset to the initial values when `clock` is happened.
+
+### Returns
+
+- `resetEvent` `(Event<void>)` _optional_ — New event that reset store/stores in `target` **if** `clock` was not passed.
 
 ### Example
 
@@ -46,6 +58,17 @@ reset({
   clock: [pageUnmounted, userSessionFinished],
   target: [$post, $comments, $draftComment],
 });
+```
+
+```ts
+import { createStore } from 'effector';
+import { reset } from 'patronum/reset';
+
+const $post = createStore(null);
+const $comments = createStore([]);
+const $draftComment = createStore('');
+
+const resetEvent = reset({ target: [$post, $comments, $draftComment] });
 ```
 
 [Try it](https://share.effector.dev/06hpVftG)
