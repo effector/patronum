@@ -7,8 +7,8 @@ type Params = {
   target: Store<any> | Array<Store<any>>;
 };
 
-export function reset(_: Required<Params>): void;
-export function reset(_: Pick<Params, 'target'>): Event<void>;
+export function reset(config: Required<Params>): void;
+export function reset(config: Pick<Params, 'target'>): Event<void>;
 
 export function reset({ clock, target }: Params) {
   const targets = Array.isArray(target) ? target : [target];
