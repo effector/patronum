@@ -88,3 +88,17 @@ describe('multiple targets', () => {
     expect([$sourceA.getState(), $sourceB.getState()]).toEqual([0, '0']);
   });
 });
+
+describe('without clock in params', () => {
+  test('should return reset event', () => {
+    const setValue = createEvent<number>();
+    const $source = restore(setValue, 0);
+    const resetEvent = reset({ target: $source });
+
+    setValue(100);
+    expect($source.getState()).toEqual(100);
+
+    resetEvent();
+    expect($source.getState()).toEqual(0);
+  });
+});
