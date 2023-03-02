@@ -75,7 +75,7 @@ jobs:
         run: npm publish --tag rc
 
       - name: Publish patronum@${{ steps.version.outputs.tag }} to latest
-        if: ${{ steps.next.outputs.match == '' }}
+        if: ${{ steps.next.outputs.match == '' && steps.rc.outputs.match == '' }}
         working-directory: './dist/'
         run: npm publish
 
