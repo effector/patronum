@@ -23,7 +23,7 @@ import { snapshot } from '../src/snapshot';
   expectType<Store<string>>(snapshot({ source: $a }));
 
   const $b = createStore<'a' | 'b'>('a');
-  expectType<Store<number>>(snapshot({ source: $b }));
+  expectType<Store<'a' | 'b'>>(snapshot({ source: $b }));
 }
 
 // Check invalid type for Clock
@@ -53,4 +53,30 @@ import { snapshot } from '../src/snapshot';
 
   // @ts-expect-error
   snapshot({ source: $a, fn: b });
+}
+
+// Check TargetType is not inferred from return value
+{
+  const $a = createStore(0);
+
+  // @ts-expect-error
+  expectType<Store<string>>(snapshot({ source: $a }));
+}
+
+// Check effect is supported as a clock
+{
+  const $a = createStore(0);
+
+  const clock = createEffect();
+
+  expectType<Store<number>>(snapshot({ source: $a, clock }));
+}
+
+// Check store is supported as a clock
+{
+  const $a = createStore(0);
+
+  const $clock = createStore(0);
+
+  expectType<Store<number>>(snapshot({ source: $a, clock: $clock }));
 }
