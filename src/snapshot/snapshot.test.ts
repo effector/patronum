@@ -1,4 +1,4 @@
-import { createStore, createEvent } from 'effector';
+import { createStore, createEvent, createEffect } from 'effector';
 import { snapshot } from './index';
 
 test('snapshot copy original store', () => {
@@ -77,4 +77,41 @@ test('snapshot copy original store with transformation on trigger', () => {
   copy();
 
   expect($copy.getState()).toBe(6);
+});
+
+test('snapshot supports effect as a clock', () => {
+  const updateOriginal = createEvent<string>();
+
+  const trigger = createEffect(() => undefined);
+
+  const $original = createStore('first').on(
+    updateOriginal,
+    (_, newValue) => newValue,
+  );
+  const $copy = snapshot({ source: $original, clock: trigger });
+
+  updateOriginal('second');
+  expect($copy.getState()).toBe('first');
+
+  trigger();
+  expect($copy.getState()).toBe('second');
+});
+
+test('snapshot supports store as a clock', () => {
+  const updateOriginal = createEvent<string>();
+  const updateTrigger = createEvent<void>();
+
+  const $trigger = createStore<number>(0).on(updateTrigger, (state) => state + 1);
+
+  const $original = createStore('first').on(
+    updateOriginal,
+    (_, newValue) => newValue,
+  );
+  const $copy = snapshot({ source: $original, clock: $trigger });
+
+  updateOriginal('second');
+  expect($copy.getState()).toBe('first');
+
+  updateTrigger();
+  expect($copy.getState()).toBe('second');
 });
