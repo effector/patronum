@@ -11,8 +11,16 @@ describe('arguments validation', () => {
   });
 
   test('domain is not allowed', () => {
+    // @ts-expect-error
     expect(() => debounce({ source: createDomain(), timeout: 10 })).toThrowError(
       /cannot be domain/,
+    );
+  });
+
+  test('not-unit source is not allowed', () => {
+    // @ts-expect-error
+    expect(() => debounce({ source: 10, timeout: 10 })).toThrowError(
+      /must be unit from effector/,
     );
   });
 
@@ -455,12 +463,127 @@ describe('source and target type combinations', () => {
     `);
   });
 
-  test.todo('source store, target event');
-  test.todo('source store, target store');
+  test('source store, target event', async () => {
+    const watcher = jest.fn();
+    const change = createEvent();
+    const source = createStore<number>(0).on(change, (state) => state + 1);
+    const target = createEvent<number>();
 
-  test.todo('source effect, target event');
-  test.todo('source effect, target store');
-  test.todo('source effect, target effect');
+    debounce({ source, timeout: 30, target });
+    target.watch(watcher);
+
+    change();
+    change();
+    change();
+    expect(watcher).not.toBeCalled();
+
+    await wait(32);
+    expect(watcher).toBeCalledTimes(1);
+    expect(watcher.mock.calls).toMatchInlineSnapshot(`
+      [
+        [
+          3,
+        ],
+      ]
+    `);
+  });
+
+  test('source store, target store', async () => {
+    const watcher = jest.fn();
+    const change = createEvent();
+    const source = createStore<number>(0).on(change, (state) => state + 1);
+    const target = createStore<number>(0);
+
+    debounce({ source, timeout: 30, target });
+    target.updates.watch(watcher);
+
+    change();
+    change();
+    change();
+    expect(watcher).not.toBeCalled();
+
+    await wait(32);
+    expect(watcher).toBeCalledTimes(1);
+    expect(watcher.mock.calls).toMatchInlineSnapshot(`
+      [
+        [
+          3,
+        ],
+      ]
+    `);
+  });
+
+  test('source effect, target event', async () => {
+    const watcher = jest.fn();
+    const source = createEffect<number, void>().use(() => undefined);
+    const target = createEvent<number>();
+
+    debounce({ source, timeout: 30, target });
+    target.watch(watcher);
+
+    source(1);
+    source(2);
+    source(3);
+    expect(watcher).not.toBeCalled();
+
+    await wait(32);
+    expect(watcher).toBeCalledTimes(1);
+    expect(watcher.mock.calls).toMatchInlineSnapshot(`
+      [
+        [
+          3,
+        ],
+      ]
+    `);
+  });
+
+  test('source effect, target store', async () => {
+    const watcher = jest.fn();
+    const source = createEffect<number, void>().use(() => undefined);
+    const target = createStore<number>(0);
+
+    debounce({ source, timeout: 30, target });
+    target.updates.watch(watcher);
+
+    source(1);
+    source(2);
+    source(3);
+    expect(watcher).not.toBeCalled();
+
+    await wait(32);
+    expect(watcher).toBeCalledTimes(1);
+    expect(watcher.mock.calls).toMatchInlineSnapshot(`
+      [
+        [
+          3,
+        ],
+      ]
+    `);
+  });
+
+  test('source effect, target effect', async () => {
+    const watcher = jest.fn();
+    const source = createEffect<number, void>().use(() => undefined);
+    const target = createEffect<number, void>();
+
+    debounce({ source, timeout: 30, target });
+    target.watch(watcher);
+
+    source(1);
+    source(2);
+    source(3);
+    expect(watcher).not.toBeCalled();
+
+    await wait(32);
+    expect(watcher).toBeCalledTimes(1);
+    expect(watcher.mock.calls).toMatchInlineSnapshot(`
+      [
+        [
+          3,
+        ],
+      ]
+    `);
+  });
 });
 
 describe('name assigned from source', () => {

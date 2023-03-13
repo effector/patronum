@@ -6,6 +6,8 @@ import {
   createStore,
   createEvent,
   createEffect,
+  createDomain,
+  fork,
 } from 'effector';
 import { debounce } from '../src/debounce';
 
@@ -148,4 +150,48 @@ import { debounce } from '../src/debounce';
   debounce({ source, target, timeout: 10, name: {} });
   // @ts-expect-error
   debounce({ source, target, timeout: 10, name: [] });
+}
+
+// Supports void as a target
+{
+  const source = createEvent<number>();
+
+  const voidEvent = createEvent<void>();
+  const voidEffect = createEffect<void, any>();
+
+  expectType<Event<void>>(debounce({ source, timeout: 300, target: voidEvent }));
+  expectType<Effect<void, any>>(
+    debounce({ source, timeout: 300, target: voidEffect }),
+  );
+}
+
+// Scope and Domain are not allowed in source
+{
+  const target = createEvent<any>();
+
+  const domain = createDomain();
+  const scope = fork();
+
+  // @ts-expect-error
+  debounce({ source: domain, timeout: 0 });
+  // @ts-expect-error
+  debounce({ source: scope, timeout: 0 });
+
+  // @ts-expect-error
+  debounce({ source: domain, timeout: 0, target });
+  // @ts-expect-error
+  debounce({ source: scope, timeout: 0, target });
+}
+
+// Scope and Domain are not allowed in target
+{
+  const source = createEvent<number>();
+
+  const domain = createDomain();
+  const scope = fork();
+
+  // @ts-expect-error
+  debounce({ source, timeout: 0, target: domain });
+  // @ts-expect-error
+  debounce({ source, timeout: 0, target: scope });
 }
