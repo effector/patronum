@@ -1,5 +1,5 @@
 import { expectType } from 'tsd';
-import { Event, createStore } from 'effector';
+import { Event, createStore, createEvent, createEffect } from 'effector';
 import { delay } from '../src/delay';
 
 // Check valid type for source
@@ -83,4 +83,20 @@ import { delay } from '../src/delay';
   delay({ source, timeout: createStore(Symbol('example')) });
   // @ts-expect-error
   delay({ source, timeout: createStore(undefined) });
+}
+
+// void events support
+{
+  const source = createEvent<number>();
+  const target = createEvent();
+
+  expectType<Event<number>>(delay({ source, timeout: 100, target }));
+}
+
+// void effects support
+{
+  const source = createEvent<number>();
+  const target = createEffect<void, void>();
+
+  expectType<Event<number>>(delay({ source, timeout: 100, target }));
 }
