@@ -20,7 +20,12 @@ export function delay<T>({
 }: {
   source: Unit<T>;
   timeout: ((_payload: T) => number) | Store<number> | number;
-  target?: Store<T> | Event<T> | Effect<T, any, any>;
+  target?:
+    | Store<T>
+    | Event<T>
+    | Effect<T, any, any>
+    | Event<void>
+    | Effect<void, any, any>;
 }): EventAsReturnType<T> {
   if (!is.unit(source)) throw new TypeError('source must be a unit from effector');
 
@@ -48,12 +53,10 @@ export function delay<T>({
     target: timerFx,
   });
 
-  forward({
-    from: timerFx.doneData,
-    to: target,
-  });
+  // @ts-expect-error
+  forward({ from: timerFx.doneData, to: target });
 
-  return target as unknown as Event<T>;
+  return timerFx.doneData;
 }
 
 function validateTimeout<T>(
