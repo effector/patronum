@@ -6,6 +6,7 @@ import {
   createEvent,
   createStore,
   createEffect,
+  sample,
 } from 'effector';
 import { combineEvents } from '../src/combine-events';
 
@@ -259,4 +260,20 @@ import { combineEvents } from '../src/combine-events';
   });
 
   expectType<Effect<Target, void>>(effect);
+}
+
+// Can be used in sample
+{
+  const foo = createEvent<number>();
+  const bar = createEvent<string>();
+
+  sample({
+    clock: combineEvents({
+      events: [foo, bar],
+    }),
+    fn: ([a, b]) => {
+      expectType<number>(a);
+      expectType<string>(b);
+    },
+  });
 }

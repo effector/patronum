@@ -3,6 +3,7 @@ import {
   createStore,
   Effect,
   Event,
+  EventAsReturnType,
   guard,
   is,
   merge,
@@ -36,7 +37,7 @@ type ReturnTarget<Result, Target> = Target extends Store<infer S>
 export function combineEvents<P extends Shape>(config: {
   events: Events<P>;
   reset?: Unit<any>;
-}): Event<P>;
+}): EventAsReturnType<P>;
 
 export function combineEvents<
   P extends Shape,
