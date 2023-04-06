@@ -66,8 +66,9 @@ export function delay<T>({
     sample({
       clock: cancel,
       source: $timeout,
-      filter: (x): x is NonNullable<typeof x> => x !== null,
-    }).watch(clearTimeout);
+    })
+      .filter({ fn: (x): x is NonNullable<typeof x> => x !== null })
+      .watch(clearTimeout);
   }
 
   return timerFx.doneData;
