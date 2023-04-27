@@ -25,6 +25,11 @@ target = throttle({ source, timeout });
 
 1. `source` ([_`Event`_] | [_`Store`_] | [_`Effect`_]) — Source unit, data from this unit used by the `target`
 1. `timeout` ([_`number`_] | `Store<number>`) — time to wait before trigger `target` after last trigger or `source` trigger
+1. `leading` ([_`boolean`_] | `Store<boolean>`) — trigger `target` on the leading edge of the `timeout`. If `true` first trigger of `source` causes
+   immediate trigger of `target`, default is `false`, `target` will be first triggered only after `timeout`
+1. `trailing` ([_`boolean`_] | `Store<boolean>`) — trigger `target` on the trailing edge of the `timeout`. If `true` last trigger of `source`
+   within `timeout` causes trigger of `target` after `timeout` expires. If `false` any trigger of `source`
+   will be ignored completely within the `timeout` not causing trigger of `target` after `timeout` expires.
 
 ### Returns
 
@@ -105,6 +110,11 @@ throttle({ source, timeout, target });
 1. `source` ([_`Event`_] | [_`Store`_] | [_`Effect`_]) — Source unit, data from this unit used by the `target`
 1. `timeout` ([_`number`_] | `Store<number>`) — time to wait before trigger `target` after last trigger or `source` trigger
 1. `target` ([_`Event`_] | [_`Store`_] | [_`Effect`_]) — Target unit, that triggered each time after triggering `source` with argument from `source`
+1. `leading` ([_`boolean`_] | `Store<boolean>`) — trigger `target` on the leading edge of the `timeout`. If `true` first trigger of `source` causes
+   immediate trigger of `target`, default is `false`, `target` will be first triggered only after `timeout`
+1. `trailing` ([_`boolean`_] | `Store<boolean>`) — trigger `target` on the trailing edge of the `timeout`. If `true` last trigger of `source`
+   withing `timeout` causes trigger of `target` after `timeout` expires. If `false` any trigger of `source`
+   will be ignored completely within the `timeout` not causing trigger of `target` after `timeout` expires.
 
 ### Returns
 
