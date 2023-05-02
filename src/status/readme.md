@@ -41,7 +41,7 @@ $status = status({ effect, defaultValue });
 import { createEvent, createEffect } from 'effector';
 import { status } from 'patronum/status';
 
-const effect = createEffect().use(() => Promise.resolve(null));
+const effect = createEffect(() => Promise.resolve(null));
 const $status = status({ effect });
 
 $status.watch((value) => console.log(`status: ${value}`));
@@ -58,7 +58,7 @@ effect();
 import { createEvent, createEffect } from 'effector';
 import { status } from 'patronum/status';
 
-const effect = createEffect().use(() => Promise.resolve(null));
+const effect = createEffect(() => Promise.resolve(null));
 const $status = status({ effect, defaultValue: 'pending' });
 
 $status.watch((value) => console.log(`status: ${value}`));
@@ -76,7 +76,7 @@ import { createEvent, createEffect } from 'effector';
 import { status } from 'patronum/status';
 
 const reset = createEvent();
-const effect = createEffect().use(
+const effect = createEffect(
   () => new Promise((resolve) => setTimeout(resolve, 100)),
 );
 
