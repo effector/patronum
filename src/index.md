@@ -16,6 +16,7 @@ All methods split into categories.
 - [every](./every/readme.md) — Checks that state in each store passes the predicate test.
 - [not](./not/readme.md) — Inverts store boolean-value.
 - [or](./or/readme.md) — Checks at least one store for truthy value.
+- [once](./once/readme.md) — Runs only once.
 - [reset](./reset/readme.md) — Reset all passed stores by clock.
 - [some](./some/readme.md) — Checks that state in at least one store passes the predicate test.
 
