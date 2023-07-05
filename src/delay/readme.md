@@ -20,11 +20,11 @@ target = delay({ source, timeout: number, target });
 
 1. `source` `(Event<T>` | `Store<T>` | `Effect<T>)` — Source unit, data from this unit used to trigger `target` with.
 1. `timeout` `(number)` — time to wait before trigger `event`
-1. `target` `(Event<T>` | `Store<T>` | `Effect<T`>)` — Optional. Target unit, that should be called after delay.
+1. `target` `(Unit<T>` | `Array<Unit<T>>)` — Optional. Target unit or array of units that will be called after delay.
 
 ### Returns
 
-- `event` `(Event<T>)` — New event, that triggered after delay
+- `target` `(Unit<T>` | `Array<Unit<T>>)` — Target unit or units that were passed to `delay`
 
 ### Example
 
@@ -61,7 +61,11 @@ target = delay({ source, timeout: Function, target });
 
 1. `source` `(Event<T>` | `Store<T>` | `Effect<T>)` — Source unit, data from this unit used to trigger `target` with.
 1. `timeout` `((payload: T) => number)` — Calculate delay for each `source` call. Receives the payload of `source` as argument. Should return `number` — delay in milliseconds.
-1. `target` `(Event<T>` | `Store<T>` | `Effect<T`>)` — Optional. Target unit, that should be called after delay.
+1. `target` `(Unit<T>` | `Array<Unit<T>>)` — Optional. Target unit or array of units that will be called after delay.
+
+### Returns
+
+- `target` `(Unit<T>` | `Array<Unit<T>>)` — Target unit or units that were passed to `delay`
 
 ### Example
 
@@ -109,7 +113,11 @@ target = delay({ source, timeout: $store, target });
 
 1. `source` `(Event<T>` | `Store<T>` | `Effect<T>)` — Source unit, data from this unit used to trigger `target` with.
 1. `timeout` `(Store<number>)` — Store with number — delay in milliseconds.
-1. `target` `(Event<T>` | `Store<T>` | `Effect<T`>)` — Optional. Target unit, that should be called after delay.
+1. `target` `(Unit<T>` | `Array<Unit<T>>)` — Optional. Target unit or array of units that will be called after delay.
+
+### Returns
+
+- `target` `(Unit<T>` | `Array<Unit<T>>)` — Target unit or units that were passed to `delay`
 
 ### Example
 
