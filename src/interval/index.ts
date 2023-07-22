@@ -21,7 +21,34 @@ export function interval<S extends unknown, F extends unknown>({
   stop?: Event<F>;
   leading?: boolean;
   trailing?: boolean;
-}): { tick: Event<void>; isRunning: Store<boolean> } {
+}): { tick: Event<void>; isRunning: Store<boolean> };
+
+export function interval({
+  timeout,
+  leading = false,
+  trailing = false,
+}: {
+  timeout: number | Store<number>;
+  leading?: boolean;
+  trailing?: boolean;
+}): TriggerProtocol;
+
+export function interval<S extends unknown, F extends unknown>({
+  timeout,
+  start,
+  stop,
+  leading = false,
+  trailing = false,
+}: {
+  timeout: number | Store<number>;
+  start?: Event<S>;
+  stop?: Event<F>;
+  leading?: boolean;
+  trailing?: boolean;
+}): { tick: Event<void>; isRunning: Store<boolean> } & TriggerProtocol {
+  const setup = (start ?? createEvent()) as Event<void>;
+  const teardown = (stop ?? createEvent()) as Event<void>;
+
   const tick = createEvent();
   const $isRunning = createStore(false);
   const $timeout = toStoreNumber(timeout);
@@ -65,19 +92,19 @@ export function interval<S extends unknown, F extends unknown>({
   });
 
   guard({
-    clock: start,
+    clock: setup,
     source: $timeout,
     filter: $notRunning,
     target: timeoutFx,
   });
 
   if (leading) {
-    const onReady = guard({ clock: start, filter: $notRunning }) as Event<S>;
+    const onReady = guard({ clock: setup, filter: $notRunning });
     sample({ clock: onReady, target: tick });
   }
 
   sample({
-    clock: start,
+    clock: setup,
     fn: () => true,
     target: $isRunning,
   });
@@ -97,23 +124,29 @@ export function interval<S extends unknown, F extends unknown>({
     }),
   });
 
-  if (stop) {
-    if (trailing) {
-      sample({
-        clock: stop,
-        target: tick,
-      });
-    }
-
-    $isRunning.on(stop, () => false);
-
+  if (trailing) {
     sample({
-      clock: stop,
-      target: cleanupFx,
+      clock: teardown,
+      target: tick,
     });
   }
 
-  return { tick, isRunning: $isRunning };
+  $isRunning.on(teardown, () => false);
+
+  sample({
+    clock: teardown,
+    target: cleanupFx,
+  });
+
+  return {
+    tick,
+    isRunning: $isRunning,
+    '@@trigger': {
+      setup,
+      teardown,
+      fired: tick,
+    },
+  };
 }
 
 function toStoreNumber(value: number | Store<number> | unknown): Store<number> {
@@ -126,3 +159,10 @@ function toStoreNumber(value: number | Store<number> | unknown): Store<number> {
     `timeout parameter in interval method should be number or Store. "${typeof value}" was passed`,
   );
 }
+
+/**
+ * @see {@link https://withease.pages.dev/protocols/trigger.html}
+ */
+type TriggerProtocol = {
+  '@@trigger': { fired: Event<void>; setup: Event<void>; teardown: Event<void> };
+};
