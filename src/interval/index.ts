@@ -131,11 +131,11 @@ export function interval<S extends unknown, F extends unknown>({
   return {
     tick,
     isRunning: $isRunning,
-    '@@trigger': {
+    '@@trigger': () => ({
       setup,
       teardown,
       fired: tick,
-    },
+    }),
   };
 }
 
@@ -153,6 +153,10 @@ function toStoreNumber(value: number | Store<number> | unknown): Store<number> {
 /**
  * @see {@link https://withease.pages.dev/protocols/trigger.html}
  */
-type TriggerProtocol = {
-  '@@trigger': { fired: Event<void>; setup: Event<void>; teardown: Event<void> };
+export type TriggerProtocol = {
+  '@@trigger': () => {
+    setup: Event<void>;
+    teardown: Event<void>;
+    fired: Event<unknown> | Event<void>;
+  };
 };

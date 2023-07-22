@@ -107,22 +107,22 @@ test('does not leaves unresolved timeout effect, if stopped', async () => {
 describe('@@trigger', () => {
   test('fire tick on start and stop after teardown', async () => {
     const listener = jest.fn();
-    const intervalTrigger = interval({ timeout: 1 });
+    const intervalTrigger = interval({ timeout: 1 })['@@trigger']();
 
     const scope = fork();
 
     const unwatch = createWatch({
-      unit: intervalTrigger['@@trigger'].fired,
+      unit: intervalTrigger.fired,
       fn: listener,
       scope,
     });
 
-    allSettled(intervalTrigger['@@trigger'].setup, { scope });
+    allSettled(intervalTrigger.setup, { scope });
 
     await wait(1);
     expect(listener).toBeCalledTimes(1);
 
-    await allSettled(intervalTrigger['@@trigger'].teardown, { scope });
+    await allSettled(intervalTrigger.teardown, { scope });
 
     await wait(10);
     expect(listener).toBeCalledTimes(1);
