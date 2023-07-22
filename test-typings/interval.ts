@@ -38,23 +38,21 @@ import { interval } from '../src/interval';
     }),
   );
 
+  // @ts-expect-error
   interval({
     timeout: 100,
     start: createEvent<void>(),
     stop: createEvent<void>(),
-    // @ts-expect-error
     leading: 1,
-    // @ts-expect-error
     trailing: '',
   });
 
+  // @ts-expect-error
   interval({
     timeout: 100,
     start: createEvent<void>(),
     stop: createEvent<void>(),
-    // @ts-expect-error
     leading: [],
-    // @ts-expect-error
     trailing: null,
   });
 }

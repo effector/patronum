@@ -1,4 +1,11 @@
-import { allSettled, createEvent, fork, createStore, guard } from 'effector';
+import {
+  allSettled,
+  createEvent,
+  fork,
+  createStore,
+  guard,
+  createWatch,
+} from 'effector';
 import { argumentHistory, wait, watch } from '../../test-library';
 import { interval } from '.';
 
@@ -95,4 +102,31 @@ test('does not leaves unresolved timeout effect, if stopped', async () => {
   await allSettled(start, { scope });
 
   expect(scope.getState($count)).toEqual(6);
+});
+
+describe('@@trigger', () => {
+  test('fire tick on start and stop after teardown', async () => {
+    const listener = jest.fn();
+    const intervalTrigger = interval({ timeout: 1 });
+
+    const scope = fork();
+
+    const unwatch = createWatch({
+      unit: intervalTrigger['@@trigger'].fired,
+      fn: listener,
+      scope,
+    });
+
+    allSettled(intervalTrigger['@@trigger'].setup, { scope });
+
+    await wait(1);
+    expect(listener).toBeCalledTimes(1);
+
+    await allSettled(intervalTrigger['@@trigger'].teardown, { scope });
+
+    await wait(10);
+    expect(listener).toBeCalledTimes(1);
+
+    unwatch();
+  });
 });
