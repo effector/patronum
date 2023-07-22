@@ -9,13 +9,7 @@ import {
   is,
 } from 'effector';
 
-export function interval<S extends unknown, F extends unknown>({
-  timeout,
-  start,
-  stop,
-  leading = false,
-  trailing = false,
-}: {
+export function interval<S extends unknown, F extends unknown>(config: {
   timeout: number | Store<number>;
   start: Event<S>;
   stop?: Event<F>;
@@ -23,11 +17,7 @@ export function interval<S extends unknown, F extends unknown>({
   trailing?: boolean;
 }): { tick: Event<void>; isRunning: Store<boolean> };
 
-export function interval({
-  timeout,
-  leading = false,
-  trailing = false,
-}: {
+export function interval(config: {
   timeout: number | Store<number>;
   leading?: boolean;
   trailing?: boolean;
