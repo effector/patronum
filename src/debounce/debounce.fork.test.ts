@@ -213,15 +213,22 @@ describe('edge cases', () => {
     const db = debounce({ source: trigger, timeout: $timeout });
 
     const listener = jest.fn();
+    const triggerListener = jest.fn();
     const scope = fork()
     createWatch({
       unit: db,
       fn: listener,
       scope,
     })
+    createWatch({
+      unit: trigger,
+      fn: triggerListener,
+      scope,
+    })
 
     await allSettled(changeTimeout, { scope, params: 10 });
 
     expect(listener).toBeCalledTimes(0);
+    expect(triggerListener).toBeCalledTimes(0);
   })
 });
