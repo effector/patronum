@@ -126,7 +126,7 @@ export function debounce<T>({
   const requestTick = merge([
     source,
     // debounce timeout is restarted on timeout change
-    $timeout,
+    sample({ clock: $timeout, filter: timerFx.pending }),
   ]);
 
   guard({
