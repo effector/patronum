@@ -84,6 +84,7 @@ export function debounce<T>({
     });
   });
   const timerFx = attach({
+    name: `debounce(${source.shortName || source.kind}) timer`,
     source: {
       timeoutId: $timeoutId,
       rejectPromise: $rejecter,
