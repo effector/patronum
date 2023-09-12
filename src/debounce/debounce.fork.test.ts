@@ -7,6 +7,7 @@ import {
   createEvent,
   createStore,
   sample,
+  createWatch,
 } from 'effector';
 import { wait, watch } from '../../test-library';
 
@@ -203,4 +204,31 @@ describe('edge cases', () => {
     expect(listener).toBeCalledTimes(1);
     expect(listener).toBeCalledWith('two');
   });
+
+  test('no trigger call, but timeout change on the fly', async () => {
+    const trigger = createEvent();
+
+    const changeTimeout = createEvent<number>();
+    const $timeout = createStore(40).on(changeTimeout, (_, x) => x);
+    const db = debounce({ source: trigger, timeout: $timeout });
+
+    const listener = jest.fn();
+    const triggerListener = jest.fn();
+    const scope = fork()
+    createWatch({
+      unit: db,
+      fn: listener,
+      scope,
+    })
+    createWatch({
+      unit: trigger,
+      fn: triggerListener,
+      scope,
+    })
+
+    await allSettled(changeTimeout, { scope, params: 10 });
+
+    expect(listener).toBeCalledTimes(0);
+    expect(triggerListener).toBeCalledTimes(0);
+  })
 });
