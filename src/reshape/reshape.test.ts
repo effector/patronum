@@ -1,4 +1,4 @@
-import { createStore, createEvent } from 'effector';
+import { createEvent, createStore } from 'effector';
 import { reshape } from './index';
 
 test('reshape from string to different types', () => {
@@ -73,4 +73,32 @@ test('reshape returns null in shape if fn returned undefined', () => {
 
   expect(shape.first.getState()).toBe('');
   expect(shape.second.getState()).toBe(null);
+});
+
+test('reshape works with event source', () => {
+  const event = createEvent<string>();
+  const shape = reshape({
+    source: event,
+    shape: {
+      length: (original) => original?.length,
+      uppercase: (original) => original?.toUpperCase(),
+      hasSpace: (original) => original?.includes(' '),
+    },
+  });
+
+  expect(shape.length.getState()).toBe(null);
+  expect(shape.uppercase.getState()).toBe(null);
+  expect(shape.hasSpace.getState()).toBe(null);
+
+  event('Hello World');
+
+  expect(shape.length.getState()).toBe(11);
+  expect(shape.uppercase.getState()).toBe('HELLO WORLD');
+  expect(shape.hasSpace.getState()).toBe(true);
+
+  event('Another');
+
+  expect(shape.length.getState()).toBe(7);
+  expect(shape.uppercase.getState()).toBe('ANOTHER');
+  expect(shape.hasSpace.getState()).toBe(false);
 });

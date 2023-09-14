@@ -1,4 +1,4 @@
-import { createDomain, fork, allSettled } from 'effector';
+import { allSettled, createDomain, fork } from 'effector';
 
 import { reshape } from './index';
 
@@ -76,4 +76,26 @@ test('do not affects original store state', async () => {
   expect(shape.length.getState()).toBe(15);
   expect(shape.uppercase.getState()).toBe('SOME LONG VALUE');
   expect(shape.hasSpace.getState()).toBe(true);
+});
+
+test('reshape works with Event as source', async () => {
+  const app = createDomain();
+  const eventSource = app.createEvent<string>();
+
+  const shape = reshape({
+    source: eventSource,
+    shape: {
+      length: (original) => original.length,
+      uppercase: (original) => original.toUpperCase(),
+      hasSpace: (original) => original.includes(' '),
+    },
+  });
+
+  const scope = fork(app);
+
+  await allSettled(eventSource, { scope, params: 'test value' });
+
+  expect(scope.getState(shape.length)).toBe(10);
+  expect(scope.getState(shape.uppercase)).toBe('TEST VALUE');
+  expect(scope.getState(shape.hasSpace)).toBe(true);
 });
