@@ -86,3 +86,34 @@ it('calling derived event does not lock once', () => {
 
   expect(fn).toHaveBeenCalledTimes(2);
 });
+
+it('supports config as an argument', () => {
+  const fn = jest.fn();
+
+  const source = createEvent<void>();
+  const derived = once({ source });
+
+  derived.watch(fn);
+
+  source();
+  source();
+
+  expect(fn).toHaveBeenCalledTimes(1);
+});
+
+it('supports resetting via config', () => {
+  const fn = jest.fn();
+
+  const source = createEvent<void>();
+  const reset = createEvent<void>();
+
+  const derived = once({ source, reset });
+
+  derived.watch(fn);
+
+  source();
+  reset();
+  source();
+
+  expect(fn).toHaveBeenCalledTimes(2);
+});
