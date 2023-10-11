@@ -17,3 +17,23 @@ it('persists state between scopes', async () => {
 
   expect(fn).toHaveBeenCalledTimes(1);
 });
+
+it('resetting does not leak between scopes', async () => {
+  const fn = jest.fn();
+
+  const source = createEvent<void>();
+  const reset = createEvent<void>();
+
+  const derived = once({ source, reset });
+
+  derived.watch(fn);
+
+  const triggeredScope = fork();
+  const resetScope = fork();
+
+  await allSettled(source, { scope: triggeredScope });
+  await allSettled(reset, { scope: resetScope });
+  await allSettled(source, { scope: triggeredScope });
+
+  expect(fn).toHaveBeenCalledTimes(1);
+});
