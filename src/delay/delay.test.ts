@@ -234,3 +234,49 @@ test('double delay effect', async () => {
     ]
   `);
 });
+
+test('delay with array of units', async () => {
+  expect.assertions(2);
+
+  const source = createEvent();
+
+  const fnA = jest.fn();
+  const targetA = createEvent();
+
+  targetA.watch(fnA);
+
+  const fnB = jest.fn();
+  const targetB = createEvent();
+
+  targetB.watch(fnB);
+
+  delay({ source, timeout: 100, target: [targetA, targetB] });
+
+  source(1);
+
+  await waitFor(targetA);
+
+  expect(fnA).toHaveBeenCalledTimes(1);
+  expect(fnB).toHaveBeenCalledTimes(1);
+});
+
+test('delay throws when any of targets is not a unit', async () => {
+  expect.assertions(1);
+
+  const source = createEvent();
+  const target = createEvent();
+
+  expect(() =>
+    delay({ source, timeout: 100, target: [target, 'not a unit'] }),
+  ).toThrowError(/target must be a unit/);
+});
+
+test('delay throws when source is not a unit', async () => {
+  expect.assertions(1);
+
+  const target = createEvent();
+
+  expect(() => delay({ source: 'not a unit', timeout: 100, target })).toThrowError(
+    /source must be a unit/,
+  );
+});
