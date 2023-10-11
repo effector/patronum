@@ -1,4 +1,4 @@
-import { createStore, createEvent } from 'effector';
+import { createEvent, createStore } from 'effector';
 import { reshape } from './index';
 
 test('reshape from string to different types', () => {
@@ -73,4 +73,23 @@ test('reshape returns null in shape if fn returned undefined', () => {
 
   expect(shape.first.getState()).toBe('');
   expect(shape.second.getState()).toBe(null);
+});
+
+test("reshape ignores shape's prototype properties", () => {
+  type User = { first: string; second?: number };
+
+  const $user = createStore<User>({ first: '' });
+
+  const shape = {
+    first: (user: User) => user.first,
+  };
+
+  Object.setPrototypeOf(shape, { second: (user: User) => user.second });
+
+  const stores = reshape({
+    source: $user,
+    shape,
+  });
+
+  expect(stores).not.toHaveProperty('second');
 });

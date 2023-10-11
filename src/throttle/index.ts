@@ -37,9 +37,10 @@ export function throttle<T>({
 
   const $timeout = toStoreNumber(timeout);
 
-  const timerFx = createEffect<number, void>(
-    (timeout) => new Promise((resolve) => setTimeout(resolve, timeout)),
-  );
+  const timerFx = createEffect<number, void>({
+    name: `throttle(${(source as Event<T>).shortName || source.kind}) effect`,
+    handler: (timeout) => new Promise((resolve) => setTimeout(resolve, timeout)),
+  });
 
   // It's ok - nothing will ever start unless source is triggered
   const $payload = createStore<T>(null as unknown as T, { serialize: 'ignore' }).on(

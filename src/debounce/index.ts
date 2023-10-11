@@ -84,6 +84,7 @@ export function debounce<T>({
     });
   });
   const timerFx = attach({
+    name: `debounce(${source.shortName || source.kind}) effect`,
     source: {
       timeoutId: $timeoutId,
       rejectPromise: $rejecter,
@@ -126,7 +127,7 @@ export function debounce<T>({
   const requestTick = merge([
     source,
     // debounce timeout is restarted on timeout change
-    $timeout,
+    guard({ clock: $timeout, filter: timerFx.pending }),
   ]);
 
   guard({
