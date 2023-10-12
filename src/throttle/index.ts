@@ -42,10 +42,10 @@ export function throttle<T>({
   });
 
   // It's ok - nothing will ever start unless source is triggered
-  const $payload = createStore<T>(null as unknown as T, { serialize: 'ignore' }).on(
-    source,
-    (_, payload) => payload,
-  );
+  const $payload = createStore<T>(null as unknown as T, {
+    serialize: 'ignore',
+    skipVoid: false,
+  }).on(source, (_, payload) => payload);
 
   const triggerTick = createEvent<T>();
 
