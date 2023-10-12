@@ -13,7 +13,7 @@ test('throttle works in forked scope', async () => {
 
   $counter.on(throttled, (value) => value + 1);
 
-  const scope = fork(app);
+  const scope = fork();
 
   await allSettled(source, {
     scope,
@@ -38,7 +38,7 @@ test('throttle works in forked scope with target', async () => {
 
   $counter.on(target, (value) => value + 1);
 
-  const scope = fork(app);
+  const scope = fork();
 
   await allSettled(source, {
     scope,
@@ -62,8 +62,8 @@ test('throttle do not affect another forks', async () => {
 
   $counter.on(throttled, (value, payload) => value + payload);
 
-  const scopeA = fork(app);
-  const scopeB = fork(app);
+  const scopeA = fork();
+  const scopeB = fork();
 
   await allSettled(trigger, {
     scope: scopeA,
@@ -107,7 +107,7 @@ test('throttle do not affect original store value', async () => {
 
   $counter.on(throttled, (value, payload) => value + payload);
 
-  const scope = fork(app);
+  const scope = fork();
 
   await allSettled(trigger, {
     scope,

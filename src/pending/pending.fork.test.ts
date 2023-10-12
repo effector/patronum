@@ -31,7 +31,7 @@ test('works in forked scope with domain', async () => {
     handler: () => new Promise((resolve) => setTimeout(resolve, 1)),
   });
   const $pending = pending({ domain: app });
-  const scope = fork(app);
+  const scope = fork();
 
   const finish = allSettled(effect1, { scope });
   expect(scope.getState($pending)).toMatchInlineSnapshot(`true`);
@@ -52,7 +52,7 @@ test('concurrent run of different effects', async () => {
   const run = app.createEvent();
   sample({ clock: run, target: [effect1, effect2]  });
 
-  const scope = fork(app);
+  const scope = fork();
   expect(scope.getState($pending)).toMatchInlineSnapshot(`false`);
 
   const finish = allSettled(run, { scope });
@@ -74,7 +74,7 @@ test('concurrent run of different effects with domain', async () => {
   const run = app.createEvent();
   sample({ clock: run, target: [effect1, effect2]  });
 
-  const scope = fork(app);
+  const scope = fork();
   expect(scope.getState($pending)).toMatchInlineSnapshot(`false`);
 
   const finish = allSettled(run, { scope });

@@ -44,7 +44,7 @@ test('works in forked scope', async () => {
     .on(event, (counter, payload) => counter + payload)
     .on(effect.done, (counter) => counter * 100);
   debug($store, event, effect);
-  const scope = fork(app);
+  const scope = fork();
 
   await allSettled(event, { scope, params: 5 });
   expect(stringArguments(fn)).toMatchInlineSnapshot(`

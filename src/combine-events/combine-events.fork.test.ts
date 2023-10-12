@@ -13,7 +13,7 @@ test('works in forked scope', async () => {
   const $store = app
     .createStore({ e1: '', e2: '', e3: '' })
     .on(result, (_, payload) => payload);
-  const scope = fork(app);
+  const scope = fork();
   await Promise.all([
     allSettled(e2, { scope, params: 'hi2' }),
     allSettled(e1, { scope, params: 'hi1' }),
@@ -39,7 +39,7 @@ test('do not affects original store state', async () => {
   const $store = app
     .createStore({ e1: '', e2: '', e3: '' })
     .on(result, (_, payload) => payload);
-  const scope = fork(app);
+  const scope = fork();
   await Promise.all([
     allSettled(e2, { scope, params: 'hi2' }),
     allSettled(e1, { scope, params: 'hi1' }),
@@ -73,8 +73,8 @@ test('do not affects another scope', async () => {
     .createStore({ e1: '', e2: '', e3: '' })
     .on(result, (_, payload) => payload);
 
-  const scope1 = fork(app);
-  const scope2 = fork(app);
+  const scope1 = fork();
+  const scope2 = fork();
 
   await Promise.all([
     allSettled(e2, { scope: scope1, params: '1hi2' }),

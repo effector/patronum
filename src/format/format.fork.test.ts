@@ -17,7 +17,7 @@ test('format works in forked scope', async () => {
 
   const $result = format`My name is ${$name}`;
 
-  const scope = fork(app);
+  const scope = fork();
 
   await allSettled(changeName, { scope });
 
@@ -59,8 +59,8 @@ test('format do not affect another forks', async () => {
 
   const $result = format`That ${$name} is a ${$age}`;
 
-  const firstScope = fork(app);
-  const secondScope = fork(app);
+  const firstScope = fork();
+  const secondScope = fork();
 
   await allSettled(changeName, {
     scope: firstScope,
@@ -107,7 +107,7 @@ test('format do not affect original store value', async () => {
 
   const $result = format`My name is ${$name}`;
 
-  const scope = fork(app);
+  const scope = fork();
 
   await allSettled(changeName, { scope });
 

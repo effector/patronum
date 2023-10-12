@@ -16,7 +16,7 @@ test('works in forked scope', async () => {
     targets: { first, second },
   });
 
-  const scope = fork(app);
+  const scope = fork();
 
   await allSettled(source, { scope, params: { first: 'sergey', second: 26 } });
   expect(serialize(scope)).toMatchInlineSnapshot(`
@@ -41,7 +41,7 @@ test('do not affects original store state', async () => {
     targets: { first, second },
   });
 
-  const scope = fork(app);
+  const scope = fork();
 
   await allSettled(source, { scope, params: { first: 'sergey', second: 26 } });
   expect(scope.getState($first)).toBe('sergey');
@@ -64,8 +64,8 @@ test('do not affects another scope', async () => {
     targets: { first, second },
   });
 
-  const scope1 = fork(app);
-  const scope2 = fork(app);
+  const scope1 = fork();
+  const scope2 = fork();
 
   await Promise.all([
     allSettled(source, {
