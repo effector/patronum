@@ -28,8 +28,8 @@ export function spread<
 /**
  * @example
  * spread({ source: dataObject, targets: { first: targetA, second: targetB } })
- * forward({
- *   to: spread({targets: { first: targetA, second: targetB } })
+ * sample({
+ *   target: spread({targets: { first: targetA, second: targetB } })
  * })
  */
 export function spread<P>({
