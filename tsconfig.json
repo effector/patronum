@@ -19,6 +19,7 @@
     "sourceMap": true,
     "strict": true,
     "strictNullChecks": true,
+    "skipLibCheck": true,
     "suppressImplicitAnyIndexErrors": true,
     "target": "es2016",
     "types": ["jest", "node"]

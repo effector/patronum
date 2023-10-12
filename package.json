@@ -47,7 +47,7 @@
     "regenerator-runtime": "^0.13.11",
     "rollup": "^2.79.1",
     "tsd": "^0.13.1",
-    "typescript": "4.7.4",
+    "typescript": "5.2.2",
     "zx": "^7.1.1"
   },
   "packageManager": "pnpm@7.9.5",
