@@ -47,13 +47,13 @@ export function spread<P>({
 
       const hasTargetKey = sample({
         source,
-        greedy: true,
+        batch: false,
         filter: (object): object is any =>
           typeof object === 'object' && object !== null && targetKey in object,
       });
 
       sample({
-        greedy: true,
+        batch: false,
         clock: hasTargetKey,
         fn: (object: P) => object[targetKey],
         target: currentTarget as Unit<any>,

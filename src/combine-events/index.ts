@@ -4,7 +4,6 @@ import {
   Effect,
   Event,
   EventAsReturnType,
-  sample,
   is,
   merge,
   sample,
