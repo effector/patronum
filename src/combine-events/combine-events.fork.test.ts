@@ -111,5 +111,5 @@ test('do not interfere its internal state to serialized scope', async () => {
   await allSettled(one, { scope });
   await allSettled(two, { scope });
 
-  expect(serialize(scope, { onlyChanges: true })).toEqual({});
+  expect(serialize(scope)).toEqual({});
 });
