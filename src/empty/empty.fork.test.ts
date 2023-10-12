@@ -26,3 +26,31 @@ test('numbers', async () => {
   await allSettled(increment, { scope });
   expect(scope.getState($result)).toBe(false);
 });
+
+test('strings', async () => {
+  const set = createEvent<string>();
+  const $str = createStore<string>('').on(set, (_, str) => str);
+  const $empty = empty($str);
+
+  const scope = fork();
+
+  expect(scope.getState($empty)).toBe(false);
+
+  allSettled(set, { scope, params: 'hello' });
+
+  expect(scope.getState($empty)).toBe(false);
+})
+
+test('void', async () => {
+  const set = createEvent<any>();
+  const $str = createStore<null | undefined>(null, {skipVoid: false}).on(set, (_, str) => str);
+  const $empty = empty($str);
+
+  const scope = fork();
+
+  expect(scope.getState($empty)).toBe(true);
+
+  allSettled(set, { scope, params: undefined });
+
+  expect(scope.getState($empty)).toBe(true);
+});
