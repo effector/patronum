@@ -4,7 +4,7 @@ import {
   Effect,
   Event,
   EventAsReturnType,
-  guard,
+  sample,
   is,
   merge,
   sample,
@@ -88,7 +88,7 @@ export function combineEvents<P>({
       });
     }
 
-    guard({
+    sample({
       source: sample({ source: $results, clock: merge(Object.values(events)) }),
       filter: $counter.map((value) => value === 0),
       target,

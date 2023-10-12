@@ -1,4 +1,4 @@
-import { createEvent, Event, guard, sample, Unit } from 'effector';
+import { createEvent, Event, sample, Unit } from 'effector';
 
 const hasPropBase = {}.hasOwnProperty;
 const hasOwnProp = <O extends { [k: string]: unknown }>(object: O, key: string) =>
@@ -45,7 +45,7 @@ export function spread<P>({
     if (hasOwnProp(targets, targetKey)) {
       const currentTarget = targets[targetKey];
 
-      const hasTargetKey = guard({
+      const hasTargetKey = sample({
         source,
         greedy: true,
         filter: (object): object is any =>

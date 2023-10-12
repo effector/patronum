@@ -8,7 +8,6 @@ import {
   Store,
   Unit,
   attach,
-  guard,
   merge,
   Effect,
 } from 'effector';
@@ -127,10 +126,10 @@ export function debounce<T>({
   const requestTick = merge([
     source,
     // debounce timeout is restarted on timeout change
-    guard({ clock: $timeout, filter: timerFx.pending }),
+    sample({ clock: $timeout, filter: timerFx.pending }),
   ]);
 
-  guard({
+  sample({
     clock: requestTick,
     filter: $canTick,
     target: triggerTick,

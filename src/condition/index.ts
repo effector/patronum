@@ -1,4 +1,4 @@
-import { createEvent, Effect, Event, guard, is, Store, Unit, split } from 'effector';
+import { createEvent, Effect, Event, sample, is, Store, Unit, split } from 'effector';
 
 type NoInfer<T> = T & { [K in keyof T]: T[K] };
 type EventAsReturnType<Payload> = any extends Payload ? Event<Payload> : never;
@@ -96,13 +96,13 @@ export function condition<State>({
       },
     } as any);
   } else if (thenBranch) {
-    guard({
+    sample({
       source,
       filter: checker,
       target: thenBranch as Unit<State>,
     });
   } else if (elseBranch) {
-    guard({
+    sample({
       source,
       filter: inverse(checker as any),
       target: elseBranch as Unit<State>,

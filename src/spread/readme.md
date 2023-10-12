@@ -123,7 +123,7 @@ source = spread({ targets: { field: target, ... } })
 #### Conditionally save value to stores
 
 ```ts
-import { createStore, createEvent, guard } from 'effector';
+import { createStore, createEvent, sample } from 'effector';
 import { spread } from 'patronum/spread';
 
 const $first = createStore('');
@@ -131,7 +131,7 @@ const $last = createStore('');
 
 const formReceived = createEvent();
 
-guard({
+sample({
   source: formReceived,
   filter: (form) => form.first.length > 0 && form.last.length > 0,
   target: spread({

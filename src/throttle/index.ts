@@ -3,7 +3,6 @@ import {
   createEvent,
   createStore,
   Event,
-  guard,
   is,
   sample,
   Store,
@@ -54,7 +53,7 @@ export function throttle<T>({
     .on(triggerTick, () => false)
     .on(target, () => true);
 
-  guard({
+  sample({
     clock: source,
     filter: $canTick,
     target: triggerTick,
