@@ -2,52 +2,38 @@ import {
   createEffect,
   createEvent,
   createStore,
-  Event,
   is,
   sample,
   Store,
   Unit,
   attach,
   merge,
-  Effect,
+  UnitTargetable,
+  EventAsReturnType
 } from 'effector';
 
-type EventAsReturnType<Payload> = any extends Payload ? Event<Payload> : never;
-
 export function debounce<T>(_: {
-  source: Event<T> | Effect<T, any, any> | Store<T>;
+  source: Unit<T>;
   timeout: number | Store<number>;
-  name?: string;
 }): EventAsReturnType<T>;
 export function debounce<
   T,
   Target extends
-    | Event<T>
-    | Event<void>
-    | Effect<T, any, any>
-    | Effect<void, any, any>
-    | Store<T>,
+    | UnitTargetable<T>
+    | UnitTargetable<void>,
 >(_: {
-  source: Event<T> | Effect<T, any, any> | Store<T>;
+  source: Unit<T>;
   timeout: number | Store<number>;
   target: Target;
-  name?: string;
 }): Target;
 export function debounce<T>({
   source,
   timeout,
   target,
 }: {
-  source: Event<T> | Effect<T, any, any> | Store<T>;
+  source: Unit<T>;
   timeout?: number | Store<number>;
-  /** @deprecated */
-  name?: string;
-  target?:
-    | Event<T>
-    | Event<void>
-    | Effect<T, any, any>
-    | Effect<void, any, any>
-    | Store<T>;
+  target?: UnitTargetable<T> | Unit<T>
 }): typeof target extends undefined ? EventAsReturnType<T> : typeof target {
   if (!is.unit(source)) throw new TypeError('source must be unit from effector');
 
@@ -65,7 +51,7 @@ export function debounce<T>({
     serialize: 'ignore',
   }).on(saveReject, (_, rj) => rj);
 
-  const tick: Unit<T | void> = target ?? createEvent();
+  const tick = (target as UnitTargetable<T>) ?? createEvent();
 
   const timerBaseFx = createEffect<
     {
@@ -83,7 +69,7 @@ export function debounce<T>({
     });
   });
   const timerFx = attach({
-    name: `debounce(${source.shortName || source.kind}) effect`,
+    name: `debounce(${(source as any)?.shortName || source.kind}) effect`,
     source: {
       timeoutId: $timeoutId,
       rejectPromise: $rejecter,

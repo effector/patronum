@@ -7,6 +7,7 @@ import {
   sample,
   Store,
   Unit,
+  UnitTargetable,
 } from 'effector';
 
 type EventAsReturnType<Payload> = any extends Payload ? Event<Payload> : never;
@@ -16,7 +17,7 @@ export function throttle<T>(_: {
   timeout: number | Store<number>;
   name?: string;
 }): EventAsReturnType<T>;
-export function throttle<T, Target extends Unit<T>>(_: {
+export function throttle<T, Target extends UnitTargetable<T>>(_: {
   source: Unit<T>;
   timeout: number | Store<number>;
   target: Target;
@@ -30,7 +31,7 @@ export function throttle<T>({
   source: Unit<T>;
   timeout: number | Store<number>;
   name?: string;
-  target?: Unit<any>;
+  target?: UnitTargetable<any>;
 }): EventAsReturnType<T> {
   if (!is.unit(source)) throw new TypeError('source must be unit from effector');
 

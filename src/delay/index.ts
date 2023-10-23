@@ -10,6 +10,7 @@ import {
   Target as TargetType,
   MultiTarget,
   UnitValue,
+  UnitTargetable,
 } from 'effector';
 
 type TimeoutType<Payload> = ((payload: Payload) => number) | Store<number> | number;
@@ -68,7 +69,7 @@ export function delay<
     target: timerFx,
   });
 
-  sample({ clock: timerFx.doneData, target: targets as Unit<any>[] });
+  sample({ clock: timerFx.doneData, target: targets as UnitTargetable<any>[] });
 
   return target as any;
 }

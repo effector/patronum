@@ -1,10 +1,10 @@
 import { createEvent } from 'effector';
 
-import type { Event, Unit, Store } from 'effector';
+import type { Event, Unit, Store, StoreWritable } from 'effector';
 
 type Params = {
   clock?: Unit<any> | Array<Unit<any>>;
-  target: Store<any> | Array<Store<any>>;
+  target: StoreWritable<any> | Array<StoreWritable<any>>;
 };
 
 export function reset(config: Required<Params>): void;

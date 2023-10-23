@@ -1,4 +1,4 @@
-import { createEvent, Event, sample, Unit } from 'effector';
+import { createEvent, Event, EventCallable, sample, Unit, UnitTargetable } from 'effector';
 
 const hasPropBase = {}.hasOwnProperty;
 const hasOwnProp = <O extends { [k: string]: unknown }>(object: O, key: string) =>
@@ -9,7 +9,7 @@ type EventAsReturnType<Payload> = any extends Payload ? Event<Payload> : never;
 
 export function spread<Payload>(config: {
   targets: {
-    [Key in keyof Payload]?: Unit<Payload[Key]>;
+    [Key in keyof Payload]?: UnitTargetable<Payload[Key]>;
   };
 }): EventAsReturnType<Partial<Payload>>;
 
@@ -20,8 +20,8 @@ export function spread<
   source: Source;
   targets: {
     [Key in keyof Payload]?:
-      | EventAsReturnType<Partial<Payload[Key]>>
-      | Unit<NoInfer<Payload[Key]>>;
+      | EventCallable<Partial<Payload[Key]>>
+      | UnitTargetable<NoInfer<Payload[Key]>>;
   };
 }): Source;
 
@@ -56,7 +56,7 @@ export function spread<P>({
         batch: false,
         clock: hasTargetKey,
         fn: (object: P) => object[targetKey],
-        target: currentTarget as Unit<any>,
+        target: currentTarget as UnitTargetable<any>,
       });
     }
   }

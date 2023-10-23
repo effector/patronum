@@ -1,25 +1,21 @@
 import {
   Unit,
-  Store,
   Event,
-  Effect,
   EventAsReturnType,
   is,
   sample,
   createStore,
 } from 'effector';
 
-type SourceType<T> = Event<T> | Effect<T, any, any> | Store<T>;
-
 export function once<T>(config: {
-  source: SourceType<T>;
-  reset?: SourceType<any>;
+  source: Unit<T>;
+  reset?: Unit<any>;
 }): EventAsReturnType<T>;
 
-export function once<T>(unit: SourceType<T>): EventAsReturnType<T>;
+export function once<T>(unit: Unit<T>): EventAsReturnType<T>;
 
 export function once<T>(
-  unitOrConfig: { source: SourceType<T>; reset?: SourceType<any> } | SourceType<T>,
+  unitOrConfig: { source: Unit<T>; reset?: Unit<any> } | Unit<T>,
 ): EventAsReturnType<T> {
   let source: Unit<T>;
   let reset: Unit<any> | undefined;

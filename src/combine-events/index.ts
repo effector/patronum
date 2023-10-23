@@ -9,6 +9,7 @@ import {
   sample,
   Store,
   Unit,
+  UnitTargetable,
   withRegion,
 } from 'effector';
 
@@ -40,7 +41,7 @@ export function combineEvents<P extends Shape>(config: {
 
 export function combineEvents<
   P extends Shape,
-  T extends Unit<P extends Tuple ? P : Partial<P>>,
+  T extends UnitTargetable<P extends Tuple ? P : Partial<P>>,
 >(config: { events: Events<P>; target: T; reset?: Unit<any> }): ReturnTarget<P, T>;
 
 export function combineEvents<P>({
@@ -50,9 +51,10 @@ export function combineEvents<P>({
 }: {
   events: Events<P>;
   reset?: Unit<any>;
-  target?: Unit<any>;
+  target?: UnitTargetable<any> | Unit<any>;
 }) {
-  if (!is.unit(target)) throwError('target should be a unit');
+  if (!(is.unit(target) && is.targetable(target)))
+    throwError('target should be a targetable unit');
   if (reset && !is.unit(reset)) throwError('reset should be a unit');
 
   withRegion(target, () => {
@@ -87,10 +89,15 @@ export function combineEvents<P>({
       });
     }
 
+    const eventsTrriggered = sample({
+      source: $results,
+      clock: [...(Object.values(events) as Unit<any>[])],
+    });
+
     sample({
-      source: sample({ source: $results, clock: merge(Object.values(events)) }),
+      source: eventsTrriggered,
       filter: $counter.map((value) => value === 0),
-      target,
+      target: target as UnitTargetable<any>,
     });
   });
 
