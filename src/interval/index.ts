@@ -1,12 +1,4 @@
-import {
-  Event,
-  Store,
-  createEvent,
-  createStore,
-  sample,
-  attach,
-  is,
-} from 'effector';
+import { Event, Store, createEvent, createStore, sample, attach, is } from 'effector';
 
 export function interval<S extends unknown, F extends unknown>(config: {
   timeout: number | Store<number>;
@@ -42,7 +34,7 @@ export function interval<S extends unknown, F extends unknown>({
   const $isRunning = createStore(false);
   const $timeout = toStoreNumber(timeout);
 
-  const $notRunning = $isRunning.map((running) => !running);
+  const $notRunning = $isRunning.map((running) => !running, { skipVoid: false });
 
   const saveTimeout = createEvent<{
     timeoutId: NodeJS.Timeout;

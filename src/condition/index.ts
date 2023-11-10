@@ -1,4 +1,14 @@
-import { createEvent, Effect, Event, sample, is, Store, Unit, UnitTargetable, split } from 'effector';
+import {
+  createEvent,
+  Effect,
+  Event,
+  sample,
+  is,
+  Store,
+  Unit,
+  UnitTargetable,
+  split,
+} from 'effector';
 
 type NoInfer<T> = T & { [K in keyof T]: T[K] };
 type EventAsReturnType<Payload> = any extends Payload ? Event<Payload> : never;
@@ -120,7 +130,7 @@ function inverse<A extends boolean, T>(
   fnOrUnit: Store<boolean> | ((payload: T) => boolean),
 ): Store<boolean> | ((payload: T) => boolean) {
   if (is.unit(fnOrUnit)) {
-    return fnOrUnit.map((value) => !value);
+    return fnOrUnit.map((value) => !value, { skipVoid: false });
   }
   return (value) => !fnOrUnit(value);
 }
