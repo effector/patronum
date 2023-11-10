@@ -28,7 +28,7 @@ export function reshape<Type, Shape extends Record<string, unknown>>({
         const result = fn(state);
         return result === undefined ? null : result;
       },
-      { skipVoid: true },
+      { skipVoid: false },
     );
   }
 

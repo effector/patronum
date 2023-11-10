@@ -11,6 +11,6 @@ export function and(...stores: Array<Store<any>>): Store<boolean> {
       }
       return true;
     },
-    { skipVoid: true },
+    { skipVoid: false },
   ) as Store<boolean>;
 }

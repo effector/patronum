@@ -40,6 +40,6 @@ export function pending({
   return combine(
     effects.map((fx) => fx.pending),
     strategy,
-    { skipVoid: true },
+    { skipVoid: false },
   );
 }

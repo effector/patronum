@@ -27,7 +27,7 @@ export function format<Values extends StoreOrValue<any>[]>(
           ),
         '',
       ),
-    { skipVoid: true },
+    { skipVoid: false },
   );
 }
 

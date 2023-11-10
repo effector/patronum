@@ -11,6 +11,6 @@ export function or(...stores: Array<Store<any>>): Store<boolean> {
       }
       return false;
     },
-    { skipVoid: true },
+    { skipVoid: false },
   ) as Store<boolean>;
 }

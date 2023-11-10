@@ -25,5 +25,7 @@ export function equals<A, B>(
     ? B
     : { error: 'argument b should extends a' },
 ): Store<boolean> {
-  return combine(a as Store<A>, b as Store<A>, (a, b) => a === b, { skipVoid: true });
+  return combine(a as Store<A>, b as Store<A>, (a, b) => a === b, {
+    skipVoid: false,
+  });
 }

@@ -34,7 +34,7 @@ export function interval<S extends unknown, F extends unknown>({
   const $isRunning = createStore(false);
   const $timeout = toStoreNumber(timeout);
 
-  const $notRunning = $isRunning.map((running) => !running, { skipVoid: true });
+  const $notRunning = $isRunning.map((running) => !running, { skipVoid: false });
 
   const saveTimeout = createEvent<{
     timeoutId: NodeJS.Timeout;

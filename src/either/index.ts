@@ -64,7 +64,7 @@ export function either<Then, Other>(
       then as Store<Then>,
       other as Store<Other>,
       (filter, then, other) => (filter ? then : other),
-      { skipVoid: true },
+      { skipVoid: false },
     );
   }
 

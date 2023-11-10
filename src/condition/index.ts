@@ -130,7 +130,7 @@ function inverse<A extends boolean, T>(
   fnOrUnit: Store<boolean> | ((payload: T) => boolean),
 ): Store<boolean> | ((payload: T) => boolean) {
   if (is.unit(fnOrUnit)) {
-    return fnOrUnit.map((value) => !value, { skipVoid: true });
+    return fnOrUnit.map((value) => !value, { skipVoid: false });
   }
   return (value) => !fnOrUnit(value);
 }
