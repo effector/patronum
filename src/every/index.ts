@@ -51,7 +51,9 @@ export function every<T>(
   if (isFunction(predicate)) {
     checker = predicate;
   } else if (is.store(predicate)) {
-    checker = predicate.map((value) => (required: T) => value === required);
+    checker = predicate.map((value) => (required: T) => value === required, {
+      skipVoid: true,
+    });
   } else {
     checker = (value: T) => value === predicate;
   }
@@ -60,7 +62,9 @@ export function every<T>(
   // Combine pass simple values as is
   const $checker = checker as Store<(value: T) => boolean>;
 
-  return combine($checker, $values, (checker, values) => values.every(checker));
+  return combine($checker, $values, (checker, values) => values.every(checker), {
+    skipVoid: true,
+  });
 }
 
 function isFunction<T>(value: unknown): value is (value: T) => boolean {

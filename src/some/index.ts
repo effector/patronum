@@ -48,7 +48,9 @@ export function some<T>(
   if (isFunction(predicate)) {
     checker = predicate;
   } else if (is.store(predicate)) {
-    checker = predicate.map((value) => (required: T) => value === required);
+    checker = predicate.map((value) => (required: T) => value === required, {
+      skipVoid: true,
+    });
   } else {
     checker = (value: T) => value === predicate;
   }
@@ -57,7 +59,9 @@ export function some<T>(
   // Combine pass simple values as is
   const $checker = checker as Store<(value: T) => boolean>;
 
-  return combine($checker, $values, (checker, values) => values.some(checker));
+  return combine($checker, $values, (checker, values) => values.some(checker), {
+    skipVoid: true,
+  });
 }
 
 function isFunction<T>(value: unknown): value is (value: T) => boolean {

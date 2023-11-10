@@ -96,7 +96,7 @@ export function combineEvents<P>({
 
     sample({
       source: eventsTrriggered,
-      filter: $counter.map((value) => value === 0),
+      filter: $counter.map((value) => value === 0, { skipVoid: true }),
       target: target as UnitTargetable<any>,
     });
   });

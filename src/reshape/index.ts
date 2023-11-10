@@ -23,10 +23,13 @@ export function reshape<Type, Shape extends Record<string, unknown>>({
     }
 
     const fn = shape[key];
-    result[key] = source.map((state) => {
-      const result = fn(state);
-      return result === undefined ? null : result;
-    });
+    result[key] = source.map(
+      (state) => {
+        const result = fn(state);
+        return result === undefined ? null : result;
+      },
+      { skipVoid: true },
+    );
   }
 
   return result as any;

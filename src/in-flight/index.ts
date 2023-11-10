@@ -22,5 +22,6 @@ export function inFlight({
   return combine(
     effects!.map((fx) => fx.inFlight),
     (inFlights) => inFlights.reduce((all, current) => all + current, 0),
+    { skipVoid: true },
   );
 }

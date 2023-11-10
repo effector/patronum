@@ -15,16 +15,19 @@ export function format<Values extends StoreOrValue<any>[]>(
   strings: TemplateStringsArray,
   ...stores: [...Values]
 ): Store<string> {
-  return combine(stores, (stores) =>
-    strings.reduce(
-      (acc, value, index) =>
-        acc.concat(
-          isLastElement(strings, index)
-            ? value
-            : `${value}${toString(stores[index])}`,
-        ),
-      '',
-    ),
+  return combine(
+    stores,
+    (stores) =>
+      strings.reduce(
+        (acc, value, index) =>
+          acc.concat(
+            isLastElement(strings, index)
+              ? value
+              : `${value}${toString(stores[index])}`,
+          ),
+        '',
+      ),
+    { skipVoid: true },
   );
 }
 
