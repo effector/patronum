@@ -126,10 +126,8 @@ test('result don`t updates for not selected argument', async () => {
   await allSettled(toggle, { scope });
   await allSettled(updateFirst, { scope, params: 'second' });
 
-  // Second update of the first looks like a bug in effector
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
     [
-      "first",
       "first",
       2,
     ]
