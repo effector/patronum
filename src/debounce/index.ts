@@ -43,50 +43,27 @@ export function debounce<T>({
 
   const $timeout = toStoreNumber(timeout);
 
-  const saveTimeoutId = createEvent<NodeJS.Timeout>();
-  const $timeoutId = createStore<NodeJS.Timeout | null>(null, {
-    serialize: 'ignore',
-  }).on(saveTimeoutId, (_, id) => id);
-  const saveReject = createEvent<() => void>();
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  const $rejecter = createStore<(() => void) | null>(null, {
-    serialize: 'ignore',
-  }).on(saveReject, (_, rj) => rj);
+  const saveCancel = createEvent<[NodeJS.Timeout, () => void]>();
+  const $canceller = createStore<[NodeJS.Timeout, () => void] | []>([], { serialize: 'ignore' })
+    .on(saveCancel, (_, payload) => payload)
 
   const tick = (target as UnitTargetable<T>) ?? createEvent();
 
-  const timerBaseFx = createEffect<
-    {
-      timeout: number;
-      rejectPromise: (() => void) | null;
-      timeoutId: NodeJS.Timeout | null;
-    },
-    void
-  >(({ timeout, timeoutId, rejectPromise }) => {
-    if (timeoutId) clearTimeout(timeoutId);
-    if (rejectPromise) rejectPromise();
-    return new Promise((resolve, reject) => {
-      saveReject(reject);
-      saveTimeoutId(setTimeout(resolve, timeout));
-    });
-  });
   const timerFx = attach({
     name: name || `debounce(${(source as any)?.shortName || source.kind}) effect`,
-    source: {
-      timeoutId: $timeoutId,
-      rejectPromise: $rejecter,
-    },
-    mapParams: (timeout: number, { timeoutId, rejectPromise }) => {
-      return {
-        timeout,
-        timeoutId,
-        rejectPromise,
-      };
-    },
-    effect: timerBaseFx,
+    source: $canceller,
+    effect([ timeoutId, rejectPromise ], timeout: number) {
+      if (timeoutId) clearTimeout(timeoutId);
+      if (rejectPromise) rejectPromise();
+      return new Promise((resolve, reject) => {
+        saveCancel([
+          setTimeout(resolve, timeout),
+          reject
+        ])
+      });
+    }
   });
-  $rejecter.reset(timerFx.done);
-  $timeoutId.reset(timerFx.done);
+  $canceller.reset(timerFx.done);
 
   // It's ok - nothing will ever start unless source is triggered
   const $payload = createStore<T[]>([], { serialize: 'ignore', skipVoid: false }).on(
