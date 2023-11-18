@@ -56,7 +56,7 @@ import { every } from '../dist/every';
   const $b = createStore(1);
   const $invalid1 = createStore('');
   const $invalid2 = createStore(true);
-  const $invalid3 = createStore({});
+  const $invalid3 = createStore<Record<any, any>>({});
 
   expectType<Store<boolean>>(every({ predicate: $predicate, stores: [$a, $b] }));
 
@@ -78,7 +78,7 @@ import { every } from '../dist/every';
   const $b = createStore(1);
   const $invalid1 = createStore('');
   const $invalid2 = createStore(true);
-  const $invalid3 = createStore({});
+  const $invalid3 = createStore<Record<any, any>>({});
 
   expectType<Store<boolean>>(every([$a, $b], 0));
   // @ts-expect-error
