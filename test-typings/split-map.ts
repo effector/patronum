@@ -7,7 +7,7 @@ import {
   createEffect,
   sample,
 } from 'effector';
-import { splitMap } from '../src/split-map';
+import { splitMap } from '../dist/split-map';
 
 // partial destructuring throws an error #71
 {

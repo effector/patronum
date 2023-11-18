@@ -9,7 +9,7 @@ import {
   createDomain,
   fork,
 } from 'effector';
-import { debounce } from '../src/debounce';
+import { debounce } from '../dist/debounce';
 
 // Returns the same type as source
 {

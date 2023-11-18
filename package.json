@@ -4,7 +4,7 @@
   "scripts": {
     "test": "NODE_ENV=test pnpm test:code && pnpm test:types",
     "test:code": "jest",
-    "test:types": "tsc -p ./test-typings",
+    "test:types": "pnpm build:types && tsc -p ./test-typings",
     "format": "prettier --write \"./src/**/**.{ts,tsx,js,jsx,json}\"",
     "lint": "eslint ./",
     "cleanup": "rm -rf dist && mkdir dist",

@@ -1,6 +1,6 @@
 import { expectType } from 'tsd';
 import { createEvent, createEffect, createStore } from 'effector';
-import { reset } from '../src/reset';
+import { reset } from '../dist/reset';
 
 import type { Event } from 'effector';
 

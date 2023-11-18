@@ -8,7 +8,7 @@ import {
   createEffect,
   sample,
 } from 'effector';
-import { combineEvents } from '../src/combine-events';
+import { combineEvents } from '../dist/combine-events';
 
 // Check simple combine of different events
 {

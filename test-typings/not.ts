@@ -1,6 +1,6 @@
 import { createDomain, createEffect, createStore, Store } from 'effector';
 import { expectType } from 'tsd';
-import { not } from '../src/not';
+import { not } from '../dist/not';
 
 // Always returns the store
 {

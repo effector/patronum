@@ -7,7 +7,7 @@ import {
   createDomain,
   fork,
 } from 'effector';
-import { once } from '../src/once';
+import { once } from '../dist/once';
 
 // Supports Event, Effect and Store as an argument
 {

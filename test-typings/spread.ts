@@ -8,7 +8,7 @@ import {
   createEffect,
   sample,
 } from 'effector';
-import { spread } from '../src/spread';
+import { spread } from '../dist/spread';
 
 {
   const $source = createStore({ first: '', last: '' });

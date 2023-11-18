@@ -6,7 +6,7 @@ import {
   createEvent,
   createDomain,
 } from 'effector';
-import { status, EffectState } from '../src/status';
+import { status, EffectState } from '../dist/status';
 
 // Check that accepts only effect
 {

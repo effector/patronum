@@ -1,6 +1,6 @@
 import { expectType } from 'tsd';
 import { Store, createStore, createEvent, createEffect, createDomain } from 'effector';
-import { time } from '../src/time';
+import { time } from '../dist/time';
 
 // Returns correct default Store value
 {
