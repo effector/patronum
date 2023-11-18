@@ -68,16 +68,16 @@ export function condition<Params, Done, Fail>(options: {
 
 export function condition<State>(options: {
   if: ((payload: State) => boolean) | Store<boolean> | State;
-  then: Unit<NoInfer<State> | void>;
-  else: Unit<NoInfer<State> | void>;
+  then: UnitTargetable<NoInfer<State> | void>;
+  else: UnitTargetable<NoInfer<State> | void>;
 }): EventAsReturnType<State>;
 export function condition<State>(options: {
   if: ((payload: State) => boolean) | Store<boolean> | State;
-  then: Unit<NoInfer<State> | void>;
+  then: UnitTargetable<NoInfer<State> | void>;
 }): Event<State>;
 export function condition<State>(options: {
   if: ((payload: State) => boolean) | Store<boolean> | State;
-  else: Unit<NoInfer<State> | void>;
+  else: UnitTargetable<NoInfer<State> | void>;
 }): Event<State>;
 export function condition<State>({
   if: test,
@@ -87,8 +87,8 @@ export function condition<State>({
 }: {
   if: ((payload: State) => boolean) | Store<boolean> | State;
   source?: Store<State> | Event<State> | Effect<State, any, any>;
-  then?: Unit<State | void>;
-  else?: Unit<State | void>;
+  then?: UnitTargetable<State | void>;
+  else?: UnitTargetable<State | void>;
 }) {
   const checker =
     is.unit(test) || isFunction(test) ? test : (value: State) => value === test;
@@ -98,7 +98,7 @@ export function condition<State>({
       source,
       match: {
         then: checker,
-        else: inverse(checker),
+        else: inverse(checker as any),
       },
       cases: {
         then: thenBranch,
@@ -106,16 +106,18 @@ export function condition<State>({
       },
     } as any);
   } else if (thenBranch) {
+    // @ts-expect-error
     sample({
-      source,
+      source: source,
       filter: checker,
-      target: thenBranch as Unit<State>,
+      target: thenBranch,
     });
   } else if (elseBranch) {
+    // @ts-expect-error
     sample({
       source,
       filter: inverse(checker as any),
-      target: elseBranch as Unit<State>,
+      target: elseBranch,
     });
   }
 

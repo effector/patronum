@@ -49,7 +49,7 @@ export function combineEvents<P>({
   reset,
   target = createEvent(),
 }: {
-  events: Events<P>;
+  events: Events<any>;
   reset?: Unit<any>;
   target?: UnitTargetable<any> | Unit<any>;
 }) {
@@ -83,7 +83,7 @@ export function combineEvents<P>({
 
       $counter.on($isDone, (value) => value - 1);
       $results.on(events[key], (shape, payload) => {
-        const newShape = Array.isArray(shape) ? [...shape] : { ...shape };
+        const newShape = (Array.isArray(shape) ? [...shape] : { ...shape }) as any;
         newShape[key] = payload;
         return newShape;
       });
