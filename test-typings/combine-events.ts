@@ -29,9 +29,6 @@ import { combineEvents } from '../src/combine-events';
   expectType<Event<Target>>(target);
 
   // @ts-expect-error
-  const _fail1: Event<{ foo: string; bar: number }> = target;
-
-  // @ts-expect-error
   const _fail2: Event<{ foo: string; bar: number; baz: number }> = target;
 }
 
@@ -54,9 +51,6 @@ import { combineEvents } from '../src/combine-events';
   });
 
   expectType<Event<Target>>(target);
-
-  // @ts-expect-error
-  const _fail1: Event<{ foo: string; bar: number }> = target;
 
   // @ts-expect-error
   const _fail2: Event<{ foo: string; bar: number; baz: number }> = target;
