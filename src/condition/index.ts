@@ -5,9 +5,9 @@ import {
   sample,
   is,
   Store,
-  Unit,
   UnitTargetable,
   split,
+  EventCallable,
 } from 'effector';
 
 type NoInfer<T> = T & { [K in keyof T]: T[K] };
@@ -70,15 +70,15 @@ export function condition<State>(options: {
   if: ((payload: State) => boolean) | Store<boolean> | State;
   then: UnitTargetable<NoInfer<State> | void>;
   else: UnitTargetable<NoInfer<State> | void>;
-}): EventAsReturnType<State>;
+}): EventCallable<State>;
 export function condition<State>(options: {
   if: ((payload: State) => boolean) | Store<boolean> | State;
   then: UnitTargetable<NoInfer<State> | void>;
-}): Event<State>;
+}): EventCallable<State>;
 export function condition<State>(options: {
   if: ((payload: State) => boolean) | Store<boolean> | State;
   else: UnitTargetable<NoInfer<State> | void>;
-}): Event<State>;
+}): EventCallable<State>;
 export function condition<State>({
   if: test,
   then: thenBranch,
