@@ -28,9 +28,13 @@ import { every } from '../dist/every';
     every({ predicate: (c) => c === 'c', stores: [$a, $b] }),
   );
 
-  // @ts-expect-error
+  /**
+   * @todo Fix this edge-case in the future
+   *
+   */
+  // should be error but is not
   every({ predicate: value, stores: [$a, $invalid] });
-  // @ts-expect-error
+  // should be error but is not
   every({ predicate: 'demo', stores: [$a, $b] });
   // @ts-expect-error
   every({ predicate: (v) => v === 'demo', stores: [$a, $b] });

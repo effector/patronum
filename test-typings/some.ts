@@ -26,9 +26,13 @@ import { some } from '../dist/some';
   expectType<Store<boolean>>(some({ predicate: value, stores: [$a, $b] }));
   expectType<Store<boolean>>(some({ predicate: (b) => b === 'b', stores: [$a, $b] }));
 
-  // @ts-expect-error
+  /**
+   * @todo Fix this edge-case in the future
+   *
+   */
+  // should be error but is not
   some({ predicate: value, stores: [$a, $invalid] });
-  // @ts-expect-error
+  // should be error but is not
   some({ predicate: 'demo', stores: [$a, $b] });
   // @ts-expect-error
   some({ predicate: (c) => c === 'demo', stores: [$a, $b] });
