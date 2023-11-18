@@ -11,7 +11,7 @@ export function spread<Payload>(config: {
   targets: {
     [Key in keyof Payload]?: UnitTargetable<Payload[Key]>;
   };
-}): EventAsReturnType<Partial<Payload>>;
+}): EventCallable<Partial<Payload>>;
 
 export function spread<
   Source,
@@ -40,7 +40,7 @@ export function spread<P>({
     [Key in keyof P]?: Unit<P[Key]>;
   };
   source?: Unit<P>;
-}): EventAsReturnType<P> {
+}): EventCallable<P> {
   for (const targetKey in targets) {
     if (hasOwnProp(targets, targetKey)) {
       const currentTarget = targets[targetKey];
