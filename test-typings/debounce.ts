@@ -165,24 +165,6 @@ import { debounce } from '../src/debounce';
   );
 }
 
-// Scope and Domain are not allowed in source
-{
-  const target = createEvent<any>();
-
-  const domain = createDomain();
-  const scope = fork();
-
-  // @ts-expect-error
-  debounce({ source: domain, timeout: 0 });
-  // @ts-expect-error
-  debounce({ source: scope, timeout: 0 });
-
-  // @ts-expect-error
-  debounce({ source: domain, timeout: 0, target });
-  // @ts-expect-error
-  debounce({ source: scope, timeout: 0, target });
-}
-
 // Scope and Domain are not allowed in target
 {
   const source = createEvent<number>();

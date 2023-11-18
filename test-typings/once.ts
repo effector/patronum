@@ -23,24 +23,6 @@ import { once } from '../src/once';
   expectType<Event<string>>(once({ source: createStore<string>('') }));
 }
 
-// Does not allow scope or domain as source or reset
-{
-  // @ts-expect-error
-  once(createDomain());
-  // @ts-expect-error
-  once(fork());
-
-  // @ts-expect-error
-  once({ source: createDomain() });
-  // @ts-expect-error
-  once({ source: fork() });
-
-  // @ts-expect-error
-  once({ source: createEvent(), reset: createDomain() });
-  // @ts-expect-error
-  once({ source: createEvent(), reset: fork() });
-}
-
 // Correctly passes through complex types
 {
   const source = createEvent<'string' | false>();

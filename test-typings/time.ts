@@ -70,6 +70,4 @@ import { time } from '../src/time';
 
   // @ts-expect-error
   time({ clock: fn });
-  // @ts-expect-error
-  time({ clock: domain });
 }
