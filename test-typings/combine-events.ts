@@ -109,9 +109,9 @@ import { combineEvents } from '../src/combine-events';
     target: createEvent<{ foo: string; bar: number }>(),
   });
 
-  // @ts-expect-error
   combineEvents({
     events: { foo, bar, baz },
+    // @ts-expect-error
     target: createEvent<{ foo: string; bar: number; baz: number }>(),
   });
 }
@@ -140,15 +140,15 @@ import { combineEvents } from '../src/combine-events';
     target: createEvent<{ foo: string; bar: number }>(),
   });
 
-  // @ts-expect-error
   combineEvents({
     events: { foo, bar, baz, bai },
+    // @ts-expect-error
     target: createEvent<{ foo: string; bar: number; baz: number }>(),
   });
 
-  // @ts-expect-error
   combineEvents({
     events: { foo, bar, baz, bai },
+    // @ts-expect-error
     target: createEvent<{
       foo: string;
       bar: number;
@@ -171,15 +171,15 @@ import { combineEvents } from '../src/combine-events';
     target,
   });
 
-  // @ts-expect-error
   combineEvents({
     events: [foo, bar, baz],
+    // @ts-expect-error
     target: createEvent<[string, number, number]>(),
   });
 
-  // @ts-expect-error
   combineEvents({
     events: [foo, bar, baz],
+    // @ts-expect-error
     target: createEvent<[string]>(),
   });
 }
