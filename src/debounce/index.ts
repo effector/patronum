@@ -9,31 +9,33 @@ import {
   attach,
   merge,
   UnitTargetable,
-  EventAsReturnType
+  EventAsReturnType,
 } from 'effector';
 
 export function debounce<T>(_: {
   source: Unit<T>;
   timeout: number | Store<number>;
+  name?: string;
 }): EventAsReturnType<T>;
 export function debounce<
   T,
-  Target extends
-    | UnitTargetable<T>
-    | UnitTargetable<void>,
+  Target extends UnitTargetable<T> | UnitTargetable<void>,
 >(_: {
   source: Unit<T>;
   timeout: number | Store<number>;
   target: Target;
+  name?: string;
 }): Target;
 export function debounce<T>({
   source,
   timeout,
   target,
+  name,
 }: {
   source: Unit<T>;
   timeout?: number | Store<number>;
-  target?: UnitTargetable<T> | Unit<T>
+  target?: UnitTargetable<T> | Unit<T>;
+  name?: string;
 }): typeof target extends undefined ? EventAsReturnType<T> : typeof target {
   if (!is.unit(source)) throw new TypeError('source must be unit from effector');
 
@@ -69,7 +71,7 @@ export function debounce<T>({
     });
   });
   const timerFx = attach({
-    name: `debounce(${(source as any)?.shortName || source.kind}) effect`,
+    name: name || `debounce(${(source as any)?.shortName || source.kind}) effect`,
     source: {
       timeoutId: $timeoutId,
       rejectPromise: $rejecter,
