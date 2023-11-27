@@ -26,13 +26,19 @@ test('When at least one store has falsy value result must be false', async () =>
   await allSettled(iterate, { scope });
   await allSettled(iterate, { scope });
 
+  expect(scope.getState($result)).toBe(false);
   expect(fn).toHaveBeenCalledTimes(1);
+
+  await allSettled(iterate, { scope });
+
+  expect(fn).toHaveBeenCalledTimes(2);
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
     [
       false,
+      true,
     ]
   `);
-  expect(scope.getState($result)).toBe(false);
+  expect(scope.getState($result)).toBe(true);
 });
 
 test('Returns boolean value for single store', async () => {
