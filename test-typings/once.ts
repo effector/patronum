@@ -4,8 +4,6 @@ import {
   createStore,
   createEvent,
   createEffect,
-  createDomain,
-  fork,
 } from 'effector';
 import { once } from '../dist/once';
 

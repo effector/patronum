@@ -39,5 +39,5 @@ export function once<T>(
     $canTrigger.reset(reset);
   }
 
-  return sample({ clock: trigger });
+  return trigger
 }
