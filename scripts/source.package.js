@@ -20,6 +20,6 @@ module.exports = () => ({
   },
   homepage: 'https://github.com/effector/patronum#readme',
   peerDependencies: {
-    effector: '^22.8.8 || ^23',
+    effector: '^23',
   },
 });
