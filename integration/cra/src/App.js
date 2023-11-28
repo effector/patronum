@@ -1,8 +1,9 @@
-import logo from './logo.svg';
-import './App.css';
+import { useUnit } from 'effector-react';
 
 import { $pending } from './demo';
-import { useUnit } from 'effector-react';
+
+import logo from './logo.svg';
+import './App.css';
 
 function App() {
   return (
