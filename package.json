@@ -50,7 +50,7 @@
     "typescript": "5.2.2",
     "zx": "^7.1.1"
   },
-  "packageManager": "pnpm@7.9.5",
+  "packageManager": "pnpm@8.10.5",
   "optionalDependencies": {
     "svelte": "^3.54.0"
   }
