@@ -2,7 +2,7 @@ import logo from './logo.svg';
 import './App.css';
 
 import { $pending } from './demo';
-import { useStore } from 'effector-react';
+import { useUnit } from 'effector-react';
 
 function App() {
   return (
@@ -12,7 +12,7 @@ function App() {
         <p>
           Edit <code>src/App.js</code> and save to reload.
         </p>
-        {useStore($pending)}
+        {useUnit($pending)}
         <a
           className="App-link"
           href="https://reactjs.org"
