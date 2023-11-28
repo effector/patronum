@@ -72,21 +72,6 @@ it('only triggers once in race conditions', () => {
   expect(fn).toHaveBeenCalledTimes(1);
 });
 
-it('calling derived event does not lock once', () => {
-  const fn = jest.fn();
-
-  const source = createEvent<void>();
-  const derived = once(source);
-
-  derived.watch(fn);
-  expect(fn).toHaveBeenCalledTimes(0);
-
-  derived();
-  source();
-
-  expect(fn).toHaveBeenCalledTimes(2);
-});
-
 it('supports config as an argument', () => {
   const fn = jest.fn();
 

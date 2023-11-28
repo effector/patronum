@@ -8,7 +8,7 @@ import {
   createEffect,
   sample,
 } from 'effector';
-import { combineEvents } from '../src/combine-events';
+import { combineEvents } from '../dist/combine-events';
 
 // Check simple combine of different events
 {
@@ -27,9 +27,6 @@ import { combineEvents } from '../src/combine-events';
   });
 
   expectType<Event<Target>>(target);
-
-  // @ts-expect-error
-  const _fail1: Event<{ foo: string; bar: number }> = target;
 
   // @ts-expect-error
   const _fail2: Event<{ foo: string; bar: number; baz: number }> = target;
@@ -54,9 +51,6 @@ import { combineEvents } from '../src/combine-events';
   });
 
   expectType<Event<Target>>(target);
-
-  // @ts-expect-error
-  const _fail1: Event<{ foo: string; bar: number }> = target;
 
   // @ts-expect-error
   const _fail2: Event<{ foo: string; bar: number; baz: number }> = target;
@@ -115,9 +109,9 @@ import { combineEvents } from '../src/combine-events';
     target: createEvent<{ foo: string; bar: number }>(),
   });
 
-  // @ts-expect-error
   combineEvents({
     events: { foo, bar, baz },
+    // @ts-expect-error
     target: createEvent<{ foo: string; bar: number; baz: number }>(),
   });
 }
@@ -146,15 +140,15 @@ import { combineEvents } from '../src/combine-events';
     target: createEvent<{ foo: string; bar: number }>(),
   });
 
-  // @ts-expect-error
   combineEvents({
     events: { foo, bar, baz, bai },
+    // @ts-expect-error
     target: createEvent<{ foo: string; bar: number; baz: number }>(),
   });
 
-  // @ts-expect-error
   combineEvents({
     events: { foo, bar, baz, bai },
+    // @ts-expect-error
     target: createEvent<{
       foo: string;
       bar: number;
@@ -177,15 +171,15 @@ import { combineEvents } from '../src/combine-events';
     target,
   });
 
-  // @ts-expect-error
   combineEvents({
     events: [foo, bar, baz],
+    // @ts-expect-error
     target: createEvent<[string, number, number]>(),
   });
 
-  // @ts-expect-error
   combineEvents({
     events: [foo, bar, baz],
+    // @ts-expect-error
     target: createEvent<[string]>(),
   });
 }

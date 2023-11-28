@@ -1,6 +1,6 @@
 import { expectType } from 'tsd';
 import { Event, createStore, createEvent, createEffect, Store } from 'effector';
-import { delay } from '../src/delay';
+import { delay } from '../dist/delay';
 
 // Check valid type for source
 {

@@ -1,6 +1,6 @@
 import { expectType } from 'tsd';
 import { Event, createStore, Store, createEvent } from 'effector';
-import { interval } from '../src/interval';
+import { interval } from '../dist/interval';
 
 // Only required options with void returns void tick
 {

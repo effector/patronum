@@ -37,8 +37,8 @@ test('does not affects another scope', async () => {
     clock: copy,
   });
 
-  const scope1 = fork(app);
-  const scope2 = fork(app);
+  const scope1 = fork();
+  const scope2 = fork();
 
   expect(scope1.getState($copy)).toBe(1);
   expect(scope2.getState($copy)).toBe(1);
@@ -63,7 +63,7 @@ test('does not affect original store state', async () => {
     clock: copy,
   });
 
-  const scope = fork(app);
+  const scope = fork();
 
   expect(scope.getState($copy)).toBe(1);
   expect($copy.getState()).toBe(1);
@@ -93,8 +93,8 @@ test('store clock from one scope does not affect another', async () => {
 
   const $copy = snapshot({ source: $original, clock: $trigger });
 
-  const scope1 = fork(app);
-  const scope2 = fork(app);
+  const scope1 = fork();
+  const scope2 = fork();
 
   expect(scope1.getState($copy)).toBe('first');
   expect(scope2.getState($copy)).toBe('first');

@@ -19,7 +19,7 @@ test('works in forked scope', async () => {
     .on(out.first, (state, payload) => state + payload)
     .on(out.__, (state, payload) => (payload ? -state : 0));
 
-  const scope = fork(app);
+  const scope = fork();
 
   await allSettled(source, {
     scope,
@@ -58,8 +58,8 @@ test('do not affect another fork', async () => {
     .on(out.first, (state, payload) => state + payload)
     .on(out.__, (state, payload) => (payload ? -state : 0));
 
-  const scopeA = fork(app);
-  const scopeB = fork(app);
+  const scopeA = fork();
+  const scopeB = fork();
 
   await allSettled(source, {
     scope: scopeA,
@@ -98,7 +98,7 @@ test('do not affect original store value', async () => {
     .on(out.first, (state, payload) => state + payload)
     .on(out.__, (state, payload) => (payload ? -state : 0));
 
-  const scope = fork(app);
+  const scope = fork();
 
   await allSettled(source, {
     scope,

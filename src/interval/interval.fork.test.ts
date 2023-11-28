@@ -3,7 +3,7 @@ import {
   createEvent,
   fork,
   createStore,
-  guard,
+  sample,
   createWatch,
 } from 'effector';
 import { argumentHistory, wait, watch } from '../../test-library';
@@ -91,7 +91,7 @@ test('does not leaves unresolved timeout effect, if stopped', async () => {
   const stop = createEvent();
   const { tick } = interval({ timeout: 1, start, stop });
   const $count = createStore(0).on(tick, (s) => s + 1);
-  guard({
+  sample({
     source: $count,
     clock: tick,
     filter: (c) => c === 6,

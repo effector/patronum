@@ -1,4 +1,4 @@
-import { combine, createEvent, createStore, forward } from 'effector';
+import { combine, createEvent, createStore, sample } from 'effector';
 import { spread } from './index';
 
 describe('spread(source, targets)', () => {
@@ -118,9 +118,9 @@ describe('spread(targets)', () => {
     targetA.watch(fnA);
     targetB.watch(fnB);
 
-    forward({
-      from: source,
-      to: spread({
+    sample({
+      clock: source,
+      target: spread({
         targets: {
           first: targetA,
           second: targetB,
@@ -144,9 +144,9 @@ describe('spread(targets)', () => {
     targetA.watch(fnA);
     targetB.watch(fnB);
 
-    forward({
-      from: source,
-      to: spread({
+    sample({
+      clock: source,
+      target: spread({
         targets: {
           first: targetA,
           second: targetB,
@@ -174,9 +174,9 @@ describe('spread(targets)', () => {
     targetA.watch(fnA);
     targetB.watch(fnB);
 
-    forward({
-      from: source,
-      to: spread({
+    sample({
+      clock: source,
+      target: spread({
         targets: {
           first: targetA,
           second: targetB,
@@ -204,9 +204,9 @@ describe('spread(targets)', () => {
     targetA.watch(fnA);
     targetB.watch(fnB);
 
-    forward({
-      from: source,
-      to: spread({
+    sample({
+      clock: source,
+      target: spread({
         targets: {
           first: targetA,
           second: targetB,

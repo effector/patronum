@@ -8,7 +8,7 @@ import {
   Event,
   Store,
 } from 'effector';
-import { condition } from '../src/condition';
+import { condition } from '../dist/condition';
 
 // Correct pass type from source to then, else, and if
 {

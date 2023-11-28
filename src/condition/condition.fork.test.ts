@@ -19,7 +19,7 @@ test('condition works in forked scope', async () => {
     else: $else,
   });
 
-  const scope = fork(app);
+  const scope = fork();
 
   await allSettled(source, {
     scope,
@@ -49,9 +49,9 @@ test('do not affect another forks', async () => {
     else: $else,
   });
 
-  const scope1 = fork(app);
-  const scope2 = fork(app);
-  const scope3 = fork(app);
+  const scope1 = fork();
+  const scope2 = fork();
+  const scope3 = fork();
 
   const promise1 = allSettled(source, {
     scope: scope1,

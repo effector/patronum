@@ -1,4 +1,4 @@
-import { createDomain, forward, fork, allSettled } from 'effector';
+import { createDomain, sample, fork, allSettled } from 'effector';
 
 import { inFlight } from './index';
 
@@ -12,7 +12,7 @@ describe('effects', () => {
       handler: () => new Promise((resolve) => setTimeout(resolve, 1)),
     });
     const $count = inFlight({ effects: [effect1, effect2] });
-    const scope = fork(app);
+    const scope = fork();
 
     const finish = allSettled(effect1, { scope });
     expect(scope.getState($count)).toMatchInlineSnapshot(`1`);
@@ -31,9 +31,9 @@ describe('effects', () => {
     });
     const $count = inFlight({ effects: [effect1, effect2] });
     const run = app.createEvent();
-    forward({ from: run, to: [effect1, effect2] });
+    sample({ clock: run, target: [effect1, effect2] });
 
-    const scope = fork(app);
+    const scope = fork();
     expect(scope.getState($count)).toMatchInlineSnapshot(`0`);
 
     const finish = allSettled(run, { scope });
@@ -54,7 +54,7 @@ describe('domain', () => {
       handler: () => new Promise((resolve) => setTimeout(resolve, 1)),
     });
     const $count = inFlight({ domain });
-    const scope = fork(domain);
+    const scope = fork();
 
     const finish = allSettled(effect1, { scope });
     expect(scope.getState($count)).toMatchInlineSnapshot(`1`);
@@ -73,9 +73,9 @@ describe('domain', () => {
     });
     const $count = inFlight({ domain });
     const run = domain.createEvent();
-    forward({ from: run, to: [effect1, effect2] });
+    sample({ clock: run, target: [effect1, effect2] });
 
-    const scope = fork(domain);
+    const scope = fork();
     expect(scope.getState($count)).toMatchInlineSnapshot(`0`);
 
     const finish = allSettled(run, { scope });

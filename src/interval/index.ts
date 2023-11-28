@@ -1,13 +1,4 @@
-import {
-  Event,
-  Store,
-  createEvent,
-  createStore,
-  guard,
-  sample,
-  attach,
-  is,
-} from 'effector';
+import { Event, Store, createEvent, createStore, sample, attach, is } from 'effector';
 
 export function interval<S extends unknown, F extends unknown>(config: {
   timeout: number | Store<number>;
@@ -43,7 +34,7 @@ export function interval<S extends unknown, F extends unknown>({
   const $isRunning = createStore(false);
   const $timeout = toStoreNumber(timeout);
 
-  const $notRunning = $isRunning.map((running) => !running);
+  const $notRunning = $isRunning.map((running) => !running, { skipVoid: false });
 
   const saveTimeout = createEvent<{
     timeoutId: NodeJS.Timeout;
@@ -81,7 +72,7 @@ export function interval<S extends unknown, F extends unknown>({
     },
   });
 
-  guard({
+  sample({
     clock: setup,
     source: $timeout,
     filter: $notRunning,
@@ -89,7 +80,7 @@ export function interval<S extends unknown, F extends unknown>({
   });
 
   if (leading) {
-    const onReady = guard({ clock: setup, filter: $notRunning });
+    const onReady = sample({ clock: setup, filter: $notRunning });
     sample({ clock: onReady, target: tick });
   }
 
@@ -99,14 +90,14 @@ export function interval<S extends unknown, F extends unknown>({
     target: $isRunning,
   });
 
-  guard({
+  sample({
     clock: timeoutFx.done,
     source: $timeout,
     filter: $isRunning,
     target: timeoutFx,
   });
 
-  guard({
+  sample({
     clock: timeoutFx.done,
     filter: $isRunning,
     target: tick.prepend(() => {

@@ -2,34 +2,26 @@ import {
   createEffect,
   createEvent,
   createStore,
-  Event,
   is,
   sample,
   Store,
   Unit,
   attach,
-  guard,
   merge,
-  Effect,
+  UnitTargetable,
+  EventAsReturnType,
 } from 'effector';
 
-type EventAsReturnType<Payload> = any extends Payload ? Event<Payload> : never;
-
 export function debounce<T>(_: {
-  source: Event<T> | Effect<T, any, any> | Store<T>;
+  source: Unit<T>;
   timeout: number | Store<number>;
   name?: string;
 }): EventAsReturnType<T>;
 export function debounce<
   T,
-  Target extends
-    | Event<T>
-    | Event<void>
-    | Effect<T, any, any>
-    | Effect<void, any, any>
-    | Store<T>,
+  Target extends UnitTargetable<T> | UnitTargetable<void>,
 >(_: {
-  source: Event<T> | Effect<T, any, any> | Store<T>;
+  source: Unit<T>;
   timeout: number | Store<number>;
   target: Target;
   name?: string;
@@ -38,17 +30,12 @@ export function debounce<T>({
   source,
   timeout,
   target,
+  name,
 }: {
-  source: Event<T> | Effect<T, any, any> | Store<T>;
+  source: Unit<T>;
   timeout?: number | Store<number>;
-  /** @deprecated */
+  target?: UnitTargetable<T> | Unit<T>;
   name?: string;
-  target?:
-    | Event<T>
-    | Event<void>
-    | Effect<T, any, any>
-    | Effect<void, any, any>
-    | Store<T>;
 }): typeof target extends undefined ? EventAsReturnType<T> : typeof target {
   if (!is.unit(source)) throw new TypeError('source must be unit from effector');
 
@@ -56,53 +43,30 @@ export function debounce<T>({
 
   const $timeout = toStoreNumber(timeout);
 
-  const saveTimeoutId = createEvent<NodeJS.Timeout>();
-  const $timeoutId = createStore<NodeJS.Timeout | null>(null, {
-    serialize: 'ignore',
-  }).on(saveTimeoutId, (_, id) => id);
-  const saveReject = createEvent<() => void>();
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  const $rejecter = createStore<(() => void) | null>(null, {
-    serialize: 'ignore',
-  }).on(saveReject, (_, rj) => rj);
+  const saveCancel = createEvent<[NodeJS.Timeout, () => void]>();
+  const $canceller = createStore<[NodeJS.Timeout, () => void] | []>([], { serialize: 'ignore' })
+    .on(saveCancel, (_, payload) => payload)
 
-  const tick: Unit<T | void> = target ?? createEvent();
+  const tick = (target as UnitTargetable<T>) ?? createEvent();
 
-  const timerBaseFx = createEffect<
-    {
-      timeout: number;
-      rejectPromise: (() => void) | null;
-      timeoutId: NodeJS.Timeout | null;
-    },
-    void
-  >(({ timeout, timeoutId, rejectPromise }) => {
-    if (timeoutId) clearTimeout(timeoutId);
-    if (rejectPromise) rejectPromise();
-    return new Promise((resolve, reject) => {
-      saveReject(reject);
-      saveTimeoutId(setTimeout(resolve, timeout));
-    });
-  });
   const timerFx = attach({
-    name: `debounce(${source.shortName || source.kind}) effect`,
-    source: {
-      timeoutId: $timeoutId,
-      rejectPromise: $rejecter,
-    },
-    mapParams: (timeout: number, { timeoutId, rejectPromise }) => {
-      return {
-        timeout,
-        timeoutId,
-        rejectPromise,
-      };
-    },
-    effect: timerBaseFx,
+    name: name || `debounce(${(source as any)?.shortName || source.kind}) effect`,
+    source: $canceller,
+    effect([ timeoutId, rejectPromise ], timeout: number) {
+      if (timeoutId) clearTimeout(timeoutId);
+      if (rejectPromise) rejectPromise();
+      return new Promise((resolve, reject) => {
+        saveCancel([
+          setTimeout(resolve, timeout),
+          reject
+        ])
+      });
+    }
   });
-  $rejecter.reset(timerFx.done);
-  $timeoutId.reset(timerFx.done);
+  $canceller.reset(timerFx.done);
 
   // It's ok - nothing will ever start unless source is triggered
-  const $payload = createStore<T[]>([], { serialize: 'ignore' }).on(
+  const $payload = createStore<T[]>([], { serialize: 'ignore', skipVoid: false }).on(
     source,
     (_, payload) => [payload],
   );
@@ -127,10 +91,10 @@ export function debounce<T>({
   const requestTick = merge([
     source,
     // debounce timeout is restarted on timeout change
-    guard({ clock: $timeout, filter: timerFx.pending }),
+    sample({ clock: $timeout, filter: timerFx.pending }),
   ]);
 
-  guard({
+  sample({
     clock: requestTick,
     filter: $canTick,
     target: triggerTick,

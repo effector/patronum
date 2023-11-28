@@ -7,7 +7,7 @@ import {
   type Node,
   type Scope,
 } from 'effector';
-import { debug } from '../src/debug';
+import { debug } from '../dist/debug';
 
 // Allows each unit of effector
 {

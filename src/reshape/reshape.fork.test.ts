@@ -14,7 +14,7 @@ test('works in forked scope', () => {
       hasSpace: (original) => original.includes(' '),
     },
   });
-  const scope = fork(app);
+  const scope = fork();
 
   expect(scope.getState(shape.length)).toBe(15);
   expect(scope.getState(shape.uppercase)).toBe('SOME LONG VALUE');
@@ -35,8 +35,8 @@ test('do not affects another scope', async () => {
     },
   });
   $original.on(change, (_, value) => value);
-  const scope1 = fork(app);
-  const scope2 = fork(app);
+  const scope1 = fork();
+  const scope2 = fork();
 
   await Promise.all([
     allSettled(change, { scope: scope1, params: 'hello world' }),
@@ -66,7 +66,7 @@ test('do not affects original store state', async () => {
     },
   });
   $original.on(change, (_, value) => value);
-  const scope = fork(app);
+  const scope = fork();
   await allSettled(change, { scope, params: 'demo' });
 
   expect(scope.getState(shape.length)).toBe(4);

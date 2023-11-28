@@ -26,14 +26,19 @@ it('should be true when at least one store has truthy value', async () => {
   await allSettled(iterate, { scope });
   await allSettled(iterate, { scope });
 
-  expect(fn).toHaveBeenCalledTimes(2); // twice because of scope and initial
+  expect(fn).toHaveBeenCalledTimes(1);
+  expect(scope.getState($result)).toBe(true);
+
+  await allSettled(iterate, { scope });
+
+  expect(fn).toHaveBeenCalledTimes(2);
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
     [
       true,
-      true,
+      false,
     ]
   `);
-  expect(scope.getState($result)).toBe(true);
+  expect(scope.getState($result)).toBe(false);
 });
 
 test('Returns boolean value for single store', async () => {
@@ -44,4 +49,21 @@ test('Returns boolean value for single store', async () => {
   const scope = fork();
 
   expect(scope.getState($andIncorrect)).toBe(true);
+});
+
+test('should be false when all stores have falsy value', async () => {
+  const fix = createEvent();
+  const $a = createStore(true).on(fix, () => false);
+  const $b = createStore(false);
+  const $c = createStore(false);
+
+  const $or = or($a, $b, $c);
+
+  const scope = fork();
+
+  expect(scope.getState($or)).toBe(true);
+
+  await allSettled(fix, { scope });
+
+  expect(scope.getState($or)).toBe(false);
 });

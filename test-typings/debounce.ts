@@ -9,7 +9,7 @@ import {
   createDomain,
   fork,
 } from 'effector';
-import { debounce } from '../src/debounce';
+import { debounce } from '../dist/debounce';
 
 // Returns the same type as source
 {
@@ -163,24 +163,6 @@ import { debounce } from '../src/debounce';
   expectType<Effect<void, any>>(
     debounce({ source, timeout: 300, target: voidEffect }),
   );
-}
-
-// Scope and Domain are not allowed in source
-{
-  const target = createEvent<any>();
-
-  const domain = createDomain();
-  const scope = fork();
-
-  // @ts-expect-error
-  debounce({ source: domain, timeout: 0 });
-  // @ts-expect-error
-  debounce({ source: scope, timeout: 0 });
-
-  // @ts-expect-error
-  debounce({ source: domain, timeout: 0, target });
-  // @ts-expect-error
-  debounce({ source: scope, timeout: 0, target });
 }
 
 // Scope and Domain are not allowed in target

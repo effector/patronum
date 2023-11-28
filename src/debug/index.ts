@@ -412,7 +412,7 @@ function getType(unit: Unit<any> | Node) {
   if (is.store(unit)) {
     return 'store';
   }
-  if (is.effect(unit) || isEffectChild(unit)) {
+  if (is.effect(unit as any) || isEffectChild(unit)) {
     return 'effect';
   }
   if (is.event(unit)) {

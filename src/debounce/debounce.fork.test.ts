@@ -23,7 +23,7 @@ test('debounce works in forked scope', async () => {
 
   $counter.on(debounced, (value) => value + 1);
 
-  const scope = fork(app);
+  const scope = fork();
 
   await allSettled(trigger, {
     scope,
@@ -45,8 +45,8 @@ test('debounce do not affect another forks', async () => {
 
   $counter.on(debounced, (value, payload) => value + payload);
 
-  const scopeA = fork(app);
-  const scopeB = fork(app);
+  const scopeA = fork();
+  const scopeB = fork();
 
   await allSettled(trigger, {
     scope: scopeA,
@@ -86,7 +86,7 @@ test('debounce do not affect original store value', async () => {
 
   $counter.on(debounced, (value, payload) => value + payload);
 
-  const scope = fork(app);
+  const scope = fork();
 
   await allSettled(trigger, {
     scope,
@@ -116,8 +116,8 @@ test('debounce does not break parallel scopes', async () => {
 
   $counter.on(debounced, (value, payload) => value + payload);
 
-  const scopeA = fork(app);
-  const scopeB = fork(app);
+  const scopeA = fork();
+  const scopeB = fork();
 
   allSettled(trigger, {
     scope: scopeA,

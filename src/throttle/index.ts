@@ -3,11 +3,11 @@ import {
   createEvent,
   createStore,
   Event,
-  guard,
   is,
   sample,
   Store,
   Unit,
+  UnitTargetable,
 } from 'effector';
 
 type EventAsReturnType<Payload> = any extends Payload ? Event<Payload> : never;
@@ -17,7 +17,7 @@ export function throttle<T>(_: {
   timeout: number | Store<number>;
   name?: string;
 }): EventAsReturnType<T>;
-export function throttle<T, Target extends Unit<T>>(_: {
+export function throttle<T, Target extends UnitTargetable<T>>(_: {
   source: Unit<T>;
   timeout: number | Store<number>;
   target: Target;
@@ -31,7 +31,7 @@ export function throttle<T>({
   source: Unit<T>;
   timeout: number | Store<number>;
   name?: string;
-  target?: Unit<any>;
+  target?: UnitTargetable<any>;
 }): EventAsReturnType<T> {
   if (!is.unit(source)) throw new TypeError('source must be unit from effector');
 
@@ -43,10 +43,10 @@ export function throttle<T>({
   });
 
   // It's ok - nothing will ever start unless source is triggered
-  const $payload = createStore<T>(null as unknown as T, { serialize: 'ignore' }).on(
-    source,
-    (_, payload) => payload,
-  );
+  const $payload = createStore<T>(null as unknown as T, {
+    serialize: 'ignore',
+    skipVoid: false,
+  }).on(source, (_, payload) => payload);
 
   const triggerTick = createEvent<T>();
 
@@ -54,7 +54,7 @@ export function throttle<T>({
     .on(triggerTick, () => false)
     .on(target, () => true);
 
-  guard({
+  sample({
     clock: source,
     filter: $canTick,
     target: triggerTick,

@@ -1,6 +1,6 @@
 import { expectType } from 'tsd';
 import { createStore, Store } from 'effector';
-import { equals } from '../src/equals';
+import { equals } from '../dist/equals';
 
 // Should receive stores with the same type
 {

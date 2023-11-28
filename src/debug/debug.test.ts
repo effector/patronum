@@ -4,10 +4,6 @@ import {
   createStore,
   createDomain,
   sample,
-  guard,
-  forward,
-  split,
-  merge,
 } from 'effector';
 import { argumentsHistory } from '../../test-library';
 import { debug } from './index';

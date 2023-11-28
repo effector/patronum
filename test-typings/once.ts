@@ -4,10 +4,8 @@ import {
   createStore,
   createEvent,
   createEffect,
-  createDomain,
-  fork,
 } from 'effector';
-import { once } from '../src/once';
+import { once } from '../dist/once';
 
 // Supports Event, Effect and Store as an argument
 {
@@ -21,24 +19,6 @@ import { once } from '../src/once';
   expectType<Event<string>>(once({ source: createEvent<string>() }));
   expectType<Event<string>>(once({ source: createEffect<string, void>() }));
   expectType<Event<string>>(once({ source: createStore<string>('') }));
-}
-
-// Does not allow scope or domain as source or reset
-{
-  // @ts-expect-error
-  once(createDomain());
-  // @ts-expect-error
-  once(fork());
-
-  // @ts-expect-error
-  once({ source: createDomain() });
-  // @ts-expect-error
-  once({ source: fork() });
-
-  // @ts-expect-error
-  once({ source: createEvent(), reset: createDomain() });
-  // @ts-expect-error
-  once({ source: createEvent(), reset: fork() });
 }
 
 // Correctly passes through complex types
