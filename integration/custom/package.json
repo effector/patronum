@@ -20,8 +20,8 @@
     "jest": "^27.2.4"
   },
   "dependencies": {
-    "effector": "^22.1.2",
-    "effector-react": "^22.0.4",
+    "effector": "^23.0.0-rc.6",
+    "effector-react": "^23.0.0-rc.6",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   }
