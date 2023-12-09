@@ -27,7 +27,9 @@ describe('Custom time functions', () => {
     allSettled(start, { scope });
 
     expect(mockedSetTimeout).toBeCalled();
+
     await wait(52);
+    await allSettled(stop, { scope });
 
     expect(fn).toBeCalled();
   });

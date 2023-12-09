@@ -59,7 +59,7 @@ export function interval<S extends unknown, F extends unknown>({
       }
 
       return new Promise((resolve, reject) => {
-        const timeoutId = timers.setTimeout<NodeJS.Timeout>(resolve, timeout);
+        const timeoutId = timers.setTimeout(resolve, timeout);
         saveTimeout({ timeoutId, reject });
       });
     },
