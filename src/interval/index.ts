@@ -1,4 +1,5 @@
 import { Event, Store, createEvent, createStore, sample, attach, is } from 'effector';
+import { $timers } from '../timers'
 
 export function interval<S extends unknown, F extends unknown>(config: {
   timeout: number | Store<number>;
@@ -51,24 +52,24 @@ export function interval<S extends unknown, F extends unknown>({
   );
 
   const timeoutFx = attach({
-    source: { timeout: $timeout, running: $isRunning },
-    effect: ({ timeout, running }) => {
+    source: { timeout: $timeout, running: $isRunning, timers: $timers },
+    effect: ({ timeout, running, timers }) => {
       if (!running) {
         return Promise.reject();
       }
 
       return new Promise((resolve, reject) => {
-        const timeoutId = setTimeout(resolve, timeout);
+        const timeoutId = timers.setTimeout<NodeJS.Timeout>(resolve, timeout);
         saveTimeout({ timeoutId, reject });
       });
     },
   });
 
   const cleanupFx = attach({
-    source: { timeoutId: $timeoutId, rejecter: $rejecter },
-    effect: ({ timeoutId, rejecter }) => {
+    source: { timeoutId: $timeoutId, rejecter: $rejecter, timers: $timers },
+    effect: ({ timeoutId, rejecter, timers }) => {
       rejecter();
-      if (timeoutId) clearTimeout(timeoutId);
+      if (timeoutId) timers.clearTimeout(timeoutId);
     },
   });
 

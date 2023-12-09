@@ -1,5 +1,4 @@
 import {
-  createEffect,
   createEvent,
   createStore,
   is,
@@ -11,6 +10,7 @@ import {
   UnitTargetable,
   EventAsReturnType,
 } from 'effector';
+import { $timers } from '../timers'
 
 export function debounce<T>(_: {
   source: Unit<T>;
@@ -51,13 +51,14 @@ export function debounce<T>({
 
   const timerFx = attach({
     name: name || `debounce(${(source as any)?.shortName || source.kind}) effect`,
-    source: $canceller,
-    effect([ timeoutId, rejectPromise ], timeout: number) {
-      if (timeoutId) clearTimeout(timeoutId);
+    source: { canceller: $canceller, timers: $timers },
+    effect({ canceller: [ timeoutId, rejectPromise ], timers }, timeout: number) {
+      if (timeoutId) timers.clearTimeout(timeoutId);
       if (rejectPromise) rejectPromise();
+
       return new Promise((resolve, reject) => {
         saveCancel([
-          setTimeout(resolve, timeout),
+          timers.setTimeout(resolve, timeout),
           reject
         ])
       });

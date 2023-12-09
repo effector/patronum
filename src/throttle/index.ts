@@ -9,6 +9,7 @@ import {
   Unit,
   UnitTargetable,
 } from 'effector';
+import { $timers, Timers } from '../timers';
 
 type EventAsReturnType<Payload> = any extends Payload ? Event<Payload> : never;
 
@@ -37,9 +38,9 @@ export function throttle<T>({
 
   const $timeout = toStoreNumber(timeout);
 
-  const timerFx = createEffect<number, void>({
+  const timerFx = createEffect<{ timeout: number; timers: Timers }, void>({
     name: `throttle(${(source as Event<T>).shortName || source.kind}) effect`,
-    handler: (timeout) => new Promise((resolve) => setTimeout(resolve, timeout)),
+    handler: ({ timeout, timers }) => new Promise((resolve) => timers.setTimeout(resolve, timeout)),
   });
 
   // It's ok - nothing will ever start unless source is triggered
@@ -61,7 +62,7 @@ export function throttle<T>({
   });
 
   sample({
-    source: $timeout,
+    source: { timeout: $timeout, timers: $timers },
     clock: triggerTick as Unit<any>,
     target: timerFx,
   });

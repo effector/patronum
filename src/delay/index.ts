@@ -12,6 +12,7 @@ import {
   UnitValue,
   UnitTargetable,
 } from 'effector';
+import { $timers, Timers } from '../timers'
 
 type TimeoutType<Payload> = ((payload: Payload) => number) | Store<number> | number;
 
@@ -47,24 +48,25 @@ export function delay<
   const ms = validateTimeout(timeout);
 
   const timerFx = createEffect<
-    { payload: UnitValue<Source>; milliseconds: number },
+    { payload: UnitValue<Source>; milliseconds: number; timers: Timers },
     UnitValue<Source>
   >(
-    ({ payload, milliseconds }) =>
+    ({ payload, milliseconds, timers }) =>
       new Promise((resolve) => {
-        setTimeout(resolve, milliseconds, payload);
+        timers.setTimeout(resolve, milliseconds, payload);
       }),
   );
 
   sample({
     // ms can be Store<number> | number
     // converts object of stores or object of values to store
-    source: combine({ milliseconds: ms }),
+    source: combine({ milliseconds: ms, timers: $timers }),
     clock: source as Unit<any>,
-    fn: ({ milliseconds }, payload) => ({
+    fn: ({ milliseconds, timers }, payload) => ({
       payload,
       milliseconds:
         typeof milliseconds === 'function' ? milliseconds(payload) : milliseconds,
+      timers,
     }),
     target: timerFx,
   });
