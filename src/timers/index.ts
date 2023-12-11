@@ -10,7 +10,7 @@ export interface Timers {
 }
 
 export const $timers = createStore<Timers>({
-  setTimeout: (handler, timeout, ...args) => setTimeout(handler, timeout, ...args) as unknown as any,
+  setTimeout: (handler, timeout, ...args) => setTimeout(handler, timeout, ...args) as unknown as NodeJS.Timeout,
   clearTimeout: (handle) => clearTimeout(handle),
   now: () => Date.now(),
 });
