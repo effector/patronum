@@ -62,3 +62,12 @@ test('undefined as defaultValue support', () => {
 
   expect($prevValue.getState()).toBe(undefined);
 });
+
+test('store validation', () => {
+  expect(() => {
+    // @ts-expect-error
+    previousValue(null);
+  }).toThrowErrorMatchingInlineSnapshot(
+    `"previousValue first argument should be a store"`,
+  );
+});

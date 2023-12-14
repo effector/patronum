@@ -1,4 +1,4 @@
-import { Node, Store, createStore, launch, step } from 'effector';
+import { Node, Store, createStore, launch, step, is } from 'effector';
 
 export function previousValue<State>(store: Store<State>): Store<State | null>;
 export function previousValue<State, Init>(
@@ -10,6 +10,9 @@ export function previousValue<State, Init = null>(
 ) {
   const [store] = args;
   const initialValue = (args.length < 2 ? null : args[1]) as Init | null;
+  if (!is.store(store)) {
+    throw Error('previousValue first argument should be a store');
+  }
   const $prevValue = createStore<State | Init | null>(initialValue, {
     serialize: 'ignore',
     skipVoid: false,
