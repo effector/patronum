@@ -42,6 +42,7 @@ All methods split into categories.
 - [snapshot](./snapshot/readme.md) — Create store value snapshot.
 - [splitMap](./split-map/readme.md) — Split event to different events and map data.
 - [spread](./spread/readme.md) — Send fields from object to same targets.
+- [previousValue](./previous-value/readme.md) - Get previous value of store.
 
 ### Debug
 
