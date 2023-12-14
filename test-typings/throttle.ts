@@ -13,17 +13,21 @@ import { throttle } from '../dist/throttle';
 {
   const $source = createStore(0);
   expectType<Event<number>>(throttle({ source: $source, timeout: 10 }));
+  expectType<Event<number>>(throttle($source, 10));
 
   const source = createEvent<string>();
   expectType<Event<string>>(throttle({ source, timeout: 10 }));
+  expectType<Event<string>>(throttle(source, 10));
 
   const sourceUnion = createEvent<'demo' | 'another'>();
   expectType<Event<'demo' | 'another'>>(
     throttle({ source: sourceUnion, timeout: 10 }),
   );
+  expectType<Event<'demo' | 'another'>>(throttle(sourceUnion, 10));
 
   const sourceFx = createEffect<boolean, void>();
   expectType<Event<boolean>>(throttle({ source: sourceFx, timeout: 10 }));
+  expectType<Event<boolean>>(throttle(sourceFx, 10));
 }
 
 // Source should be unit
@@ -46,6 +50,23 @@ import { throttle } from '../dist/throttle';
   throttle({ timeout: 10, source: {} });
   // @ts-expect-error
   throttle({ timeout: 10, source: [] });
+
+  // @ts-expect-error
+  throttle(null, 10);
+  // @ts-expect-error
+  throttle(undefined, 10);
+  // @ts-expect-error
+  throttle(true, 10);
+  // @ts-expect-error
+  throttle('f', 10);
+  // @ts-expect-error
+  throttle(Symbol(), 10);
+  // @ts-expect-error
+  throttle(() => {}, 10);
+  // @ts-expect-error
+  throttle({}, 10);
+  // @ts-expect-error
+  throttle([], 10);
 }
 
 // Timeout should be only number
@@ -71,6 +92,25 @@ import { throttle } from '../dist/throttle';
   throttle({ source, timeout: {} });
   // @ts-expect-error
   throttle({ source, timeout: [] });
+
+  // @ts-expect-error
+  throttle(source);
+  // @ts-expect-error
+  throttle(source, null);
+  // @ts-expect-error
+  throttle(source, undefined);
+  // @ts-expect-error
+  throttle(source, true);
+  // @ts-expect-error
+  throttle(source, 'f');
+  // @ts-expect-error
+  throttle(source, Symbol());
+  // @ts-expect-error
+  throttle(source, () => {});
+  // @ts-expect-error
+  throttle(source, {});
+  // @ts-expect-error
+  throttle(source, []);
 }
 
 // Source and target should be compatible
