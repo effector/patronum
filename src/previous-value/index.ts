@@ -6,10 +6,14 @@ export function previousValue<State, Init>(
   initialValue: Init,
 ): Store<State | Init>;
 export function previousValue<State, Init = null>(
-  store: Store<State>,
-  initialValue: Init | null = null,
+  ...args: [store: Store<State>, defaultValue?: Init]
 ) {
-  const $prevValue = createStore<State | Init | null>(initialValue);
+  const [store] = args;
+  const initialValue = (args.length < 2 ? null : args[1]) as Init | null;
+  const $prevValue = createStore<State | Init | null>(initialValue, {
+    serialize: 'ignore',
+    skipVoid: false,
+  });
   const storeNode: Node = (store as any).graphite;
   storeNode.seq.push(
     step.compute({

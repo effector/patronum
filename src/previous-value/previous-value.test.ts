@@ -1,4 +1,4 @@
-import { createEvent, createStore, restore } from 'effector';
+import { createEvent, createStore, restore, sample } from 'effector';
 
 import { previousValue } from './index';
 
@@ -38,4 +38,27 @@ it('has previous value on multiple updates', () => {
   changeInitialStore(40);
 
   expect($prevValue.getState()).toBe(30);
+});
+
+test('undefined support', () => {
+  const changeInitialStore = createEvent<string | void>();
+  const $initialStore = createStore<string | void>('a', { skipVoid: false });
+  const $prevValue = previousValue($initialStore);
+
+  sample({ clock: changeInitialStore, target: $initialStore });
+
+  changeInitialStore();
+  expect($prevValue.getState()).toBe('a');
+  changeInitialStore('b');
+  expect($prevValue.getState()).toBe(undefined);
+});
+
+test('undefined as defaultValue support', () => {
+  const changeInitialStore = createEvent<string | void>();
+  const $initialStore = createStore<string | void>('a', { skipVoid: false });
+  const $prevValue = previousValue($initialStore, undefined);
+
+  sample({ clock: changeInitialStore, target: $initialStore });
+
+  expect($prevValue.getState()).toBe(undefined);
 });

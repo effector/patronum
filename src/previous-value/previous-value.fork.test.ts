@@ -1,4 +1,11 @@
-import { allSettled, createEvent, createStore, fork, restore } from 'effector';
+import {
+  allSettled,
+  createEvent,
+  createStore,
+  fork,
+  restore,
+  sample,
+} from 'effector';
 
 import { previousValue } from './index';
 
@@ -52,4 +59,29 @@ it('has first scope value after first update', async () => {
   const scope = fork({ values: [[$initalStore, 10]] });
   await allSettled(inc, { scope });
   expect(scope.getState($prevValue)).toBe(10);
+});
+
+test('undefined support', async () => {
+  const changeInitialStore = createEvent<string | void>();
+  const $initialStore = createStore<string | void>('a', { skipVoid: false });
+  const $prevValue = previousValue($initialStore);
+
+  sample({ clock: changeInitialStore, target: $initialStore });
+
+  const scope = fork({ values: [[$initialStore, 'b']] });
+  await allSettled(changeInitialStore, { scope, params: undefined });
+  expect(scope.getState($prevValue)).toBe('b');
+  await allSettled(changeInitialStore, { scope, params: 'c' });
+  expect(scope.getState($prevValue)).toBe(undefined);
+});
+
+test('undefined as defaultValue support', () => {
+  const changeInitialStore = createEvent<string | void>();
+  const $initialStore = createStore<string | void>('a', { skipVoid: false });
+  const $prevValue = previousValue($initialStore, undefined);
+
+  sample({ clock: changeInitialStore, target: $initialStore });
+
+  const scope = fork({ values: [[$initialStore, 'b']] });
+  expect(scope.getState($prevValue)).toBe(undefined);
 });
