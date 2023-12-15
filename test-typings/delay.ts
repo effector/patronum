@@ -9,12 +9,15 @@ import { delay } from '../dist/delay';
 
   expectType<Event<string>>(delay({ source: $string, timeout: 100 }));
   expectType<Event<number>>(delay({ source: $number, timeout: 100 }));
+  expectType<Event<string>>(delay($string, 100));
+  expectType<Event<number>>(delay($number, 100));
 }
 
 // Check timeout type for number
 {
   const source = createStore('');
   expectType<Event<string>>(delay({ source, timeout: 100 }));
+  expectType<Event<string>>(delay(source, 100));
 
   // @ts-expect-error
   delay({ source, timeout: true });
@@ -26,12 +29,24 @@ import { delay } from '../dist/delay';
   delay({ source, timeout: Symbol('example') });
   // @ts-expect-error
   delay({ source, timeout: undefined });
+
+  // @ts-expect-error
+  delay(source, true);
+  // @ts-expect-error
+  delay(source, null);
+  // @ts-expect-error
+  delay(source, '');
+  // @ts-expect-error
+  delay(source, Symbol());
+  // @ts-expect-error
+  delay(source, undefined);
 }
 
 // Check timeout type for function
 {
   const source = createStore('');
   expectType<Event<string>>(delay({ source, timeout: () => 0 }));
+  expectType<Event<string>>(delay(source, () => 0));
 
   // @ts-expect-error
   delay({ source, timeout: () => true });
@@ -43,12 +58,24 @@ import { delay } from '../dist/delay';
   delay({ source, timeout: () => Symbol('example') });
   // @ts-expect-error
   delay({ source, timeout: () => undefined });
+
+  // @ts-expect-error
+  delay(source, () => true);
+  // @ts-expect-error
+  delay(source, () => null);
+  // @ts-expect-error
+  delay(source, () => '');
+  // @ts-expect-error
+  delay(source, () => Symbol());
+  // @ts-expect-error
+  delay(source, () => undefined);
 }
 
 // Check timeout type for function argument
 {
   const source = createStore('');
   expectType<Event<string>>(delay({ source, timeout: (p: string) => 0 }));
+  expectType<Event<string>>(delay(source, (p: string) => 0));
 
   // @ts-expect-error
   delay({ source, timeout: (p: number) => 0 });
@@ -66,6 +93,23 @@ import { delay } from '../dist/delay';
   delay({ source, timeout: (p: () => false) => 0 });
   // @ts-expect-error
   delay({ source, timeout: (p: () => []) => 0 });
+
+  // @ts-expect-error
+  delay(source, (p: number) => 0);
+  // @ts-expect-error
+  delay(source, (p: symbol) => 0);
+  // @ts-expect-error
+  delay(source, (p: null) => 0);
+  // @ts-expect-error
+  delay(source, (p: undefined) => 0);
+  // @ts-expect-error
+  delay(source, (p: Record<string, unknown>) => 0);
+  // @ts-expect-error
+  delay(source, (p: () => '') => 0);
+  // @ts-expect-error
+  delay(source, (p: () => false) => 0);
+  // @ts-expect-error
+  delay(source, (p: () => []) => 0);
 }
 
 // Check timeout type for store
@@ -83,6 +127,17 @@ import { delay } from '../dist/delay';
   delay({ source, timeout: createStore(Symbol('example')) });
   // @ts-expect-error
   delay({ source, timeout: createStore(undefined) });
+
+  // @ts-expect-error
+  delay(source, createStore(true));
+  // @ts-expect-error
+  delay(source, createStore(null));
+  // @ts-expect-error
+  delay(source, createStore(''));
+  // @ts-expect-error
+  delay(source, createStore(Symbol('example')));
+  // @ts-expect-error
+  delay(source, createStore(undefined));
 }
 
 // void events support

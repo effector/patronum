@@ -133,11 +133,10 @@ describe('spread(targets)', () => {
     expect(fnA).toBeCalledWith('Hello');
     expect(fnB).toBeCalledWith(200);
   });
-
-  test('event to stores', () => {
+  test('event to events (shorthand)', () => {
     const source = createEvent<{ first: string; second: number }>();
-    const targetA = createStore('');
-    const targetB = createStore(0);
+    const targetA = createEvent<string>();
+    const targetB = createEvent<number>();
 
     const fnA = jest.fn();
     const fnB = jest.fn();
@@ -147,10 +146,58 @@ describe('spread(targets)', () => {
     sample({
       clock: source,
       target: spread({
+        first: targetA,
+        second: targetB,
+      }),
+    });
+
+    source({ first: 'Hello', second: 200 });
+
+    expect(fnA).toBeCalledWith('Hello');
+    expect(fnB).toBeCalledWith(200);
+  });
+
+  test('event to stores', () => {
+    const source = createEvent<{ first: string; second: number }>();
+    const $targetA = createStore('');
+    const $targetB = createStore(0);
+
+    const fnA = jest.fn();
+    const fnB = jest.fn();
+    $targetA.watch(fnA);
+    $targetB.watch(fnB);
+
+    sample({
+      clock: source,
+      target: spread({
         targets: {
-          first: targetA,
-          second: targetB,
+          first: $targetA,
+          second: $targetB,
         },
+      }),
+    });
+
+    source({ first: 'Hello', second: 200 });
+
+    expect(fnA).toBeCalledWith('Hello');
+    expect(fnB).toBeCalledWith(200);
+  });
+
+  test('event to stores (shorthand)', () => {
+    const source = createEvent<{ first: string; second: number }>();
+    const $targetA = createStore('');
+    const $targetB = createStore(0);
+
+    const fnA = jest.fn();
+    const fnB = jest.fn();
+    $targetA.watch(fnA);
+    $targetB.watch(fnB);
+
+    sample({
+      clock: source,
+      target: spread({
+        first: $targetA,
+        second: $targetB,
       }),
     });
 
@@ -166,20 +213,20 @@ describe('spread(targets)', () => {
       change,
       (_, value) => value,
     );
-    const targetA = createStore('');
-    const targetB = createStore(0);
+    const $targetA = createStore('');
+    const $targetB = createStore(0);
 
     const fnA = jest.fn();
     const fnB = jest.fn();
-    targetA.watch(fnA);
-    targetB.watch(fnB);
+    $targetA.watch(fnA);
+    $targetB.watch(fnB);
 
     sample({
       clock: source,
       target: spread({
         targets: {
-          first: targetA,
-          second: targetB,
+          first: $targetA,
+          second: $targetB,
         },
       }),
     });
@@ -427,7 +474,6 @@ describe('invalid', () => {
       },
     });
 
-    // @ts-expect-error no argument
     source();
     source(1);
     source('');

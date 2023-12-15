@@ -150,6 +150,152 @@ test('source: shape', () => {
   `);
 });
 
+test('source: shape (shorthand)', () => {
+  const fn = jest.fn();
+
+  const event1 = createEvent<string | void>();
+  const event2 = createEvent<string | void>();
+  const event3 = createEvent<string | void>();
+  const event4 = createEvent<string | void>();
+  const event5 = createEvent<string | void>();
+
+  type Target = Event<{
+    event1: string | void;
+    event2: string | void;
+    event3: string | void;
+    event4: string | void;
+    event5: string | void;
+  }>;
+
+  const event: Target = combineEvents({
+    event1,
+    event2,
+    event3,
+    event4,
+    event5,
+  });
+
+  event.watch(fn);
+
+  event1();
+  event1();
+  event2('-');
+  event3('c');
+  event2('b');
+  event2();
+  event4();
+  event4('d');
+  event5('e');
+
+  expect(argumentHistory(fn)).toMatchInlineSnapshot(`
+    [
+      {
+        "event1": undefined,
+        "event2": undefined,
+        "event3": "c",
+        "event4": "d",
+        "event5": "e",
+      },
+    ]
+  `);
+
+  event1('a');
+  event2('-');
+  event3();
+  event2('b');
+  event3();
+
+  expect(argumentHistory(fn)).toMatchInlineSnapshot(`
+    [
+      {
+        "event1": undefined,
+        "event2": undefined,
+        "event3": "c",
+        "event4": "d",
+        "event5": "e",
+      },
+    ]
+  `);
+  event4('-');
+  event4();
+  event5('e');
+
+  expect(argumentHistory(fn)).toMatchInlineSnapshot(`
+    [
+      {
+        "event1": undefined,
+        "event2": undefined,
+        "event3": "c",
+        "event4": "d",
+        "event5": "e",
+      },
+      {
+        "event1": "a",
+        "event2": "b",
+        "event3": undefined,
+        "event4": undefined,
+        "event5": "e",
+      },
+    ]
+  `);
+
+  event1('1');
+  event2('-');
+  event3('-');
+  event2('2');
+  event3('3');
+  event4('-');
+  event4('4');
+
+  expect(argumentHistory(fn)).toMatchInlineSnapshot(`
+    [
+      {
+        "event1": undefined,
+        "event2": undefined,
+        "event3": "c",
+        "event4": "d",
+        "event5": "e",
+      },
+      {
+        "event1": "a",
+        "event2": "b",
+        "event3": undefined,
+        "event4": undefined,
+        "event5": "e",
+      },
+    ]
+  `);
+
+  event5('5');
+  event5('-');
+
+  expect(argumentHistory(fn)).toMatchInlineSnapshot(`
+    [
+      {
+        "event1": undefined,
+        "event2": undefined,
+        "event3": "c",
+        "event4": "d",
+        "event5": "e",
+      },
+      {
+        "event1": "a",
+        "event2": "b",
+        "event3": undefined,
+        "event4": undefined,
+        "event5": "e",
+      },
+      {
+        "event1": "1",
+        "event2": "2",
+        "event3": "3",
+        "event4": "4",
+        "event5": "5",
+      },
+    ]
+  `);
+});
+
 test('source: array', () => {
   const fn = jest.fn();
 
@@ -166,6 +312,79 @@ test('source: array', () => {
   const event: Target = combineEvents({
     events: [event1, event2, event3, event4, event5],
   });
+
+  event.watch(fn);
+
+  event1();
+  event1();
+  event2('-');
+  event3('c');
+  event2('b');
+  event2();
+  event4();
+  event4('d');
+  event5('e');
+
+  event1('a');
+  event2('-');
+  event3();
+  event2('b');
+  event3();
+  event4('-');
+  event4();
+  event5('e');
+
+  event1('1');
+  event2('-');
+  event3('-');
+  event2('2');
+  event3('3');
+  event4('-');
+  event4('4');
+  event5('5');
+  event5('-');
+
+  expect(argumentHistory(fn)).toMatchInlineSnapshot(`
+    [
+      [
+        undefined,
+        undefined,
+        "c",
+        "d",
+        "e",
+      ],
+      [
+        "a",
+        "b",
+        undefined,
+        undefined,
+        "e",
+      ],
+      [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+      ],
+    ]
+  `);
+});
+
+test('source: array (shorthand)', () => {
+  const fn = jest.fn();
+
+  const event1 = createEvent<string | void>();
+  const event2 = createEvent<string | void>();
+  const event3 = createEvent<string | void>();
+  const event4 = createEvent<string | void>();
+  const event5 = createEvent<string | void>();
+
+  type Target = Event<
+    [string | void, string | void, string | void, string | void, string | void]
+  >;
+
+  const event: Target = combineEvents([event1, event2, event3, event4, event5]);
 
   event.watch(fn);
 

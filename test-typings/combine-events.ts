@@ -21,15 +21,24 @@ import { combineEvents } from '../dist/combine-events';
     bar: number;
     baz: boolean;
   }
+  {
+    const target = combineEvents({
+      events: { foo, bar, baz },
+    });
 
-  const target = combineEvents({
-    events: { foo, bar, baz },
-  });
+    expectType<Event<Target>>(target);
 
-  expectType<Event<Target>>(target);
+    // @ts-expect-error
+    const _fail: Event<{ foo: string; bar: number; baz: number }> = target;
+  }
+  {
+    const target = combineEvents({ foo, bar, baz });
 
-  // @ts-expect-error
-  const _fail2: Event<{ foo: string; bar: number; baz: number }> = target;
+    expectType<Event<Target>>(target);
+
+    // @ts-expect-error
+    const _fail: Event<{ foo: string; bar: number; baz: number }> = target;
+  }
 }
 
 // With object
@@ -45,23 +54,40 @@ import { combineEvents } from '../dist/combine-events';
     baz: boolean;
     bai: { foo: string };
   }
+  {
+    const target = combineEvents({
+      events: { foo, bar, baz, bai },
+    });
 
-  const target = combineEvents({
-    events: { foo, bar, baz, bai },
-  });
+    expectType<Event<Target>>(target);
 
-  expectType<Event<Target>>(target);
+    // @ts-expect-error
+    const _fail1: Event<{ foo: string; bar: number; baz: number }> = target;
 
-  // @ts-expect-error
-  const _fail2: Event<{ foo: string; bar: number; baz: number }> = target;
+    // @ts-expect-error
+    const _fail2: Event<{
+      foo: string;
+      bar: number;
+      baz: number;
+      bai: { demo: string };
+    }> = target;
+  }
+  {
+    const target = combineEvents({ foo, bar, baz, bai });
 
-  // @ts-expect-error
-  const _fail2: Event<{
-    foo: string;
-    bar: number;
-    baz: number;
-    bai: { demo: string };
-  }> = target;
+    expectType<Event<Target>>(target);
+
+    // @ts-expect-error
+    const _fail1: Event<{ foo: string; bar: number; baz: number }> = target;
+
+    // @ts-expect-error
+    const _fail2: Event<{
+      foo: string;
+      bar: number;
+      baz: number;
+      bai: { demo: string };
+    }> = target;
+  }
 }
 
 // Array combiner
@@ -72,17 +98,30 @@ import { combineEvents } from '../dist/combine-events';
 
   type Target = [string, number, boolean];
 
-  const target = combineEvents({
-    events: [foo, bar, baz],
-  });
+  {
+    const target = combineEvents({
+      events: [foo, bar, baz],
+    });
 
-  expectType<Event<Target>>(target);
+    expectType<Event<Target>>(target);
 
-  // @ts-expect-error
-  const _fail1: Event<[string, number]> = target;
+    // @ts-expect-error
+    const _fail1: Event<[string, number]> = target;
 
-  // @ts-expect-error
-  const _fail2: Event<[string, number, number]> = target;
+    // @ts-expect-error
+    const _fail2: Event<[string, number, number]> = target;
+  }
+  {
+    const target = combineEvents([foo, bar, baz]);
+
+    expectType<Event<Target>>(target);
+
+    // @ts-expect-error
+    const _fail1: Event<[string, number]> = target;
+
+    // @ts-expect-error
+    const _fail2: Event<[string, number, number]> = target;
+  }
 }
 
 // With target event
@@ -109,9 +148,9 @@ import { combineEvents } from '../dist/combine-events';
     target: createEvent<{ foo: string; bar: number }>(),
   });
 
+  // @ts-expect-error
   combineEvents({
     events: { foo, bar, baz },
-    // @ts-expect-error
     target: createEvent<{ foo: string; bar: number; baz: number }>(),
   });
 }
@@ -140,15 +179,15 @@ import { combineEvents } from '../dist/combine-events';
     target: createEvent<{ foo: string; bar: number }>(),
   });
 
+  // @ts-expect-error
   combineEvents({
     events: { foo, bar, baz, bai },
-    // @ts-expect-error
     target: createEvent<{ foo: string; bar: number; baz: number }>(),
   });
 
+  // @ts-expect-error
   combineEvents({
     events: { foo, bar, baz, bai },
-    // @ts-expect-error
     target: createEvent<{
       foo: string;
       bar: number;
@@ -171,15 +210,15 @@ import { combineEvents } from '../dist/combine-events';
     target,
   });
 
+  // @ts-expect-error
   combineEvents({
     events: [foo, bar, baz],
-    // @ts-expect-error
     target: createEvent<[string, number, number]>(),
   });
 
+  // @ts-expect-error
   combineEvents({
     events: [foo, bar, baz],
-    // @ts-expect-error
     target: createEvent<[string]>(),
   });
 }
@@ -265,6 +304,14 @@ import { combineEvents } from '../dist/combine-events';
     clock: combineEvents({
       events: [foo, bar],
     }),
+    fn: ([a, b]) => {
+      expectType<number>(a);
+      expectType<string>(b);
+    },
+  });
+
+  sample({
+    clock: combineEvents([foo, bar]),
     fn: ([a, b]) => {
       expectType<number>(a);
       expectType<string>(b);

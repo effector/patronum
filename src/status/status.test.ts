@@ -3,10 +3,42 @@ import { argumentHistory, waitFor } from '../../test-library';
 import { status } from './index';
 
 test('change status: initial -> pending -> done', async () => {
-  const effect = createEffect<void, void>({
-    handler: () => new Promise<void>((resolve) => setTimeout(resolve, 100)),
+  const effect = createEffect<void, void>(() => {
+    return new Promise<void>((resolve) => setTimeout(resolve, 100));
   });
   const $status = status({ effect });
+  const fn = jest.fn();
+
+  $status.watch(fn);
+  expect(argumentHistory(fn)).toMatchInlineSnapshot(`
+    [
+      "initial",
+    ]
+  `);
+
+  effect();
+  expect(argumentHistory(fn)).toMatchInlineSnapshot(`
+    [
+      "initial",
+      "pending",
+    ]
+  `);
+
+  await waitFor(effect.finally);
+  expect(argumentHistory(fn)).toMatchInlineSnapshot(`
+    [
+      "initial",
+      "pending",
+      "done",
+    ]
+  `);
+});
+
+test('change status: initial -> pending -> done (shorthand)', async () => {
+  const effect = createEffect<void, void>(() => {
+    return new Promise<void>((resolve) => setTimeout(resolve, 100));
+  });
+  const $status = status(effect);
   const fn = jest.fn();
 
   $status.watch(fn);
