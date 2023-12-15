@@ -1,17 +1,17 @@
 import { createEvent, createStore, restore, sample } from 'effector';
 
-import { previousValue } from './index';
+import { previous } from './index';
 
 it('has null when store is not changed', () => {
   const $initalStore = createStore(10);
-  const $prevValue = previousValue($initalStore);
+  const $prevValue = previous($initalStore);
 
   expect($prevValue.getState()).toBe(null);
 });
 
 it('has initial value when defined', () => {
   const $initalStore = createStore(10);
-  const $prevValue = previousValue($initalStore, 0);
+  const $prevValue = previous($initalStore, 0);
 
   expect($prevValue.getState()).toBe(0);
 });
@@ -20,7 +20,7 @@ it('has first value on update', () => {
   const changeInitialStore = createEvent<number>();
   const $initalStore = restore(changeInitialStore, 10);
 
-  const $prevValue = previousValue($initalStore);
+  const $prevValue = previous($initalStore);
 
   changeInitialStore(20);
 
@@ -31,7 +31,7 @@ it('has previous value on multiple updates', () => {
   const changeInitialStore = createEvent<number>();
   const $initalStore = restore(changeInitialStore, 10);
 
-  const $prevValue = previousValue($initalStore);
+  const $prevValue = previous($initalStore);
 
   changeInitialStore(20);
   changeInitialStore(30);
@@ -43,7 +43,7 @@ it('has previous value on multiple updates', () => {
 test('undefined support', () => {
   const changeInitialStore = createEvent<string | void>();
   const $initialStore = createStore<string | void>('a', { skipVoid: false });
-  const $prevValue = previousValue($initialStore);
+  const $prevValue = previous($initialStore);
 
   sample({ clock: changeInitialStore, target: $initialStore });
 
@@ -56,7 +56,7 @@ test('undefined support', () => {
 test('undefined as defaultValue support', () => {
   const changeInitialStore = createEvent<string | void>();
   const $initialStore = createStore<string | void>('a', { skipVoid: false });
-  const $prevValue = previousValue($initialStore, undefined);
+  const $prevValue = previous($initialStore, undefined);
 
   sample({ clock: changeInitialStore, target: $initialStore });
 
@@ -66,8 +66,8 @@ test('undefined as defaultValue support', () => {
 test('store validation', () => {
   expect(() => {
     // @ts-expect-error
-    previousValue(null);
+    previous(null);
   }).toThrowErrorMatchingInlineSnapshot(
-    `"previousValue first argument should be a store"`,
+    `"previous first argument should be a store"`,
   );
 });

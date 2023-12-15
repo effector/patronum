@@ -1,28 +1,28 @@
 import { expectType } from 'tsd';
 import { Store, createStore, createEvent } from 'effector';
-import { previousValue } from '../dist/previous-value';
+import { previous } from '../dist/previous';
 
 {
   const $foo = createStore('a');
-  const $fooPrev = previousValue($foo);
+  const $fooPrev = previous($foo);
 
   expectType<Store<string | null>>($fooPrev);
 }
 {
   const $foo = createStore('a');
-  const $fooPrev = previousValue($foo, 'b');
+  const $fooPrev = previous($foo, 'b');
 
   expectType<Store<string>>($fooPrev);
 }
 {
   const $foo = createStore('a');
-  const $fooPrev = previousValue($foo, 0);
+  const $fooPrev = previous($foo, 0);
 
   expectType<Store<string | number>>($fooPrev);
 }
 {
   const $foo = createStore('a');
-  const $fooPrev = previousValue($foo, undefined);
+  const $fooPrev = previous($foo, undefined);
 
   expectType<Store<string | void>>($fooPrev);
 }
@@ -30,5 +30,5 @@ import { previousValue } from '../dist/previous-value';
   const foo = createEvent();
 
   // @ts-expect-error
-  previousValue(foo, 0);
+  previous(foo, 0);
 }

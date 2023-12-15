@@ -1,13 +1,13 @@
-# previousValue
+# previous
 
 :::note since
 patronum 2.1.0
 :::
 
 ```ts
-import { previousValue } from 'patronum';
+import { previous } from 'patronum';
 // or
-import { previousValue } from 'patronum/previous-value';
+import { previous } from 'patronum/previous-value';
 ```
 
 ### Motivation
@@ -17,8 +17,8 @@ The method allows to get previous value of given store. Usually need for analyti
 ### Formulae
 
 ```ts
-$target = previousValue($source);
-$target = previousValue($source, 'initial value');
+$target = previous($source);
+$target = previous($source, 'initial value');
 ```
 
 ### Arguments
@@ -36,11 +36,11 @@ Push analytics with route transition:
 
 ```ts
 import { createStore, createEvent, createEffect, sample } from 'effector';
-import { previousValue } from 'patronum';
+import { previous } from 'patronum';
 
 const openNewRoute = createEvent<string>();
 const $currentRoute = createStore('main_page');
-const $previousRoute = previousValue($currentRoute);
+const $previousRoute = previous($currentRoute);
 
 const sendRouteTransitionFx = createEffect(async ({ prevRoute, nextRoute }) => {
   console.log(prevRoute, '->', newRoute)

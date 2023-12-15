@@ -7,12 +7,12 @@ import {
   sample,
 } from 'effector';
 
-import { previousValue } from './index';
+import { previous } from './index';
 
 it('has null when store is not changed', () => {
   const scope = fork();
   const $initalStore = createStore(10);
-  const $prevValue = previousValue($initalStore);
+  const $prevValue = previous($initalStore);
 
   expect(scope.getState($prevValue)).toBe(null);
 });
@@ -20,7 +20,7 @@ it('has null when store is not changed', () => {
 it('has initial value when defined', () => {
   const scope = fork();
   const $initalStore = createStore(10);
-  const $prevValue = previousValue($initalStore, 0);
+  const $prevValue = previous($initalStore, 0);
 
   expect(scope.getState($prevValue)).toBe(0);
 });
@@ -30,7 +30,7 @@ it('has first value on update', async () => {
   const changeInitialStore = createEvent<number>();
   const $initalStore = restore(changeInitialStore, 10);
 
-  const $prevValue = previousValue($initalStore);
+  const $prevValue = previous($initalStore);
 
   await allSettled(changeInitialStore, { scope, params: 20 });
 
@@ -42,7 +42,7 @@ it('has previous value on multiple updates', async () => {
   const changeInitialStore = createEvent<number>();
   const $initalStore = restore(changeInitialStore, 10);
 
-  const $prevValue = previousValue($initalStore);
+  const $prevValue = previous($initalStore);
 
   await allSettled(changeInitialStore, { scope, params: 20 });
   await allSettled(changeInitialStore, { scope, params: 30 });
@@ -54,7 +54,7 @@ it('has previous value on multiple updates', async () => {
 it('has first scope value after first update', async () => {
   const inc = createEvent();
   const $initalStore = createStore(0);
-  const $prevValue = previousValue($initalStore, -1);
+  const $prevValue = previous($initalStore, -1);
   $initalStore.on(inc, (x) => x + 1);
   const scope = fork({ values: [[$initalStore, 10]] });
   await allSettled(inc, { scope });
@@ -64,7 +64,7 @@ it('has first scope value after first update', async () => {
 test('undefined support', async () => {
   const changeInitialStore = createEvent<string | void>();
   const $initialStore = createStore<string | void>('a', { skipVoid: false });
-  const $prevValue = previousValue($initialStore);
+  const $prevValue = previous($initialStore);
 
   sample({ clock: changeInitialStore, target: $initialStore });
 
@@ -78,7 +78,7 @@ test('undefined support', async () => {
 test('undefined as defaultValue support', () => {
   const changeInitialStore = createEvent<string | void>();
   const $initialStore = createStore<string | void>('a', { skipVoid: false });
-  const $prevValue = previousValue($initialStore, undefined);
+  const $prevValue = previous($initialStore, undefined);
 
   sample({ clock: changeInitialStore, target: $initialStore });
 
