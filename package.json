@@ -16,9 +16,6 @@
     "build": "pnpm cleanup && pnpm build:indexes && pnpm build:types && pnpm build:commonjs && pnpm build:mjs && pnpm build:bundles",
     "prepublishOnly": "pnpm build:methods && yarn build:cjs"
   },
-  "workspaces": [
-    "website"
-  ],
   "author": "Sergey Sova <mail@sergeysova.com> (https://sergeysova.com/)",
   "license": "MIT",
   "devDependencies": {
