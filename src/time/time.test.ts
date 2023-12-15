@@ -18,10 +18,27 @@ test('initialize store with the current time', () => {
   expect(is.store($time)).toBeTruthy();
   expect($time.getState()).toBe(TIME_0);
 });
+test('initialize store with the current time (shorthand)', () => {
+  const $time = time(createEvent());
+  expect(is.store($time)).toBeTruthy();
+  expect($time.getState()).toBe(TIME_0);
+});
 
 test('update store on each clock trigger', () => {
   const clock = createEvent();
   const $time = time({ clock });
+  expect($time.getState()).toBe(TIME_0);
+
+  jest.setSystemTime(TIME_1);
+  clock();
+  expect($time.getState()).toBe(TIME_1);
+
+  jest.setSystemTime(TIME_2);
+  expect($time.getState()).toBe(TIME_1);
+});
+test('update store on each clock trigger (shorthand)', () => {
+  const clock = createEvent();
+  const $time = time(clock);
   expect($time.getState()).toBe(TIME_0);
 
   jest.setSystemTime(TIME_1);

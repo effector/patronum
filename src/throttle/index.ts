@@ -12,6 +12,10 @@ import {
 
 type EventAsReturnType<Payload> = any extends Payload ? Event<Payload> : never;
 
+export function throttle<T>(
+  source: Unit<T>,
+  timeout: number | Store<number>,
+): EventAsReturnType<T>;
 export function throttle<T>(_: {
   source: Unit<T>;
   timeout: number | Store<number>;
@@ -23,16 +27,21 @@ export function throttle<T, Target extends UnitTargetable<T>>(_: {
   target: Target;
   name?: string;
 }): Target;
-export function throttle<T>({
-  source,
-  timeout,
-  target = createEvent<T>(),
-}: {
-  source: Unit<T>;
-  timeout: number | Store<number>;
-  name?: string;
-  target?: UnitTargetable<any>;
-}): EventAsReturnType<T> {
+export function throttle<T>(
+  ...args:
+    | [
+        {
+          source: Unit<T>;
+          timeout: number | Store<number>;
+          name?: string;
+          target?: UnitTargetable<any>;
+        },
+      ]
+    | [Unit<T>, number | Store<number>]
+): EventAsReturnType<T> {
+  const argsShape =
+    args.length === 2 ? { source: args[0], timeout: args[1] } : args[0];
+  const { source, timeout, target = createEvent<T>() } = argsShape;
   if (!is.unit(source)) throw new TypeError('source must be unit from effector');
 
   const $timeout = toStoreNumber(timeout);

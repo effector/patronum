@@ -34,6 +34,26 @@ test('delay event with number', async () => {
     ]
   `);
 });
+test('delay event with number (shorthand)', async () => {
+  const source = createEvent();
+  const delayed = delay(source, 100);
+  const fn = jest.fn();
+  delayed.watch(fn);
+
+  source(1);
+  const start = time();
+  expect(fn).toBeCalledTimes(0);
+
+  await waitFor(delayed);
+  expect(start.diff()).toBeCloseWithThreshold(100, TIMER_THRESHOLD);
+  expect(fn).toBeCalledTimes(1);
+
+  expect(argumentHistory(fn)).toMatchInlineSnapshot(`
+    [
+      1,
+    ]
+  `);
+});
 
 test('delay event with number with target', async () => {
   const source = createEvent();
@@ -107,9 +127,61 @@ test('delay event with function', async () => {
   `);
 });
 
-test('delay event with function of argument', async () => {
+test('delay event with function (shorthand)', async () => {
   const source = createEvent();
+  const delayed = delay(source, () => 100);
+  const fn = jest.fn();
+  delayed.watch(fn);
+
+  const start = time();
+  source(1);
+
+  await waitFor(delayed);
+  expect(start.diff()).toBeCloseWithThreshold(100, TIMER_THRESHOLD);
+  expect(fn).toBeCalledTimes(1);
+
+  expect(argumentHistory(fn)).toMatchInlineSnapshot(`
+    [
+      1,
+    ]
+  `);
+});
+
+test('delay event with function of argument', async () => {
+  const source = createEvent<number>();
   const delayed = delay({ source, timeout: (number) => number * 100 });
+  const fn = jest.fn();
+  delayed.watch(fn);
+
+  const start1 = time();
+  source(1); // 100ms delay
+  expect(fn).toBeCalledTimes(0);
+
+  await waitFor(delayed);
+  expect(start1.diff()).toBeCloseWithThreshold(100, TIMER_THRESHOLD);
+  expect(fn).toBeCalledTimes(1);
+
+  const start2 = time();
+  source(2); // 200ms delay
+
+  await waitFor(delayed);
+  expect(start2.diff()).toBeCloseWithThreshold(200, TIMER_THRESHOLD);
+  expect(fn).toBeCalledTimes(2);
+
+  await wait(120);
+  expect(fn).toBeCalledTimes(2);
+
+  expect(argumentHistory(fn)).toMatchInlineSnapshot(`
+    [
+      1,
+      2,
+    ]
+  `);
+});
+
+test('delay event with function of argument (shorthand)', async () => {
+  const source = createEvent<number>();
+  const delayed = delay(source, (number) => number * 100);
   const fn = jest.fn();
   delayed.watch(fn);
 
@@ -146,6 +218,42 @@ test('delay event with store as timeout', async () => {
     (current, count) => current + count * 100,
   );
   const delayed = delay({ source, timeout });
+  const fn = jest.fn();
+  delayed.watch(fn);
+
+  const start1 = time();
+  source(1); // 100ms delay
+  expect(fn).toBeCalledTimes(0);
+
+  await waitFor(delayed);
+  expect(start1.diff()).toBeCloseWithThreshold(100, TIMER_THRESHOLD);
+  expect(fn).toBeCalledTimes(1);
+
+  const start2 = time();
+  source(2); // 200ms delay
+
+  await waitFor(delayed);
+  expect(start2.diff()).toBeCloseWithThreshold(300, TIMER_THRESHOLD);
+  expect(fn).toBeCalledTimes(2);
+
+  await wait(120);
+  expect(fn).toBeCalledTimes(2);
+
+  expect(argumentHistory(fn)).toMatchInlineSnapshot(`
+    [
+      1,
+      2,
+    ]
+  `);
+});
+
+test('delay event with store as timeout (shorthand)', async () => {
+  const source = createEvent();
+  const timeout = createStore(0).on(
+    source,
+    (current, count) => current + count * 100,
+  );
+  const delayed = delay(source, timeout);
   const fn = jest.fn();
   delayed.watch(fn);
 

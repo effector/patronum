@@ -11,7 +11,6 @@ describe('arguments validation', () => {
   });
 
   test('domain is not allowed', () => {
-    // @ts-expect-error
     expect(() => debounce({ source: createDomain(), timeout: 10 })).toThrowError(
       /cannot be domain/,
     );
@@ -71,6 +70,26 @@ describe('timeout as store', () => {
     await wait(120);
     expect(watcher).toBeCalledTimes(2);
   });
+  test('new timeout is used after source trigger (shorthand form)', async () => {
+    const trigger = createEvent();
+    const changeTimeout = createEvent<number>();
+    const $timeout = createStore(40).on(changeTimeout, (_, value) => value);
+    const debounced = debounce(trigger, $timeout);
+    const watcher = watch(debounced);
+
+    trigger();
+    await wait(32);
+    changeTimeout(100);
+    trigger();
+    await wait(12);
+    expect(watcher).toBeCalledTimes(0);
+    await wait(92);
+    expect(watcher).toBeCalledTimes(1);
+
+    trigger();
+    await wait(120);
+    expect(watcher).toBeCalledTimes(2);
+  });
 });
 
 describe('triple trigger one wait', () => {
@@ -90,18 +109,50 @@ describe('triple trigger one wait', () => {
     await wait(42);
     expect(watcher).toBeCalledTimes(1);
   });
-
-  test('effect', async () => {
+  test('event (shorthand)', async () => {
     const watcher = jest.fn();
 
-    const trigger = createEffect<void, void>().use(() => undefined);
+    const trigger = createEvent();
+    const debounced = debounce(trigger, 40);
 
-    const debounced = debounce({ source: trigger, timeout: 40 });
     debounced.watch(watcher);
 
     trigger();
     trigger();
     trigger();
+    expect(watcher).not.toBeCalled();
+
+    await wait(42);
+    expect(watcher).toBeCalledTimes(1);
+  });
+
+  test('effect', async () => {
+    const watcher = jest.fn();
+
+    const triggerFx = createEffect<void, void>().use(() => undefined);
+
+    const debounced = debounce({ source: triggerFx, timeout: 40 });
+    debounced.watch(watcher);
+
+    triggerFx();
+    triggerFx();
+    triggerFx();
+    expect(watcher).not.toBeCalled();
+
+    await wait(42);
+    expect(watcher).toBeCalledTimes(1);
+  });
+  test('effect (shorthand)', async () => {
+    const watcher = jest.fn();
+
+    const triggerFx = createEffect<void, void>().use(() => undefined);
+
+    const debounced = debounce(triggerFx, 40);
+    debounced.watch(watcher);
+
+    triggerFx();
+    triggerFx();
+    triggerFx();
     expect(watcher).not.toBeCalled();
 
     await wait(42);
@@ -115,6 +166,24 @@ describe('triple trigger one wait', () => {
     const $store = createStore(0).on(trigger, (_, value) => value);
 
     const debounced = debounce({ source: $store, timeout: 40 });
+    debounced.watch(watcher);
+
+    trigger(0);
+    trigger(1);
+    trigger(2);
+    expect(watcher).not.toBeCalled();
+
+    await wait(42);
+    expect(watcher).toBeCalledTimes(1);
+    expect(watcher).toBeCalledWith(2);
+  });
+  test('store (shorthand)', async () => {
+    const watcher = jest.fn();
+
+    const trigger = createEvent<number>();
+    const $store = createStore(0).on(trigger, (_, value) => value);
+
+    const debounced = debounce($store, 40);
     debounced.watch(watcher);
 
     trigger(0);

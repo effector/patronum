@@ -149,6 +149,15 @@ import { spread } from '../dist/spread';
 
   expectType<Event<{ foo?: string; bar?: number; baz?: boolean }>>(spreadToStores);
 }
+{
+  const spreadToStores = spread({
+    foo: createStore(''),
+    bar: createEffect<number, void>(),
+    baz: createEvent<boolean>(),
+  });
+
+  expectType<Event<{ foo?: string; bar?: number; baz?: boolean }>>(spreadToStores);
+}
 
 // Example from readme with nullability
 {
@@ -304,6 +313,96 @@ import { spread } from '../dist/spread';
         first,
         last: other,
       },
+    }),
+  });
+}
+{
+  const $source = createStore({ first: '', last: { nested: '', other: '' } });
+  const first = createEvent<string>();
+  const nested = createEvent<string>();
+  const other = createEvent<string>();
+
+  // nested full match
+  spread({
+    source: $source,
+    targets: {
+      first,
+      last: spread({
+        nested,
+        other,
+      }),
+    },
+  });
+
+  // nested partial match
+  spread({
+    source: $source,
+    targets: {
+      first,
+      last: spread({ nested }),
+    },
+  });
+
+  // nested wrong match
+  // @ts-expect-error
+  spread({
+    source: $source,
+    targets: {
+      first,
+      last: other,
+    },
+  });
+
+  // nested full match outer
+  const out = spread({
+    nested,
+    other,
+  });
+
+  spread({
+    source: $source,
+    targets: {
+      first,
+      last: out,
+    },
+  });
+
+  // nested partial match outer
+  const outPart = spread({ nested });
+
+  spread({
+    source: $source,
+    targets: {
+      first,
+      last: outPart,
+    },
+  });
+
+  // sample partial match
+  sample({
+    clock: $source,
+    target: spread({ first }),
+  });
+
+  // sample full match
+  sample({
+    clock: $source,
+    target: spread({
+      first,
+      last: spread({
+        nested,
+        other,
+      }),
+    }),
+  });
+
+  // sample wrong match
+  sample({
+    // @ts-expect-error
+    clock: $source,
+    target: spread({
+      first,
+      last: other,
     }),
   });
 }

@@ -15,6 +15,7 @@ import { pending } from '../dist/pending';
   const fx3 = createEffect<string, number>();
 
   expectType<Store<boolean>>(pending({ effects: [fx1, fx2, fx3] }));
+  expectType<Store<boolean>>(pending([fx1, fx2, fx3]));
 }
 
 // Check receive effects with strategy
@@ -35,6 +36,8 @@ import { pending } from '../dist/pending';
 
   // @ts-expect-error
   pending({ effects: [event, store, domain] });
+  // @ts-expect-error
+  pending([event, store, domain]);
 }
 
 // Accept domain
