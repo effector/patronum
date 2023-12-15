@@ -1,14 +1,14 @@
-import { createStore, Effect, is, Store } from 'effector';
+import { createStore, Effect, is, StoreWritable } from 'effector';
 
 export type EffectState = 'initial' | 'pending' | 'done' | 'fail';
 
 export function status<Params, Done, Fail = Error>(
   effect: Effect<Params, Done, Fail>,
-): Store<EffectState>;
+): StoreWritable<EffectState>;
 export function status<Params, Done, Fail = Error>(params: {
   effect: Effect<Params, Done, Fail>;
   defaultValue?: EffectState;
-}): Store<EffectState>;
+}): StoreWritable<EffectState>;
 export function status<Params, Done, Fail = Error>(
   params:
     | {
