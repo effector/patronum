@@ -7,7 +7,7 @@ patronum 2.1.0
 ```ts
 import { previous } from 'patronum';
 // or
-import { previous } from 'patronum/previous-value';
+import { previous } from 'patronum/previous';
 ```
 
 ### Motivation
