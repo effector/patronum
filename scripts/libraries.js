@@ -20,10 +20,20 @@ function resolveMethods() {
   return names;
 }
 
+function resolveExportName(name) {
+  switch (name) {
+    case 'timers':
+      return '$timers';
+    case 'testing-library':
+      return 'setupTimers';
+    default:
+      return camelCase(name);
+  }
+}
+
 function createCommonJsIndex(names) {
   const imports = names.sort().map((name) => {
-    const camel = camelCase(name);
-    return `module.exports.${camel} = require('./${name}/index.cjs').${camel};`;
+    return `module.exports.${resolveExportName(name)} = require('./${name}/index.cjs').${resolveExportName(name)};`;
   });
 
   return imports.join('\n') + '\n';
@@ -31,8 +41,7 @@ function createCommonJsIndex(names) {
 
 function createMjsIndex(names) {
   const imports = names.sort().map((name) => {
-    const camel = camelCase(name);
-    return `export { ${camel} } from './${name}/index.js'`;
+    return `export { ${resolveExportName(name)} } from './${name}/index.js'`;
   });
 
   return imports.join('\n') + '\n';
@@ -41,7 +50,7 @@ function createMjsIndex(names) {
 function createTypingsIndex(names) {
   const types = names
     .sort()
-    .map((name) => `export { ${camelCase(name)} } from './${name}';`);
+    .map((name) => `export { ${resolveExportName(name)} } from './${name}';`);
 
   return types.join('\n') + '\n';
 }

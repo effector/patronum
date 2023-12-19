@@ -53,12 +53,14 @@ async function main() {
     ),
   );
 
+
   await directory.write('index.cjs', createCommonJsIndex(names));
   await directory.write('index.js', createMjsIndex(names));
   await directory.write('index.d.ts', createTypingsIndex(names));
   await directory.write('macro.d.ts', 'export * from "./index";');
 
-  const productionMethods = names.filter((method) => method !== 'debug');
+  const productionMethods = names.filter((method) => method !== 'debug' && method !== 'testing-library');
+
   const factoriesJson = createFactoriesJson(library, productionMethods);
   const fileName = 'babel-plugin-factories.json';
   await writeFile(`./src/${fileName}`, JSON.stringify(factoriesJson, null, 2));

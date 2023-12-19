@@ -4,11 +4,13 @@ import {
   fork, allSettled
 } from 'effector';
 import { wait, watch } from '../../test-library';
-import { setupTimers, Timers } from '.'
 import { throttle } from '../throttle';
 import { delay } from '../delay';
 import { interval } from '../interval';
 import { debounce } from '../debounce';
+import { Timers } from '.'
+import { setupTimers } from '../testing-library'
+import { now } from '../now'
 
 const customSetTimeout: Timers['setTimeout'] = (handler, _, ...args) => setTimeout(handler, 50, ...args) as unknown as NodeJS.Timeout;
 
@@ -102,5 +104,46 @@ describe('Custom time functions', () => {
 
     await wait(52);
     expect(watcher).toBeCalledTimes(1);
+  });
+
+  test('now with clock', async () => {
+    let lastTime = 0;
+    const scope = fork();
+    await allSettled(setupTimers, {
+      scope,
+      params: {
+        now: () => {
+          lastTime += 1000;
+          return lastTime;
+        }
+      }
+    });
+
+    const tick = createEvent();
+    const $now = now({ clock: tick });
+
+    expect(scope.getState($now)).toBe(1000);
+    await allSettled(tick, { scope });
+    expect(scope.getState($now)).toBe(2000);
+  });
+
+  test('now without clock', async () => {
+    let lastTime = 0;
+    const scope = fork();
+    await allSettled(setupTimers, {
+      scope,
+      params: {
+        now: () => {
+          lastTime += 1000;
+          return lastTime;
+        }
+      }
+    });
+
+    const $now = now();
+
+    expect(scope.getState($now)).toBe(1000);
+    // check what $now used cached value from previous $timers.now call
+    expect(scope.getState($now)).toBe(1000);
   });
 });

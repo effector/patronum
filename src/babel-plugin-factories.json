@@ -14,6 +14,7 @@
     "patronum/in-flight",
     "patronum/interval",
     "patronum/not",
+    "patronum/now",
     "patronum/once",
     "patronum/or",
     "patronum/pending",
@@ -25,7 +26,8 @@
     "patronum/spread",
     "patronum/status",
     "patronum/throttle",
-    "patronum/time"
+    "patronum/time",
+    "patronum/timers"
   ],
   "mapping": {
     "and": "and",
@@ -41,6 +43,7 @@
     "inFlight": "in-flight",
     "interval": "interval",
     "not": "not",
+    "now": "now",
     "once": "once",
     "or": "or",
     "pending": "pending",
@@ -52,6 +55,7 @@
     "spread": "spread",
     "status": "status",
     "throttle": "throttle",
-    "time": "time"
+    "time": "time",
+    "timers": "timers"
   }
 }

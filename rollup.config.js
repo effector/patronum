@@ -14,7 +14,7 @@ const input = 'dist/index.cjs';
 export default [
   {
     input: 'dist/index.js',
-    external: ['effector'],
+    external: ['effector', 'timers'],
     plugins,
     output: {
       file: './dist/patronum.js',
@@ -25,7 +25,7 @@ export default [
   },
   {
     input,
-    external: ['effector'],
+    external: ['effector', 'timers'],
     plugins,
     output: {
       file: './dist/patronum.cjs',
@@ -38,7 +38,7 @@ export default [
   },
   {
     input,
-    external: ['effector'],
+    external: ['effector', 'timers'],
     plugins,
     output: {
       name: 'patronum',

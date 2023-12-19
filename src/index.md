@@ -33,6 +33,7 @@ All methods split into categories.
 - [interval](./interval/readme.md) — Creates a dynamic interval with any timeout.
 - [throttle](./throttle/readme.md) — Creates event which triggers at most once per timeout.
 - [time](./time/readme.md) — Allows reading current timestamp by triggering clock.
+- [now](./now/readme.md) — Allows reading current timestamp by triggering clock from [timers](testing-library/readme.md).
 
 ### Combination/Decomposition
 
@@ -46,3 +47,8 @@ All methods split into categories.
 ### Debug
 
 - [debug](./debug/readme.md) — Log triggers of passed units.
+
+
+### Testing
+
+- [setupTimers](testing-library/readme.md) — Provide custom implementations of setTimeout/clearTimeout

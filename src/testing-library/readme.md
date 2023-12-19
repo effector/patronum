@@ -1,9 +1,7 @@
 # setupTimers
 
 ```ts
-import { setupTimers } from 'patronum';
-// or
-import { setupTimers } from 'patronum/timers';
+import { setupTimers } from 'patronum/testing';
 ```
 
 ### Motivation
