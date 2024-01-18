@@ -37,6 +37,8 @@ result = readonly(event);
 
 - `result: Store<T>|Event<T>`
 
+Note: if passed argument is already derived, then argument returns as-is.
+
 ### Example
 
 ```ts
