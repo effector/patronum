@@ -1,4 +1,13 @@
-import { Event, EventCallable, Store, createEvent, createStore, sample, attach, is } from 'effector';
+import {
+  Event,
+  EventCallable,
+  Store,
+  createEvent,
+  createStore,
+  sample,
+  attach,
+  is,
+} from 'effector';
 
 export function interval<S extends unknown, F extends unknown>(config: {
   timeout: number | Store<number>;
@@ -27,8 +36,21 @@ export function interval<S extends unknown, F extends unknown>({
   leading?: boolean;
   trailing?: boolean;
 }): { tick: Event<void>; isRunning: Store<boolean> } & TriggerProtocol {
-  const setup = (start ?? createEvent()) as Event<void>;
-  const teardown = (stop ?? createEvent()) as Event<void>;
+  const setup = createEvent();
+  if (start) {
+    sample({
+      clock: start,
+      target: setup,
+    });
+  }
+
+  const teardown = createEvent();
+  if (stop) {
+    sample({
+      clock: stop,
+      target: teardown,
+    });
+  }
 
   const tick = createEvent();
   const $isRunning = createStore(false);
