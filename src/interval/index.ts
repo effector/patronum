@@ -1,4 +1,4 @@
-import { Event, Store, createEvent, createStore, sample, attach, is } from 'effector';
+import { Event, EventCallable, Store, createEvent, createStore, sample, attach, is } from 'effector';
 
 export function interval<S extends unknown, F extends unknown>(config: {
   timeout: number | Store<number>;
@@ -146,8 +146,8 @@ function toStoreNumber(value: number | Store<number> | unknown): Store<number> {
  */
 export type TriggerProtocol = {
   '@@trigger': () => {
-    setup: Event<void>;
-    teardown: Event<void>;
+    setup: EventCallable<void>;
+    teardown: EventCallable<void>;
     fired: Event<unknown> | Event<void>;
   };
 };
