@@ -38,6 +38,7 @@ All methods split into categories.
 
 - [combineEvents](./combine-events/readme.md) — Wait for all passed events is triggered.
 - [format](./format/readme.md) — Combine stores to a string literal.
+- [readonly](./readonly/readme.md) — Create readonly version of store or event.
 - [reshape](./reshape/readme.md) — Destructure one store to different stores
 - [snapshot](./snapshot/readme.md) — Create store value snapshot.
 - [splitMap](./split-map/readme.md) — Split event to different events and map data.
