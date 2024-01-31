@@ -63,7 +63,7 @@ $first.watch((first) => console.log('First name', first));
 $last.watch((last) => console.log('Last name', last));
 
 formReceived({ first: '', last: '' });
-// Nothing, because filter returned true
+// Nothing, because filter returned false
 
 formReceived({ first: 'Hello', last: 'World' });
 // => First name Hello
