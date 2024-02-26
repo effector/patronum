@@ -30,7 +30,7 @@ $time = time(clock);
 
 1. `clock: Event<any> | Effect<any, any, any> | Store<any>` — The unit triggers time reading and updates `$time` store
 
-— `Time` is a generic type argument used for overriding time reader function. By default, is is `number`
+— `Time` is a generic type argument used for overriding time reader function. By default, it is `number`
 
 ### Returns
 
@@ -82,7 +82,7 @@ $time = time({ clock, getNow, initial });
 2. `getNow: () => Time` — Optional. A custom function to read time when `clock` triggers. **Must be synchronous**.
 3. `initial: Time` — Optional. Initial state for `$time` store. If not passed `getNow` is called.
 
-— `Time` is a generic type argument used for overriding time reader function. By default, is is `number`
+— `Time` is a generic type argument used for overriding time reader function. By default, it is `number`
 
 ### Returns
 

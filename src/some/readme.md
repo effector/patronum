@@ -19,7 +19,7 @@ It is useful to check that user filled at least a single field.
 $result = some({ predicate: (value) => true, stores });
 ```
 
-- read it as: has some predicate at at least one store
+- read it as: has some predicate at least one store
 - `$result` will be `true` if each at least `predicate` on each store value from `values` returns `true`, otherwise it will be `false`
 
 ### Arguments

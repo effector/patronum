@@ -168,7 +168,7 @@ setTimeout(() => {
 
 ### Motivation
 
-This overload recieves `source` and `timeout` as an object. May be useful for additional clarity, but it's longer to write
+This overload receives `source` and `timeout` as an object. May be useful for additional clarity, but it's longer to write
 
 ### Formulae
 
