@@ -112,7 +112,7 @@ loadSecond();
 
 ### Motivation
 
-This overload recieves `effects` as an object. May be useful for additional clarity, but it's longer to write
+This overload receives `effects` as an object. May be useful for additional clarity, but it's longer to write
 
 ### Formulae
 

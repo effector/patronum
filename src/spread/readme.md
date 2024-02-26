@@ -191,7 +191,7 @@ save(null);
 
 ### Motivation
 
-This overload recieves `targets` as an object. May be useful for additional clarity, but it's longer to write
+This overload receives `targets` as an object. May be useful for additional clarity, but it's longer to write
 
 ### Formulae
 
