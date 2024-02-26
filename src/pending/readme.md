@@ -10,12 +10,12 @@ import { pending } from 'patronum/pending';
 
 :::note since
 patronum 2.1.0
-Use `pending({ effects: [] })` with with patronum < 2.1.0
+Use `pending({ effects: [] })` with patronum < 2.1.0
 :::
 
 ### Motivation
 
-This overload allows to read pending state of passed effects. It is usef when
+This overload allows to read pending state of passed effects. It is useful when
 you want to show loading state of the whole application.
 
 ### Formulae
@@ -56,7 +56,7 @@ loadSecondFx();
 
 ### Motivation
 
-This overload recieves `effects` and optional `of` strategy as an object. Useful when need to change strategy
+This overload receives `effects` and optional `of` strategy as an object. Useful when need to change strategy
 
 ### Formulae
 
@@ -112,7 +112,7 @@ patronum 1.1.0
 ### Motivation
 
 This overload allows to read pending state of created effects in the domain. It
-is usef when you want to show loading state of the whole application.
+is useful when you want to show loading state of the whole application.
 
 ### Formulae
 
