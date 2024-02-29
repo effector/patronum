@@ -71,7 +71,7 @@ $inProcess = pending({ effects: [fx1, fx2], of: Strategy });
 
 1. `effects` `(Array<Effect<any, any, any>>)` - array of any effects
 1. `of` `("some" | "every")` — Optional. Select strategy of combining pendings
-   of differents effects. Default `"some"`
+   of different effects. Default `"some"`
 
 :::note since
 The `of` argument was added since patronum 1.1.0
@@ -127,7 +127,7 @@ $inProcess = pending({ domain, of: Strategy });
 
 1. `domain` `(Domain)` - Effector domain with at least one effect
 1. `of` `("some" | "every")` — Optional. Select strategy of combining pendings
-   of differents effects. Default `"some"`
+   of different effects. Default `"some"`
 
 ### Returns
 

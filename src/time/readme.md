@@ -87,7 +87,7 @@ $time = time({ clock, getNow, initial });
 ### Returns
 
 `$time: Store<Time>` — Store contains unix timestamp snapshot, updates when `clock` triggers.
-If `getNow` is overrided, contains value this function returns.
+If `getNow` is overridden, contains value this function returns.
 By default, it is `number`.
 Initialized with `initial`, by default, it is `Date.now()`
 

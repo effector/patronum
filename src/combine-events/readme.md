@@ -82,7 +82,7 @@ const target = combineEvents({
 
 ### Returns
 
-- `target` — When `target` option is not defined, will return new event with the same shape as `events`, otherwise `target` unit will returns
+- `target` — When `target` option is not defined, will return new event with the same shape as `events`, otherwise `target` unit will return
 
 ### Example
 
