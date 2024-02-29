@@ -64,7 +64,7 @@ loadSecond();
 ### Motivation
 
 This overload allows to count effects in flight of the whole domain.
-It is usef when you want to show loading state of the whole application.
+It is useful when you want to show loading state of the whole application.
 
 ### Formulae
 

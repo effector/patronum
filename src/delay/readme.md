@@ -201,7 +201,7 @@ Use `delay({ source, timeout })` with patronum < 2.1.0
 ### Motivation
 
 This overload allows you to read timeout from another store.
-It is useful when you writing music editor and need dynamic delay for your events.
+It is useful when you write music editor and need dynamic delay for your events.
 
 ### Formulae
 
@@ -243,7 +243,7 @@ update('Hello');
 ### Motivation
 
 This overload allows you to read timeout from another store.
-It is useful when you writing music editor and need dynamic delay for your events.
+It is useful when you write music editor and need dynamic delay for your events.
 
 ### Formulae
 
