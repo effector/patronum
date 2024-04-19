@@ -1,14 +1,18 @@
 import { combine, Domain, Effect, Store } from 'effector';
 
+export function inFlight(effects: Array<Effect<any, any, any>>): Store<number>;
 export function inFlight(_: { effects: Array<Effect<any, any, any>> }): Store<number>;
 export function inFlight(_: { domain: Domain }): Store<number>;
-export function inFlight({
-  effects,
-  domain,
-}: {
-  effects?: Array<Effect<any, any, any>>;
-  domain?: Domain;
-}): Store<number> {
+export function inFlight(
+  args:
+    | {
+        effects?: Array<Effect<any, any, any>>;
+        domain?: Domain;
+      }
+    | Array<Effect<any, any, any>>,
+): Store<number> {
+  const argsShape = Array.isArray(args) ? { effects: args } : args;
+  const { effects, domain } = argsShape;
   if (domain) {
     const $inFlight = domain.createStore(0);
 

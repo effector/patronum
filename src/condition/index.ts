@@ -7,91 +7,91 @@ import {
   Store,
   UnitTargetable,
   split,
+  UnitValue,
   EventCallable,
+  EventCallableAsReturnType,
 } from 'effector';
 
-type NoInfer<T> = T & { [K in keyof T]: T[K] };
-type EventAsReturnType<Payload> = any extends Payload ? Event<Payload> : never;
+type NoInfer<T> = [T][T extends any ? 0 : never];
+type NonFalsy<T> = T extends null | undefined | false | 0 | 0n | '' ? never : T;
 
-export function condition<State>(options: {
-  source: Event<State>;
-  if: ((payload: State) => boolean) | Store<boolean> | State;
-  then: UnitTargetable<NoInfer<State> | void>;
-  else: UnitTargetable<NoInfer<State> | void>;
-}): EventAsReturnType<State>;
-export function condition<State>(options: {
-  source: Store<State>;
-  if: ((payload: State) => boolean) | Store<boolean> | State;
-  then: UnitTargetable<State | void>;
-  else: UnitTargetable<State | void>;
-}): Store<State>;
-export function condition<Params, Done, Fail>(options: {
-  source: Effect<Params, Done, Fail>;
-  if: ((payload: Params) => boolean) | Store<boolean> | Params;
-  then: UnitTargetable<NoInfer<Params> | void>;
-  else: UnitTargetable<NoInfer<Params> | void>;
-}): Effect<Params, Done, Fail>;
+type SourceUnit<T> = Store<T> | Event<T> | Effect<T, any, any>;
 
-export function condition<State>(options: {
-  source: Event<State>;
-  if: ((payload: State) => boolean) | Store<boolean> | State;
-  then: UnitTargetable<NoInfer<State> | void>;
-}): EventAsReturnType<State>;
-export function condition<State>(options: {
-  source: Store<State>;
-  if: ((payload: State) => boolean) | Store<boolean> | State;
-  then: UnitTargetable<NoInfer<State> | void>;
-}): Store<State>;
-export function condition<Params, Done, Fail>(options: {
-  source: Effect<Params, Done, Fail>;
-  if: ((payload: Params) => boolean) | Store<boolean> | Params;
-  then: UnitTargetable<NoInfer<Params> | void>;
-}): Effect<Params, Done, Fail>;
+// -- Without `source`, with type guard --
+export function condition<Payload, Then extends Payload = Payload>(options: {
+  source?: undefined;
+  if: ((payload: Payload) => payload is Then) | Then;
+  then?: UnitTargetable<NoInfer<Then> | void>;
+  else?: UnitTargetable<Exclude<NoInfer<Payload>, Then> | void>;
+}): EventCallableAsReturnType<Payload>;
 
-export function condition<State>(options: {
-  source: Event<State>;
-  if: ((payload: State) => boolean) | Store<boolean> | State;
-  else: UnitTargetable<NoInfer<State> | void>;
-}): EventAsReturnType<State>;
-export function condition<State>(options: {
-  source: Store<State>;
-  if: ((payload: State) => boolean) | Store<boolean> | State;
-  else: UnitTargetable<NoInfer<State> | void>;
-}): Store<State>;
-export function condition<Params, Done, Fail>(options: {
-  source: Effect<Params, Done, Fail>;
-  if: ((payload: Params) => boolean) | Store<boolean> | Params;
-  else: UnitTargetable<NoInfer<Params> | void>;
-}): Effect<Params, Done, Fail>;
+// -- Without `source`, with BooleanConstructor --
+export function condition<
+  Payload,
+  Then extends NonFalsy<Payload> = NonFalsy<Payload>,
+>(options: {
+  source?: undefined;
+  if: BooleanConstructor;
+  then?: UnitTargetable<NoInfer<Then> | void>;
+  else?: UnitTargetable<Exclude<NoInfer<Payload>, Then> | void>;
+}): EventCallableAsReturnType<Payload>;
 
-// Without `source`
+// -- Without `source` --
+export function condition<Payload>(options: {
+  source?: undefined;
+  if: ((payload: Payload) => boolean) | Store<boolean> | NoInfer<Payload>;
+  then?: UnitTargetable<NoInfer<Payload> | void>;
+  else?: UnitTargetable<NoInfer<Payload> | void>;
+}): EventCallableAsReturnType<Payload>;
 
-export function condition<State>(options: {
-  if: ((payload: State) => boolean) | Store<boolean> | State;
-  then: UnitTargetable<NoInfer<State> | void>;
-  else: UnitTargetable<NoInfer<State> | void>;
-}): EventCallable<State>;
-export function condition<State>(options: {
-  if: ((payload: State) => boolean) | Store<boolean> | State;
-  then: UnitTargetable<NoInfer<State> | void>;
-}): EventCallable<State>;
-export function condition<State>(options: {
-  if: ((payload: State) => boolean) | Store<boolean> | State;
-  else: UnitTargetable<NoInfer<State> | void>;
-}): EventCallable<State>;
-export function condition<State>({
+// -- With `source` and type guard --
+export function condition<
+  Payload extends UnitValue<Source>,
+  Then extends Payload = Payload,
+  Source extends SourceUnit<any> = SourceUnit<Payload>,
+>(options: {
+  source: Source;
+  if: ((payload: Payload) => payload is Then) | Then;
+  then?: UnitTargetable<NoInfer<Then>>;
+  else?: UnitTargetable<Exclude<NoInfer<Payload>, Then>>;
+}): Source;
+
+// -- With `source` and BooleanConstructor --
+export function condition<
+  Payload extends UnitValue<Source>,
+  Then extends NonFalsy<Payload> = NonFalsy<Payload>,
+  Source extends SourceUnit<any> = SourceUnit<Payload>,
+>(options: {
+  source: Source;
+  if: BooleanConstructor;
+  then?: UnitTargetable<NoInfer<Then> | void>;
+  else?: UnitTargetable<Exclude<NoInfer<Payload>, Then>>;
+}): EventCallable<Payload>;
+
+// -- With `source` --
+export function condition<
+  Payload extends UnitValue<Source>,
+  Source extends SourceUnit<any> = SourceUnit<Payload>,
+>(options: {
+  source: SourceUnit<Payload>;
+  if: ((payload: Payload) => boolean) | Store<boolean> | NoInfer<Payload>;
+  then?: UnitTargetable<NoInfer<Payload> | void>;
+  else?: UnitTargetable<NoInfer<Payload> | void>;
+}): Source;
+
+export function condition<Payload>({
+  source = createEvent<Payload>(),
   if: test,
   then: thenBranch,
   else: elseBranch,
-  source = createEvent<State>(),
 }: {
-  if: ((payload: State) => boolean) | Store<boolean> | State;
-  source?: Store<State> | Event<State> | Effect<State, any, any>;
-  then?: UnitTargetable<State | void>;
-  else?: UnitTargetable<State | void>;
+  source?: SourceUnit<Payload>;
+  if: ((payload: Payload) => boolean) | Store<boolean> | Payload;
+  then?: UnitTargetable<Payload | void>;
+  else?: UnitTargetable<Payload | void>;
 }) {
   const checker =
-    is.unit(test) || isFunction(test) ? test : (value: State) => value === test;
+    is.unit(test) || isFunction(test) ? test : (value: Payload) => value === test;
 
   if (thenBranch && elseBranch) {
     split({

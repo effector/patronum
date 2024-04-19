@@ -23,6 +23,25 @@ describe('event', () => {
     expect(watcher).toBeCalledTimes(1);
   });
 
+  test('throttle event (shorthand)', async () => {
+    const watcher = jest.fn();
+
+    const trigger = createEvent();
+    const throttled = throttle(trigger, 40);
+
+    throttled.watch(watcher);
+
+    trigger();
+    trigger();
+    trigger();
+
+    expect(watcher).not.toBeCalled();
+
+    await wait(42);
+
+    expect(watcher).toBeCalledTimes(1);
+  });
+
   test('throttled event with wait', async () => {
     const watcher = jest.fn();
 

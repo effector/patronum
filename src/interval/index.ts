@@ -1,5 +1,13 @@
-import { Event, Store, createEvent, createStore, sample, attach, is } from 'effector';
-import { $timers } from '../timers'
+import {
+  Event,
+  EventCallable,
+  Store,
+  createEvent,
+  createStore,
+  sample,
+  attach,
+  is,
+} from 'effector';
 
 export function interval<S extends unknown, F extends unknown>(config: {
   timeout: number | Store<number>;
@@ -28,8 +36,21 @@ export function interval<S extends unknown, F extends unknown>({
   leading?: boolean;
   trailing?: boolean;
 }): { tick: Event<void>; isRunning: Store<boolean> } & TriggerProtocol {
-  const setup = (start ?? createEvent()) as Event<void>;
-  const teardown = (stop ?? createEvent()) as Event<void>;
+  const setup = createEvent();
+  if (start) {
+    sample({
+      clock: start,
+      target: setup,
+    });
+  }
+
+  const teardown = createEvent();
+  if (stop) {
+    sample({
+      clock: stop,
+      target: teardown,
+    });
+  }
 
   const tick = createEvent();
   const $isRunning = createStore(false);
@@ -52,24 +73,24 @@ export function interval<S extends unknown, F extends unknown>({
   );
 
   const timeoutFx = attach({
-    source: { timeout: $timeout, running: $isRunning, timers: $timers },
-    effect: ({ timeout, running, timers }) => {
+    source: { timeout: $timeout, running: $isRunning },
+    effect: ({ timeout, running }) => {
       if (!running) {
         return Promise.reject();
       }
 
       return new Promise((resolve, reject) => {
-        const timeoutId = timers.setTimeout(resolve, timeout);
+        const timeoutId = setTimeout(resolve, timeout);
         saveTimeout({ timeoutId, reject });
       });
     },
   });
 
   const cleanupFx = attach({
-    source: { timeoutId: $timeoutId, rejecter: $rejecter, timers: $timers },
-    effect: ({ timeoutId, rejecter, timers }) => {
+    source: { timeoutId: $timeoutId, rejecter: $rejecter },
+    effect: ({ timeoutId, rejecter }) => {
       rejecter();
-      if (timeoutId) timers.clearTimeout(timeoutId);
+      if (timeoutId) clearTimeout(timeoutId);
     },
   });
 
@@ -147,8 +168,8 @@ function toStoreNumber(value: number | Store<number> | unknown): Store<number> {
  */
 export type TriggerProtocol = {
   '@@trigger': () => {
-    setup: Event<void>;
-    teardown: Event<void>;
+    setup: EventCallable<void>;
+    teardown: EventCallable<void>;
     fired: Event<unknown> | Event<void>;
   };
 };

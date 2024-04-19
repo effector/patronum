@@ -6,17 +6,22 @@ import { debounce } from 'patronum';
 import { debounce } from 'patronum/debounce';
 ```
 
-## `debounce({ source, timeout })`
+## `debounce(source, timeout)`
 
 ### Motivation
 
 Method creates a new event, that will be triggered after some time. It is useful for handling user events such as scrolling, mouse movement, or keypressing.
 It is useful when you want to pass created event immediately to another method as argument.
 
+:::note since
+patronum 2.1.0
+Use `debounce({ source, timeout })` with patronum < 2.1.0
+:::
+
 ### Formulae
 
 ```ts
-event = debounce({ source, timeout });
+event = debounce(source, timeout);
 ```
 
 - Wait for `timeout` after the last time `source` was triggered, then trigger `event` with payload of the `source`
@@ -39,10 +44,7 @@ import { debounce } from 'patronum/debounce';
 const DEBOUNCE_TIMEOUT_IN_MS = 200;
 
 const someHappened = createEvent<number>();
-const debounced = debounce({
-  source: someHappened,
-  timeout: DEBOUNCE_TIMEOUT_IN_MS,
-});
+const debounced = debounce(someHappened, DEBOUNCE_TIMEOUT_IN_MS);
 
 debounced.watch((payload) => {
   console.info('someHappened now', payload);
@@ -54,6 +56,39 @@ someHappened(3);
 someHappened(4);
 
 // someHappened now 4
+```
+
+### Example with timeout as store
+
+```ts
+import { createStore } from 'effector';
+import { debounce } from 'patronum';
+
+const DEBOUNCE_TIMEOUT_IN_MS = 200;
+
+const changeTimeout = createEvent<number>();
+const $timeout = createStore(DEBOUNCE_TIMEOUT_IN_MS).on(
+  changeTimeout,
+  (_, value) => value,
+);
+const someHappened = createEvent<number>();
+const debounced = debounce(someHappened, $timeout);
+
+debounced.watch((payload) => {
+  console.info('someHappened now', payload);
+});
+
+someHappened(1);
+changeTimeout(400); // will be applied after next source trigger
+someHappened(2);
+
+setTimeout(() => {
+  // console clear
+}, 200);
+
+setTimeout(() => {
+  // someHappened now 2
+}, 400);
 ```
 
 ## `debounce({ source, timeout, target })`
@@ -114,23 +149,41 @@ someHappened(4);
 // got data 4
 ```
 
-### Example with timeout as store
+## `debounce({ source, timeout })`
+
+### Motivation
+
+This overload receives `source` and `timeout` as an object. May be useful for additional clarity, but it's longer to write
+
+### Formulae
 
 ```ts
-import { createStore } from 'effector';
-import { debounce } from 'patronum';
+event = debounce({ source, timeout });
+```
+
+- Wait for `timeout` after the last time `source` was triggered, then trigger `event` with payload of the `source`
+
+### Arguments
+
+1. `source` `(Event<T>` | `Store<T>` | `Effect<T>)` — Source unit, data from this unit used by the `event`
+1. `timeout` `(number | Store<number>)` — time to wait before trigger `event`
+
+### Returns
+
+- `event` `(Event<T>)` — New event, that triggered after delay
+
+### Example
+
+```ts
+import { createEvent } from 'effector';
+import { debounce } from 'patronum/debounce';
 
 const DEBOUNCE_TIMEOUT_IN_MS = 200;
 
-const changeTimeout = createEvent<number>();
-const $timeout = createStore(DEBOUNCE_TIMEOUT_IN_MS).on(
-  changeTimeout,
-  (_, value) => value,
-);
 const someHappened = createEvent<number>();
 const debounced = debounce({
   source: someHappened,
-  timeout: $timeout,
+  timeout: DEBOUNCE_TIMEOUT_IN_MS,
 });
 
 debounced.watch((payload) => {
@@ -138,14 +191,9 @@ debounced.watch((payload) => {
 });
 
 someHappened(1);
-changeTimeout(400); // will be applied after next source trigger
 someHappened(2);
+someHappened(3);
+someHappened(4);
 
-setTimeout(() => {
-  // console clear
-}, 200);
-
-setTimeout(() => {
-  // someHappened now 2
-}, 400);
+// someHappened now 4
 ```

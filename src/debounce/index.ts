@@ -10,8 +10,11 @@ import {
   UnitTargetable,
   EventAsReturnType,
 } from 'effector';
-import { $timers } from '../timers'
 
+export function debounce<T>(
+  source: Unit<T>,
+  timeout: number | Store<number>,
+): EventAsReturnType<T>;
 export function debounce<T>(_: {
   source: Unit<T>;
   timeout: number | Store<number>;
@@ -26,17 +29,21 @@ export function debounce<
   target: Target;
   name?: string;
 }): Target;
-export function debounce<T>({
-  source,
-  timeout,
-  target,
-  name,
-}: {
-  source: Unit<T>;
-  timeout?: number | Store<number>;
-  target?: UnitTargetable<T> | Unit<T>;
-  name?: string;
-}): typeof target extends undefined ? EventAsReturnType<T> : typeof target {
+export function debounce<T>(
+  ...args:
+    | [
+        {
+          source: Unit<T>;
+          timeout?: number | Store<number>;
+          target?: UnitTargetable<T> | Unit<T>;
+          name?: string;
+        },
+      ]
+    | [source: Unit<T>, timeout: number | Store<number>]
+) {
+  const argsShape =
+    args.length === 2 ? { source: args[0], timeout: args[1] } : args[0];
+  const { source, timeout, target, name } = argsShape;
   if (!is.unit(source)) throw new TypeError('source must be unit from effector');
 
   if (is.domain(source)) throw new TypeError('source cannot be domain');
@@ -44,25 +51,22 @@ export function debounce<T>({
   const $timeout = toStoreNumber(timeout);
 
   const saveCancel = createEvent<[NodeJS.Timeout, () => void]>();
-  const $canceller = createStore<[NodeJS.Timeout, () => void] | []>([], { serialize: 'ignore' })
-    .on(saveCancel, (_, payload) => payload)
+  const $canceller = createStore<[NodeJS.Timeout, () => void] | []>([], {
+    serialize: 'ignore',
+  }).on(saveCancel, (_, payload) => payload);
 
   const tick = (target as UnitTargetable<T>) ?? createEvent();
 
   const timerFx = attach({
     name: name || `debounce(${(source as any)?.shortName || source.kind}) effect`,
-    source: { canceller: $canceller, timers: $timers },
-    effect({ canceller: [ timeoutId, rejectPromise ], timers }, timeout: number) {
-      if (timeoutId) timers.clearTimeout(timeoutId);
+    source: $canceller,
+    effect([timeoutId, rejectPromise], timeout: number) {
+      if (timeoutId) clearTimeout(timeoutId);
       if (rejectPromise) rejectPromise();
-
       return new Promise((resolve, reject) => {
-        saveCancel([
-          timers.setTimeout(resolve, timeout),
-          reject
-        ])
+        saveCancel([setTimeout(resolve, timeout), reject]);
       });
-    }
+    },
   });
   $canceller.reset(timerFx.done);
 

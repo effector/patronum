@@ -6,7 +6,12 @@ import { inFlight } from 'patronum';
 import { inFlight } from 'patronum/in-flight';
 ```
 
-## `inFlight({ effects: [] })`
+## `inFlight(effects)`
+
+:::note since
+patronum 2.1.0
+Use `inFlight({ effects })` with patronum < 2.1.0
+:::
 
 ### Motivation
 
@@ -16,7 +21,7 @@ It is useful when you want to show pending state of complex process.
 ### Formulae
 
 ```ts
-$count = inFlight({ effects: [fx1, fx2] });
+$count = inFlight([fx1, fx2]);
 ```
 
 - Count all pending runs of effects in one store
@@ -37,7 +42,7 @@ import { inFlight } from 'patronum/in-flight';
 
 const loadFirst = createEffect().use(() => Promise.resolve(null));
 const loadSecond = createEffect().use(() => Promise.resolve(2));
-const $count = inFlight({ effects: [loadFirst, loadSecond] });
+const $count = inFlight([loadFirst, loadSecond]);
 
 $count.watch((count) => console.info(`count: ${count}`));
 // => count: 0
@@ -59,7 +64,7 @@ loadSecond();
 ### Motivation
 
 This overload allows to count effects in flight of the whole domain.
-It is usef when you want to show loading state of the whole application.
+It is useful when you want to show loading state of the whole application.
 
 ### Formulae
 
@@ -87,6 +92,53 @@ const app = createDomain();
 const loadFirst = app.createEffect().use(() => Promise.resolve(null));
 const loadSecond = app.createEffect().use(() => Promise.resolve(2));
 const $count = inFlight({ domain: app });
+
+$count.watch((count) => console.info(`count: ${count}`));
+// => count: 0
+
+loadFirst();
+loadSecond();
+// => count: 2
+
+loadSecond();
+loadSecond();
+// => count: 4
+
+// Wait to resolve all effects
+// => count: 0
+```
+
+## `inFlight({ effects: [] })`
+
+### Motivation
+
+This overload receives `effects` as an object. May be useful for additional clarity, but it's longer to write
+
+### Formulae
+
+```ts
+$count = inFlight({ effects: [fx1, fx2] });
+```
+
+- Count all pending runs of effects in one store
+
+### Arguments
+
+1. `effects` `(Array<Effect<any, any, any>>)` - array of any effects
+
+## Returns
+
+- `$count` `(Store<number>)` - Store with count of run effects in pending state
+
+## Example
+
+```ts
+import { createEffect } from 'effector';
+import { inFlight } from 'patronum/in-flight';
+
+const loadFirst = createEffect().use(() => Promise.resolve(null));
+const loadSecond = createEffect().use(() => Promise.resolve(2));
+const $count = inFlight({ effects: [loadFirst, loadSecond] });
 
 $count.watch((count) => console.info(`count: ${count}`));
 // => count: 0

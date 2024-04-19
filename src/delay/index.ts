@@ -16,6 +16,11 @@ import { $timers, Timers } from '../timers'
 
 type TimeoutType<Payload> = ((payload: Payload) => number) | Store<number> | number;
 
+export function delay<Source extends Unit<any>>(
+  source: Source,
+  timeout: TimeoutType<UnitValue<Source>>,
+): EventAsReturnType<UnitValue<Source>>;
+
 export function delay<Source extends Unit<any>, Target extends TargetType>(config: {
   source: Source;
   timeout: TimeoutType<UnitValue<Source>>;
@@ -30,15 +35,21 @@ export function delay<Source extends Unit<any>>(config: {
 export function delay<
   Source extends Unit<any>,
   Target extends TargetType = TargetType,
->({
-  source,
-  timeout,
-  target = createEvent() as any,
-}: {
-  source: Source;
-  timeout: TimeoutType<UnitValue<Source>>;
-  target?: MultiTarget<Target, UnitValue<Source>>;
-}): typeof target extends undefined ? EventAsReturnType<UnitValue<Source>> : Target {
+>(
+  ...args:
+    | [
+        {
+          source: Source;
+          timeout: TimeoutType<UnitValue<Source>>;
+          target?: MultiTarget<Target, UnitValue<Source>>;
+        },
+      ]
+    | [Source, TimeoutType<UnitValue<Source>>]
+) {
+  const argsShape =
+    args.length === 2 ? { source: args[0], timeout: args[1] } : args[0];
+
+  const { source, timeout, target = createEvent() as any } = argsShape;
   const targets = Array.isArray(target) ? target : [target];
 
   if (!is.unit(source)) throw new TypeError('source must be a unit from effector');

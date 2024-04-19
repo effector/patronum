@@ -1,5 +1,5 @@
 import { expectType } from 'tsd';
-import { Store, createStore, createEvent, createEffect, createDomain } from 'effector';
+import { Store, createStore, createEvent, createEffect } from 'effector';
 import { time } from '../dist/time';
 
 // Returns correct default Store value
@@ -7,6 +7,7 @@ import { time } from '../dist/time';
   const clock = createEvent<void>();
 
   expectType<Store<number>>(time({ clock }));
+  expectType<Store<number>>(time(clock));
   expectType<Store<number>>(time({ clock, initial: 100 }));
 }
 
@@ -65,9 +66,14 @@ import { time } from '../dist/time';
   expectType<Store<number>>(time({ clock: effectFx }));
   expectType<Store<number>>(time({ clock: $store }));
 
+  expectType<Store<number>>(time(event));
+  expectType<Store<number>>(time(effectFx));
+  expectType<Store<number>>(time($store));
+
   const fn = () => null;
-  const domain = createDomain()
 
   // @ts-expect-error
   time({ clock: fn });
+  // @ts-expect-error
+  time(fn);
 }

@@ -157,8 +157,8 @@ debug.unregisterAllScopes();
 
 ### Initial store state
 
-`debug($store)` always immediatly prints current state of the store, but this state can be different in different scopes.
-It is recommened to register scopes explicitly, since `debug` will print current state of the store in every known scope:
+`debug($store)` always immediately prints current state of the store, but this state can be different in different scopes.
+It is recommended to register scopes explicitly, since `debug` will print current state of the store in every known scope:
 
 ```ts
 const $count = createStore(0);
