@@ -1,5 +1,11 @@
 import 'regenerator-runtime/runtime';
-import { createEvent, fork, serialize, allSettled } from 'effector';
+import {
+  createEvent,
+  fork,
+  serialize,
+  allSettled,
+  createEffect
+} from 'effector'
 
 import { time } from './index';
 
@@ -50,4 +56,27 @@ test('store must correctly serializes', async () => {
       "-9m03zk|-k3vl4d": 3,
     }
   `);
+});
+
+test('exposed timers api', async () => {
+  let now = 10000;
+
+  const readNowFx = createEffect<void, number>(() => now);
+
+  const scope = fork({
+    handlers: [[time.readNowFx, readNowFx]],
+  });
+
+  const clock = createEvent();
+  const $time = time(clock);
+
+  await allSettled(clock, { scope });
+
+  expect(scope.getState($time)).toBe(10000);
+
+  now = 20000;
+
+  await allSettled(clock, { scope });
+
+  expect(scope.getState($time)).toBe(20000);
 });

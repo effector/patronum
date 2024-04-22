@@ -197,3 +197,25 @@ someHappened(4);
 
 // someHappened now 4
 ```
+
+### [Tests] Exposed timers API example
+
+```ts
+const timerFx = createEffect(({ timeoutId, rejectPromise, saveCancel, timeout }: DebounceTimerFxProps) => {
+  if (timeoutId) myClearTimeout(timeoutId);
+  if (rejectPromise) rejectPromise();
+  return new Promise((resolve, reject) => {
+    saveCancel([mySetTimeout(resolve, timeout), reject]);
+  });
+});
+
+const scope = fork({
+  handlers: [[debounce.timerFx, timerFx]],
+});
+
+const clock = createEvent();
+const tick = debounce(clock, 200);
+
+// important! call from scope
+allSettled(clock, { scope });
+```

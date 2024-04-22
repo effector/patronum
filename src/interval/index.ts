@@ -7,9 +7,42 @@ import {
   sample,
   attach,
   is,
-} from 'effector';
+  createEffect
+} from 'effector'
 
-export function interval<S extends unknown, F extends unknown>(config: {
+type SaveTimeoutEventProps = {
+  timeoutId: NodeJS.Timeout;
+  reject: () => void;
+};
+
+export type IntervalTimeoutFxProps = {
+  timeout: number;
+  running: boolean;
+  saveTimeout: EventCallable<SaveTimeoutEventProps>;
+};
+
+export type IntervalCleanupFxProps = {
+  timeoutId: NodeJS.Timeout | null;
+  rejecter: () => void;
+};
+
+const timeoutFx = createEffect(({ timeout, running, saveTimeout }: IntervalTimeoutFxProps) => {
+  if (!running) {
+    return Promise.reject();
+  }
+
+  return new Promise((resolve, reject) => {
+    const timeoutId = setTimeout(resolve, timeout);
+    saveTimeout({ timeoutId, reject });
+  });
+})
+
+const cleanupFx = createEffect(({ rejecter, timeoutId }: IntervalCleanupFxProps) => {
+  rejecter();
+  if (timeoutId) clearTimeout(timeoutId);
+});
+
+function _interval<S extends unknown, F extends unknown>(config: {
   timeout: number | Store<number>;
   start: Event<S>;
   stop?: Event<F>;
@@ -17,13 +50,13 @@ export function interval<S extends unknown, F extends unknown>(config: {
   trailing?: boolean;
 }): { tick: Event<void>; isRunning: Store<boolean> };
 
-export function interval(config: {
+function _interval(config: {
   timeout: number | Store<number>;
   leading?: boolean;
   trailing?: boolean;
 }): TriggerProtocol;
 
-export function interval<S extends unknown, F extends unknown>({
+function _interval<S extends unknown, F extends unknown>({
   timeout,
   start,
   stop,
@@ -37,6 +70,7 @@ export function interval<S extends unknown, F extends unknown>({
   trailing?: boolean;
 }): { tick: Event<void>; isRunning: Store<boolean> } & TriggerProtocol {
   const setup = createEvent();
+
   if (start) {
     sample({
       clock: start,
@@ -45,6 +79,7 @@ export function interval<S extends unknown, F extends unknown>({
   }
 
   const teardown = createEvent();
+
   if (stop) {
     sample({
       clock: stop,
@@ -62,6 +97,7 @@ export function interval<S extends unknown, F extends unknown>({
     timeoutId: NodeJS.Timeout;
     reject: () => void;
   }>();
+
   const $timeoutId = createStore<NodeJS.Timeout | null>(null).on(
     saveTimeout,
     (_, { timeoutId }) => timeoutId,
@@ -72,33 +108,22 @@ export function interval<S extends unknown, F extends unknown>({
     (_, { reject }) => reject,
   );
 
-  const timeoutFx = attach({
+  const innerTimeoutFx = attach({
     source: { timeout: $timeout, running: $isRunning },
-    effect: ({ timeout, running }) => {
-      if (!running) {
-        return Promise.reject();
-      }
-
-      return new Promise((resolve, reject) => {
-        const timeoutId = setTimeout(resolve, timeout);
-        saveTimeout({ timeoutId, reject });
-      });
-    },
+    mapParams: (_, source) => ({ saveTimeout, ...source }),
+    effect: timeoutFx,
   });
 
-  const cleanupFx = attach({
+  const innerCleanupFx = attach({
     source: { timeoutId: $timeoutId, rejecter: $rejecter },
-    effect: ({ timeoutId, rejecter }) => {
-      rejecter();
-      if (timeoutId) clearTimeout(timeoutId);
-    },
+    effect: cleanupFx,
   });
 
   sample({
     clock: setup,
     source: $timeout,
     filter: $notRunning,
-    target: timeoutFx,
+    target: innerTimeoutFx,
   });
 
   if (leading) {
@@ -113,14 +138,14 @@ export function interval<S extends unknown, F extends unknown>({
   });
 
   sample({
-    clock: timeoutFx.done,
+    clock: innerTimeoutFx.done,
     source: $timeout,
     filter: $isRunning,
-    target: timeoutFx,
+    target: innerTimeoutFx,
   });
 
   sample({
-    clock: timeoutFx.done,
+    clock: innerTimeoutFx.done,
     filter: $isRunning,
     target: tick.prepend(() => {
       /* to be sure, nothing passed to tick */
@@ -138,7 +163,7 @@ export function interval<S extends unknown, F extends unknown>({
 
   sample({
     clock: teardown,
-    target: cleanupFx,
+    target: innerCleanupFx,
   });
 
   return {
@@ -151,6 +176,11 @@ export function interval<S extends unknown, F extends unknown>({
     }),
   };
 }
+
+export const interval = Object.assign(_interval, {
+  timeoutFx,
+  cleanupFx
+});
 
 function toStoreNumber(value: number | Store<number> | unknown): Store<number> {
   if (is.store(value)) return value;

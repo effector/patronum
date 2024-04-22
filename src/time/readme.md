@@ -110,3 +110,20 @@ tick();
 ```
 
 [Try it](https://share.effector.dev/VuhhzWKE)
+
+### [Tests] Exposed timers API example
+
+```ts
+// you can attach() any source of time
+const readNowFx = createEffect<{ timeReader: () => number }, number>(({ timeReader }) => timeReader());
+
+const scope = fork({
+  handlers: [[time.readNowFx, readNowFx]],
+});
+
+const clock = createEvent();
+const $time = time(clock);
+
+// important! call from scope
+allSettled(clock, { scope });
+```

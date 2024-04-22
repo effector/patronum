@@ -7,11 +7,11 @@ import {
   createEvent,
   createStore,
   sample,
-  createWatch,
-} from 'effector';
+  createWatch, createEffect,
+} from 'effector'
 import { wait, watch } from '../../test-library';
 
-import { debounce } from './index';
+import { debounce, DebounceTimerFxProps } from './index'
 
 test('debounce works in forked scope', async () => {
   const app = createDomain();
@@ -231,4 +231,41 @@ describe('edge cases', () => {
     expect(listener).toBeCalledTimes(0);
     expect(triggerListener).toBeCalledTimes(0);
   })
+});
+
+test('exposed timers api', async () => {
+  const timerFx = createEffect(({ timeoutId, rejectPromise, saveCancel, timeout }: DebounceTimerFxProps) => {
+    if (timeoutId) clearTimeout(timeoutId);
+    if (rejectPromise) rejectPromise();
+    return new Promise((resolve, reject) => {
+      saveCancel([setTimeout(resolve, timeout / 2), reject]);
+    });
+  });
+
+  const scope = fork({
+    handlers: [
+      [debounce.timerFx, timerFx],
+    ]
+  });
+
+  const mockedFn = jest.fn();
+
+  const clock = createEvent();
+  const tick = debounce(clock, 50);
+
+  createWatch({
+    unit: tick,
+    fn: mockedFn,
+    scope,
+  });
+
+  allSettled(clock, { scope });
+
+  await wait(20);
+
+  expect(mockedFn).not.toBeCalled();
+
+  await wait(5);
+
+  expect(mockedFn).toBeCalled();
 });

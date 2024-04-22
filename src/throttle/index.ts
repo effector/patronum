@@ -1,4 +1,5 @@
 import {
+  attach,
   createEffect,
   createEvent,
   createStore,
@@ -8,26 +9,30 @@ import {
   Store,
   Unit,
   UnitTargetable,
-} from 'effector';
+} from 'effector'
 
 type EventAsReturnType<Payload> = any extends Payload ? Event<Payload> : never;
 
-export function throttle<T>(
+const timerFx = createEffect<number, void>({
+  handler: (timeout) => new Promise((resolve) => setTimeout(resolve, timeout)),
+});
+
+export function _throttle<T>(
   source: Unit<T>,
   timeout: number | Store<number>,
 ): EventAsReturnType<T>;
-export function throttle<T>(_: {
+export function _throttle<T>(_: {
   source: Unit<T>;
   timeout: number | Store<number>;
   name?: string;
 }): EventAsReturnType<T>;
-export function throttle<T, Target extends UnitTargetable<T>>(_: {
+export function _throttle<T, Target extends UnitTargetable<T>>(_: {
   source: Unit<T>;
   timeout: number | Store<number>;
   target: Target;
   name?: string;
 }): Target;
-export function throttle<T>(
+export function _throttle<T>(
   ...args:
     | [
         {
@@ -46,9 +51,10 @@ export function throttle<T>(
 
   const $timeout = toStoreNumber(timeout);
 
-  const timerFx = createEffect<number, void>({
+  const innerTimerFx = attach({
     name: `throttle(${(source as Event<T>).shortName || source.kind}) effect`,
-    handler: (timeout) => new Promise((resolve) => setTimeout(resolve, timeout)),
+    mapParams: (params: number) => params,
+    effect: timerFx,
   });
 
   // It's ok - nothing will ever start unless source is triggered
@@ -72,17 +78,21 @@ export function throttle<T>(
   sample({
     source: $timeout,
     clock: triggerTick as Unit<any>,
-    target: timerFx,
+    target: innerTimerFx,
   });
 
   sample({
     source: $payload,
-    clock: timerFx.done,
+    clock: innerTimerFx.done,
     target,
   });
 
   return target as any;
 }
+
+export const throttle = Object.assign(_throttle, {
+  timerFx,
+});
 
 function toStoreNumber(value: number | Store<number> | unknown): Store<number> {
   if (is.store(value)) return value;
