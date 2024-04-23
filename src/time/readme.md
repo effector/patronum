@@ -114,7 +114,11 @@ tick();
 ### [Tests] Exposed timers API example
 
 ```ts
-// you can attach() any source of time
+/**
+ * `timeReader` - is a either `Date.now` or the handler, that was provided via `getNow` in the configuration
+ *
+ * In your custom `readNowFx` you can change the way original time reader is used or call your own timer instead
+ */
 const readNowFx = createEffect<{ timeReader: () => number }, number>(({ timeReader }) => timeReader());
 
 const scope = fork({

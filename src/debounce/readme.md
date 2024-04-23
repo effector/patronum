@@ -201,6 +201,9 @@ someHappened(4);
 ### [Tests] Exposed timers API example
 
 ```ts
+/**
+ * `canceller` - is object, which contains previous timeout id and previous effect promise reject
+ */
 const timerFx = createEffect(({ canceller, timeout }: DebounceTimerFxProps) => {
   const { timeoutId, rejectPromise } = canceller;
 

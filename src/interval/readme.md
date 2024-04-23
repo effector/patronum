@@ -106,6 +106,9 @@ keepFresh(someQuery, {
 ### [Tests] Exposed timers API example
 
 ```ts
+/**
+ * `canceller` - is object, which contains previous timeout id and previous effect promise reject
+ */
 const timeoutFx = createEffect(({ canceller, timeout, running }: IntervalTimeoutFxProps) => {
   if (!running) {
     return Promise.reject();
