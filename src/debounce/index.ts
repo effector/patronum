@@ -10,8 +10,7 @@ import {
   UnitTargetable,
   EventAsReturnType,
   createEffect
-} from 'effector'
-import { spread } from '../spread'
+} from 'effector';
 
 type DebounceCanceller = { timeoutId?: NodeJS.Timeout; rejectPromise?: () => void; };
 
@@ -122,13 +121,17 @@ export function _debounce<T>(
   });
 
   sample({
-    source: { timeout: $timeout, canceller: $canceller },
     clock: triggerTick,
-    fn: ({ timeout, canceller }) => ({ timeout, canceller: canceller ?? {} }),
-    target: spread({
-      timeout: innerTimerFx,
-      canceller: $canceller
-    }),
+    source: $timeout,
+    fn: (timeout) => timeout,
+    target: innerTimerFx,
+  });
+
+  sample({
+    clock: triggerTick,
+    source: $canceller,
+    fn: (canceller) => canceller ?? {},
+    target: $canceller,
   });
 
   sample({
