@@ -7,7 +7,7 @@ import {
   createEvent,
   createStore,
   sample,
-  createWatch, createEffect, scopeBind,
+  createWatch, createEffect,
 } from 'effector'
 import { wait, watch } from '../../test-library';
 
@@ -238,13 +238,15 @@ describe('edge cases', () => {
 });
 
 test('exposed timers api', async () => {
-  const timerFx = createEffect(({ timeoutId, rejectPromise, saveCancel, timeout }: DebounceTimerFxProps) => {
-    const save = scopeBind(saveCancel);
+  const timerFx = createEffect(({ canceller, timeout }: DebounceTimerFxProps) => {
+    const { timeoutId, rejectPromise } = canceller;
 
     if (timeoutId) clearTimeout(timeoutId);
     if (rejectPromise) rejectPromise();
+
     return new Promise((resolve, reject) => {
-      save([setTimeout(resolve, timeout / 2), reject]);
+      canceller.timeoutId = setTimeout(resolve, timeout / 2);
+      canceller.rejectPromise = reject;
     });
   });
 

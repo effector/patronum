@@ -48,12 +48,12 @@ test('store must correctly serializes', async () => {
   await allSettled(clock, { scope: scopeB });
   expect(serialize(scopeA)).toMatchInlineSnapshot(`
     {
-      "-9m03zk|-k3vl4d": 2,
+      "-6rqdme|-40cfpr": 2,
     }
   `);
   expect(serialize(scopeB)).toMatchInlineSnapshot(`
     {
-      "-9m03zk|-k3vl4d": 3,
+      "-6rqdme|-40cfpr": 3,
     }
   `);
 });

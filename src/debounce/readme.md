@@ -201,13 +201,15 @@ someHappened(4);
 ### [Tests] Exposed timers API example
 
 ```ts
-const timerFx = createEffect(({ timeoutId, rejectPromise, saveCancel, timeout }: DebounceTimerFxProps) => {
-  const save = scopeBind(saveCancel);
+const timerFx = createEffect(({ canceller, timeout }: DebounceTimerFxProps) => {
+  const { timeoutId, rejectPromise } = canceller;
 
   if (timeoutId) clearTimeout(timeoutId);
   if (rejectPromise) rejectPromise();
+
   return new Promise((resolve, reject) => {
-    save([setTimeout(resolve, timeout), reject]);
+    canceller.timeoutId = setTimeout(resolve, timeout);
+    canceller.rejectPromise = reject;
   });
 });
 

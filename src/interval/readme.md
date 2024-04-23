@@ -106,22 +106,20 @@ keepFresh(someQuery, {
 ### [Tests] Exposed timers API example
 
 ```ts
-const timeoutFx = createEffect(({ timeout, running, saveTimeout }: IntervalTimeoutFxProps) => {
-  const save = scopeBind(saveTimeout);
-
+const timeoutFx = createEffect(({ canceller, timeout, running }: IntervalTimeoutFxProps) => {
   if (!running) {
     return Promise.reject();
   }
 
   return new Promise((resolve, reject) => {
-    const timeoutId = setTimeout(resolve, timeout);
-    save({ timeoutId, reject });
+    canceller.timeoutId = setTimeout(resolve, timeout);
+    canceller.reject = reject;
   });
 })
 
-const cleanupFx = createEffect(({ rejecter, timeoutId }: IntervalCleanupFxProps) => {
-  rejecter();
-  if (timeoutId) myClearTimeout(timeoutId);
+const cleanupFx = createEffect(({ reject, timeoutId }: IntervalCleanupFxProps) => {
+  reject();
+  if (timeoutId) clearTimeout(timeoutId);
 });
 
 const scope = fork({

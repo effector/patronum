@@ -1,46 +1,41 @@
 import {
-  Event,
-  EventCallable,
-  Store,
+  attach,
+  createEffect,
   createEvent,
   createStore,
-  sample,
-  attach,
+  Event,
+  EventCallable,
   is,
-  createEffect, scopeBind
+  sample,
+  Store
 } from 'effector'
 
-type SaveTimeoutEventProps = {
+type IntervalCanceller = {
   timeoutId: NodeJS.Timeout;
   reject: () => void;
 };
 
 export type IntervalTimeoutFxProps = {
+  canceller: IntervalCanceller;
   timeout: number;
   running: boolean;
-  saveTimeout: EventCallable<SaveTimeoutEventProps>;
 };
 
-export type IntervalCleanupFxProps = {
-  timeoutId: NodeJS.Timeout | null;
-  rejecter: () => void;
-};
+export type IntervalCleanupFxProps = IntervalCanceller;
 
-const timeoutFx = createEffect(({ timeout, running, saveTimeout }: IntervalTimeoutFxProps) => {
-  const save = scopeBind(saveTimeout);
-
+const timeoutFx = createEffect(({ canceller, timeout, running }: IntervalTimeoutFxProps) => {
   if (!running) {
     return Promise.reject();
   }
 
   return new Promise((resolve, reject) => {
-    const timeoutId = setTimeout(resolve, timeout);
-    save({ timeoutId, reject });
+    canceller.timeoutId = setTimeout(resolve, timeout);
+    canceller.reject = reject;
   });
 })
 
-const cleanupFx = createEffect(({ rejecter, timeoutId }: IntervalCleanupFxProps) => {
-  rejecter();
+const cleanupFx = createEffect(({ reject, timeoutId }: IntervalCleanupFxProps) => {
+  reject();
   if (timeoutId) clearTimeout(timeoutId);
 });
 
@@ -95,37 +90,26 @@ function _interval<S extends unknown, F extends unknown>({
 
   const $notRunning = $isRunning.map((running) => !running, { skipVoid: false });
 
-  const saveTimeout = createEvent<{
-    timeoutId: NodeJS.Timeout;
-    reject: () => void;
-  }>();
-
-  const $timeoutId = createStore<NodeJS.Timeout | null>(null).on(
-    saveTimeout,
-    (_, { timeoutId }) => timeoutId,
-  );
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  const $rejecter = createStore<() => void>(() => {}).on(
-    saveTimeout,
-    (_, { reject }) => reject,
-  );
+  const $canceller = createStore<IntervalCanceller | null>(null);
 
   const innerTimeoutFx = attach({
-    source: { timeout: $timeout, running: $isRunning },
-    mapParams: (_, source) => ({ saveTimeout, ...source }),
+    source: { canceller: $canceller as Store<IntervalCanceller>, running: $isRunning, timeout: $timeout },
+    mapParams: (_, source) => source,
     effect: timeoutFx,
   });
 
   const innerCleanupFx = attach({
-    source: { timeoutId: $timeoutId, rejecter: $rejecter },
+    source: $canceller as Store<IntervalCanceller>,
+    mapParams: (_, source) => source,
     effect: cleanupFx,
   });
 
   sample({
     clock: setup,
-    source: $timeout,
+    source: $canceller,
     filter: $notRunning,
-    target: innerTimeoutFx,
+    fn: (canceller) => canceller ?? {},
+    target: [innerTimeoutFx, $canceller],
   });
 
   if (leading) {

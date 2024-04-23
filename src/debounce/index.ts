@@ -9,24 +9,26 @@ import {
   merge,
   UnitTargetable,
   EventAsReturnType,
-  createEffect, EventCallable, scopeBind
+  createEffect
 } from 'effector'
-import { debug } from '../debug'
+import { spread } from '../spread'
+
+type DebounceCanceller = { timeoutId?: NodeJS.Timeout; rejectPromise?: () => void; };
 
 export type DebounceTimerFxProps = {
-  timeoutId?: NodeJS.Timeout;
-  rejectPromise?: () => void;
-  saveCancel: EventCallable<[NodeJS.Timeout, () => void]>;
+  canceller: DebounceCanceller;
   timeout: number;
 };
 
-const timerFx = createEffect(({ timeoutId, rejectPromise, saveCancel, timeout }: DebounceTimerFxProps) => {
-  const save = scopeBind(saveCancel);
+const timerFx = createEffect(({ canceller, timeout }: DebounceTimerFxProps) => {
+  const { timeoutId, rejectPromise } = canceller;
 
   if (timeoutId) clearTimeout(timeoutId);
   if (rejectPromise) rejectPromise();
+
   return new Promise((resolve, reject) => {
-    save([setTimeout(resolve, timeout), reject]);
+    canceller.timeoutId = setTimeout(resolve, timeout);
+    canceller.rejectPromise = reject;
   });
 });
 
@@ -69,23 +71,16 @@ export function _debounce<T>(
 
   const $timeout = toStoreNumber(timeout);
 
-  const saveCancel = createEvent<[NodeJS.Timeout, () => void]>();
-  const $canceller = createStore<[NodeJS.Timeout, () => void] | []>([], {
+  const $canceller = createStore<DebounceCanceller | null>(null, {
     serialize: 'ignore',
-  }).on(saveCancel, (_, payload) => payload);
+  });
 
   const tick = (target as UnitTargetable<T>) ?? createEvent();
-  debug($canceller)
 
   const innerTimerFx = attach({
     name: name || `debounce(${(source as any)?.shortName || source.kind}) effect`,
-    source: $canceller,
-    mapParams: (timeout: number, [timeoutId, rejectPromise]) => ({
-      timeout,
-      timeoutId,
-      rejectPromise,
-      saveCancel
-    }),
+    source: $canceller as Store<DebounceCanceller>,
+    mapParams: (timeout: number, source: DebounceCanceller) => ({ canceller: source, timeout }),
     effect: timerFx,
   });
 
@@ -127,9 +122,13 @@ export function _debounce<T>(
   });
 
   sample({
-    source: $timeout,
+    source: { timeout: $timeout, canceller: $canceller },
     clock: triggerTick,
-    target: innerTimerFx,
+    fn: ({ timeout, canceller }) => ({ timeout, canceller: canceller ?? {} }),
+    target: spread({
+      timeout: innerTimerFx,
+      canceller: $canceller
+    }),
   });
 
   sample({

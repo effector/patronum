@@ -132,21 +132,19 @@ describe('@@trigger', () => {
 });
 
 test('exposed timers api', async () => {
-  const timeoutFx = createEffect(({ timeout, running, saveTimeout }: IntervalTimeoutFxProps) => {
-    const save = scopeBind(saveTimeout);
-
+  const timeoutFx = createEffect(({ canceller, timeout, running }: IntervalTimeoutFxProps) => {
     if (!running) {
       return Promise.reject();
     }
 
     return new Promise((resolve, reject) => {
-      const timeoutId = setTimeout(resolve, timeout / 2);
-      save({ timeoutId, reject });
+      canceller.timeoutId = setTimeout(resolve, timeout / 2);
+      canceller.reject = reject;
     });
   })
 
-  const cleanupFx = createEffect(({ rejecter, timeoutId }: IntervalCleanupFxProps) => {
-    rejecter();
+  const cleanupFx = createEffect(({ reject, timeoutId }: IntervalCleanupFxProps) => {
+    reject();
     if (timeoutId) clearTimeout(timeoutId);
   });
 
