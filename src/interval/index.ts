@@ -7,7 +7,7 @@ import {
   sample,
   attach,
   is,
-  createEffect
+  createEffect, scopeBind
 } from 'effector'
 
 type SaveTimeoutEventProps = {
@@ -27,13 +27,15 @@ export type IntervalCleanupFxProps = {
 };
 
 const timeoutFx = createEffect(({ timeout, running, saveTimeout }: IntervalTimeoutFxProps) => {
+  const save = scopeBind(saveTimeout);
+
   if (!running) {
     return Promise.reject();
   }
 
   return new Promise((resolve, reject) => {
     const timeoutId = setTimeout(resolve, timeout);
-    saveTimeout({ timeoutId, reject });
+    save({ timeoutId, reject });
   });
 })
 

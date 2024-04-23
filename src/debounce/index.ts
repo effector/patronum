@@ -9,8 +9,9 @@ import {
   merge,
   UnitTargetable,
   EventAsReturnType,
-  createEffect, EventCallable
+  createEffect, EventCallable, scopeBind
 } from 'effector'
+import { debug } from '../debug'
 
 export type DebounceTimerFxProps = {
   timeoutId?: NodeJS.Timeout;
@@ -20,10 +21,12 @@ export type DebounceTimerFxProps = {
 };
 
 const timerFx = createEffect(({ timeoutId, rejectPromise, saveCancel, timeout }: DebounceTimerFxProps) => {
+  const save = scopeBind(saveCancel);
+
   if (timeoutId) clearTimeout(timeoutId);
   if (rejectPromise) rejectPromise();
   return new Promise((resolve, reject) => {
-    saveCancel([setTimeout(resolve, timeout), reject]);
+    save([setTimeout(resolve, timeout), reject]);
   });
 });
 
@@ -72,6 +75,7 @@ export function _debounce<T>(
   }).on(saveCancel, (_, payload) => payload);
 
   const tick = (target as UnitTargetable<T>) ?? createEvent();
+  debug($canceller)
 
   const innerTimerFx = attach({
     name: name || `debounce(${(source as any)?.shortName || source.kind}) effect`,

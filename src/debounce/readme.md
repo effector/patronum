@@ -202,10 +202,12 @@ someHappened(4);
 
 ```ts
 const timerFx = createEffect(({ timeoutId, rejectPromise, saveCancel, timeout }: DebounceTimerFxProps) => {
-  if (timeoutId) myClearTimeout(timeoutId);
+  const save = scopeBind(saveCancel);
+
+  if (timeoutId) clearTimeout(timeoutId);
   if (rejectPromise) rejectPromise();
   return new Promise((resolve, reject) => {
-    saveCancel([mySetTimeout(resolve, timeout), reject]);
+    save([setTimeout(resolve, timeout), reject]);
   });
 });
 

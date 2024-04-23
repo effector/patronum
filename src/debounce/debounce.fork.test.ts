@@ -7,7 +7,7 @@ import {
   createEvent,
   createStore,
   sample,
-  createWatch, createEffect,
+  createWatch, createEffect, scopeBind,
 } from 'effector'
 import { wait, watch } from '../../test-library';
 
@@ -186,18 +186,22 @@ describe('edge cases', () => {
   test('does not call target twice for sample chain doubles', async () => {
     const trigger = createEvent();
 
+    const scope = fork();
     const db = debounce({ source: trigger, timeout: 100 });
 
     const listener = jest.fn();
-    db.watch(listener);
+
+    createWatch({
+      unit: db,
+      fn: listener,
+      scope,
+    })
 
     const start = createEvent();
     const secondTrigger = createEvent();
 
     sample({ clock: start, fn: () => 'one', target: [secondTrigger, trigger] });
     sample({ clock: secondTrigger, fn: () => 'two', target: [trigger] });
-
-    const scope = fork();
 
     await allSettled(start, { scope });
 
@@ -235,10 +239,12 @@ describe('edge cases', () => {
 
 test('exposed timers api', async () => {
   const timerFx = createEffect(({ timeoutId, rejectPromise, saveCancel, timeout }: DebounceTimerFxProps) => {
+    const save = scopeBind(saveCancel);
+
     if (timeoutId) clearTimeout(timeoutId);
     if (rejectPromise) rejectPromise();
     return new Promise((resolve, reject) => {
-      saveCancel([setTimeout(resolve, timeout / 2), reject]);
+      save([setTimeout(resolve, timeout / 2), reject]);
     });
   });
 

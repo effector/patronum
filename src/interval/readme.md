@@ -107,13 +107,15 @@ keepFresh(someQuery, {
 
 ```ts
 const timeoutFx = createEffect(({ timeout, running, saveTimeout }: IntervalTimeoutFxProps) => {
+  const save = scopeBind(saveTimeout);
+
   if (!running) {
     return Promise.reject();
   }
 
   return new Promise((resolve, reject) => {
-    const timeoutId = mySetTimeout(resolve, timeout);
-    saveTimeout({ timeoutId, reject });
+    const timeoutId = setTimeout(resolve, timeout);
+    save({ timeoutId, reject });
   });
 })
 

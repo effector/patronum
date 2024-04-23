@@ -4,7 +4,7 @@ import {
   fork,
   createStore,
   sample,
-  createWatch, createEffect,
+  createWatch, createEffect, scopeBind,
 } from 'effector'
 import { argumentHistory, wait, watch } from '../../test-library';
 import { interval, IntervalCleanupFxProps, IntervalTimeoutFxProps } from '.'
@@ -133,13 +133,15 @@ describe('@@trigger', () => {
 
 test('exposed timers api', async () => {
   const timeoutFx = createEffect(({ timeout, running, saveTimeout }: IntervalTimeoutFxProps) => {
+    const save = scopeBind(saveTimeout);
+
     if (!running) {
       return Promise.reject();
     }
 
     return new Promise((resolve, reject) => {
       const timeoutId = setTimeout(resolve, timeout / 2);
-      saveTimeout({ timeoutId, reject });
+      save({ timeoutId, reject });
     });
   })
 
