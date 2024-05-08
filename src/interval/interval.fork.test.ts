@@ -176,4 +176,6 @@ test('exposed timers api', async () => {
   await wait(5);
 
   expect(mockedFn).toBeCalled();
+
+  stop();
 });
