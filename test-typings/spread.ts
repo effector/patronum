@@ -11,16 +11,17 @@ import {
 import { spread } from '../dist/spread';
 
 {
-  const $source = createStore({ first: '', last: '' });
+  const $source = createStore({ first: '', last: '', foo: 1 });
   const first = createEvent<string>();
   const last = createEvent<string>();
 
-  expectType<Store<{ first: string; last: string }>>(
+  expectType<Store<{ first: string; last: string; foo: number }>>(
     spread({
       source: $source,
       targets: {
         first,
         last,
+        foo: [createEvent<number>(), createStore(1)],
       },
     }),
   );
@@ -54,36 +55,77 @@ import { spread } from '../dist/spread';
       last: createEvent<number>(),
     },
   });
+
+  // @ts-expect-error
+  spread({
+    source: createEvent<{ first: string; last: number }>(),
+    targets: {
+      first: createEvent<string>(),
+      last: [createEvent<number>(), createEvent<string>()],
+    },
+  });
+
+  spread({
+    source: createEvent<{ first: string; last: number }>(),
+    targets: {
+      // @ts-expect-error
+      last: [createEvent<string>(), createEvent<string>()],
+      first: createEvent<string>(),
+    },
+  });
+
+  sample({
+    // @ts-expect-error
+    source: createEvent<{ first: string; last: number }>(),
+    target: spread({
+      first: createEvent<string>(),
+      last: [createEvent<string>(), createEvent<string>()],
+    }),
+  });
+
+  sample({
+    // @ts-expect-error
+    source: createEvent<{ first: string; last: number }>(),
+    target: spread({
+      targets: {
+        first: createEvent<string>(),
+        last: [createEvent<string>(), createEvent<string>()],
+      },
+    }),
+  });
 }
 
 // Check input source type with output
 {
-  expectType<Event<{ foo: string; bar: number }>>(
+  expectType<Event<{ foo: string; bar: number; baz: boolean }>>(
     spread({
-      source: createEvent<{ foo: string; bar: number }>(),
+      source: createEvent<{ foo: string; bar: number; baz: boolean }>(),
       targets: {
         foo: createEvent<string>(),
         bar: createEvent<number>(),
+        baz: [createEvent<boolean>(), createEvent<boolean>()],
       },
     }),
   );
 
-  expectType<Store<{ random: string; bar: number }>>(
+  expectType<Store<{ random: string; bar: number; baz: boolean }>>(
     spread({
-      source: createStore({ random: '', bar: 5 }),
+      source: createStore({ random: '', bar: 5, baz: true }),
       targets: {
         random: createEvent<string>(),
         bar: createEvent<number>(),
+        baz: [createEvent<boolean>(), createEvent<boolean>()],
       },
     }),
   );
 
-  expectType<Effect<{ foo: string; bar: number }, void>>(
+  expectType<Effect<{ foo: string; bar: number; baz: boolean }, void>>(
     spread({
-      source: createEffect<{ foo: string; bar: number }, void>(),
+      source: createEffect<{ foo: string; bar: number; baz: boolean }, void>(),
       targets: {
         foo: createEvent<string>(),
         bar: createEvent<number>(),
+        baz: [createEvent<boolean>(), createEvent<boolean>()],
       },
     }),
   );
@@ -91,32 +133,35 @@ import { spread } from '../dist/spread';
 
 // Check target different units
 {
-  expectType<Event<{ foo: string; bar: number }>>(
+  expectType<Event<{ foo: string; bar: number; baz: boolean }>>(
     spread({
-      source: createEvent<{ foo: string; bar: number }>(),
+      source: createEvent<{ foo: string; bar: number; baz: boolean }>(),
       targets: {
         foo: createStore(''),
         bar: createEffect<number, void>(),
+        baz: [createEvent<boolean>(), createStore(true)],
       },
     }),
   );
 
-  expectType<Store<{ foo: string; bar: number }>>(
+  expectType<Store<{ foo: string; bar: number; baz: boolean }>>(
     spread({
-      source: createStore({ foo: '', bar: 5 }),
+      source: createStore({ foo: '', bar: 5, baz: true }),
       targets: {
         foo: createStore(''),
         bar: createEffect<number, void>(),
+        baz: [createEvent<boolean>(), createEffect<boolean, void>()],
       },
     }),
   );
 
-  expectType<Effect<{ foo: string; bar: number }, void>>(
+  expectType<Effect<{ foo: string; bar: number; baz: boolean }, void>>(
     spread({
-      source: createEffect<{ foo: string; bar: number }, void>(),
+      source: createEffect<{ foo: string; bar: number; baz: boolean }, void>(),
       targets: {
         foo: createStore(''),
         bar: createEffect<number, void>(),
+        baz: [createStore(true), createEffect<boolean, void>()],
       },
     }),
   );
@@ -126,12 +171,16 @@ import { spread } from '../dist/spread';
 {
   const foo = createEvent<number>();
 
-  expectType<Event<{ foo: string; bar: number }>>(
+  expectType<Event<{ foo: string; bar: number; baz: boolean }>>(
     spread({
-      source: createEvent<{ foo: string; bar: number }>(),
+      source: createEvent<{ foo: string; bar: number; baz: boolean }>(),
       targets: {
         foo: foo.prepend((string) => string.length),
         bar: createEvent<number>(),
+        baz: [
+          createEvent<string>().prepend((bool) => (bool ? 'true' : 'false')),
+          createEvent<number>().prepend((bool) => (bool ? 1 : 0)),
+        ],
       },
     }),
   );
@@ -144,19 +193,24 @@ import { spread } from '../dist/spread';
       foo: createStore(''),
       bar: createEffect<number, void>(),
       baz: createEvent<boolean>(),
+      last: [createEvent<null>(), createStore(null)],
     },
   });
 
-  expectType<Event<{ foo?: string; bar?: number; baz?: boolean }>>(spreadToStores);
+  expectType<Event<{ foo?: string; bar?: number; baz?: boolean; last?: null }>>(
+    spreadToStores,
+  );
 }
 {
   const spreadToStores = spread({
     foo: createStore(''),
-    bar: createEffect<number, void>(),
     baz: createEvent<boolean>(),
+    last: [createEvent<null>(), createStore(null)],
   });
 
-  expectType<Event<{ foo?: string; bar?: number; baz?: boolean }>>(spreadToStores);
+  expectType<Event<{ foo?: string; bar?: number; baz?: boolean; last?: null }>>(
+    spreadToStores,
+  );
 }
 
 // Example from readme with nullability
@@ -201,14 +255,21 @@ import { spread } from '../dist/spread';
       first: createEvent<string>(),
     },
   });
+  spread({
+    source: createEffect<{ first: string; last: string }, void>(),
+    targets: {
+      first: [createEvent<string>(), createStore('')],
+    },
+  });
 }
 
 // allows nested
 {
-  const $source = createStore({ first: '', last: { nested: '', other: '' } });
+  const $source = createStore({ first: '', last: { nested: '', other: '', arr: 1 } });
   const first = createEvent<string>();
   const nested = createEvent<string>();
   const other = createEvent<string>();
+  const arrayOfUnits = [createEvent<number>(), createStore(1)];
 
   // nested full match
   spread({
@@ -219,6 +280,7 @@ import { spread } from '../dist/spread';
         targets: {
           nested,
           other,
+          arr: arrayOfUnits,
         },
       }),
     },
@@ -252,6 +314,7 @@ import { spread } from '../dist/spread';
     targets: {
       nested,
       other,
+      arr: arrayOfUnits,
     },
   });
 
@@ -298,6 +361,7 @@ import { spread } from '../dist/spread';
           targets: {
             nested,
             other,
+            arr: arrayOfUnits,
           },
         }),
       },
@@ -317,10 +381,11 @@ import { spread } from '../dist/spread';
   });
 }
 {
-  const $source = createStore({ first: '', last: { nested: '', other: '' } });
+  const $source = createStore({ first: '', last: { nested: '', other: '', arr: 1 } });
   const first = createEvent<string>();
   const nested = createEvent<string>();
   const other = createEvent<string>();
+  const arrayOfUnits = [createEvent<number>(), createStore(1)];
 
   // nested full match
   spread({
@@ -330,6 +395,7 @@ import { spread } from '../dist/spread';
       last: spread({
         nested,
         other,
+        arr: arrayOfUnits,
       }),
     },
   });
@@ -357,6 +423,7 @@ import { spread } from '../dist/spread';
   const out = spread({
     nested,
     other,
+    arr: arrayOfUnits,
   });
 
   spread({
@@ -392,6 +459,7 @@ import { spread } from '../dist/spread';
       last: spread({
         nested,
         other,
+        arr: arrayOfUnits,
       }),
     }),
   });
