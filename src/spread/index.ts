@@ -1,11 +1,4 @@
-import {
-  createEvent,
-  EventCallable,
-  is,
-  sample,
-  Unit,
-  UnitTargetable,
-} from 'effector';
+import { createEvent, EventCallable, sample, Unit, UnitTargetable } from 'effector';
 
 const hasPropBase = {}.hasOwnProperty;
 const hasOwnProp = <O extends { [k: string]: unknown }>(object: O, key: string) =>
@@ -13,9 +6,29 @@ const hasOwnProp = <O extends { [k: string]: unknown }>(object: O, key: string) 
 
 type NoInfer<T> = [T][T extends any ? 0 : never];
 
+/**
+ * @example
+ * spread({
+ *   source: dataObject,
+ *   targets: { first: targetA, second: [target1, target2] },
+ * })
+ *
+ * sample({
+ *   source: dataObject,
+ *   target: spread({ targets: { first: targetA, second: [target1, target2] } })
+ * })
+ *
+ * sample({
+ *   source: dataObject,
+ *   target: spread({ first: targetA, second: [target1, target2] })
+ * })
+ */
+
 export function spread<Payload>(config: {
   targets: {
-    [Key in keyof Payload]?: UnitTargetable<Payload[Key]>;
+    [Key in keyof Payload]?:
+      | UnitTargetable<Payload[Key]>
+      | Array<UnitTargetable<Payload[Key]>>;
   };
 }): EventCallable<Partial<Payload>>;
 
@@ -27,31 +40,28 @@ export function spread<
   targets: {
     [Key in keyof Payload]?:
       | EventCallable<Partial<Payload[Key]>>
-      | UnitTargetable<NoInfer<Payload[Key]>>;
+      | Array<EventCallable<Partial<Payload[Key]>>>
+      | UnitTargetable<NoInfer<Payload[Key]>>
+      | Array<UnitTargetable<NoInfer<Payload[Key]>>>;
   };
 }): Source;
 
 export function spread<Payload>(targets: {
-  [Key in keyof Payload]?: UnitTargetable<Payload[Key]>;
+  [Key in keyof Payload]?:
+    | UnitTargetable<Payload[Key]>
+    | Array<UnitTargetable<Payload[Key]>>;
 }): EventCallable<Partial<Payload>>;
 
-/**
- * @example
- * spread({ source: dataObject, targets: { first: targetA, second: targetB } })
- * sample({
- *   target: spread({targets: { first: targetA, second: targetB } })
- * })
- */
 export function spread<P>(
   args:
     | {
         targets: {
-          [Key in keyof P]?: Unit<P[Key]>;
+          [Key in keyof P]?: Unit<P[Key]> | Array<Unit<P[Key]>>;
         };
         source?: Unit<P>;
       }
     | {
-        [Key in keyof P]?: Unit<P[Key]>;
+        [Key in keyof P]?: Unit<P[Key]> | Array<Unit<P[Key]>>;
       },
 ): EventCallable<P> {
   const argsShape = isTargets(args) ? { targets: args } : args;
@@ -83,18 +93,15 @@ function isTargets<P>(
   args:
     | {
         targets: {
-          [Key in keyof P]?: Unit<P[Key]>;
+          [Key in keyof P]?: Unit<P[Key]> | Array<Unit<P[Key]>>;
         };
         source?: Unit<P>;
       }
     | {
-        [Key in keyof P]?: Unit<P[Key]>;
+        [Key in keyof P]?: Unit<P[Key]> | Array<Unit<P[Key]>>;
       },
 ): args is {
-  [Key in keyof P]?: Unit<P[Key]>;
+  [Key in keyof P]?: Unit<P[Key]> | Array<Unit<P[Key]>>;
 } {
-  return Object.keys(args).some(
-    (key) =>
-      !['targets', 'source'].includes(key) && is.unit(args[key as keyof typeof args]),
-  );
+  return !Object.keys(args).some((key) => ['targets', 'source'].includes(key));
 }

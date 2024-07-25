@@ -1,4 +1,4 @@
-import { combine, createEvent, createStore, sample } from 'effector';
+import { combine, createEffect, createEvent, createStore, sample } from 'effector';
 import { spread } from './index';
 
 describe('spread(source, targets)', () => {
@@ -105,6 +105,44 @@ describe('spread(source, targets)', () => {
     expect(fnA).toBeCalledWith('Hello');
     expect(fnB).toBeCalledWith(200);
   });
+
+  test('unit to array of units', () => {
+    const source = createEvent<{ first: string; second: number; third: string }>();
+    const targetA = createEvent<string>();
+    const targetA2 = createEffect<string, void>();
+    const targetB = createEvent<number>();
+    const targetB2 = createEvent<number>();
+    const targetC = createStore('');
+
+    const fnA = jest.fn();
+    const fnB = jest.fn();
+    const fnA1 = jest.fn();
+    const fnB1 = jest.fn();
+    const fnC = jest.fn();
+
+    targetA.watch(fnA);
+    targetB.watch(fnB);
+    targetA2.watch(fnA1);
+    targetB2.watch(fnB1);
+    targetC.watch(fnC);
+
+    spread({
+      source,
+      targets: {
+        first: [targetA, targetA2],
+        second: [targetB, targetB2],
+        third: targetC,
+      },
+    });
+
+    source({ first: 'Hello', second: 200, third: 'third' });
+
+    expect(fnA).toBeCalledWith('Hello');
+    expect(fnB).toBeCalledWith(200);
+    expect(fnA1).toBeCalledWith('Hello');
+    expect(fnB1).toBeCalledWith(200);
+    expect(fnC).toBeCalledWith('third');
+  });
 });
 
 describe('spread(targets)', () => {
@@ -133,6 +171,7 @@ describe('spread(targets)', () => {
     expect(fnA).toBeCalledWith('Hello');
     expect(fnB).toBeCalledWith(200);
   });
+
   test('event to events (shorthand)', () => {
     const source = createEvent<{ first: string; second: number }>();
     const targetA = createEvent<string>();
@@ -265,6 +304,84 @@ describe('spread(targets)', () => {
 
     expect(fnA).toBeCalledWith('Hello');
     expect(fnB).toBeCalledWith(200);
+  });
+
+  test('unit to array of units', () => {
+    const source = createEvent<{ first: string; second: number; third: string }>();
+    const targetA = createEvent<string>();
+    const targetA2 = createEffect<string, void>();
+    const targetB = createEvent<number>();
+    const targetB2 = createEvent<number>();
+    const targetC = createStore('');
+
+    const fnA = jest.fn();
+    const fnB = jest.fn();
+    const fnA1 = jest.fn();
+    const fnB1 = jest.fn();
+    const fnC = jest.fn();
+
+    targetA.watch(fnA);
+    targetB.watch(fnB);
+    targetA2.watch(fnA1);
+    targetB2.watch(fnB1);
+    targetC.watch(fnC);
+
+    sample({
+      source,
+      target: spread({
+        targets: {
+          first: [targetA, targetA2],
+          second: [targetB, targetB2],
+          third: targetC,
+        },
+      }),
+    });
+
+    source({ first: 'Hello', second: 200, third: 'third' });
+
+    expect(fnA).toBeCalledWith('Hello');
+    expect(fnB).toBeCalledWith(200);
+    expect(fnA1).toBeCalledWith('Hello');
+    expect(fnB1).toBeCalledWith(200);
+    expect(fnC).toBeCalledWith('third');
+  });
+
+  test('unit to array of units (shorthand)', () => {
+    const source = createEvent<{ first: string; second: number; third: string }>();
+    const targetA = createEvent<string>();
+    const targetA2 = createEffect<string, void>();
+    const targetB = createEvent<number>();
+    const targetB2 = createEvent<number>();
+    const targetC = createStore('');
+
+    const fnA = jest.fn();
+    const fnB = jest.fn();
+    const fnA1 = jest.fn();
+    const fnB1 = jest.fn();
+    const fnC = jest.fn();
+
+    targetA.watch(fnA);
+    targetB.watch(fnB);
+    targetA2.watch(fnA1);
+    targetB2.watch(fnB1);
+    targetC.watch(fnC);
+
+    sample({
+      source,
+      target: spread({
+        first: [targetA, targetA2],
+        second: [targetB, targetB2],
+        third: targetC,
+      }),
+    });
+
+    source({ first: 'Hello', second: 200, third: 'third' });
+
+    expect(fnA).toBeCalledWith('Hello');
+    expect(fnB).toBeCalledWith(200);
+    expect(fnA1).toBeCalledWith('Hello');
+    expect(fnB1).toBeCalledWith(200);
+    expect(fnC).toBeCalledWith('third');
   });
 });
 
