@@ -70,18 +70,14 @@ export function spread<P>(
     if (hasOwnProp(targets, targetKey)) {
       const currentTarget = targets[targetKey];
 
-      const hasTargetKey = sample({
-        source,
-        batch: false,
-        filter: (object): object is any =>
-          typeof object === 'object' && object !== null && targetKey in object,
-      });
-
       sample({
-        batch: false,
-        clock: hasTargetKey,
+        source,
+        filter: (object): object is any => {
+          return typeof object === 'object' && object !== null && targetKey in object;
+        },
         fn: (object: P) => object[targetKey],
         target: currentTarget as UnitTargetable<any>,
+        batch: false,
       });
     }
   }
