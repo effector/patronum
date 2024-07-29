@@ -211,3 +211,61 @@ source = spread({ targets: { field: target, ... } })
 ### Returns
 
 - `source` `(Event<T>)` — Source event, data passed to it should be an object with fields from `targets`
+
+## `source = spread({ targets: { field: Unit[] } })`
+
+### Motivation
+
+Multiple units can be passed for each target field
+
+### Formulae
+
+```ts
+source = spread({ field: [target1, target2], ... })
+
+source = spread({ targets: { field: [target1, target2], ... } })
+
+spread({ source, targets: { field: [target1, target2], ... } })
+```
+
+- When `source` is triggered with **object**, extract `field` from data, and trigger all targets of `target`
+- `targets` can have multiple properties with multiple units
+- If the `source` was triggered with non-object, nothing would be happening
+- If `source` is triggered with object but without property `field`, no unit of the target for this `field` will be triggered
+
+### Example
+
+#### Trigger multiple units for each field of payload
+
+```ts
+const roomEntered = createEvent<{
+  roomId: string;
+  userId: string;
+  message: string;
+}>();
+const userIdChanged = createEvent<string>();
+
+const $roomMessage = createStore('');
+const $currentRoomId = createStore<string | null>(null);
+
+const getRoomFx = createEffect((roomId: string) => roomId);
+const setUserIdFx = createEffect((userId: string) => userId);
+
+sample({
+  clock: roomEntered,
+  target: spread({
+    roomId: [getRoomFx, $currentRoomId],
+    userId: [setUserIdFx, userIdChanged],
+    message: $roomMessage,
+  }),
+});
+
+roomEntered({
+  roomId: 'roomId',
+  userId: 'userId',
+  message: 'message',
+});
+// => getRoomFx('roomId'), update $currentRoomId with 'roomId'
+// => setUserIdFx('userId'), userIdChanged('userId')
+// => update $roomMessage with 'message'
+```
