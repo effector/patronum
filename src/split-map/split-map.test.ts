@@ -1,4 +1,4 @@
-import { createEvent, createStore, is } from 'effector';
+import { createEffect, createEvent, createStore, is } from 'effector';
 import { argumentHistory } from '../../test-library';
 import { splitMap } from './index';
 
@@ -201,4 +201,91 @@ test('from readme', () => {
   watchCreated.mockClear();
   watchUpdate.mockClear();
   watchDefault.mockClear();
+});
+
+describe('with targets', () => {
+  it('should trigger units in targets', () => {
+    const source = createEvent<{ name?: string; age?: number }>();
+
+    const ageTarget = createEvent<number>();
+    const $nameTarget1 = createStore('');
+    const nameTarget2 = createEvent<string>();
+    const defaultCaseTarget = createEffect<void, void>();
+
+    const { nameStringed, ageNumbered, __ } = splitMap({
+      source,
+      cases: {
+        ageNumbered: ({ age }) => age,
+        nameStringed: ({ name }) => name,
+      },
+      targets: {
+        ageNumbered: ageTarget,
+        nameStringed: [$nameTarget1, nameTarget2],
+        __: defaultCaseTarget,
+      },
+    });
+
+    const fnTargetAge = jest.fn();
+    const fnTargetName1 = jest.fn();
+    const fnTargetName2 = jest.fn();
+    const fnTargetDefault = jest.fn();
+
+    const fnAgeNumbered = jest.fn();
+    const fnNameStringed = jest.fn();
+    const fnDefaultCase = jest.fn();
+
+    ageTarget.watch(fnTargetAge);
+    $nameTarget1.updates.watch(fnTargetName1);
+    nameTarget2.watch(fnTargetName2);
+    defaultCaseTarget.watch(fnTargetDefault);
+
+    ageNumbered.watch(fnAgeNumbered);
+    nameStringed.watch(fnNameStringed);
+    __.watch(fnDefaultCase);
+
+    source({ age: 100 });
+
+    expect(fnAgeNumbered).toHaveBeenNthCalledWith(1, 100);
+    expect(fnTargetAge).toHaveBeenNthCalledWith(1, 100);
+
+    source({ name: 'John' });
+
+    expect(fnNameStringed).toHaveBeenNthCalledWith(1, 'John');
+    expect(fnTargetName1).toHaveBeenNthCalledWith(1, 'John');
+
+    source({});
+
+    expect(fnDefaultCase).toBeCalledTimes(1);
+    expect(fnTargetDefault).toBeCalledTimes(1);
+  });
+
+  it('should trigger all units in default case', () => {
+    const source = createEvent<string>();
+
+    const target1 = createEvent<string>();
+    const $target2 = createStore('');
+    const target3 = createEffect<string, void>();
+
+    splitMap({
+      source,
+      cases: {},
+      targets: {
+        __: [target1, $target2, target3],
+      },
+    });
+
+    const fnTarget1 = jest.fn();
+    const fnTarget2 = jest.fn();
+    const fnTarget3 = jest.fn();
+
+    target1.watch(fnTarget1);
+    $target2.updates.watch(fnTarget2);
+    target3.watch(fnTarget3);
+
+    source('Demo');
+
+    expect(fnTarget1).toHaveBeenNthCalledWith(1, 'Demo');
+    expect(fnTarget2).toHaveBeenNthCalledWith(1, 'Demo');
+    expect(fnTarget3).toHaveBeenNthCalledWith(1, 'Demo');
+  });
 });
