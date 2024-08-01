@@ -112,3 +112,114 @@ websocketEventReceived({ type: 'increment', name: 'demo', count: 5 });
 websocketEventReceived({ type: 'bang', random: 'unknown' });
 // => Unknown type: 'bang'
 ```
+
+## `splitMap({ source, cases, targets? })`
+
+### Motivation
+
+Often we need the same behavior as in split — react to derived events received from `cases` and trigger the corresponding units. In `targets` field we can pass object with the same keys as in `cases` and values with `units` to trigger on the corresponding event.
+
+### Formulae
+
+```ts
+splitMap({ source, cases, targets });
+```
+
+- On each `source` trigger, call each function in `cases` object one after another until function returns non undefined, and call event in `shape` with the same name as function in `cases` object.
+- Trigger the corresponding `unit`(s) from `targets` object
+- If no function returned value, event `__` in `shape` should be triggered, same for `targets` field — trigger `unit`(s) provided in `__` key
+
+### Arguments
+
+1. `source` ( | | ) — Source unit, data from this unit passed to each function in `cases` object and `__` event in `shape` as is
+2. `cases` (`{ [key: string]: (payload: T) => any | void }`) — Object of functions. Function receives one argument is a payload from `source`, should return any value or `undefined`
+3. `targets` (`{ [key: string]?: Unit<any> | Unit<any>[]; __?: Unit<any> | Unit<any>[] }`) — Object of units to trigger on corresponding event from `cases` object
+
+### Returns
+
+- `shape` (`{ [key: string]: Event<any>; __: Event<T> }`) — Object of events, with the same structure as `cases`, but with the _default_ event `__`, that triggered when each other function returns `undefined`
+
+### Examples
+
+#### Split WebSocket events to effector events with targets
+
+```ts
+import { createEvent } from 'effector';
+import { splitMap } from 'patronum/split-map';
+import { spread } from 'patronum/spread';
+
+type WSEvent =
+  | { type: 'init'; key: string }
+  | { type: 'increment'; count: number }
+  | { type: 'reset' };
+
+export const websocketEventReceived = createEvent<WSEvent>();
+
+const $isInitialized = createStore(false);
+const $count = createStore<number | null>(null);
+
+const getInitialDataFx = createEffect<string, void>();
+
+splitMap({
+  source: websocketEventReceived,
+  cases: {
+    init: (event) => {
+      if (event.type === 'init') return { init: true, key: event.key };
+    },
+    increment: (payload) => {
+      if (payload.type === 'increment') return payload.count;
+    },
+    reset: ({ type }) => {
+      if (type === 'reset') return null;
+    },
+  },
+  targets: {
+    // Event<{ init?: boolean; key?: string }>
+    init: spread({ init: $isInitialized, key: getInitialDataFx }),
+    increment: $count,
+    reset: [$count.reinit, $isInitialized.reinit],
+  },
+});
+
+websocketEventReceived({ type: 'init', key: 'key' });
+// => $isInitialized: true, getInitialDataFx: 'key'
+
+websocketEventReceived({ type: 'increment', count: 2 });
+// => $count: 2
+
+websocketEventReceived({ type: 'reset' });
+// => $count: null, $isInitialized: false
+```
+
+#### We can still use returned events to do some other logic
+
+```ts
+const { init } = splitMap({
+  source: websocketEventReceived,
+  cases: {
+    init: (event) => {
+      if (event.type === 'init') return { init: true, key: event.key };
+    },
+    increment: (payload) => {
+      if (payload.type === 'increment') return payload.count;
+    },
+    reset: ({ type }) => {
+      if (type === 'reset') return null;
+    },
+  },
+  targets: {
+    // Event<{ init?: boolean; key?: string }>
+    init: spread({ init: $isInitialized, key: getInitialDataFx }),
+    increment: $count,
+    reset: [$count.reinit, $isInitialized.reinit],
+  },
+});
+
+sample({
+  clock: init,
+  // some other logic
+  source: ...,
+  filter: ...,
+  target: ...,
+})
+```
