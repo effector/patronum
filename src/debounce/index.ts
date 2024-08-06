@@ -9,18 +9,38 @@ import {
   merge,
   UnitTargetable,
   EventAsReturnType,
+  createEffect
 } from 'effector';
 
-export function debounce<T>(
+type DebounceCanceller = { timeoutId?: NodeJS.Timeout; rejectPromise?: () => void; };
+
+export type DebounceTimerFxProps = {
+  canceller: DebounceCanceller;
+  timeout: number;
+};
+
+const timerFx = createEffect(({ canceller, timeout }: DebounceTimerFxProps) => {
+  const { timeoutId, rejectPromise } = canceller;
+
+  if (timeoutId) clearTimeout(timeoutId);
+  if (rejectPromise) rejectPromise();
+
+  return new Promise((resolve, reject) => {
+    canceller.timeoutId = setTimeout(resolve, timeout);
+    canceller.rejectPromise = reject;
+  });
+});
+
+export function _debounce<T>(
   source: Unit<T>,
   timeout: number | Store<number>,
 ): EventAsReturnType<T>;
-export function debounce<T>(_: {
+export function _debounce<T>(_: {
   source: Unit<T>;
   timeout: number | Store<number>;
   name?: string;
 }): EventAsReturnType<T>;
-export function debounce<
+export function _debounce<
   T,
   Target extends UnitTargetable<T> | UnitTargetable<void>,
 >(_: {
@@ -29,7 +49,7 @@ export function debounce<
   target: Target;
   name?: string;
 }): Target;
-export function debounce<T>(
+export function _debounce<T>(
   ...args:
     | [
         {
@@ -50,25 +70,20 @@ export function debounce<T>(
 
   const $timeout = toStoreNumber(timeout);
 
-  const saveCancel = createEvent<[NodeJS.Timeout, () => void]>();
-  const $canceller = createStore<[NodeJS.Timeout, () => void] | []>([], {
+  const $canceller = createStore<DebounceCanceller | null>(null, {
     serialize: 'ignore',
-  }).on(saveCancel, (_, payload) => payload);
+  });
 
   const tick = (target as UnitTargetable<T>) ?? createEvent();
 
-  const timerFx = attach({
+  const innerTimerFx = attach({
     name: name || `debounce(${(source as any)?.shortName || source.kind}) effect`,
-    source: $canceller,
-    effect([timeoutId, rejectPromise], timeout: number) {
-      if (timeoutId) clearTimeout(timeoutId);
-      if (rejectPromise) rejectPromise();
-      return new Promise((resolve, reject) => {
-        saveCancel([setTimeout(resolve, timeout), reject]);
-      });
-    },
+    source: $canceller as Store<DebounceCanceller>,
+    mapParams: (timeout: number, source: DebounceCanceller) => ({ canceller: source, timeout }),
+    effect: timerFx,
   });
-  $canceller.reset(timerFx.done);
+
+  $canceller.reset(innerTimerFx.done);
 
   // It's ok - nothing will ever start unless source is triggered
   const $payload = createStore<T[]>([], { serialize: 'ignore', skipVoid: false }).on(
@@ -88,7 +103,7 @@ export function debounce<T>(
         // debounce timeout should be restarted on timeout change
         $timeout,
         // debounce timeout can be restarted in later ticks
-        timerFx,
+        innerTimerFx,
       ],
       () => true,
     );
@@ -96,7 +111,7 @@ export function debounce<T>(
   const requestTick = merge([
     source,
     // debounce timeout is restarted on timeout change
-    sample({ clock: $timeout, filter: timerFx.pending }),
+    sample({ clock: $timeout, filter: innerTimerFx.pending }),
   ]);
 
   sample({
@@ -106,20 +121,32 @@ export function debounce<T>(
   });
 
   sample({
-    source: $timeout,
     clock: triggerTick,
-    target: timerFx,
+    source: $timeout,
+    fn: (timeout) => timeout,
+    target: innerTimerFx,
+  });
+
+  sample({
+    clock: triggerTick,
+    source: $canceller,
+    fn: (canceller) => canceller ?? {},
+    target: $canceller,
   });
 
   sample({
     source: $payload,
-    clock: timerFx.done,
+    clock: innerTimerFx.done,
     fn: ([payload]) => payload,
     target: tick,
   });
 
   return tick as any;
 }
+
+export const debounce = Object.assign(_debounce, {
+  timerFx
+});
 
 function toStoreNumber(value: number | Store<number> | unknown): Store<number> {
   if (is.store(value)) return value;

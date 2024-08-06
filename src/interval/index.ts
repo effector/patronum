@@ -1,15 +1,45 @@
 import {
-  Event,
-  EventCallable,
-  Store,
+  attach,
+  createEffect,
   createEvent,
   createStore,
-  sample,
-  attach,
+  Event,
+  EventCallable,
   is,
-} from 'effector';
+  sample,
+  Store
+} from 'effector'
 
-export function interval<S extends unknown, F extends unknown>(config: {
+type IntervalCanceller = {
+  timeoutId: NodeJS.Timeout;
+  reject: () => void;
+};
+
+export type IntervalTimeoutFxProps = {
+  canceller: IntervalCanceller;
+  timeout: number;
+  running: boolean;
+};
+
+export type IntervalCleanupFxProps = IntervalCanceller;
+
+const timeoutFx = createEffect(({ canceller, timeout, running }: IntervalTimeoutFxProps) => {
+  if (!running) {
+    return Promise.reject();
+  }
+
+  return new Promise((resolve, reject) => {
+    canceller.timeoutId = setTimeout(resolve, timeout);
+    canceller.reject = reject;
+  });
+})
+
+const cleanupFx = createEffect(({ reject, timeoutId }: IntervalCleanupFxProps) => {
+  reject();
+  if (timeoutId) clearTimeout(timeoutId);
+});
+
+function _interval<S extends unknown, F extends unknown>(config: {
   timeout: number | Store<number>;
   start: Event<S>;
   stop?: Event<F>;
@@ -17,13 +47,13 @@ export function interval<S extends unknown, F extends unknown>(config: {
   trailing?: boolean;
 }): { tick: Event<void>; isRunning: Store<boolean> };
 
-export function interval(config: {
+function _interval(config: {
   timeout: number | Store<number>;
   leading?: boolean;
   trailing?: boolean;
 }): TriggerProtocol;
 
-export function interval<S extends unknown, F extends unknown>({
+function _interval<S extends unknown, F extends unknown>({
   timeout,
   start,
   stop,
@@ -37,6 +67,7 @@ export function interval<S extends unknown, F extends unknown>({
   trailing?: boolean;
 }): { tick: Event<void>; isRunning: Store<boolean> } & TriggerProtocol {
   const setup = createEvent();
+
   if (start) {
     sample({
       clock: start,
@@ -45,6 +76,7 @@ export function interval<S extends unknown, F extends unknown>({
   }
 
   const teardown = createEvent();
+
   if (stop) {
     sample({
       clock: stop,
@@ -58,47 +90,26 @@ export function interval<S extends unknown, F extends unknown>({
 
   const $notRunning = $isRunning.map((running) => !running, { skipVoid: false });
 
-  const saveTimeout = createEvent<{
-    timeoutId: NodeJS.Timeout;
-    reject: () => void;
-  }>();
-  const $timeoutId = createStore<NodeJS.Timeout | null>(null).on(
-    saveTimeout,
-    (_, { timeoutId }) => timeoutId,
-  );
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  const $rejecter = createStore<() => void>(() => {}).on(
-    saveTimeout,
-    (_, { reject }) => reject,
-  );
+  const $canceller = createStore<IntervalCanceller | null>(null);
 
-  const timeoutFx = attach({
-    source: { timeout: $timeout, running: $isRunning },
-    effect: ({ timeout, running }) => {
-      if (!running) {
-        return Promise.reject();
-      }
-
-      return new Promise((resolve, reject) => {
-        const timeoutId = setTimeout(resolve, timeout);
-        saveTimeout({ timeoutId, reject });
-      });
-    },
+  const innerTimeoutFx = attach({
+    source: { canceller: $canceller as Store<IntervalCanceller>, running: $isRunning, timeout: $timeout },
+    mapParams: (_, source) => source,
+    effect: timeoutFx,
   });
 
-  const cleanupFx = attach({
-    source: { timeoutId: $timeoutId, rejecter: $rejecter },
-    effect: ({ timeoutId, rejecter }) => {
-      rejecter();
-      if (timeoutId) clearTimeout(timeoutId);
-    },
+  const innerCleanupFx = attach({
+    source: $canceller as Store<IntervalCanceller>,
+    mapParams: (_, source) => source,
+    effect: cleanupFx,
   });
 
   sample({
     clock: setup,
-    source: $timeout,
+    source: $canceller,
     filter: $notRunning,
-    target: timeoutFx,
+    fn: (canceller) => canceller ?? {},
+    target: [innerTimeoutFx, $canceller],
   });
 
   if (leading) {
@@ -113,14 +124,14 @@ export function interval<S extends unknown, F extends unknown>({
   });
 
   sample({
-    clock: timeoutFx.done,
+    clock: innerTimeoutFx.done,
     source: $timeout,
     filter: $isRunning,
-    target: timeoutFx,
+    target: innerTimeoutFx,
   });
 
   sample({
-    clock: timeoutFx.done,
+    clock: innerTimeoutFx.done,
     filter: $isRunning,
     target: tick.prepend(() => {
       /* to be sure, nothing passed to tick */
@@ -138,7 +149,7 @@ export function interval<S extends unknown, F extends unknown>({
 
   sample({
     clock: teardown,
-    target: cleanupFx,
+    target: innerCleanupFx,
   });
 
   return {
@@ -151,6 +162,11 @@ export function interval<S extends unknown, F extends unknown>({
     }),
   };
 }
+
+export const interval = Object.assign(_interval, {
+  timeoutFx,
+  cleanupFx
+});
 
 function toStoreNumber(value: number | Store<number> | unknown): Store<number> {
   if (is.store(value)) return value;

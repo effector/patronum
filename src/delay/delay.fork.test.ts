@@ -1,7 +1,14 @@
 import 'regenerator-runtime/runtime';
-import { createDomain, fork, serialize, allSettled } from 'effector';
+import {
+  createDomain,
+  fork,
+  serialize,
+  allSettled,
+  createEffect, createEvent, createWatch, UnitValue
+} from 'effector'
 
-import { delay } from './index';
+import { delay, DelayTimerFxProps } from './index'
+import { wait } from '../../test-library'
 
 test('throttle works in forked scope', async () => {
   const app = createDomain();
@@ -126,4 +133,38 @@ test('throttle do not affect original store value', async () => {
   `);
 
   expect($counter.getState()).toMatchInlineSnapshot(`0`);
+});
+
+test('exposed timers api', async () => {
+  const timerFx = createEffect<DelayTimerFxProps, UnitValue<any>>(
+    ({ payload, milliseconds }) =>
+      new Promise((resolve) => {
+        setTimeout(resolve, milliseconds / 2, payload);
+      }),
+  )
+
+  const scope = fork({
+    handlers: [[delay.timerFx, timerFx]],
+  });
+
+  const mockedFn = jest.fn();
+
+  const clock = createEvent();
+  const tick = delay(clock, 50);
+
+  createWatch({
+    unit: tick,
+    fn: mockedFn,
+    scope,
+  });
+
+  allSettled(clock, { scope });
+
+  await wait(20);
+
+  expect(mockedFn).not.toBeCalled();
+
+  await wait(5);
+
+  expect(mockedFn).toBeCalled();
 });

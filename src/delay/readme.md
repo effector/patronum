@@ -284,3 +284,24 @@ update('Hello');
 // after 500ms
 // => log Hello
 ```
+
+### [Tests] Exposed timers API example
+
+```ts
+const timerFx = createEffect<DelayTimerFxProps, UnitValue<any>>(
+  ({ payload, milliseconds }) =>
+    new Promise((resolve) => {
+      mySetTimeout(resolve, milliseconds, payload);
+    }),
+)
+
+const scope = fork({
+  handlers: [[delay.timerFx, timerFx]],
+});
+
+const clock = createEvent();
+const tick = delay(clock, 200);
+
+// important! call from scope
+allSettled(clock, { scope });
+```

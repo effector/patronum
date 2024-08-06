@@ -11,27 +11,36 @@ import {
   MultiTarget,
   UnitValue,
   UnitTargetable,
+  attach,
 } from 'effector';
 
 type TimeoutType<Payload> = ((payload: Payload) => number) | Store<number> | number;
+export type DelayTimerFxProps = { payload: UnitValue<any>; milliseconds: number };
 
-export function delay<Source extends Unit<any>>(
+const timerFx = createEffect<DelayTimerFxProps, UnitValue<any>>(
+  ({ payload, milliseconds }) =>
+    new Promise((resolve) => {
+      setTimeout(resolve, milliseconds, payload);
+    }),
+)
+
+export function _delay<Source extends Unit<any>>(
   source: Source,
   timeout: TimeoutType<UnitValue<Source>>,
 ): EventAsReturnType<UnitValue<Source>>;
 
-export function delay<Source extends Unit<any>, Target extends TargetType>(config: {
+export function _delay<Source extends Unit<any>, Target extends TargetType>(config: {
   source: Source;
   timeout: TimeoutType<UnitValue<Source>>;
   target: MultiTarget<Target, UnitValue<Source>>;
 }): Target;
 
-export function delay<Source extends Unit<any>>(config: {
+export function _delay<Source extends Unit<any>>(config: {
   source: Source;
   timeout: TimeoutType<UnitValue<Source>>;
 }): EventAsReturnType<UnitValue<Source>>;
 
-export function delay<
+export function _delay<
   Source extends Unit<any>,
   Target extends TargetType = TargetType,
 >(
@@ -57,15 +66,9 @@ export function delay<
 
   const ms = validateTimeout(timeout);
 
-  const timerFx = createEffect<
-    { payload: UnitValue<Source>; milliseconds: number },
-    UnitValue<Source>
-  >(
-    ({ payload, milliseconds }) =>
-      new Promise((resolve) => {
-        setTimeout(resolve, milliseconds, payload);
-      }),
-  );
+  const innerTimerFx = attach({
+    effect: timerFx
+  });
 
   sample({
     // ms can be Store<number> | number
@@ -77,13 +80,17 @@ export function delay<
       milliseconds:
         typeof milliseconds === 'function' ? milliseconds(payload) : milliseconds,
     }),
-    target: timerFx,
+    target: innerTimerFx,
   });
 
-  sample({ clock: timerFx.doneData, target: targets as UnitTargetable<any>[] });
+  sample({ clock: innerTimerFx.doneData, target: targets as UnitTargetable<any>[] });
 
   return target as any;
 }
+
+export const delay = Object.assign(_delay, {
+  timerFx
+});
 
 function validateTimeout<T>(
   timeout: number | ((_: T) => number) | Store<number> | unknown,

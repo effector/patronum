@@ -7,11 +7,11 @@ import {
   createEvent,
   createStore,
   sample,
-  createWatch,
-} from 'effector';
+  createWatch, createEffect,
+} from 'effector'
 import { wait, watch } from '../../test-library';
 
-import { debounce } from './index';
+import { debounce, DebounceTimerFxProps } from './index'
 
 test('debounce works in forked scope', async () => {
   const app = createDomain();
@@ -186,18 +186,22 @@ describe('edge cases', () => {
   test('does not call target twice for sample chain doubles', async () => {
     const trigger = createEvent();
 
+    const scope = fork();
     const db = debounce({ source: trigger, timeout: 100 });
 
     const listener = jest.fn();
-    db.watch(listener);
+
+    createWatch({
+      unit: db,
+      fn: listener,
+      scope,
+    })
 
     const start = createEvent();
     const secondTrigger = createEvent();
 
     sample({ clock: start, fn: () => 'one', target: [secondTrigger, trigger] });
     sample({ clock: secondTrigger, fn: () => 'two', target: [trigger] });
-
-    const scope = fork();
 
     await allSettled(start, { scope });
 
@@ -231,4 +235,45 @@ describe('edge cases', () => {
     expect(listener).toBeCalledTimes(0);
     expect(triggerListener).toBeCalledTimes(0);
   })
+});
+
+test('exposed timers api', async () => {
+  const timerFx = createEffect(({ canceller, timeout }: DebounceTimerFxProps) => {
+    const { timeoutId, rejectPromise } = canceller;
+
+    if (timeoutId) clearTimeout(timeoutId);
+    if (rejectPromise) rejectPromise();
+
+    return new Promise((resolve, reject) => {
+      canceller.timeoutId = setTimeout(resolve, timeout / 2);
+      canceller.rejectPromise = reject;
+    });
+  });
+
+  const scope = fork({
+    handlers: [
+      [debounce.timerFx, timerFx],
+    ]
+  });
+
+  const mockedFn = jest.fn();
+
+  const clock = createEvent();
+  const tick = debounce(clock, 50);
+
+  createWatch({
+    unit: tick,
+    fn: mockedFn,
+    scope,
+  });
+
+  allSettled(clock, { scope });
+
+  await wait(20);
+
+  expect(mockedFn).not.toBeCalled();
+
+  await wait(5);
+
+  expect(mockedFn).toBeCalled();
 });
