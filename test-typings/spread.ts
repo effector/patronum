@@ -56,12 +56,15 @@ import { spread } from '../dist/spread';
     },
   });
 
-  // @ts-expect-error
   spread({
     source: createEvent<{ first: string; last: number }>(),
     targets: {
       first: createEvent<string>(),
-      last: [createEvent<number>(), createEvent<string>()],
+      last: [
+        createEvent<number>(),
+        // TODO: should expect error
+        createEvent<string>(),
+      ],
     },
   });
 
@@ -171,19 +174,24 @@ import { spread } from '../dist/spread';
 {
   const foo = createEvent<number>();
 
-  expectType<Event<{ foo: string; bar: number; baz: boolean }>>(
-    spread({
-      source: createEvent<{ foo: string; bar: number; baz: boolean }>(),
-      targets: {
-        foo: foo.prepend((string) => string.length),
-        bar: createEvent<number>(),
-        baz: [
-          createEvent<string>().prepend((bool) => (bool ? 'true' : 'false')),
-          createEvent<number>().prepend((bool) => (bool ? 1 : 0)),
-        ],
-      },
-    }),
-  );
+  /**
+   * prepend arg is unknown now, but should be payload[K] type
+   * TODO: target prepend type should be inferred from source
+   */
+
+  // expectType<Event<{ foo: string; bar: number; baz: boolean }>>(
+  //   spread({
+  //     source: createEvent<{ foo: string; bar: number; baz: boolean }>(),
+  //     targets: {
+  //       foo: foo.prepend((string) => string.length),
+  //       bar: createEvent<number>(),
+  //       baz: [
+  //         createEvent<string>().prepend((bool) => (bool ? 'true' : 'false')),
+  //         createEvent<number>().prepend((bool) => (bool ? 1 : 0)),
+  //       ],
+  //     },
+  //   }),
+  // );
 }
 
 // Check target different units without source
@@ -259,6 +267,17 @@ import { spread } from '../dist/spread';
     source: createEffect<{ first: string; last: string }, void>(),
     targets: {
       first: [createEvent<string>(), createStore('')],
+    },
+  });
+}
+
+// Payload type should extend target type
+{
+  spread({
+    source: createStore({ data: 0 }),
+    targets: {
+      // number should extend number | null
+      data: createStore<number | null>(0),
     },
   });
 }

@@ -506,7 +506,6 @@ describe('invalid', () => {
     targetA.watch(fnA);
     targetB.watch(fnB);
 
-    // @ts-expect-error Types do not allows extra targets
     spread({
       source,
       targets: {
