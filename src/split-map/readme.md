@@ -131,13 +131,17 @@ splitMap({ source, cases, targets });
 
 ### Arguments
 
-1. `source` ( | | ) — Source unit, data from this unit passed to each function in `cases` object and `__` event in `shape` as is
+1. `source` ([_`Event`_] | [_`Store`_] | [_`Effect`_]) — Source unit, data from this unit passed to each function in `cases` object and `__` event in `shape` as is
 2. `cases` (`{ [key: string]: (payload: T) => any | void }`) — Object of functions. Function receives one argument is a payload from `source`, should return any value or `undefined`
 3. `targets` (`{ [key: string]?: Unit<any> | Unit<any>[]; __?: Unit<any> | Unit<any>[] }`) — Object of units to trigger on corresponding event from `cases` object
 
 ### Returns
 
 - `shape` (`{ [key: string]: Event<any>; __: Event<T> }`) — Object of events, with the same structure as `cases`, but with the _default_ event `__`, that triggered when each other function returns `undefined`
+
+[_`event`_]: https://effector.dev/docs/api/effector/event
+[_`effect`_]: https://effector.dev/docs/api/effector/effect
+[_`store`_]: https://effector.dev/docs/api/effector/store
 
 ### Examples
 
@@ -164,7 +168,7 @@ splitMap({
   source: websocketEventReceived,
   cases: {
     init: (event) => {
-      if (event.type === 'init') return { init: true, key: event.key };
+      if (event.type === 'init') return { init: true, dataId: event.key };
     },
     increment: (payload) => {
       if (payload.type === 'increment') return payload.count;
@@ -174,8 +178,8 @@ splitMap({
     },
   },
   targets: {
-    // Event<{ init?: boolean; key?: string }>
-    init: spread({ init: $isInitialized, key: getInitialDataFx }),
+    // EventCallable<{ init?: boolean; dataId?: string }>
+    init: spread({ init: $isInitialized, dataId: getInitialDataFx }),
     increment: $count,
     reset: [$count.reinit, $isInitialized.reinit],
   },
@@ -198,7 +202,7 @@ const { init } = splitMap({
   source: websocketEventReceived,
   cases: {
     init: (event) => {
-      if (event.type === 'init') return { init: true, key: event.key };
+      if (event.type === 'init') return { init: true, dataId: event.key };
     },
     increment: (payload) => {
       if (payload.type === 'increment') return payload.count;
@@ -208,8 +212,8 @@ const { init } = splitMap({
     },
   },
   targets: {
-    // Event<{ init?: boolean; key?: string }>
-    init: spread({ init: $isInitialized, key: getInitialDataFx }),
+    // EventCallable<{ init?: boolean; dataId?: string }>
+    init: spread({ init: $isInitialized, dataId: getInitialDataFx }),
     increment: $count,
     reset: [$count.reinit, $isInitialized.reinit],
   },
