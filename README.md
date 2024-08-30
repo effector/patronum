@@ -1,6 +1,6 @@
 # <img src="logo.svg" title="effector patronum" alt="Effector Patronum logo" width="640px">
 
-[![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg)](https://conventionalcommits.org) ![Node.js CI](https://github.com/effector/patronum/workflows/Node.js%20CI/badge.svg) [![Rate on Openbase](https://badges.openbase.com/js/rating/patronum.svg)](https://openbase.com/js/patronum?utm_source=embedded&utm_medium=badge&utm_campaign=rate-badge)
+[![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg)](https://conventionalcommits.org) ![Node.js CI](https://github.com/effector/patronum/workflows/Node.js%20CI/badge.svg)
 [![LICENSE](https://badgen.net/github/license/effector/patronum?color=green)](/LICENSE)
 [![Stars](https://badgen.net/github/stars/effector/patronum?color=green)](https://github.com/effector/patronum)
 [![Downloads](https://badgen.net/npm/dt/patronum)](https://npmjs.com/package/patronum)
