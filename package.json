@@ -14,7 +14,8 @@
     "build:mjs": "ESMODULES=true pnpm build:commonjs --out-file-extension .js",
     "build:bundles": "rollup -c",
     "build": "pnpm cleanup && pnpm build:indexes && pnpm build:types && pnpm build:commonjs && pnpm build:mjs && pnpm build:bundles",
-    "prepublishOnly": "pnpm build:methods && yarn build:cjs"
+    "prepublishOnly": "pnpm build:methods && yarn build:cjs",
+    "doc": "pnpm --filter=documentation"
   },
   "author": "Sergey Sova <mail@sergeysova.com> (https://sergeysova.com/)",
   "license": "MIT",
@@ -47,7 +48,7 @@
     "typescript": "5.2.2",
     "zx": "^7.1.1"
   },
-  "packageManager": "pnpm@8.12.1",
+  "packageManager": "pnpm@9.9.0+sha256.7a4261e50d9a44d9240baf6c9d6e10089dcf0a79d0007f2a26985a6927324177",
   "optionalDependencies": {
     "svelte": "^3.54.0"
   }

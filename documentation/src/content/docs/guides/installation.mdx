@@ -1,0 +1,65 @@
+---
+title: Installation
+description: A guide how to use effector with patronum.
+---
+
+import { PackageManagers } from 'starlight-package-managers';
+
+<PackageManagers pkg="patronum" frame="none" />
+
+## Usage
+
+Just import method from the root module:
+
+```js
+import { throttle, splitMap } from 'patronum';
+```
+
+Or from the personal module:
+
+```js
+import { throttle } from 'patronum/throttle';
+import { splitMap } from 'patronum/split-map';
+```
+
+> Except `patronum/debug`. It is only available by personal module import.
+
+Be careful in the module naming:
+
+- Method export always exports as named export in camelCase
+- Module with the operator always named in param-case
+
+## Helpful reading
+
+[Prefer Operators over Methods](https://withease.effector.dev/magazine/no_methods.html)
+
+## Tests and SSR support
+
+For SSR it is very useful to automatically identify each store, so it is recommended to read article about [Stable Identifiers in Effector](https://effector.dev/en/explanation/sids/).
+
+Tests can be written without SWC or Babel-plugins, but it is recommended to use them to simplify debug and development.
+
+### SWC
+
+Install [`@effector/swc-plugin`](https://effector.dev/en/api/effector/swc-plugin/) to your project then add it to `.swcrc`:
+
+```json
+{
+  "$schema": "https://json.schemastore.org/swcrc",
+  "jsc": {
+    "experimental": {
+      "plugins": [["@effector/swc-plugin", {}]]
+    }
+  }
+}
+```
+
+### Babel
+
+Just add `effector/babel-plugin` to your `.babelrc` or `babel.config.js` at the `"plugins"` section:
+
+```json
+{
+  "plugins": ["effector/babel-plugin"]
+}
+```

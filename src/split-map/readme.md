@@ -1,4 +1,9 @@
-# splitMap
+---
+title: splitMap
+slug: split-map
+description: Split event to different events and map data.
+group: combination
+---
 
 ```ts
 import { splitMap } from 'patronum';

@@ -1,6 +1,11 @@
-# readonly
+---
+title: readonly
+slug: readonly
+description: Create readonly version of store or event.
+group: combination
+---
 
-:::note since
+:::note[since]
 patronum 2.2.0
 :::
 

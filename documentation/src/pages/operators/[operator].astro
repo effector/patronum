@@ -1,0 +1,18 @@
+---
+import { getCollection, getEntry, render } from "astro:content";
+import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
+
+export async function getStaticPaths() {
+  const operators = await getCollection("operators");
+  return operators.map((operator) => ({
+    params: { operator: operator.data.slug },
+  }));
+}
+
+const operator = await getEntry("operators", Astro.params.operator);
+const { Content, headings } = await render(operator);
+---
+
+<StarlightPage frontmatter={operator.data} headings={headings}>
+  <Content />
+</StarlightPage>

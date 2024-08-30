@@ -1,6 +1,11 @@
-# either
+---
+title: either
+slug: either
+description: Selects just one value based on condition.
+group: predicate
+---
 
-:::note since
+:::note[since]
 patronum 1.11.0
 :::
 

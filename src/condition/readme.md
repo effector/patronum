@@ -1,4 +1,9 @@
-# condition
+---
+title: condition
+slug: condition
+description: Trigger then or else by condition.
+group: predicate
+---
 
 ```ts
 import { condition } from 'patronum';

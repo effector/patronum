@@ -1,4 +1,9 @@
-# debounce
+---
+title: debounce
+slug: debounce
+description: Creates event which waits until time passes after previous trigger.
+group: timeouts
+---
 
 ```ts
 import { debounce } from 'patronum';
@@ -13,7 +18,7 @@ import { debounce } from 'patronum/debounce';
 Method creates a new event, that will be triggered after some time. It is useful for handling user events such as scrolling, mouse movement, or keypressing.
 It is useful when you want to pass created event immediately to another method as argument.
 
-:::note since
+:::note[since]
 patronum 2.1.0
 Use `debounce({ source, timeout })` with patronum < 2.1.0
 :::

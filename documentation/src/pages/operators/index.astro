@@ -1,0 +1,35 @@
+---
+import { getCollection } from "astro:content";
+import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
+import { LinkCard, CardGrid } from "@astrojs/starlight/components";
+import { groupBy } from "../../lib/group-by";
+import { capitalize } from "../../lib/string";
+
+const list = await getCollection("operators");
+
+const groups = groupBy(
+  list.map((i) => ({ ...i, ...i.data })),
+  "group",
+).sort((a, b) => a.group.localeCompare(b.group));
+---
+
+<StarlightPage frontmatter={{ title: "Operators list" }}>
+  {
+    groups.map((group) => (
+      <section>
+        <h2>{capitalize(group.group)}</h2>
+        <CardGrid>
+          {group.items
+            .sort((a, b) => a.title.localeCompare(b.title))
+            .map((operator) => (
+              <LinkCard
+                title={operator.title}
+                href={"operators/" + (operator.slug ?? operator.title)}
+                description={operator.description}
+              />
+            ))}
+        </CardGrid>
+      </section>
+    ))
+  }
+</StarlightPage>

@@ -16,7 +16,7 @@
 [codesandbox]: https://codesandbox.io/s/effector-patronum-playground-zuqjx
 [try-patronum-share]: https://share.effector.dev/Neewtbz3
 [jsdelivr]: https://www.jsdelivr.com/package/npm/patronum
-[unpkg]: https://unpkg.com/browse/patronum@1.7.0/
+[unpkg]: https://unpkg.com/browse/patronum@2/
 [npm]: https://www.npmjs.com/package/patronum
 [github]: https://github.com/effector/patronum
 [twitter-share]: https://twitter.com/intent/tweet?text=I%20used%20patronum!%0AGoing%20to%20Mars%20with%20%40effectorjs%20-%20data-flow%20powered%20tool%20to%20implement%20business%20logic.%0A%0Ahttps%3A%2F%2Fgithub.com%2Feffector%2Fpatronum%0A
@@ -44,13 +44,13 @@ const userLoadFx = createEffect();
 const $status = status({ effect: userLoadFx });
 ```
 
-You can read more at [documentation](https://patronum.effector.dev/docs/installation).
+You can read more at [documentation](https://patronum.effector.dev/guides/installation/).
 
 ## Migration guide
 
 Patronum had 3 breaking changes: 1) from `0.14` to `0.100`, 2) from `0.100` to `0.110`, 3) from `0.110` to `1.0`
 
-We have [migration guide](https://patronum.effector.dev/docs/migration-guide).
+We have [migration guide](https://patronum.effector.dev/guides/migration).
 
 # Development
 

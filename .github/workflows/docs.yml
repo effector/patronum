@@ -12,15 +12,15 @@ jobs:
 
     steps:
       - name: 🛎️ Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: 📦 Setup pnpm
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v4
 
-      - name: 🐧 Use Node.js v18.x
+      - name: 🐧 Use Node.js v20.x
         uses: actions/setup-node@v4
         with:
-          node-version: v18.x
+          node-version: v20.x
           cache: 'pnpm'
           cache-dependency-path: pnpm-lock.yaml
 
@@ -29,11 +29,11 @@ jobs:
         working-directory: ./
 
       - name: 🔧 Build
-        run: pnpm build
-        working-directory: ./website
+        run: pnpm doc build
+        working-directory: ./
 
       - name: 🚀 Deploy
         uses: JamesIves/github-pages-deploy-action@v4.3.3
         with:
           branch: gh-pages
-          folder: ./website/build
+          folder: ./documentation/dist

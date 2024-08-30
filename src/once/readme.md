@@ -1,4 +1,9 @@
-# once
+---
+title: once
+slug: once
+description: Runs only once.
+group: predicate
+---
 
 ```ts
 import { once } from 'patronum';

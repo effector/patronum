@@ -1,4 +1,9 @@
-# every
+---
+title: every
+slug: every
+description: Checks that state in each store passes the predicate test.
+group: predicate
+---
 
 ```ts
 import { every } from 'patronum';
@@ -92,7 +97,7 @@ It is useful when you write `combine` with `&&` very often, for example to creat
 
 ### Formulae
 
-:::note since
+:::note[since]
 patronum 1.7.0
 :::
 
@@ -130,7 +135,7 @@ console.assert(true === $isFormCorrect.getState());
 
 ## Shorthands
 
-:::note since
+:::note[since]
 patronum 1.7.0
 :::
 
