@@ -22,11 +22,6 @@ export default defineConfig({
         discord: 'https://discord.gg/yHcMcuRWeC',
         youtube: 'https://youtube.com/@effectorjs',
       },
-      defaultLocale: 'en',
-      locales: {
-        root: { label: 'English', lang: 'en' },
-        // 'ru-RU': { label: 'Russian' },
-      },
       sidebar: [
         {
           label: 'Guides',
