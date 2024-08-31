@@ -1,0 +1,20 @@
+---
+import { getCollection, getEntry, render } from "astro:content";
+import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
+
+export async function getStaticPaths() {
+  const operators = await getCollection("operators");
+  return operators.map((operator) => ({
+    params: { operator: operator.data.slug },
+  }));
+}
+
+const operator = await getEntry("operators", Astro.params.operator);
+---
+
+<meta http-equiv="refresh" content={`0;url=/operators/${operator.data.slug}`} />
+<meta name="robots" content="noindex" />
+<StarlightPage frontmatter={{...operator.data, pagefind: false}}>
+  <!-- exclude this page from pagefind indexing -->
+  <p>Redirecting to <a href="/operators/{operator.data.slug}">/operators/{operator.data.slug}</a></p>
+</StarlightPage>
