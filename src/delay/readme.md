@@ -1,4 +1,9 @@
-# delay
+---
+title: delay
+slug: delay
+description: Delays the call of the event by defined timeout.
+group: timeouts
+---
 
 ```ts
 import { delay } from 'patronum';
@@ -10,7 +15,7 @@ Method for delaying triggering given unit for some amount of time. Can accept `n
 
 ## `delay(source, timeout: number)`
 
-:::note since
+:::note[since]
 patronum 2.1.0
 Use `delay({ source, timeout })` with patronum < 2.1.0
 :::
@@ -91,7 +96,7 @@ trigger('hello');
 
 ## `delay(source, timeout: Function)`
 
-:::note since
+:::note[since]
 patronum 2.1.0
 Use `delay({ source, timeout })` with patronum < 2.1.0
 :::
@@ -193,7 +198,7 @@ update('!');
 
 ## `delay(source, timeout: Store<T>)`
 
-:::note since
+:::note[since]
 patronum 2.1.0
 Use `delay({ source, timeout })` with patronum < 2.1.0
 :::

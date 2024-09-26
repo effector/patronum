@@ -1,6 +1,11 @@
-# and
+---
+title: and
+slug: and
+description: Checks all stores by truthy value.
+group: predicate
+---
 
-:::note since
+:::note[since]
 patronum 1.11.0
 :::
 
@@ -64,7 +69,7 @@ const $showRegisterLink = combine(
   $isEmailRecovering,
   (isAuthorized, isRegisterInProcess, isEmailRecovering) => {
     return !isAuthorized && (isRegisterInProcess || isEmailRecovering);
-  }
+  },
 );
 console.assert(false === $showRegisterLink.getState());
 ```

@@ -1,10 +1,18 @@
-# empty (experimental)
+---
+title: empty
+slug: empty
+description: Checks the store for `null`.
+group: predicate
+badge:
+  text: experimental
+  variant: caution
+---
 
-:::note since
+:::note[since]
 patronum 1.10.0
 :::
 
-:::danger experimental
+:::danger[experimental]
 Operator is going to be renamed. Please review [the discussion](https://github.com/effector/patronum/discussions/224).
 :::
 

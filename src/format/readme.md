@@ -1,6 +1,11 @@
-# format
+---
+title: format
+slug: format
+description: Combine stores to a string literal.
+group: combination
+---
 
-:::note since
+:::note[since]
 patronum 1.7.0
 :::
 

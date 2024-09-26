@@ -1,4 +1,9 @@
-# spread
+---
+title: spread
+slug: spread
+description: Send fields from object to same targets.
+group: combination
+---
 
 ```ts
 import { spread } from 'patronum';
@@ -8,7 +13,7 @@ import { spread } from 'patronum/spread';
 
 ## `source = spread(targets)`
 
-:::note since
+:::note[since]
 patronum 2.1.0
 Use `spread({ targets })` with patronum < 2.1.0
 :::

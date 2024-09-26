@@ -1,4 +1,9 @@
-# debug
+---
+title: debug
+slug: debug
+description: Log triggers of passed units.
+group: debug
+---
 
 ```ts
 import { debug } from 'patronum';
@@ -41,7 +46,7 @@ effect('demo');
 
 ## Traces
 
-:::note since
+:::note[since]
 patronum 1.9.0
 :::
 

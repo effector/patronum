@@ -1,6 +1,11 @@
-# or
+---
+title: or
+slug: or
+description: Checks at least one store for truthy value.
+group: predicate
+---
 
-:::note since
+:::note[since]
 patronum 1.11.0
 :::
 
