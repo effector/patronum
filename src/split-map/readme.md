@@ -142,7 +142,7 @@ splitMap({ source, cases, targets });
 
 ### Returns
 
-- `shape` (`{ [key: string]: Event<any>; __: Event<T> }`) — Object of events, with the same structure as `cases`, but with the _default_ event `__`, that triggered when each other function returns `undefined`
+- `shape` (`{ [key: string]: Event<any>; __: Event<T> }`) — Object of events, with the same structure as `cases`, but with the _default_ event `__`, that will be triggered when each other function returns `undefined`
 
 [_`event`_]: https://effector.dev/docs/api/effector/event
 [_`effect`_]: https://effector.dev/docs/api/effector/effect
@@ -163,6 +163,7 @@ type WSEvent =
   | { type: 'reset' };
 
 export const websocketEventReceived = createEvent<WSEvent>();
+const notifyError = createEvent();
 
 const $isInitialized = createStore(false);
 const $count = createStore<number | null>(null);
@@ -187,6 +188,7 @@ splitMap({
     init: spread({ init: $isInitialized, dataId: getInitialDataFx }),
     increment: $count,
     reset: [$count.reinit, $isInitialized.reinit],
+    __: notifyError,
   },
 });
 

@@ -9,6 +9,74 @@ const hasPropBase = {}.hasOwnProperty;
 const hasOwnProp = <O extends { [k: string]: unknown }>(object: O, key: string) =>
   hasPropBase.call(object, key);
 
+/**
+ * Split `source` unit into multiple events based on the provided `cases`.
+ *
+ * @param source - Source unit, data from this unit is passed to each function in cases object and `__` event in shape as is
+ * @param cases - Object of functions. Function receives one argument is a payload from `source`, should return any value or `undefined`.
+ * If `undefined` is returned from the case function, update will be skipped (the event will not be triggered).
+ *
+ * @param targets (optional) - Object of units to trigger on corresponding event from cases object
+ * @returns Object of events, with the same structure as `cases`, but with the default event `__`, that will be triggered when each other function returns `undefined`
+ *
+ * @example
+ * ```ts
+ * const dataFetched = createEvent<unknown>()
+ *
+ * const dataReceived = splitMap({
+ *  source: dataFetched,
+ *  cases: {
+ *    isString: (payload) => {
+ *      if (typeof payload === 'string') return payload
+ *    },
+ *    isNumber: (payload) => {
+ *      if (typeof payload === 'number') return payload
+ *    },
+ *  }
+ * })
+
+ * dataReceived.isString // Event<string>
+ * dataReceived.isNumber // Event<number>
+ * dataReceived.__ // Event<unknown>
+ * ```
+ *
+ * @example
+ * ```ts
+ * const dataFetched = createEvent<unknown>()
+ * const stringReceived = createEvent<string>()
+ * const numberReceived = createEvent<number>()
+ * const unknownReceived = createEvent<unknown>()
+ * const notifyError = createEvent()
+ *
+ * const dataReceived = splitMap({
+ *  source: dataFetched,
+ *  cases: {
+ *    isString: (payload) => {
+ *      if (typeof payload === 'string') return payload
+ *    },
+ *    isNumber: (payload) => {
+ *      if (typeof payload === 'number') return payload
+ *    },
+ *  },
+ *  targets: {
+ *    isString: stringReceived,
+ *    isNumber: numberReceived,
+ *    __: [unknownReceived, notifyError],
+ *  },
+ * })
+ *
+ * dataFetched('string')
+ * // => stringReceived('string')
+ *
+ * dataFetched(42)
+ * // => numberReceived(42)
+ *
+ * dataFetched(null)
+ * // => unknownReceived(null)
+ * // => notifyError()
+ * ```
+ */
+
 export function splitMap<
   S,
   Cases extends Record<string, (payload: S) => any | undefined>,
@@ -64,7 +132,7 @@ export function splitMap<
   // eslint-disable-next-line no-underscore-dangle
   result.__ = current;
 
-  if (targets && '__' in targets) {
+  if (targets && hasOwnProp(targets, '__')) {
     const defaultCaseTarget = targets.__;
 
     sample({
