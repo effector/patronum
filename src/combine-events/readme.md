@@ -1,4 +1,9 @@
-# combineEvents
+---
+title: combineEvents
+slug: combine-events
+description: Wait for all passed events is triggered.
+group: combination
+---
 
 ```ts
 import { combineEvents } from 'patronum';
@@ -8,7 +13,7 @@ import { combineEvents } from 'patronum/combine-events';
 
 ## `combineEvents(events)`
 
-:::note since
+:::note[since]
 patronum 2.1.0
 Use `combineEvents({ events })` with patronum < 2.1.0
 :::

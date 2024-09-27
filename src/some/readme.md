@@ -1,4 +1,9 @@
-# some
+---
+title: some
+slug: some
+description: Checks that state in at least one store passes the predicate test.
+group: predicate
+---
 
 ```ts
 import { some } from 'patronum';
@@ -86,7 +91,7 @@ console.assert(false === $isFormFailed.getState());
 
 ## `some({ predicate: Store, stores })`
 
-:::note since
+:::note[since]
 patronum 1.8.0
 :::
 

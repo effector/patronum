@@ -1,4 +1,9 @@
-# reshape
+---
+title: reshape
+slug: reshape
+description: Destructure one store to different stores
+group: combination
+---
 
 ```ts
 import { reshape } from 'patronum';
