@@ -11,13 +11,23 @@ import {
 import { spread } from '../dist/spread';
 
 {
-  const $source = createStore({ first: '', last: '', foo: 1 });
+  const $source = createStore({ first: '', last: '' });
   const first = createEvent<string>();
   const last = createEvent<string>();
 
-  expectType<Store<{ first: string; last: string; foo: number }>>(
+  expectType<Store<{ first: string; last: string }>>(
     spread({
       source: $source,
+      targets: {
+        first,
+        last,
+      },
+    }),
+  );
+
+  expectType<Store<{ first: string; last: string; foo: number }>>(
+    spread({
+      source: createStore({ first: '', last: '', foo: 1 }),
       targets: {
         first,
         last,
@@ -100,6 +110,39 @@ import { spread } from '../dist/spread';
 
 // Check input source type with output
 {
+  expectType<Event<{ foo: string; bar: number }>>(
+    spread({
+      source: createEvent<{ foo: string; bar: number }>(),
+      targets: {
+        foo: createEvent<string>(),
+        bar: createEvent<number>(),
+      },
+    }),
+  );
+
+  expectType<Store<{ random: string; bar: number }>>(
+    spread({
+      source: createStore({ random: '', bar: 5 }),
+      targets: {
+        random: createEvent<string>(),
+        bar: createEvent<number>(),
+      },
+    }),
+  );
+
+  expectType<Effect<{ foo: string; bar: number }, void>>(
+    spread({
+      source: createEffect<{ foo: string; bar: number }, void>(),
+      targets: {
+        foo: createEvent<string>(),
+        bar: createEvent<number>(),
+      },
+    }),
+  );
+}
+
+// Check input source type with output (targets: array of units)
+{
   expectType<Event<{ foo: string; bar: number; baz: boolean }>>(
     spread({
       source: createEvent<{ foo: string; bar: number; baz: boolean }>(),
@@ -136,6 +179,39 @@ import { spread } from '../dist/spread';
 
 // Check target different units
 {
+  expectType<Event<{ foo: string; bar: number }>>(
+    spread({
+      source: createEvent<{ foo: string; bar: number }>(),
+      targets: {
+        foo: createStore(''),
+        bar: createEffect<number, void>(),
+      },
+    }),
+  );
+
+  expectType<Store<{ foo: string; bar: number }>>(
+    spread({
+      source: createStore({ foo: '', bar: 5 }),
+      targets: {
+        foo: createStore(''),
+        bar: createEffect<number, void>(),
+      },
+    }),
+  );
+
+  expectType<Effect<{ foo: string; bar: number }, void>>(
+    spread({
+      source: createEffect<{ foo: string; bar: number }, void>(),
+      targets: {
+        foo: createStore(''),
+        bar: createEffect<number, void>(),
+      },
+    }),
+  );
+}
+
+// Check target different units (targets: array of units)
+{
   expectType<Event<{ foo: string; bar: number; baz: boolean }>>(
     spread({
       source: createEvent<{ foo: string; bar: number; baz: boolean }>(),
@@ -170,28 +246,70 @@ import { spread } from '../dist/spread';
   );
 }
 
-// Check target is prepended
+// Check target is prepended if type is given to generic or callback
 {
-  const foo = createEvent<number>();
+  expectType<Event<{ foo: string; bar: number; baz: string }>>(
+    spread({
+      source: createEvent<{ foo: string; bar: number; baz: string }>(),
+      targets: {
+        foo: createEvent<number>().prepend<string>((string) => string.length),
+        bar: createEvent<number>(),
+        baz: createEvent<boolean>().prepend((str: string) => Boolean(str)),
+      },
+    }),
+  );
 
-  /**
-   * prepend arg is unknown now, but should be payload[K] type
-   * TODO: target prepend type should be inferred from source
-   */
+  expectType<Event<{ foo: string; bar: number; baz: string }>>(
+    // @ts-expect-error
+    spread({
+      source: createEvent<{ foo: string; bar: number; baz: string }>(),
+      targets: {
+        // @ts-expect-error (Type 'boolean' is not assignable to type 'number')
+        foo: createEvent<number>().prepend<boolean>((str) => str),
+        bar: createEvent<number>(),
+        // @ts-expect-error (Type 'string' is not assignable to type 'boolean')
+        baz: createEvent<boolean>().prepend((str: string) => str),
+      },
+    }),
+  );
 
-  // expectType<Event<{ foo: string; bar: number; baz: boolean }>>(
-  //   spread({
-  //     source: createEvent<{ foo: string; bar: number; baz: boolean }>(),
-  //     targets: {
-  //       foo: foo.prepend((string) => string.length),
-  //       bar: createEvent<number>(),
-  //       baz: [
-  //         createEvent<string>().prepend((bool) => (bool ? 'true' : 'false')),
-  //         createEvent<number>().prepend((bool) => (bool ? 1 : 0)),
-  //       ],
-  //     },
-  //   }),
-  // );
+  expectType<Event<{ foo: string; bar: number; baz: boolean; zoo: string }>>(
+    spread({
+      source: createEvent<{ foo: string; bar: number; baz: boolean; zoo: string }>(),
+      targets: {
+        foo: createEvent<number>().prepend((string: string) => string.length),
+        bar: createEvent<number>(),
+        baz: [
+          createEvent<string>().prepend<boolean>((bool) =>
+            Boolean(expectType<boolean>(bool)) ? 'true' : 'false',
+          ),
+          createEvent<number>().prepend((bool: boolean) =>
+            Boolean(expectType<boolean>(bool)) ? 1 : 0,
+          ),
+        ],
+        zoo: [createEvent<string>()],
+      },
+    }),
+  );
+
+  expectType<Event<{ foo: string; bar: number; baz: boolean; zoo: string }>>(
+    // @ts-expect-error
+    spread({
+      source: createEvent<{ foo: string; bar: number; baz: boolean; zoo: string }>(),
+      targets: {
+        // @ts-expect-error
+        foo: createEvent<number>().prepend<boolean>((str) => str),
+        bar: createEvent<number>(),
+        baz: [
+          // @ts-expect-error
+          createEvent<string>().prepend<boolean>((bool) => bool),
+          // @ts-expect-error
+          createEvent<number>().prepend((bool: boolean) => bool),
+        ],
+        zoo: [createEvent<string>()],
+      },
+    }),
+  );
 }
 
 // Check target different units without source
@@ -201,23 +319,41 @@ import { spread } from '../dist/spread';
       foo: createStore(''),
       bar: createEffect<number, void>(),
       baz: createEvent<boolean>(),
+    },
+  });
+
+  expectType<Event<{ foo?: string; bar?: number; baz?: boolean }>>(spreadToStores);
+
+  const spreadToUnits = spread({
+    targets: {
+      foo: createStore(''),
+      bar: createEffect<number, void>(),
+      baz: createEvent<boolean>(),
       last: [createEvent<null>(), createStore(null)],
     },
   });
 
   expectType<Event<{ foo?: string; bar?: number; baz?: boolean; last?: null }>>(
-    spreadToStores,
+    spreadToUnits,
   );
 }
 {
   const spreadToStores = spread({
+    foo: createStore(''),
+    bar: createEffect<number, void>(),
+    baz: createEvent<boolean>(),
+  });
+
+  expectType<Event<{ foo?: string; bar?: number; baz?: boolean }>>(spreadToStores);
+
+  const spreadToUnits = spread({
     foo: createStore(''),
     baz: createEvent<boolean>(),
     last: [createEvent<null>(), createStore(null)],
   });
 
   expectType<Event<{ foo?: string; bar?: number; baz?: boolean; last?: null }>>(
-    spreadToStores,
+    spreadToUnits,
   );
 }
 
@@ -284,7 +420,11 @@ import { spread } from '../dist/spread';
 
 // allows nested
 {
-  const $source = createStore({ first: '', last: { nested: '', other: '', arr: 1 } });
+  const $source = createStore({ first: '', last: { nested: '', other: '' } });
+  const $secondSource = createStore({
+    first: '',
+    last: { nested: '', other: '', arr: 1 },
+  });
   const first = createEvent<string>();
   const nested = createEvent<string>();
   const other = createEvent<string>();
@@ -293,6 +433,19 @@ import { spread } from '../dist/spread';
   // nested full match
   spread({
     source: $source,
+    targets: {
+      first,
+      last: spread({
+        targets: {
+          nested,
+          other,
+        },
+      }),
+    },
+  });
+
+  spread({
+    source: $secondSource,
     targets: {
       first,
       last: spread({
@@ -333,7 +486,6 @@ import { spread } from '../dist/spread';
     targets: {
       nested,
       other,
-      arr: arrayOfUnits,
     },
   });
 
@@ -342,6 +494,22 @@ import { spread } from '../dist/spread';
     targets: {
       first,
       last: out,
+    },
+  });
+
+  const secondOut = spread({
+    targets: {
+      nested,
+      other,
+      arr: arrayOfUnits,
+    },
+  });
+
+  spread({
+    source: $secondSource,
+    targets: {
+      first,
+      last: secondOut,
     },
   });
 
@@ -380,6 +548,21 @@ import { spread } from '../dist/spread';
           targets: {
             nested,
             other,
+          },
+        }),
+      },
+    }),
+  });
+
+  sample({
+    clock: $secondSource,
+    target: spread({
+      targets: {
+        first,
+        last: spread({
+          targets: {
+            nested,
+            other,
             arr: arrayOfUnits,
           },
         }),
@@ -400,7 +583,11 @@ import { spread } from '../dist/spread';
   });
 }
 {
-  const $source = createStore({ first: '', last: { nested: '', other: '', arr: 1 } });
+  const $source = createStore({ first: '', last: { nested: '', other: '' } });
+  const $secondSource = createStore({
+    first: '',
+    last: { nested: '', other: '', arr: 1 },
+  });
   const first = createEvent<string>();
   const nested = createEvent<string>();
   const other = createEvent<string>();
@@ -409,6 +596,17 @@ import { spread } from '../dist/spread';
   // nested full match
   spread({
     source: $source,
+    targets: {
+      first,
+      last: spread({
+        nested,
+        other,
+      }),
+    },
+  });
+
+  spread({
+    source: $secondSource,
     targets: {
       first,
       last: spread({
@@ -442,7 +640,6 @@ import { spread } from '../dist/spread';
   const out = spread({
     nested,
     other,
-    arr: arrayOfUnits,
   });
 
   spread({
@@ -450,6 +647,20 @@ import { spread } from '../dist/spread';
     targets: {
       first,
       last: out,
+    },
+  });
+
+  const secondOut = spread({
+    nested,
+    other,
+    arr: arrayOfUnits,
+  });
+
+  spread({
+    source: $secondSource,
+    targets: {
+      first,
+      last: secondOut,
     },
   });
 
@@ -473,6 +684,17 @@ import { spread } from '../dist/spread';
   // sample full match
   sample({
     clock: $source,
+    target: spread({
+      first,
+      last: spread({
+        nested,
+        other,
+      }),
+    }),
+  });
+
+  sample({
+    clock: $secondSource,
     target: spread({
       first,
       last: spread({
