@@ -1,6 +1,11 @@
-# equals
+---
+title: equals
+slug: equals
+description: Checks the store for some value.
+group: predicate
+---
 
-:::note since
+:::note[since]
 patronum 1.11.0
 :::
 

@@ -1,4 +1,9 @@
-# time
+---
+title: time
+slug: time
+description: Allows reading current timestamp by triggering clock.
+group: timeouts
+---
 
 ```ts
 import { time } from 'patronum';
@@ -8,7 +13,7 @@ import { time } from 'patronum/time';
 
 ## `time(clock)`
 
-:::note since
+:::note[since]
 patronum 2.1.0
 Use `time({ clock })` with patronum < 2.1.0
 :::
@@ -59,7 +64,7 @@ tick();
 
 ## `time({clock, getNow, initial})`
 
-:::note since
+:::note[since]
 patronum 1.7.0
 :::
 

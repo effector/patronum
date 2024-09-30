@@ -1,6 +1,11 @@
-# interval
+---
+title: interval
+slug: interval
+description: Creates a dynamic interval with any timeout.
+group: timeouts
+---
 
-:::note since
+:::note[since]
 patronum 1.7.0
 :::
 

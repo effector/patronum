@@ -1,4 +1,9 @@
-# inFlight
+---
+title: inFlight
+slug: in-flight
+description: Counts all pending effects
+group: effect
+---
 
 ```ts
 import { inFlight } from 'patronum';
@@ -8,7 +13,7 @@ import { inFlight } from 'patronum/in-flight';
 
 ## `inFlight(effects)`
 
-:::note since
+:::note[since]
 patronum 2.1.0
 Use `inFlight({ effects })` with patronum < 2.1.0
 :::

@@ -1,4 +1,9 @@
-# pending
+---
+title: pending
+slug: pending
+description: Checks that has effects in pending state.
+group: effect
+---
 
 ```ts
 import { pending } from 'patronum';
@@ -8,7 +13,7 @@ import { pending } from 'patronum/pending';
 
 ## `pendings(effects)`
 
-:::note since
+:::note[since]
 patronum 2.1.0
 Use `pending({ effects: [] })` with patronum < 2.1.0
 :::
@@ -73,7 +78,7 @@ $inProcess = pending({ effects: [fx1, fx2], of: Strategy });
 1. `of` `("some" | "every")` — Optional. Select strategy of combining pendings
    of different effects. Default `"some"`
 
-:::note since
+:::note[since]
 The `of` argument was added since patronum 1.1.0
 :::
 
@@ -105,7 +110,7 @@ loadSecondFx();
 
 ## `pending({ domain })`
 
-:::note since
+:::note[since]
 patronum 1.1.0
 :::
 

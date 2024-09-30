@@ -1,6 +1,11 @@
-# previous
+---
+title: previous
+slug: previous
+description: Get previous value of store.
+group: combination
+---
 
-:::note since
+:::note[since]
 patronum 2.1.0
 :::
 
