@@ -2,7 +2,7 @@ import {
   Stack,
   Node,
   Effect,
-  Event,
+  EventCallable,
   is,
   Store,
   Unit,
@@ -120,7 +120,7 @@ function watchDomain(domain: Domain, config: Config) {
 }
 
 function watchUnit(
-  unit: Store<any> | Event<any> | Effect<any, any, any>,
+  unit: Store<any> | EventCallable<any> | Effect<any, any, any>,
   config: Config,
 ) {
   if (is.store(unit)) {

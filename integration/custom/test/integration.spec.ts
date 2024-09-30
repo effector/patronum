@@ -1,4 +1,4 @@
-import { createEffect, Event } from 'effector';
+import { createEffect, EventCallable } from 'effector';
 import { status } from '@effector/patronum/status';
 import { pending } from '@effector/patronum/macro';
 
@@ -41,7 +41,7 @@ test('pending macro works as expected', () => {
   expect($pending.sid).toMatchInlineSnapshot(`"-hszfx7|a4upb3"`);
 });
 
-function waitFor<T>(unit: Event<T>) {
+function waitFor<T>(unit: EventCallable<T>) {
   return new Promise<T>((resolve) => {
     const unsubscribe = unit.watch((payload) => {
       resolve(payload);
