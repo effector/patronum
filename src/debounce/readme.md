@@ -202,3 +202,32 @@ someHappened(4);
 
 // someHappened now 4
 ```
+
+### [Tests] Exposed timers API example
+
+```ts
+/**
+ * `canceller` - is object, which contains previous timeout id and previous effect promise reject
+ */
+const timerFx = createEffect(({ canceller, timeout }: DebounceTimerFxProps) => {
+  const { timeoutId, rejectPromise } = canceller;
+
+  if (timeoutId) clearTimeout(timeoutId);
+  if (rejectPromise) rejectPromise();
+
+  return new Promise((resolve, reject) => {
+    canceller.timeoutId = setTimeout(resolve, timeout);
+    canceller.rejectPromise = reject;
+  });
+});
+
+const scope = fork({
+  handlers: [[debounce.timerFx, timerFx]],
+});
+
+const clock = createEvent();
+const tick = debounce(clock, 200);
+
+// important! call from scope
+allSettled(clock, { scope });
+```

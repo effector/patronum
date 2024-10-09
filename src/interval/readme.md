@@ -107,3 +107,41 @@ keepFresh(someQuery, {
   triggers: [interval({ timeout: 1000 })],
 });
 ```
+
+### [Tests] Exposed timers API example
+
+```ts
+/**
+ * `canceller` - is object, which contains previous timeout id and previous effect promise reject
+ */
+const timeoutFx = createEffect(({ canceller, timeout, running }: IntervalTimeoutFxProps) => {
+  if (!running) {
+    return Promise.reject();
+  }
+
+  return new Promise((resolve, reject) => {
+    canceller.timeoutId = setTimeout(resolve, timeout);
+    canceller.reject = reject;
+  });
+})
+
+const cleanupFx = createEffect(({ reject, timeoutId }: IntervalCleanupFxProps) => {
+  reject();
+  if (timeoutId) clearTimeout(timeoutId);
+});
+
+const scope = fork({
+  handlers: [
+    [interval.timeoutFx, timeoutFx],
+    [interval.cleanupFx, cleanupFx]
+  ],
+});
+
+const start = createEvent();
+const stop = createEvent();
+
+const { tick } = interval({ start, stop, timeout: 1000 });
+
+// important! call from scope
+allSettled(start, { scope });
+```

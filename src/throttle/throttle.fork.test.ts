@@ -6,8 +6,8 @@ import {
   allSettled,
   createEvent,
   createStore,
-  sample,
-} from 'effector';
+  sample, createEffect, createWatch,
+} from 'effector'
 
 import { throttle } from './index';
 import { wait } from '../../test-library';
@@ -156,4 +156,36 @@ describe('edge cases', () => {
     expect(listener).toBeCalledTimes(1);
     expect(listener).toBeCalledWith('two');
   });
+})
+
+test('exposed timers api', async () => {
+  const timerFx = createEffect<number, void>({
+    handler: (timeout) => new Promise((resolve) => setTimeout(resolve, timeout / 2)),
+  });
+
+  const scope = fork({
+    handlers: [[throttle.timerFx, timerFx]],
+  });
+
+  const clock = createEvent();
+  const tick = throttle(clock, 50);
+
+  const mockedFn = jest.fn();
+
+  createWatch({
+    unit: tick,
+    fn: mockedFn,
+    scope,
+  });
+
+  allSettled(clock, { scope });
+
+
+  await wait(20);
+
+  expect(mockedFn).not.toBeCalled();
+
+  await wait(5);
+
+  expect(mockedFn).toBeCalled();
 })

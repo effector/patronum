@@ -110,6 +110,7 @@ test('any changes of $time store from outerworld should be overriden on clock', 
   const force = createEvent();
   let counter = 0;
   const $time = time({ clock, getNow: () => ++counter });
+  // @ts-expect-error
   sample({ clock: force, fn: () => 1000, target: $time });
   expect($time.getState()).toBe(1);
 

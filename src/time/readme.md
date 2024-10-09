@@ -115,3 +115,24 @@ tick();
 ```
 
 [Try it](https://share.effector.dev/VuhhzWKE)
+
+### [Tests] Exposed timers API example
+
+```ts
+/**
+ * `timeReader` - is a either `Date.now` or the handler, that was provided via `getNow` in the configuration
+ *
+ * In your custom `readNowFx` you can change the way original time reader is used or call your own timer instead
+ */
+const readNowFx = createEffect<{ timeReader: () => number }, number>(({ timeReader }) => timeReader());
+
+const scope = fork({
+  handlers: [[time.readNowFx, readNowFx]],
+});
+
+const clock = createEvent();
+const $time = time(clock);
+
+// important! call from scope
+allSettled(clock, { scope });
+```

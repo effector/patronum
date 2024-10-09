@@ -1,16 +1,26 @@
-import { createEffect, Unit, restore, sample, Store, is } from 'effector';
+import {
+  createEffect,
+  Unit,
+  restore,
+  sample,
+  Store,
+  is,
+  attach, Effect
+} from 'effector'
 
 const defaultNow = <Time = number>() => Date.now() as unknown as Time;
 
 type NoInfer<T> = [T][T extends any ? 0 : never];
 
-export function time(clock: Unit<any>): Store<number>;
-export function time<Time = number>(config: {
+const readNowFx = createEffect<{ timeReader: () => number }, number>(({ timeReader }) => timeReader());
+
+export function _time(clock: Unit<any>): Store<number>;
+export function _time<Time = number>(config: {
   clock: Unit<any>;
   getNow?: () => Time;
   initial?: NoInfer<Time>;
 }): Store<Time>;
-export function time<Time = number>(
+export function _time<Time = number>(
   args:
     | {
         clock: Unit<any>;
@@ -22,8 +32,15 @@ export function time<Time = number>(
   const argsShape = is.unit(args) ? { clock: args } : args;
   const { clock, getNow, initial } = argsShape;
   const timeReader = getNow ?? defaultNow;
-  const readNowFx = createEffect<void, Time>(timeReader);
-  const $time = restore(readNowFx, initial ?? timeReader());
-  sample({ clock, target: readNowFx });
+  const innerReadNowFx = attach({
+    mapParams: () => ({ timeReader }),
+    effect: readNowFx as unknown as Effect<{ timeReader: () => Time }, Time>
+  });
+  const $time = restore(innerReadNowFx, initial ?? timeReader());
+  sample({ clock, target: innerReadNowFx });
   return $time;
 }
+
+export const time = Object.assign(_time, {
+  readNowFx
+});

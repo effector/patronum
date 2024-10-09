@@ -247,6 +247,24 @@ const throttledStore: Event<number> = throttle({
 });
 ```
 
+### [Tests] Exposed timers API example
+
+```ts
+const timerFx = createEffect<number, void>({
+  handler: (timeout) => new Promise((resolve) => setTimeout(resolve, timeout)),
+});
+
+const scope = fork({
+  handlers: [[throttle.timerFx, timerFx]],
+});
+
+const clock = createEvent();
+const tick = throttle(clock, 200);
+
+// important! call from scope
+allSettled(clock, { scope });
+```
+
 [_`event`_]: https://effector.dev/docs/api/effector/event
 [_`effect`_]: https://effector.dev/docs/api/effector/effect
 [_`store`_]: https://effector.dev/docs/api/effector/store

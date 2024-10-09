@@ -4,10 +4,10 @@ import {
   fork,
   createStore,
   sample,
-  createWatch,
-} from 'effector';
+  createWatch, createEffect, scopeBind,
+} from 'effector'
 import { argumentHistory, wait, watch } from '../../test-library';
-import { interval } from '.';
+import { interval, IntervalCleanupFxProps, IntervalTimeoutFxProps } from '.'
 
 test('works in forked scope', async () => {
   const start = createEvent();
@@ -129,4 +129,53 @@ describe('@@trigger', () => {
 
     unwatch();
   });
+});
+
+test('exposed timers api', async () => {
+  const timeoutFx = createEffect(({ canceller, timeout, running }: IntervalTimeoutFxProps) => {
+    if (!running) {
+      return Promise.reject();
+    }
+
+    return new Promise((resolve, reject) => {
+      canceller.timeoutId = setTimeout(resolve, timeout / 2);
+      canceller.reject = reject;
+    });
+  })
+
+  const cleanupFx = createEffect(({ reject, timeoutId }: IntervalCleanupFxProps) => {
+    reject();
+    if (timeoutId) clearTimeout(timeoutId);
+  });
+
+  const scope = fork({
+    handlers: [
+      [interval.timeoutFx, timeoutFx],
+      [interval.cleanupFx, cleanupFx]
+    ],
+  });
+
+  const start = createEvent();
+  const stop = createEvent();
+
+  const { tick } = interval({ start, stop, timeout: 50 });
+
+  const mockedFn = jest.fn();
+  createWatch({
+    unit: tick,
+    fn: mockedFn,
+    scope,
+  });
+
+  allSettled(start, { scope });
+
+  await wait(20);
+
+  expect(mockedFn).not.toBeCalled();
+
+  await wait(5);
+
+  expect(mockedFn).toBeCalled();
+
+  stop();
 });
