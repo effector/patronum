@@ -1,6 +1,6 @@
 import {
   Unit,
-  Event,
+  EventCallable,
   EventAsReturnType,
   is,
   sample,
@@ -28,7 +28,7 @@ export function once<T>(
 
   const $canTrigger = createStore<boolean>(true);
 
-  const trigger: Event<T> = sample({
+  const trigger: EventCallable<T> = sample({
     source,
     filter: $canTrigger,
   });

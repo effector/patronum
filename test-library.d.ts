@@ -1,4 +1,4 @@
-import { Unit, Event, Store, Effect } from 'effector';
+import { Unit, EventCallable, Store, Effect } from 'effector';
 
 export function argumentHistory(fn: jest.Mock): Array<unknown>;
 export function argumentsHistory(fn: jest.Mock): Array<Array<unknown>>;
@@ -19,9 +19,9 @@ export function wait(ms: number): Promise<void>;
 export function waitFor<T>(unit: Unit<T>): Promise<T>;
 
 export function watch<T>(
-  unit: Event<T> | Store<T> | Effect<T, any, any>,
+  unit: EventCallable<T> | Store<T> | Effect<T, any, any>,
 ): jest.Mock<T, [T]>;
 
 export function monitor(
-  units: Array<Event<any> | Store<any> | Effect<any, any, any>>,
+  units: Array<EventCallable<any> | Store<any> | Effect<any, any, any>>,
 ): () => Array<[string, any]>;

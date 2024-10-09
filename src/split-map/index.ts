@@ -1,4 +1,4 @@
-import { Event, is, Store, Unit } from 'effector';
+import { EventCallable, is, Store, Unit } from 'effector';
 
 export function splitMap<
   S,
@@ -11,12 +11,12 @@ export function splitMap<
   cases: Cases;
 }): {
   [K in keyof Cases]: Cases[K] extends (p: S) => infer R
-    ? Event<Exclude<R, undefined>>
+    ? EventCallable<Exclude<R, undefined>>
     : never;
-} & { __: Event<S> } {
-  const result: Record<string, Event<any> | Store<any>> = {};
+} & { __: EventCallable<S> } {
+  const result: Record<string, EventCallable<any> | Store<any>> = {};
 
-  let current = is.store(source) ? source.updates : (source as Event<S>);
+  let current = is.store(source) ? source.updates : (source as EventCallable<S>);
 
   for (const key in cases) {
     if (key in cases) {
