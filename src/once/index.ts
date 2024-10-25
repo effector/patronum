@@ -1,11 +1,4 @@
-import {
-  Unit,
-  Event,
-  EventAsReturnType,
-  is,
-  sample,
-  createStore,
-} from 'effector';
+import { Unit, Event, EventAsReturnType, is, sample, createStore } from 'effector';
 
 export function once<T>(config: {
   source: Unit<T>;
@@ -39,5 +32,5 @@ export function once<T>(
     $canTrigger.reset(reset);
   }
 
-  return trigger
+  return trigger;
 }

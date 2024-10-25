@@ -30,7 +30,7 @@ test('throttle works in forked scope', async () => {
   });
 
   expect(serialize(scope)).toMatchObject({
-    [$counter.sid!]: 1
+    [$counter.sid!]: 1,
   });
 });
 
@@ -68,11 +68,11 @@ test('throttle do not affect another forks', async () => {
   });
 
   expect(serialize(scopeA)).toMatchObject({
-    [$counter.sid!]: 2
+    [$counter.sid!]: 2,
   });
 
   expect(serialize(scopeB)).toMatchObject({
-    [$counter.sid!]: 200
+    [$counter.sid!]: 200,
   });
 });
 
@@ -98,7 +98,7 @@ test('throttle do not affect original store value', async () => {
   });
 
   expect(serialize(scope)).toMatchObject({
-    [$counter.sid!]: 2
+    [$counter.sid!]: 2,
   });
 
   expect($counter.getState()).toMatchInlineSnapshot(`0`);
@@ -156,4 +156,4 @@ describe('edge cases', () => {
     expect(listener).toBeCalledTimes(1);
     expect(listener).toBeCalledWith('two');
   });
-})
+});
