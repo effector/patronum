@@ -20,4 +20,4 @@
   - Add `title`. Make sure it uses camelCase syntax just like the method itself
   - Add `slug`. Use param-case to write it. In most cases it will be just like `title`
   - Add `desription` with one short sentence describing what method useful for
-  - Add `group`. To categorize method on `/operators` page. Full list of available groups, you can see in [documentation/src/content/config.ts](../documentation/src/content/config.ts)
+  - Add `group`. To categorize method on `/operators` page. Full list of available groups, you can see in [documentation/src/content/config.ts](https://github.com/effector/patronum/blob/main/documentation/src/content/config.ts)
