@@ -17,10 +17,10 @@ export function includes <T extends string | number>(
       return a.includes(b);
     }
 
-    if (typeof a === 'number') {
-      throw new Error('first argument should be an unit of array or string');
+    if (typeof a === 'string') {
+      return a.includes(b as string);
     }
 
-    return a.includes(b as string);
+    throw new Error('first argument should be an unit of array or string');  
   });
 }
