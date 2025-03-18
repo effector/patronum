@@ -210,7 +210,7 @@ describe('timeout', () => {
     increaseTimeout(); // timeout will change to 40 for next tick
     await wait(32); // t=80
     expect(fn).toBeCalledTimes(4); // ticked at t=60
-                                   // and next tick should be at t=100
+    // and next tick should be at t=100
 
     stop();
   });

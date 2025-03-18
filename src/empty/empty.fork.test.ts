@@ -39,11 +39,14 @@ test('strings', async () => {
   allSettled(set, { scope, params: 'hello' });
 
   expect(scope.getState($empty)).toBe(false);
-})
+});
 
 test('void', async () => {
   const set = createEvent<any>();
-  const $str = createStore<null | undefined>(null, {skipVoid: false}).on(set, (_, str) => str);
+  const $str = createStore<null | undefined>(null, { skipVoid: false }).on(
+    set,
+    (_, str) => str,
+  );
   const $empty = empty($str);
 
   const scope = fork();
