@@ -1,4 +1,9 @@
-# throttle
+---
+title: throttle
+slug: throttle
+description: Creates event which triggers at most once per timeout.
+group: timeouts
+---
 
 ```ts
 import { throttle } from 'patronum';
@@ -13,7 +18,7 @@ import { throttle } from 'patronum/throttle';
 This method allows to trigger `target` in equal timeouts regardless of source trigger frequency.
 It is useful in live search in UI.
 
-:::note since
+:::note[since]
 patronum 2.1.0
 Use `throttle({ source, timeout })` with patronum < 2.1.0
 :::

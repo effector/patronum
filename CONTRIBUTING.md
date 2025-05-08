@@ -12,3 +12,26 @@
 > Note: be careful NOT to commit `babel-plugin-factories.json` with changed library name `@effector/patronum`
 
 When work is done, please remove `@effector/patronum` from integration packages via `pnpm remove @effector/patronum`, else CI can be broken.
+
+## Documentation
+
+All the documentation source code placed in `./documentation`. It is uses [astro](https://astro.build) and [starlight](https://starlight.astro.build) on top of it.
+
+Documentation for operators placed right in the operator directory:
+
+```
+./src/
+├── and/
+│   ├── and.fork.test.ts
+│   ├── and.test.ts
+│   ├── index.ts
+│   └── readme.md
+├── combine-events/
+│   ├── combine-events.fork.test.ts
+│   ├── combine-events.test.ts
+│   ├── index.ts
+│   └── readme.md
+...
+```
+
+Documentation uses [Content Layer API](https://docs.astro.build/en/reference/configuration-reference/#querying-and-rendering-with-the-content-layer-api). You may want to [read this discussion](https://github.com/withastro/starlight/discussions/2268).

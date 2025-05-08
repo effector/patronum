@@ -1,4 +1,9 @@
-# combineEvents
+---
+title: combineEvents
+slug: combine-events
+description: Wait for all passed events is triggered.
+group: combination
+---
 
 ```ts
 import { combineEvents } from 'patronum';
@@ -8,14 +13,14 @@ import { combineEvents } from 'patronum/combine-events';
 
 ## `combineEvents(events)`
 
-:::note since
+:::note[since]
 patronum 2.1.0
 Use `combineEvents({ events })` with patronum < 2.1.0
 :::
 
 ### Motivation
 
-Method allows to trigger event when all of given events are triggered, with payloads ov given events
+Method allows to trigger event when all of given events are triggered, with payloads of given events
 
 :::note
 Consider using stores with combine in case of lazy-loaded modules, as they could miss some updates happened before module loaded

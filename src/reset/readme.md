@@ -1,6 +1,11 @@
-# reset
+---
+title: reset
+slug: reset
+description: Reset all passed stores by clock.
+group: predicate
+---
 
-:::note since
+:::note[since]
 patronum 1.7.0
 :::
 
@@ -92,7 +97,7 @@ resetOnSomeCases.onCreateStore((store) => {
 
 The method allow to reset many stores by a single line with no `clock` passing
 
-:::note since
+:::note[since]
 The `clock` argument became optional since patronum 1.15.0
 :::
 

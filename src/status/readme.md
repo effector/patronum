@@ -1,4 +1,9 @@
-# status
+---
+title: status
+slug: status
+description: Return text representation of effect state.
+group: effect
+---
 
 ```ts
 import { status } from 'patronum';

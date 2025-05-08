@@ -1,6 +1,11 @@
-# snapshot
+---
+title: snapshot
+slug: snapshot
+description: Create store value snapshot.
+group: combination
+---
 
-:::note since
+:::note[since]
 patronum 1.7.0
 :::
 
