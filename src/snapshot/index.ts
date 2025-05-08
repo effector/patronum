@@ -1,4 +1,12 @@
-import { Effect, Event, Store, StoreWritable, Unit, createStore, sample } from 'effector';
+import {
+  Effect,
+  Event,
+  Store,
+  StoreWritable,
+  Unit,
+  createStore,
+  sample,
+} from 'effector';
 
 type NoInfer<T> = [T][T extends any ? 0 : never];
 
