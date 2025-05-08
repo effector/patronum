@@ -19,7 +19,7 @@ test('throttle works in forked scope', async () => {
 
   const _$result = some({ predicate: 1, stores: [$first, $second, $third] });
 
-  const scope = fork(app);
+  const scope = fork();
 
   await allSettled(change, {
     scope,
@@ -45,8 +45,8 @@ test('throttle do not affect another forks', async () => {
     stores: [$first, $second, $third],
   });
 
-  const scopeA = fork(app);
-  const scopeB = fork(app);
+  const scopeA = fork();
+  const scopeB = fork();
 
   await allSettled(change, {
     scope: scopeA,
@@ -92,7 +92,7 @@ test('throttle do not affect original store value', async () => {
     stores: [$first, $second, $third],
   });
 
-  const scope = fork(app);
+  const scope = fork();
 
   await allSettled(change, {
     scope,

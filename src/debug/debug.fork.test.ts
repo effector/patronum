@@ -32,6 +32,7 @@ beforeEach(() => {
 afterEach(() => {
   global.console.info = original;
   global.console.groupCollapsed = originalCollapsed;
+  clearConsole();
 });
 
 test('works in forked scope', async () => {
@@ -43,36 +44,36 @@ test('works in forked scope', async () => {
     .on(event, (counter, payload) => counter + payload)
     .on(effect.done, (counter) => counter * 100);
   debug($store, event, effect);
-  const scope = fork(app);
+  const scope = fork();
 
   await allSettled(event, { scope, params: 5 });
   expect(stringArguments(fn)).toMatchInlineSnapshot(`
     [
-      "[store] app/$store 0",
-      "[event] (scope: unknown_scope_1) app/event 5",
-      "[store] (scope: unknown_scope_1) app/$store 5",
+      "[store] app/$store [getState] 0",
+      "[event] (scope: unknown_1) app/event 5",
+      "[store] (scope: unknown_1) app/$store 5",
     ]
   `);
 
   allSettled(effect, { scope, params: 'demo' });
   expect(stringArguments(fn)).toMatchInlineSnapshot(`
     [
-      "[store] app/$store 0",
-      "[event] (scope: unknown_scope_1) app/event 5",
-      "[store] (scope: unknown_scope_1) app/$store 5",
-      "[effect] (scope: unknown_scope_1) app/effect demo",
+      "[store] app/$store [getState] 0",
+      "[event] (scope: unknown_1) app/event 5",
+      "[store] (scope: unknown_1) app/$store 5",
+      "[effect] (scope: unknown_1) app/effect demo",
     ]
   `);
 
   await 1;
   expect(stringArguments(fn)).toMatchInlineSnapshot(`
     [
-      "[store] app/$store 0",
-      "[event] (scope: unknown_scope_1) app/event 5",
-      "[store] (scope: unknown_scope_1) app/$store 5",
-      "[effect] (scope: unknown_scope_1) app/effect demo",
-      "[effect] (scope: unknown_scope_1) app/effect.done {"params":"demo","result":"result demo"}",
-      "[store] (scope: unknown_scope_1) app/$store 500",
+      "[store] app/$store [getState] 0",
+      "[event] (scope: unknown_1) app/event 5",
+      "[store] (scope: unknown_1) app/$store 5",
+      "[effect] (scope: unknown_1) app/effect demo",
+      "[effect] (scope: unknown_1) app/effect.done {"params":"demo","result":"result demo"}",
+      "[store] (scope: unknown_1) app/$store 500",
     ]
   `);
 });
@@ -97,8 +98,7 @@ test('trace support', async () => {
 
   expect(stringArguments(fn)).toMatchInlineSnapshot(`
     [
-      "[store] $form 0",
-      "[store] (scope: unknown_scope_1) $form 0",
+      "[store] $form [getState] 0",
     ]
   `);
 
@@ -108,12 +108,11 @@ test('trace support', async () => {
 
   expect(stringArguments(fn)).toMatchInlineSnapshot(`
     [
-      "[store] $form 0",
-      "[store] (scope: unknown_scope_1) $form 0",
-      "[store] (scope: unknown_scope_2) $form 1",
-      "[store] (scope: unknown_scope_2) $form trace",
+      "[store] $form [getState] 0",
+      "[store] (scope: unknown_2) $form 1",
+      "[store] (scope: unknown_2) $form trace",
       "<- [store] $form 1",
-      "<- [$form.on] $form.on(inputChanged) 1",
+      "<- [on] $form.on(inputChanged) 1",
       "<- [event] inputChanged ",
     ]
   `);
@@ -122,28 +121,27 @@ test('trace support', async () => {
 
   expect(stringArguments(fn)).toMatchInlineSnapshot(`
     [
-      "[store] $form 0",
-      "[store] (scope: unknown_scope_1) $form 0",
-      "[store] (scope: unknown_scope_2) $form 1",
-      "[store] (scope: unknown_scope_2) $form trace",
+      "[store] $form [getState] 0",
+      "[store] (scope: unknown_2) $form 1",
+      "[store] (scope: unknown_2) $form trace",
       "<- [store] $form 1",
-      "<- [$form.on] $form.on(inputChanged) 1",
+      "<- [on] $form.on(inputChanged) 1",
       "<- [event] inputChanged ",
-      "[effect] (scope: unknown_scope_2) submitFx 1",
-      "[effect] (scope: unknown_scope_2) submitFx trace",
+      "[effect] (scope: unknown_2) submitFx 1",
+      "[effect] (scope: unknown_2) submitFx trace",
       "<- [effect] submitFx 1",
       "<- [sample]  1",
       "<- [event] buttonClicked ",
-      "[effect] (scope: unknown_scope_2) submitFx.done {"params":1}",
-      "[store] (scope: unknown_scope_2) $form 2",
-      "[store] (scope: unknown_scope_2) $form trace",
+      "[effect] (scope: unknown_2) submitFx.done {"params":1}",
+      "[store] (scope: unknown_2) $form 2",
+      "[store] (scope: unknown_2) $form trace",
       "<- [store] $form 2",
-      "<- [$form.on] $form.on(submitFx.doneData) 2",
-      "<- [event] submitFx.doneData ",
+      "<- [on] $form.on(submitFx.doneData) 2",
+      "<- [effect] submitFx.doneData ",
       "<- [map]  ",
-      "<- [event] submitFx.done {"params":1}",
+      "<- [effect] submitFx.done {"params":1}",
       "<- [filterMap]  {"params":1}",
-      "<- [event] submitFx.finally {"status":"done","params":1}",
+      "<- [effect] submitFx.finally {"status":"done","params":1}",
     ]
   `);
 });
@@ -165,8 +163,8 @@ test('can detect and save unknown scopes', async () => {
   await allSettled(up, { scope: scopeA });
   expect(stringArguments(fn)).toMatchInlineSnapshot(`
     [
-      "[effect] (scope: unknown_scope_3) fx []",
-      "[effect] (scope: unknown_scope_3) fx.done {"params":[]}",
+      "[effect] (scope: unknown_3) fx []",
+      "[effect] (scope: unknown_3) fx.done {"params":[]}",
     ]
   `);
   clearConsole();
@@ -174,8 +172,8 @@ test('can detect and save unknown scopes', async () => {
   await allSettled(up, { scope: scopeB });
   expect(stringArguments(fn)).toMatchInlineSnapshot(`
     [
-      "[effect] (scope: unknown_scope_4) fx []",
-      "[effect] (scope: unknown_scope_4) fx.done {"params":[]}",
+      "[effect] (scope: unknown_4) fx []",
+      "[effect] (scope: unknown_4) fx.done {"params":[]}",
     ]
   `);
   clearConsole();
@@ -183,8 +181,8 @@ test('can detect and save unknown scopes', async () => {
   await allSettled(up, { scope: scopeA });
   expect(stringArguments(fn)).toMatchInlineSnapshot(`
     [
-      "[effect] (scope: unknown_scope_3) fx []",
-      "[effect] (scope: unknown_scope_3) fx.done {"params":[]}",
+      "[effect] (scope: unknown_3) fx []",
+      "[effect] (scope: unknown_3) fx.done {"params":[]}",
     ]
   `);
 });
@@ -209,10 +207,10 @@ test('can detect registered scopes', async () => {
 
   expect(stringArguments(fn)).toMatchInlineSnapshot(`
     [
-      "[store] (scope: scope_a) app/$store 0",
-      "[store] (scope: scope_a) $form 0",
-      "[store] (scope: scope_b) app/$store 0",
-      "[store] (scope: scope_b) $form 0",
+      "[store] (scope: scope_a) app/$store [getState] 0",
+      "[store] (scope: scope_a) $form [getState] 0",
+      "[store] (scope: scope_b) app/$store [getState] 0",
+      "[store] (scope: scope_b) $form [getState] 0",
     ]
   `);
 
@@ -263,13 +261,13 @@ test('prints default state for store in each of the known scopes', () => {
 
   expect(stringArguments(fn)).toMatchInlineSnapshot(`
     [
-      "[store] (scope: scope_42) app/$store 0",
-      "[store] (scope: scope_42) $form 0",
-      "[store] (scope: scope_1337) app/$store 0",
-      "[store] (scope: scope_1337) $form 0",
-      "[store] $count 0",
-      "[store] (scope: scope_42) $count 42",
-      "[store] (scope: scope_1337) $count 1337",
+      "[store] (scope: scope_42) app/$store [getState] 0",
+      "[store] (scope: scope_42) $form [getState] 0",
+      "[store] (scope: scope_1337) app/$store [getState] 0",
+      "[store] (scope: scope_1337) $form [getState] 0",
+      "[store] $count [getState] 0",
+      "[store] (scope: scope_42) $count [getState] 42",
+      "[store] (scope: scope_1337) $count [getState] 1337",
     ]
   `);
 });
@@ -293,14 +291,14 @@ test('individual scope can be unregistered', () => {
 
   expect(stringArguments(fn)).toMatchInlineSnapshot(`
     [
-      "[store] (scope: scope_42) app/$store 0",
-      "[store] (scope: scope_42) $form 0",
-      "[store] (scope: scope_42) $count 0",
-      "[store] (scope: scope_1337) app/$store 0",
-      "[store] (scope: scope_1337) $form 0",
-      "[store] (scope: scope_1337) $count 0",
-      "[store] $count 0",
-      "[store] (scope: scope_1337) $count 1337",
+      "[store] (scope: scope_42) app/$store [getState] 0",
+      "[store] (scope: scope_42) $form [getState] 0",
+      "[store] (scope: scope_42) $count [getState] 0",
+      "[store] (scope: scope_1337) app/$store [getState] 0",
+      "[store] (scope: scope_1337) $form [getState] 0",
+      "[store] (scope: scope_1337) $count [getState] 0",
+      "[store] $count [getState] 0",
+      "[store] (scope: scope_1337) $count [getState] 1337",
     ]
   `);
 });
@@ -330,10 +328,10 @@ test('traces have scope name', async () => {
 
   expect(stringArguments(fn)).toMatchInlineSnapshot(`
     [
-      "[store] (scope: my_scope) app/$store 0",
-      "[store] (scope: my_scope) $form 0",
-      "[store] (scope: my_scope) $count 0",
-      "[store] (scope: my_scope) $count 0",
+      "[store] (scope: my_scope) app/$store [getState] 0",
+      "[store] (scope: my_scope) $form [getState] 0",
+      "[store] (scope: my_scope) $count [getState] 0",
+      "[store] (scope: my_scope) $count [getState] 0",
       "[effect] (scope: my_scope) submitFx 1",
       "[effect] (scope: my_scope) submitFx trace",
       "<- [effect] submitFx 1",
@@ -362,19 +360,19 @@ test('logs stores for newly registered scope', async () => {
 
   expect(stringArguments(fn)).toMatchInlineSnapshot(`
     [
-      "[store] $count 0",
-      "[store] (scope: scope_1337) $count 0",
-      "[store] (scope: my_scope) $count 0",
-      "[store] (scope: scope_42) app/$store 0",
-      "[store] (scope: scope_42) $form 0",
-      "[store] (scope: scope_42) $count 0",
-      "[store] (scope: scope_42) $count 0",
-      "[store] (scope: scope_42) $count 42",
-      "[store] (scope: scope_1337) app/$store 0",
-      "[store] (scope: scope_1337) $form 0",
-      "[store] (scope: scope_1337) $count 0",
-      "[store] (scope: scope_1337) $count 0",
-      "[store] (scope: scope_1337) $count 1337",
+      "[store] $count [getState] 0",
+      "[store] (scope: scope_1337) $count [getState] 0",
+      "[store] (scope: my_scope) $count [getState] 0",
+      "[store] (scope: scope_42) app/$store [getState] 0",
+      "[store] (scope: scope_42) $form [getState] 0",
+      "[store] (scope: scope_42) $count [getState] 0",
+      "[store] (scope: scope_42) $count [getState] 0",
+      "[store] (scope: scope_42) $count [getState] 42",
+      "[store] (scope: scope_1337) app/$store [getState] 0",
+      "[store] (scope: scope_1337) $form [getState] 0",
+      "[store] (scope: scope_1337) $count [getState] 0",
+      "[store] (scope: scope_1337) $count [getState] 0",
+      "[store] (scope: scope_1337) $count [getState] 1337",
     ]
   `);
 });
@@ -399,9 +397,9 @@ test('custom names basic support', () => {
 
   expect(stringArguments(fn)).toMatchInlineSnapshot(`
     [
-      "[event] (scope: unknown_scope_5) name 1",
-      "[store] (scope: unknown_scope_5) $customName 1",
-      "[effect] (scope: unknown_scope_5) nameFx 1",
+      "[event] (scope: unknown_5) name 1",
+      "[store] (scope: unknown_5) $customName 1",
+      "[effect] (scope: unknown_5) nameFx 1",
     ]
   `);
 });
@@ -426,19 +424,164 @@ test('custom names with traces support', () => {
 
   expect(stringArguments(fn)).toMatchInlineSnapshot(`
     [
-      "[event] (scope: unknown_scope_6) name 1",
-      "[event] (scope: unknown_scope_6) name trace",
+      "[event] (scope: unknown_6) name 1",
+      "[event] (scope: unknown_6) name trace",
       "<- [event] name 1",
-      "[store] (scope: unknown_scope_6) $customName 1",
-      "[store] (scope: unknown_scope_6) $customName trace",
+      "[store] (scope: unknown_6) $customName 1",
+      "[store] (scope: unknown_6) $customName trace",
       "<- [store] $customName 1",
-      "<- [$customName.on] $customName.on(name) 1",
+      "<- [on] $customName.on(name) 1",
       "<- [event] name 1",
-      "[effect] (scope: unknown_scope_6) nameFx 1",
-      "[effect] (scope: unknown_scope_6) nameFx trace",
+      "[effect] (scope: unknown_6) nameFx 1",
+      "[effect] (scope: unknown_6) nameFx trace",
       "<- [effect] nameFx 1",
       "<- [sample]  1",
       "<- [event] name 1",
+    ]
+  `);
+});
+
+test('allow custom handlers', async () => {
+  const event = createEvent<number>();
+  const effect = createEffect().use((payload) => Promise.resolve('result' + payload));
+  const $store = createStore(0)
+    .on(event, (state, value) => state + value)
+    .on(effect.done, (state) => state * 10);
+  sample({
+    clock: event,
+    target: effect,
+  });
+
+  const mockLog = jest.fn();
+
+  const scope = fork();
+  debug.unregisterAllScopes();
+  debug.registerScope(scope, { name: 'my_scope' });
+
+  debug(
+    {
+      trace: true,
+      handler: (context) => {
+        expect(typeof context.node).toEqual('object');
+        expect(typeof context.scope).toEqual('object');
+
+        mockLog(
+          `${context.logType}.${context.scopeName}.${context.kind}.${context.name}.${context.value}`,
+        );
+
+        context.trace.forEach((trace) => {
+          expect(typeof trace.node).toEqual('object');
+          expect(context.scopeName).toEqual('my_scope');
+          mockLog(
+            `trace.${context.scopeName}.${trace.kind}.${trace.name}.${trace.value}`,
+          );
+        });
+      },
+    },
+    { $customName: $store, name: event, nameFx: effect },
+  );
+
+  allSettled(event, { scope, params: 1 });
+
+  expect(argumentsHistory(mockLog)).toMatchInlineSnapshot(`
+    [
+      [
+        "initial.null.store.$customName.0",
+      ],
+      [
+        "initial.my_scope.store.$customName.0",
+      ],
+      [
+        "update.my_scope.event.name.1",
+      ],
+      [
+        "trace.my_scope.event.name.1",
+      ],
+      [
+        "update.my_scope.store.$customName.1",
+      ],
+      [
+        "trace.my_scope.store.$customName.1",
+      ],
+      [
+        "trace.my_scope.on.$customName.on(name).1",
+      ],
+      [
+        "trace.my_scope.event.name.1",
+      ],
+      [
+        "update.my_scope.effect.nameFx.1",
+      ],
+      [
+        "trace.my_scope.effect.nameFx.1",
+      ],
+      [
+        "trace.my_scope.sample.null.1",
+      ],
+      [
+        "trace.my_scope.event.name.1",
+      ],
+    ]
+  `);
+});
+
+test('effect ids support', async () => {
+  const event = createEvent<number>();
+  const effect = createEffect((t: number) => new Promise((r) => setTimeout(r, t)));
+  sample({
+    clock: event,
+    target: effect,
+  });
+
+  const mockLog = jest.fn();
+
+  const scope = fork();
+  debug.unregisterAllScopes();
+  debug.registerScope(scope, { name: 'my_scope' });
+
+  debug(
+    {
+      handler: (context) => {
+        if (context.kind === 'effect' && context.node.meta.op === 'effect') {
+          mockLog(`start:${context.stackMeta.fxID}`);
+        }
+
+        if (context.kind === 'effect' && context.node.meta.named === 'finally') {
+          mockLog(`end:${context.stackMeta.fxID}`);
+        }
+      },
+    },
+    {
+      effect,
+    },
+  );
+
+  allSettled(event, { scope, params: 20 });
+  allSettled(event, { scope, params: 15 });
+  allSettled(event, { scope, params: 5 });
+
+  await allSettled(scope);
+
+  expect(argumentsHistory(mockLog)).toMatchInlineSnapshot(`
+    [
+      [
+        "start:13",
+      ],
+      [
+        "start:14",
+      ],
+      [
+        "start:15",
+      ],
+      [
+        "end:15",
+      ],
+      [
+        "end:14",
+      ],
+      [
+        "end:13",
+      ],
     ]
   `);
 });

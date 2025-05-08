@@ -3,56 +3,83 @@ import {
   createEvent,
   createStore,
   Event,
-  guard,
   is,
   sample,
   Store,
   Unit,
+  UnitTargetable,
 } from 'effector';
 
 type EventAsReturnType<Payload> = any extends Payload ? Event<Payload> : never;
 
+export function throttle<T>(
+  source: Unit<T>,
+  timeout: number | Store<number>,
+): EventAsReturnType<T>;
 export function throttle<T>(_: {
   source: Unit<T>;
   timeout: number | Store<number>;
   name?: string;
 }): EventAsReturnType<T>;
-export function throttle<T, Target extends Unit<T>>(_: {
+export function throttle<T, Target extends UnitTargetable<T>>(_: {
   source: Unit<T>;
   timeout: number | Store<number>;
   target: Target;
   name?: string;
 }): Target;
-export function throttle<T>({
-  source,
-  timeout,
-  target = createEvent<T>(),
-}: {
-  source: Unit<T>;
-  timeout: number | Store<number>;
-  name?: string;
-  target?: Unit<any>;
-}): EventAsReturnType<T> {
+export function throttle<T>(
+  ...args:
+    | [
+        {
+          source: Unit<T>;
+          timeout: number | Store<number>;
+          name?: string;
+          target?: UnitTargetable<any>;
+        },
+      ]
+    | [Unit<T>, number | Store<number>]
+): EventAsReturnType<T> {
+  const argsShape =
+    args.length === 2 ? { source: args[0], timeout: args[1] } : args[0];
+  const { source, timeout, target = createEvent<T>() } = argsShape;
   if (!is.unit(source)) throw new TypeError('source must be unit from effector');
 
   const $timeout = toStoreNumber(timeout);
 
-  const timerFx = createEffect<number, void>(
-    (timeout) => new Promise((resolve) => setTimeout(resolve, timeout)),
-  );
+  const timerFx = createEffect<number, void>({
+    name: `throttle(${(source as Event<T>).shortName || source.kind}) effect`,
+    handler: (timeout) => new Promise((resolve) => setTimeout(resolve, timeout)),
+  });
 
-  const start = guard({
+  // It's ok - nothing will ever start unless source is triggered
+  const $payload = createStore<T>(null as unknown as T, {
+    serialize: 'ignore',
+    skipVoid: false,
+  }).on(source, (_, payload) => payload);
+
+  const triggerTick = createEvent<T>();
+
+  const $canTick = createStore(true, { serialize: 'ignore' })
+    .on(triggerTick, () => false)
+    .on(target, () => true);
+
+  sample({
     clock: source,
-    filter: timerFx.pending.map((pending) => !pending),
+    filter: $canTick,
+    target: triggerTick,
   });
 
   sample({
     source: $timeout,
-    clock: start as Unit<any>,
+    clock: triggerTick as Unit<any>,
     target: timerFx,
   });
 
-  sample({ source, clock: timerFx.done, target });
+  sample({
+    source: $payload,
+    clock: timerFx.done,
+    target,
+  });
 
   return target as any;
 }

@@ -1,4 +1,9 @@
-# some
+---
+title: some
+slug: some
+description: Checks that state in at least one store passes the predicate test.
+group: predicate
+---
 
 ```ts
 import { some } from 'patronum';
@@ -19,7 +24,7 @@ It is useful to check that user filled at least a single field.
 $result = some({ predicate: (value) => true, stores });
 ```
 
-- read it as: has some predicate at at least one store
+- read it as: has some predicate at least one store
 - `$result` will be `true` if each at least `predicate` on each store value from `values` returns `true`, otherwise it will be `false`
 
 ### Arguments
@@ -86,7 +91,7 @@ console.assert(false === $isFormFailed.getState());
 
 ## `some({ predicate: Store, stores })`
 
-:::note since
+:::note[since]
 patronum 1.8.0
 :::
 

@@ -16,6 +16,13 @@ describe('arguments validation', () => {
     );
   });
 
+  test('not-unit source is not allowed', () => {
+    // @ts-expect-error
+    expect(() => debounce({ source: 10, timeout: 10 })).toThrowError(
+      /must be unit from effector/,
+    );
+  });
+
   test('negative timeout is wrong', () => {
     expect(() => debounce({ source: createEvent(), timeout: -1 })).toThrowError(
       /must be positive/,
@@ -51,16 +58,36 @@ describe('timeout as store', () => {
     const watcher = watch(debounced);
 
     trigger();
-    await wait(30);
+    await wait(32);
     changeTimeout(100);
     trigger();
-    await wait(10);
+    await wait(12);
     expect(watcher).toBeCalledTimes(0);
-    await wait(90);
+    await wait(92);
     expect(watcher).toBeCalledTimes(1);
 
     trigger();
-    await wait(100);
+    await wait(120);
+    expect(watcher).toBeCalledTimes(2);
+  });
+  test('new timeout is used after source trigger (shorthand form)', async () => {
+    const trigger = createEvent();
+    const changeTimeout = createEvent<number>();
+    const $timeout = createStore(40).on(changeTimeout, (_, value) => value);
+    const debounced = debounce(trigger, $timeout);
+    const watcher = watch(debounced);
+
+    trigger();
+    await wait(32);
+    changeTimeout(100);
+    trigger();
+    await wait(12);
+    expect(watcher).toBeCalledTimes(0);
+    await wait(92);
+    expect(watcher).toBeCalledTimes(1);
+
+    trigger();
+    await wait(120);
     expect(watcher).toBeCalledTimes(2);
   });
 });
@@ -79,16 +106,15 @@ describe('triple trigger one wait', () => {
     trigger();
     expect(watcher).not.toBeCalled();
 
-    await wait(40);
+    await wait(42);
     expect(watcher).toBeCalledTimes(1);
   });
-
-  test('effect', async () => {
+  test('event (shorthand)', async () => {
     const watcher = jest.fn();
 
-    const trigger = createEffect<void, void>().use(() => undefined);
+    const trigger = createEvent();
+    const debounced = debounce(trigger, 40);
 
-    const debounced = debounce({ source: trigger, timeout: 40 });
     debounced.watch(watcher);
 
     trigger();
@@ -96,7 +122,40 @@ describe('triple trigger one wait', () => {
     trigger();
     expect(watcher).not.toBeCalled();
 
-    await wait(40);
+    await wait(42);
+    expect(watcher).toBeCalledTimes(1);
+  });
+
+  test('effect', async () => {
+    const watcher = jest.fn();
+
+    const triggerFx = createEffect<void, void>().use(() => undefined);
+
+    const debounced = debounce({ source: triggerFx, timeout: 40 });
+    debounced.watch(watcher);
+
+    triggerFx();
+    triggerFx();
+    triggerFx();
+    expect(watcher).not.toBeCalled();
+
+    await wait(42);
+    expect(watcher).toBeCalledTimes(1);
+  });
+  test('effect (shorthand)', async () => {
+    const watcher = jest.fn();
+
+    const triggerFx = createEffect<void, void>().use(() => undefined);
+
+    const debounced = debounce(triggerFx, 40);
+    debounced.watch(watcher);
+
+    triggerFx();
+    triggerFx();
+    triggerFx();
+    expect(watcher).not.toBeCalled();
+
+    await wait(42);
     expect(watcher).toBeCalledTimes(1);
   });
 
@@ -114,7 +173,25 @@ describe('triple trigger one wait', () => {
     trigger(2);
     expect(watcher).not.toBeCalled();
 
-    await wait(40);
+    await wait(42);
+    expect(watcher).toBeCalledTimes(1);
+    expect(watcher).toBeCalledWith(2);
+  });
+  test('store (shorthand)', async () => {
+    const watcher = jest.fn();
+
+    const trigger = createEvent<number>();
+    const $store = createStore(0).on(trigger, (_, value) => value);
+
+    const debounced = debounce($store, 40);
+    debounced.watch(watcher);
+
+    trigger(0);
+    trigger(1);
+    trigger(2);
+    expect(watcher).not.toBeCalled();
+
+    await wait(42);
     expect(watcher).toBeCalledTimes(1);
     expect(watcher).toBeCalledWith(2);
   });
@@ -128,13 +205,13 @@ describe('too small wait after each trigger', () => {
     debounced.watch(watcher);
 
     trigger();
-    await wait(30);
+    await wait(32);
     trigger();
-    await wait(30);
+    await wait(32);
     trigger();
     expect(watcher).not.toBeCalled();
 
-    await wait(40);
+    await wait(42);
     expect(watcher).toBeCalledTimes(1);
   });
 
@@ -145,13 +222,13 @@ describe('too small wait after each trigger', () => {
     debounced.watch(watcher);
 
     trigger();
-    await wait(30);
+    await wait(32);
     trigger();
-    await wait(30);
+    await wait(32);
     trigger();
     expect(watcher).not.toBeCalled();
 
-    await wait(40);
+    await wait(42);
     expect(watcher).toBeCalledTimes(1);
   });
 
@@ -163,13 +240,13 @@ describe('too small wait after each trigger', () => {
     debounced.watch(watcher);
 
     trigger();
-    await wait(30);
+    await wait(32);
     trigger();
-    await wait(30);
+    await wait(32);
     trigger();
     expect(watcher).not.toBeCalled();
 
-    await wait(40);
+    await wait(42);
     expect(watcher).toBeCalledTimes(1);
   });
 });
@@ -186,7 +263,7 @@ describe('debounced triggered with latest value', () => {
     trigger(2);
     expect(watcher).not.toBeCalled();
 
-    await wait(40);
+    await wait(42);
     expect(watcher).toBeCalledTimes(1);
     expect(watcher).toBeCalledWith(2);
   });
@@ -202,7 +279,7 @@ describe('debounced triggered with latest value', () => {
     trigger(2);
     expect(watcher).not.toBeCalled();
 
-    await wait(40);
+    await wait(42);
     expect(watcher).toBeCalledTimes(1);
     expect(watcher).toBeCalledWith(2);
   });
@@ -219,7 +296,7 @@ describe('debounced triggered with latest value', () => {
     trigger();
     expect(watcher).not.toBeCalled();
 
-    await wait(40);
+    await wait(42);
     expect(watcher).toBeCalledTimes(1);
     expect(watcher).toBeCalledWith(3);
   });
@@ -237,14 +314,14 @@ describe('debounced can be triggered after first', () => {
     trigger(2);
     expect(watcher).not.toBeCalled();
 
-    await wait(40);
+    await wait(42);
     expect(watcher).toBeCalledTimes(1);
     expect(watcher).toBeCalledWith(2);
 
     trigger(3);
-    await wait(30);
+    await wait(32);
     trigger(4);
-    await wait(40);
+    await wait(42);
 
     expect(watcher).toBeCalledTimes(2);
     expect(watcher).toBeCalledWith(2);
@@ -262,14 +339,14 @@ describe('debounced can be triggered after first', () => {
     trigger(2);
     expect(watcher).not.toBeCalled();
 
-    await wait(40);
+    await wait(42);
     expect(watcher).toBeCalledTimes(1);
     expect(watcher).toBeCalledWith(2);
 
     trigger(3);
-    await wait(30);
+    await wait(32);
     trigger(4);
-    await wait(40);
+    await wait(42);
 
     expect(watcher).toBeCalledTimes(2);
     expect(watcher).toBeCalledWith(2);
@@ -288,14 +365,14 @@ describe('debounced can be triggered after first', () => {
     trigger();
     expect(watcher).not.toBeCalled();
 
-    await wait(40);
+    await wait(42);
     expect(watcher).toBeCalledTimes(1);
     expect(watcher).toBeCalledWith(3);
 
     trigger();
-    await wait(30);
+    await wait(32);
     trigger();
-    await wait(40);
+    await wait(42);
 
     expect(watcher).toBeCalledTimes(2);
     expect(watcher).toBeCalledWith(3);
@@ -316,7 +393,7 @@ describe('target triggered on debounce', () => {
     source(3);
     expect(watcher).not.toBeCalled();
 
-    await wait(40);
+    await wait(42);
     expect(watcher).toBeCalledTimes(1);
     expect(watcher).toBeCalledWith(3);
   });
@@ -333,7 +410,7 @@ describe('target triggered on debounce', () => {
     source(3);
     expect(watcher).not.toBeCalled();
 
-    await wait(40);
+    await wait(42);
     expect(watcher).toBeCalledTimes(1);
     expect(watcher).toBeCalledWith(3);
   });
@@ -350,7 +427,7 @@ describe('target triggered on debounce', () => {
     source(3);
     expect(watcher).not.toBeCalled();
 
-    await wait(40);
+    await wait(42);
     expect(watcher).toBeCalledTimes(1);
     expect(watcher).toBeCalledWith(3);
   });
@@ -397,7 +474,7 @@ describe('source and target type combinations', () => {
     source(3);
     expect(watcher).not.toBeCalled();
 
-    await wait(40);
+    await wait(42);
     expect(watcher).toBeCalledTimes(1);
     expect(watcher.mock.calls).toMatchInlineSnapshot(`
       [
@@ -420,7 +497,7 @@ describe('source and target type combinations', () => {
     source(2);
     expect(watcher).not.toBeCalled();
 
-    await wait(40);
+    await wait(42);
     expect(watcher).toBeCalledTimes(1);
     expect(watcher.mock.calls).toMatchInlineSnapshot(`
       [
@@ -444,7 +521,7 @@ describe('source and target type combinations', () => {
     change();
     expect(watcher).not.toBeCalled();
 
-    await wait(40);
+    await wait(42);
     expect(watcher).toBeCalledTimes(1);
     expect(watcher.mock.calls).toMatchInlineSnapshot(`
       [
@@ -455,12 +532,127 @@ describe('source and target type combinations', () => {
     `);
   });
 
-  test.todo('source store, target event');
-  test.todo('source store, target store');
+  test('source store, target event', async () => {
+    const watcher = jest.fn();
+    const change = createEvent();
+    const source = createStore<number>(0).on(change, (state) => state + 1);
+    const target = createEvent<number>();
 
-  test.todo('source effect, target event');
-  test.todo('source effect, target store');
-  test.todo('source effect, target effect');
+    debounce({ source, timeout: 30, target });
+    target.watch(watcher);
+
+    change();
+    change();
+    change();
+    expect(watcher).not.toBeCalled();
+
+    await wait(32);
+    expect(watcher).toBeCalledTimes(1);
+    expect(watcher.mock.calls).toMatchInlineSnapshot(`
+      [
+        [
+          3,
+        ],
+      ]
+    `);
+  });
+
+  test('source store, target store', async () => {
+    const watcher = jest.fn();
+    const change = createEvent();
+    const source = createStore<number>(0).on(change, (state) => state + 1);
+    const target = createStore<number>(0);
+
+    debounce({ source, timeout: 30, target });
+    target.updates.watch(watcher);
+
+    change();
+    change();
+    change();
+    expect(watcher).not.toBeCalled();
+
+    await wait(32);
+    expect(watcher).toBeCalledTimes(1);
+    expect(watcher.mock.calls).toMatchInlineSnapshot(`
+      [
+        [
+          3,
+        ],
+      ]
+    `);
+  });
+
+  test('source effect, target event', async () => {
+    const watcher = jest.fn();
+    const source = createEffect<number, void>().use(() => undefined);
+    const target = createEvent<number>();
+
+    debounce({ source, timeout: 30, target });
+    target.watch(watcher);
+
+    source(1);
+    source(2);
+    source(3);
+    expect(watcher).not.toBeCalled();
+
+    await wait(32);
+    expect(watcher).toBeCalledTimes(1);
+    expect(watcher.mock.calls).toMatchInlineSnapshot(`
+      [
+        [
+          3,
+        ],
+      ]
+    `);
+  });
+
+  test('source effect, target store', async () => {
+    const watcher = jest.fn();
+    const source = createEffect<number, void>().use(() => undefined);
+    const target = createStore<number>(0);
+
+    debounce({ source, timeout: 30, target });
+    target.updates.watch(watcher);
+
+    source(1);
+    source(2);
+    source(3);
+    expect(watcher).not.toBeCalled();
+
+    await wait(32);
+    expect(watcher).toBeCalledTimes(1);
+    expect(watcher.mock.calls).toMatchInlineSnapshot(`
+      [
+        [
+          3,
+        ],
+      ]
+    `);
+  });
+
+  test('source effect, target effect', async () => {
+    const watcher = jest.fn();
+    const source = createEffect<number, void>().use(() => undefined);
+    const target = createEffect<number, void>();
+
+    debounce({ source, timeout: 30, target });
+    target.watch(watcher);
+
+    source(1);
+    source(2);
+    source(3);
+    expect(watcher).not.toBeCalled();
+
+    await wait(32);
+    expect(watcher).toBeCalledTimes(1);
+    expect(watcher.mock.calls).toMatchInlineSnapshot(`
+      [
+        [
+          3,
+        ],
+      ]
+    `);
+  });
 });
 
 describe('name assigned from source', () => {
@@ -568,4 +760,18 @@ test('debounce do not affect another instance of debounce', async () => {
 
   await wait(20);
   expect(watcherSecond).toBeCalledWith('foo');
+});
+
+test('debounced event should be triggered with undefined', async () => {
+  const trigger = createEvent();
+  const debounced = debounce({ source: trigger, timeout: 0 });
+
+  const listener = jest.fn();
+  debounced.watch(listener);
+
+  trigger();
+  await wait(0);
+
+  expect(listener).toBeCalledTimes(1);
+  expect(listener).toBeCalledWith(undefined);
 });

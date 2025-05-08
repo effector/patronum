@@ -1,6 +1,11 @@
-# not
+---
+title: not
+slug: not
+description: Inverts store boolean-value.
+group: predicate
+---
 
-:::note since
+:::note[since]
 patronum 1.11.0
 :::
 

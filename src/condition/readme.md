@@ -1,4 +1,9 @@
-# condition
+---
+title: condition
+slug: condition
+description: Trigger then or else by condition.
+group: predicate
+---
 
 ```ts
 import { condition } from 'patronum';
@@ -8,9 +13,9 @@ import { condition } from 'patronum/condition';
 
 ## Motivation
 
-Condition is very similar to [`guard`], but allows you to have `else` branch along with simple `if` matcher.
+Condition is very similar to [`sample`], but allows you to have `else` branch along with simple `if` matcher.
 
-[`guard`]: https://effector.dev/docs/api/effector/guard
+[`sample`]: https://effector.dev/docs/api/effector/sample
 
 ## `condition({ source: Unit, if: Store, then?: Unit, else?: Unit })`
 

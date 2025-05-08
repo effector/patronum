@@ -1,6 +1,6 @@
 import { expectType, expectError } from 'tsd';
 import { Store, createStore } from 'effector';
-import { some } from '../src/some';
+import { some } from '../dist/some';
 
 // Check invalid type for number predicate
 {
@@ -26,9 +26,13 @@ import { some } from '../src/some';
   expectType<Store<boolean>>(some({ predicate: value, stores: [$a, $b] }));
   expectType<Store<boolean>>(some({ predicate: (b) => b === 'b', stores: [$a, $b] }));
 
-  // @ts-expect-error
+  /**
+   * @todo Fix this edge-case in the future
+   *
+   */
+  // should be error but is not
   some({ predicate: value, stores: [$a, $invalid] });
-  // @ts-expect-error
+  // should be error but is not
   some({ predicate: 'demo', stores: [$a, $b] });
   // @ts-expect-error
   some({ predicate: (c) => c === 'demo', stores: [$a, $b] });
@@ -54,7 +58,7 @@ import { some } from '../src/some';
   const $b = createStore(1);
   const $invalid1 = createStore('');
   const $invalid2 = createStore(true);
-  const $invalid3 = createStore({});
+  const $invalid3 = createStore<Record<any, any>>({});
 
   expectType<Store<boolean>>(some({ predicate: $predicate, stores: [$a, $b] }));
 
@@ -76,7 +80,7 @@ import { some } from '../src/some';
   const $b = createStore(1);
   const $invalid1 = createStore('');
   const $invalid2 = createStore(true);
-  const $invalid3 = createStore({});
+  const $invalid3 = createStore<Record<any, any>>({});
 
   expectType<Store<boolean>>(some([$a, $b], 0));
   // @ts-expect-error

@@ -1,4 +1,14 @@
-import { createStore, Event, sample, Store } from 'effector';
+import {
+  Effect,
+  Event,
+  Store,
+  StoreWritable,
+  Unit,
+  createStore,
+  sample,
+} from 'effector';
+
+type NoInfer<T> = [T][T extends any ? 0 : never];
 
 export function snapshot<SourceType, TargetType = SourceType>({
   source,
@@ -6,11 +16,13 @@ export function snapshot<SourceType, TargetType = SourceType>({
   fn = (value: SourceType) => value as unknown as TargetType,
 }: {
   source: Store<SourceType>;
-  clock?: Event<any>;
+  clock?: Event<any> | Effect<any, any, any> | Store<any>;
   fn?(value: SourceType): TargetType;
-}): Store<TargetType> {
+}): StoreWritable<NoInfer<TargetType>> {
   const defaultValue = fn(source.defaultState);
-  const onSnapshot = clock ? sample({ source, clock, fn }) : sample({ source, fn });
+  const onSnapshot = clock
+    ? sample({ source, clock: clock as Unit<any>, fn })
+    : sample({ source, fn });
   const $snapshot = createStore(defaultValue);
 
   $snapshot.on(onSnapshot, (_, value) => value);

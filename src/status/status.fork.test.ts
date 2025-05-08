@@ -8,7 +8,7 @@ test('works in forked scope', async () => {
     () => new Promise<number>((resolve) => setTimeout(resolve, 10, 1)),
   );
   const $status = status({ effect });
-  const scope = fork(app);
+  const scope = fork();
   await allSettled(effect, { scope });
   expect(scope.getState($status)).toBe('done');
 });
@@ -23,8 +23,8 @@ test('do not affects another scope', async () => {
       }),
   );
   const $status = status({ effect });
-  const scope1 = fork(app);
-  const scope2 = fork(app);
+  const scope1 = fork();
+  const scope2 = fork();
   await Promise.all([
     allSettled(effect, { scope: scope1, params: 1 }),
     allSettled(effect, { scope: scope2, params: 0 }),
@@ -39,7 +39,7 @@ test('do not affects original store state', async () => {
     () => new Promise<number>((resolve) => setTimeout(resolve, 10, 1)),
   );
   const $status = status({ effect });
-  const scope = fork(app);
+  const scope = fork();
   await allSettled(effect, { scope });
   expect(scope.getState($status)).toBe('done');
   expect($status.getState()).toBe('initial');

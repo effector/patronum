@@ -1,4 +1,4 @@
-import { allSettled, createEvent, createStore, fork, restore } from 'effector';
+import { allSettled, createEvent, createStore, fork } from 'effector';
 import { either } from './index';
 import { not } from '../not';
 import { argumentHistory, watch } from '../../test-library';
@@ -126,12 +126,24 @@ test('result don`t updates for not selected argument', async () => {
   await allSettled(toggle, { scope });
   await allSettled(updateFirst, { scope, params: 'second' });
 
-  // Second update of the first looks like a bug in effector
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
     [
-      "first",
       "first",
       2,
     ]
   `);
+});
+
+test('supports object config as well', async () => {
+  const $isMobile = createStore(true);
+
+  const $result = either({ filter: $isMobile, then: 250, other: 0 });
+
+  const scope = fork();
+
+  expect(scope.getState($result)).toBe(250);
+
+  await allSettled($isMobile, { scope, params: false });
+
+  expect(scope.getState($result)).toBe(0);
 });

@@ -13,6 +13,8 @@
     "noUnusedLocals": false,
     "strict": true,
     "strictNullChecks": true,
-    "suppressImplicitAnyIndexErrors": true
-  }
+    "skipLibCheck": true,
+  },
+  "include": ["./*.ts"],
+  "exclude": ["node_modules", "../src/**/*"]
 }

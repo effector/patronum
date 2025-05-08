@@ -1,6 +1,6 @@
 import { expectType } from 'tsd';
 import { createStore, Store } from 'effector';
-import { format } from '../src/format';
+import { format } from '../dist/format';
 
 // Allows stores with any value and returns Store<string>
 {

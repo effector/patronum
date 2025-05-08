@@ -39,8 +39,8 @@ describe('strategies', () => {
 
 describe('effects', () => {
   test('initial at false', async () => {
-    const effect = createEffect({
-      handler: () => new Promise((resolve) => setTimeout(resolve, 1)),
+    const effect = createEffect(() => {
+      return new Promise((resolve) => setTimeout(resolve, 1));
     });
     const $pending = pending({ effects: [effect] });
     const fn = jest.fn();
@@ -53,11 +53,58 @@ describe('effects', () => {
     `);
   });
 
+  test('initial at false (shorthand)', async () => {
+    const effect = createEffect(() => {
+      return new Promise((resolve) => setTimeout(resolve, 1));
+    });
+    const $pending = pending([effect]);
+    const fn = jest.fn();
+
+    $pending.watch(fn);
+    expect(argumentHistory(fn)).toMatchInlineSnapshot(`
+      [
+        false,
+      ]
+    `);
+  });
+
   test('Run effect to get true, after effect get false', async () => {
-    const effect = createEffect({
-      handler: () => new Promise((resolve) => setTimeout(resolve, 1)),
+    const effect = createEffect(() => {
+      return new Promise((resolve) => setTimeout(resolve, 1));
     });
     const $pending = pending({ effects: [effect] });
+    const fn = jest.fn();
+
+    $pending.watch(fn);
+    expect(argumentHistory(fn)).toMatchInlineSnapshot(`
+      [
+        false,
+      ]
+    `);
+
+    effect();
+    expect(argumentHistory(fn)).toMatchInlineSnapshot(`
+      [
+        false,
+        true,
+      ]
+    `);
+
+    await waitFor(effect.finally);
+    expect(argumentHistory(fn)).toMatchInlineSnapshot(`
+      [
+        false,
+        true,
+        false,
+      ]
+    `);
+  });
+
+  test('Run effect to get true, after effect get false (shorthand)', async () => {
+    const effect = createEffect(() => {
+      return new Promise((resolve) => setTimeout(resolve, 1));
+    });
+    const $pending = pending([effect]);
     const fn = jest.fn();
 
     $pending.watch(fn);

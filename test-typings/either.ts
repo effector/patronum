@@ -6,7 +6,7 @@ import {
   createEvent,
   createEffect,
 } from 'effector';
-import { either } from '../src/either';
+import { either } from '../dist/either';
 
 // Returns always store with merged type
 {

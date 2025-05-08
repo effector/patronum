@@ -64,7 +64,10 @@ export function either<Then, Other>(
       then as Store<Then>,
       other as Store<Other>,
       (filter, then, other) => (filter ? then : other),
+      { skipVoid: false },
     );
   }
-  return either(filterOptions as EitherConfig<Then, Other>) as Store<Then | Other>;
+
+  const objectForm = filterOptions as EitherConfig<Then, Other>;
+  return either(objectForm.filter, objectForm.then, objectForm.other);
 }

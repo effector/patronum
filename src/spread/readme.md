@@ -1,9 +1,109 @@
-# spread
+---
+title: spread
+slug: spread
+description: Send fields from object to same targets.
+group: combination
+---
 
 ```ts
 import { spread } from 'patronum';
 // or
 import { spread } from 'patronum/spread';
+```
+
+## `source = spread(targets)`
+
+:::note[since]
+patronum 2.1.0
+Use `spread({ targets })` with patronum < 2.1.0
+:::
+
+### Motivation
+
+This method allows to trigger many target at once, if they match the source structure.
+It is useful when you need to destructure object and save values to different stores.
+
+### Formulae
+
+```ts
+source = spread({ field: target, ... })
+```
+
+- When `source` is triggered with **object**, extract `field` from data, and trigger `target`
+- `targets` can have multiple properties
+- If the `source` was triggered with non-object, nothing would be happening
+- If `source` is triggered with object but without property `field`, target for this `field` will not be triggered
+
+### Arguments
+
+1. `targets` `(Record<string, Event<T> | Store<T> | Effect<T>>)` — Flat object which key is key in `source` payload, and value is unit to store value to.
+
+### Returns
+
+- `source` `(Event<T>)` — Source event, data passed to it should be an object with fields from `targets`
+
+### Example
+
+#### Conditionally save value to stores
+
+```ts
+import { createStore, createEvent, sample } from 'effector';
+import { spread } from 'patronum';
+
+const $first = createStore('');
+const $last = createStore('');
+
+const formReceived = createEvent();
+
+sample({
+  source: formReceived,
+  filter: (form) => form.first.length > 0 && form.last.length > 0,
+  target: spread({
+    first: $first,
+    last: $last,
+  }),
+});
+
+$first.watch((first) => console.log('First name', first));
+$last.watch((last) => console.log('Last name', last));
+
+formReceived({ first: '', last: '' });
+// Nothing, because filter returned false
+
+formReceived({ first: 'Hello', last: 'World' });
+// => First name Hello
+// => Last name World
+```
+
+#### Nested spreading
+
+```ts
+const $targetA = createStore('');
+const $targetB = createStore(0);
+const $targetC = createStore(false);
+
+const trigger = spread({
+  first: $targetA,
+  second: spread({
+    foo: $targetB,
+    bar: $targetC,
+  }),
+});
+
+$targetA.watch((payload) => console.log('targetA', payload));
+$targetB.watch((payload) => console.log('targetB', payload));
+$targetC.watch((payload) => console.log('targetC', payload));
+
+trigger({
+  first: 'Hello',
+  second: {
+    foo: 200,
+    bar: true,
+  },
+});
+// => targetA Hello
+// => targetB 200
+// => targetC true
 ```
 
 ## `spread({ source, targets })`
@@ -22,7 +122,7 @@ spread({ source, targets: { field: target, ... } })
 - When `source` is triggered with **object**, extract `field` from data, and trigger `target`
 - `targets` can have multiple properties
 - If the `source` was triggered with non-object, nothing would be happening
-- If `source` is triggered with object but without propertpy `field`, target for this `field` will not be triggered
+- If `source` is triggered with object but without property `field`, target for this `field` will not be triggered
 
 ### Arguments
 
@@ -35,7 +135,7 @@ spread({ source, targets: { field: target, ... } })
 
 ```ts
 import { createStore, createEvent } from 'effector';
-import { spread } from 'patronum/spread';
+import { spread } from 'patronum';
 
 const $first = createStore('');
 const $last = createStore('');
@@ -96,8 +196,7 @@ save(null);
 
 ### Motivation
 
-This overload creates event `source` that should be triggered and returns it.
-It is useful to pass `source` immediately to another method as argument.
+This overload receives `targets` as an object. May be useful for additional clarity, but it's longer to write
 
 ### Formulae
 
@@ -108,7 +207,7 @@ source = spread({ targets: { field: target, ... } })
 - When `source` is triggered with **object**, extract `field` from data, and trigger `target`
 - `targets` can have multiple properties
 - If the `source` was triggered with non-object, nothing would be happening
-- If `source` is triggered with object but without propertpy `field`, target for this `field` will not be triggered
+- If `source` is triggered with object but without property `field`, target for this `field` will not be triggered
 
 ### Arguments
 
@@ -116,77 +215,62 @@ source = spread({ targets: { field: target, ... } })
 
 ### Returns
 
-- `source` `(Event<T>` | `Store<T>` | `Effect<T>)` — Source unit, data passed to it should be an object with fields from `targets`
+- `source` `(Event<T>)` — Source event, data passed to it should be an object with fields from `targets`
+
+## `source = spread({ targets: { field: Unit[] } })`
+
+### Motivation
+
+Multiple units can be passed for each target field
+
+### Formulae
+
+```ts
+source = spread({ field: [target1, target2], ... })
+
+source = spread({ targets: { field: [target1, target2], ... } })
+
+spread({ source, targets: { field: [target1, target2], ... } })
+```
+
+- When `source` is triggered with **object**, extract `field` from data, and trigger all targets of `target`
+- `targets` can have multiple properties with multiple units
+- If the `source` was triggered with non-object, nothing would be happening
+- If `source` is triggered with object but without property `field`, no unit of the target for this `field` will be triggered
 
 ### Example
 
-#### Conditionally save value to stores
+#### Trigger multiple units for each field of payload
 
 ```ts
-import { createStore, createEvent, guard } from 'effector';
-import { spread } from 'patronum/spread';
+const roomEntered = createEvent<{
+  roomId: string;
+  userId: string;
+  message: string;
+}>();
+const userIdChanged = createEvent<string>();
 
-const $first = createStore('');
-const $last = createStore('');
+const $roomMessage = createStore('');
+const $currentRoomId = createStore<string | null>(null);
 
-const formReceived = createEvent();
+const getRoomFx = createEffect((roomId: string) => roomId);
+const setUserIdFx = createEffect((userId: string) => userId);
 
-guard({
-  source: formReceived,
-  filter: (form) => form.first.length > 0 && form.last.length > 0,
+sample({
+  clock: roomEntered,
   target: spread({
-    targets: {
-      first: $first,
-      last: $last,
-    },
+    roomId: [getRoomFx, $currentRoomId],
+    userId: [setUserIdFx, userIdChanged],
+    message: $roomMessage,
   }),
 });
 
-$first.watch((first) => console.log('First name', first));
-$last.watch((last) => console.log('Last name', last));
-
-formReceived({ first: '', last: '' });
-// Nothing, because filter returned true
-
-formReceived({ first: 'Hello', last: 'World' });
-// => First name Hello
-// => Last name World
-```
-
-#### Nested spreading
-
-```ts
-const trigger = createEvent();
-
-const $targetA = createStore('');
-const $targetB = createStore(0);
-const $targetC = createStore(false);
-
-spread({
-  source: trigger,
-  targets: {
-    first: $targetA,
-    second: spread({
-      targets: {
-        foo: $targetB,
-        bar: $targetC,
-      },
-    }),
-  },
+roomEntered({
+  roomId: 'roomId',
+  userId: 'userId',
+  message: 'message',
 });
-
-$targetA.watch((payload) => console.log('targetA', payload));
-$targetB.watch((payload) => console.log('targetB', payload));
-$targetC.watch((payload) => console.log('targetC', payload));
-
-trigger({
-  first: 'Hello',
-  second: {
-    foo: 200,
-    bar: true,
-  },
-});
-// => targetA Hello
-// => targetB 200
-// => targetC true
+// => getRoomFx('roomId'), update $currentRoomId with 'roomId'
+// => setUserIdFx('userId'), userIdChanged('userId')
+// => update $roomMessage with 'message'
 ```

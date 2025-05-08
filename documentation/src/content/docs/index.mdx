@@ -1,0 +1,43 @@
+---
+title: effector patronum
+description: Operators library delivering modularity and convenience.
+template: splash
+hero:
+  tagline: Enhance your Effector experience with powerful, modular operators.
+  # image:
+  #   file: ../../../../logo.svg
+  actions:
+    - text: Getting started
+      link: /guides/installation
+      icon: right-arrow
+    - text: Review operators list
+      link: /operators
+      icon: approve-check
+      variant: minimal
+    - text: Read effector docs
+      link: https://effector.dev
+      icon: external
+      variant: minimal
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+## Next steps
+
+<CardGrid>
+  <Card title='Powerful' icon='rocket'>
+    Patronum enhances your workflows with powerful, reusable operators that streamline complex state management tasks.
+  </Card>
+  <Card title='Type-Safe' icon='seti:typescript'>
+    Leverage fully type-safe functions with effector patronum to ensure robustness and prevent runtime errors in your
+    application.
+  </Card>
+  <Card title='Seamless Integration' icon='setting'>
+    Patronum integrates effortlessly with your existing effector logic, adding modularity without the need for extensive
+    refactoring.
+  </Card>
+  <Card title='Tree Shaking Friendly' icon='heart'>
+    Patronum is designed with tree shaking in mind, ensuring that your bundle size remains minimal by including only the
+    code you actually use.
+  </Card>
+</CardGrid>

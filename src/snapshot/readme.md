@@ -1,6 +1,11 @@
-# snapshot
+---
+title: snapshot
+slug: snapshot
+description: Create store value snapshot.
+group: combination
+---
 
-:::note since
+:::note[since]
 patronum 1.7.0
 :::
 
@@ -14,7 +19,7 @@ import { snapshot } from 'patronum/snapshot';
 
 ### Motivation
 
-This method allows to copy any store on optional trigger event.
+This method allows to copy any store on optional trigger unit.
 It useful when you want to save previous state of store before some actions.
 
 ### Formulae
@@ -24,12 +29,12 @@ result = snapshot({ source, clock, fn });
 ```
 
 - Call `fn` with data from `source` while `clock` triggered, and create store with the value
-- If function in `shape` returns `undefined`, the update will be skipped.
+- If `fn` returns `undefined`, the update will be skipped.
 
 ### Arguments
 
 1. `source` ([_`Store`_]) — Source store, data from this unit passed to `fn`
-2. `clock` ([_`Event`_]) — Trigger event
+2. `clock` ([_`Event`_], [_`Effect`_], [_`Store`_]) — Trigger unit
 3. `fn` `((value: T) => U)` — Transformation function
 
 ### Returns

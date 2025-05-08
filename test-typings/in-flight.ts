@@ -6,7 +6,7 @@ import {
   createEffect,
   createDomain,
 } from 'effector';
-import { inFlight } from '../src/in-flight';
+import { inFlight } from '../dist/in-flight';
 
 // Check receive effects
 {
@@ -15,6 +15,7 @@ import { inFlight } from '../src/in-flight';
   const fx3 = createEffect<string, number>();
 
   expectType<Store<number>>(inFlight({ effects: [fx1, fx2, fx3] }));
+  expectType<Store<number>>(inFlight([fx1, fx2, fx3]));
 }
 
 // Fails on invalid units
@@ -25,6 +26,8 @@ import { inFlight } from '../src/in-flight';
 
   // @ts-expect-error
   inFlight({ effects: [event, store, domain] });
+  // @ts-expect-error
+  inFlight([event, store, domain]);
 }
 
 // Check receive domain

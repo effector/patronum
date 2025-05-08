@@ -1,4 +1,9 @@
-# pending
+---
+title: pending
+slug: pending
+description: Checks that has effects in pending state.
+group: effect
+---
 
 ```ts
 import { pending } from 'patronum';
@@ -6,12 +11,57 @@ import { pending } from 'patronum';
 import { pending } from 'patronum/pending';
 ```
 
+## `pendings(effects)`
+
+:::note[since]
+patronum 2.1.0
+Use `pending({ effects: [] })` with patronum < 2.1.0
+:::
+
+### Motivation
+
+This overload allows to read pending state of passed effects. It is useful when
+you want to show loading state of the whole application.
+
+### Formulae
+
+```ts
+$inProcess = pending([fx1, fx2]);
+```
+
+- When some of `effects` are in pending state, result will be `true`
+
+### Arguments
+
+1. `effects` `(Array<Effect<any, any, any>>)` - array of any effects
+
+### Returns
+
+- `$inProcess` `(Store<boolean>)` - Store with boolean state
+
+### Example
+
+```ts
+import { createEffect } from 'effector';
+import { pending } from 'patronum/pending';
+
+const loadFirstFx = createEffect(() => Promise.resolve(null));
+const loadSecondFx = createEffect(() => Promise.resolve(2));
+const $processing = pending([loadFirstFx, loadSecondFx]);
+
+$processing.watch((processing) => console.info(`processing: ${processing}`));
+// => processing: false
+
+loadFirstFx();
+loadSecondFx();
+// => processing: true
+```
+
 ## `pending({ effects: [] })`
 
 ### Motivation
 
-This overload allows to read pending state of passed effects. It is usef when
-you want to show loading state of the whole application.
+This overload receives `effects` and optional `of` strategy as an object. Useful when need to change strategy
 
 ### Formulae
 
@@ -26,9 +76,9 @@ $inProcess = pending({ effects: [fx1, fx2], of: Strategy });
 
 1. `effects` `(Array<Effect<any, any, any>>)` - array of any effects
 1. `of` `("some" | "every")` — Optional. Select strategy of combining pendings
-   of differents effects. Default `"some"`
+   of different effects. Default `"some"`
 
-:::note since
+:::note[since]
 The `of` argument was added since patronum 1.1.0
 :::
 
@@ -36,34 +86,38 @@ The `of` argument was added since patronum 1.1.0
 
 - `$inProcess` `(Store<boolean>)` - Store with boolean state
 
-### Example
+### Example: show processing only when all effects are pending
 
 ```ts
 import { createEffect } from 'effector';
 import { pending } from 'patronum/pending';
 
-const loadFirst = createEffect(() => Promise.resolve(null));
-const loadSecond = createEffect(() => Promise.resolve(2));
-const $processing = pending({ effects: [loadFirst, loadSecond] });
+const loadFirstFx = createEffect(() => Promise.resolve(null));
+const loadSecondFx = createEffect(() => Promise.resolve(2));
+const $processing = pending({
+  effects: [loadFirstFx, loadSecondFx],
+  of: 'every',
+});
 
 $processing.watch((processing) => console.info(`processing: ${processing}`));
 // => processing: false
 
-loadFirst();
-loadSecond();
+loadFirstFx();
+// => processing is still false
+loadSecondFx();
 // => processing: true
 ```
 
 ## `pending({ domain })`
 
-:::note since
+:::note[since]
 patronum 1.1.0
 :::
 
 ### Motivation
 
 This overload allows to read pending state of created effects in the domain. It
-is usef when you want to show loading state of the whole application.
+is useful when you want to show loading state of the whole application.
 
 ### Formulae
 
@@ -78,7 +132,7 @@ $inProcess = pending({ domain, of: Strategy });
 
 1. `domain` `(Domain)` - Effector domain with at least one effect
 1. `of` `("some" | "every")` — Optional. Select strategy of combining pendings
-   of differents effects. Default `"some"`
+   of different effects. Default `"some"`
 
 ### Returns
 
@@ -91,15 +145,15 @@ import { createDomain } from 'effector';
 import { pending } from 'patronum/pending';
 
 const app = createDomain();
-const loadFirst = app.createEffect(() => Promise.resolve(null));
-const loadSecond = app.createEffect(() => Promise.resolve(2));
+const loadFirstFx = app.createEffect(() => Promise.resolve(null));
+const loadSecondFx = app.createEffect(() => Promise.resolve(2));
 const $processing = pending({ domain: app });
 
 $processing.watch((processing) => console.info(`processing: ${processing}`));
 // => processing: false
 
-loadFirst();
-loadSecond();
+loadFirstFx();
+loadSecondFx();
 // => processing: true
 ```
 
@@ -117,18 +171,18 @@ There available two options:
 import { createEffect } from 'effector';
 import { pending } from 'patronum/pending';
 
-const loadFirst = createEffect(() => Promise.resolve(null));
-const loadSecond = createEffect(() => Promise.resolve(2));
+const loadFirstFx = createEffect(() => Promise.resolve(null));
+const loadSecondFx = createEffect(() => Promise.resolve(2));
 
-const $pending = pending({ effects: [loadFirst, loadSecond], of: 'every' });
+const $pending = pending({ effects: [loadFirstFx, loadSecondFx], of: 'every' });
 
 // When no effects is loading, $pending will be true
 
 // If only one is loading, also will be false
-loadFirst();
+loadFirstFx();
 
 // But after running the second effect, $pending will be true
-loadSecond();
+loadSecondFx();
 
 $pending.watch(console.log); // true
 ```

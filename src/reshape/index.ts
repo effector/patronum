@@ -18,13 +18,18 @@ export function reshape<Type, Shape extends Record<string, unknown>>({
   const result: Record<string, Store<any>> = {};
 
   for (const key in shape) {
-    if (key in shape) {
-      const fn = shape[key];
-      result[key] = source.map((state) => {
+    if (!Object.prototype.hasOwnProperty.call(shape, key)) {
+      continue;
+    }
+
+    const fn = shape[key];
+    result[key] = source.map(
+      (state) => {
         const result = fn(state);
         return result === undefined ? null : result;
-      });
-    }
+      },
+      { skipVoid: false },
+    );
   }
 
   return result as any;

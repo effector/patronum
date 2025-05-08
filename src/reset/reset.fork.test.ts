@@ -57,3 +57,16 @@ test('do not affects original store state', async () => {
   expect(scope.getState($source)).toEqual(0);
   expect($source.getState()).toEqual(0);
 });
+
+test('works in forked scope without passed clock', async () => {
+  const setSource = createEvent<number>();
+  const $source = restore(setSource, 0);
+  const resetEvent = reset({ target: $source });
+
+  const scope = fork();
+  await allSettled(setSource, { scope, params: 100 });
+  expect(scope.getState($source)).toEqual(100);
+
+  await allSettled(resetEvent, { scope });
+  expect(scope.getState($source)).toEqual(0);
+});

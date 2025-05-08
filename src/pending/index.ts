@@ -7,20 +7,23 @@ const strategies = {
   every: <T>(list: T[]) => list.every(Boolean),
 };
 
+export function pending(effects: Array<Effect<any, any, any>>): Store<boolean>;
 export function pending(config: {
   effects: Array<Effect<any, any, any>>;
   of?: Strategy;
 }): Store<boolean>;
 export function pending(config: { domain: Domain; of?: Strategy }): Store<boolean>;
-export function pending({
-  effects: rawEffects,
-  domain,
-  of = 'some',
-}: {
-  effects?: Array<Effect<any, any, any>>;
-  of?: Strategy;
-  domain?: Domain;
-}): Store<boolean> {
+export function pending(
+  args:
+    | {
+        effects?: Array<Effect<any, any, any>>;
+        of?: Strategy;
+        domain?: Domain;
+      }
+    | Array<Effect<any, any, any>>,
+): Store<boolean> {
+  const argsShape = Array.isArray(args) ? { effects: args } : args;
+  const { effects: rawEffects, domain, of = 'some' } = argsShape;
   if (!is.domain(domain) && !rawEffects)
     throw new TypeError('domain or effects should be passed');
 
@@ -40,5 +43,6 @@ export function pending({
   return combine(
     effects.map((fx) => fx.pending),
     strategy,
+    { skipVoid: false },
   );
 }

@@ -9,13 +9,13 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v4
 
       - name: Use Node.js 18.x
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 18.x
           cache: 'pnpm'
@@ -75,8 +75,6 @@ jobs:
         run: npm publish --tag rc
 
       - name: Publish patronum@${{ steps.version.outputs.tag }} to latest
-        if: ${{ steps.next.outputs.match == '' }}
+        if: ${{ steps.next.outputs.match == '' && steps.rc.outputs.match == '' }}
         working-directory: './dist/'
         run: npm publish
-
-

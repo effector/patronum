@@ -1,4 +1,9 @@
-# status
+---
+title: status
+slug: status
+description: Return text representation of effect state.
+group: effect
+---
 
 ```ts
 import { status } from 'patronum';
@@ -14,6 +19,7 @@ It is useful to show correct state of process in UI.
 ## Formulae
 
 ```ts
+$status = status(effect);
 $status = status({ effect, defaultValue });
 ```
 
@@ -21,6 +27,11 @@ $status = status({ effect, defaultValue });
 - When `effect` is called, set `pending` status.
 - When `effect` is succeeded, set `done` status.
 - When `effect` is failed, set `fail` status.
+
+:::note
+Shorthand `status(effect)` is available since patronum 2.1.0
+Use `status({ effect })` with patronum < 2.1.0
+:::
 
 ## Arguments
 
@@ -41,7 +52,7 @@ $status = status({ effect, defaultValue });
 import { createEvent, createEffect } from 'effector';
 import { status } from 'patronum/status';
 
-const effect = createEffect().use(() => Promise.resolve(null));
+const effect = createEffect(() => Promise.resolve(null));
 const $status = status({ effect });
 
 $status.watch((value) => console.log(`status: ${value}`));
@@ -58,7 +69,7 @@ effect();
 import { createEvent, createEffect } from 'effector';
 import { status } from 'patronum/status';
 
-const effect = createEffect().use(() => Promise.resolve(null));
+const effect = createEffect(() => Promise.resolve(null));
 const $status = status({ effect, defaultValue: 'pending' });
 
 $status.watch((value) => console.log(`status: ${value}`));
@@ -76,9 +87,7 @@ import { createEvent, createEffect } from 'effector';
 import { status } from 'patronum/status';
 
 const reset = createEvent();
-const effect = createEffect().use(
-  () => new Promise((resolve) => setTimeout(resolve, 100)),
-);
+const effect = createEffect(() => new Promise((resolve) => setTimeout(resolve, 100)));
 
 const $status = status({ effect });
 $status.reset(reset);

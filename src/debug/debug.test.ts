@@ -4,10 +4,6 @@ import {
   createStore,
   createDomain,
   sample,
-  guard,
-  forward,
-  split,
-  merge,
 } from 'effector';
 import { argumentsHistory } from '../../test-library';
 import { debug } from './index';
@@ -41,14 +37,14 @@ test('debug event, store, effect simultaneously', async () => {
 
   expect(stringArguments(fn)).toMatchInlineSnapshot(`
     [
-      "[store] $store 0",
+      "[store] $store [getState] 0",
     ]
   `);
 
   event(5);
   expect(stringArguments(fn)).toMatchInlineSnapshot(`
     [
-      "[store] $store 0",
+      "[store] $store [getState] 0",
       "[event] event 5",
       "[store] $store 5",
     ]
@@ -57,7 +53,7 @@ test('debug event, store, effect simultaneously', async () => {
   effect('demo');
   expect(stringArguments(fn)).toMatchInlineSnapshot(`
     [
-      "[store] $store 0",
+      "[store] $store [getState] 0",
       "[event] event 5",
       "[store] $store 5",
       "[effect] effect demo",
@@ -68,7 +64,7 @@ test('debug event, store, effect simultaneously', async () => {
 
   expect(stringArguments(fn)).toMatchInlineSnapshot(`
     [
-      "[store] $store 0",
+      "[store] $store [getState] 0",
       "[event] event 5",
       "[store] $store 5",
       "[effect] effect demo",
@@ -93,14 +89,14 @@ test('debug domain', async () => {
 
   expect(stringArguments(fn)).toMatchInlineSnapshot(`
     [
-      "[store] domain/_$store 0",
+      "[store] domain/_$store [getState] 0",
     ]
   `);
 
   event(5);
   expect(stringArguments(fn)).toMatchInlineSnapshot(`
     [
-      "[store] domain/_$store 0",
+      "[store] domain/_$store [getState] 0",
       "[event] domain/event 5",
       "[store] domain/_$store 5",
     ]
@@ -109,7 +105,7 @@ test('debug domain', async () => {
   effect('demo');
   expect(stringArguments(fn)).toMatchInlineSnapshot(`
     [
-      "[store] domain/_$store 0",
+      "[store] domain/_$store [getState] 0",
       "[event] domain/event 5",
       "[store] domain/_$store 5",
       "[effect] domain/effect demo",
@@ -120,7 +116,7 @@ test('debug domain', async () => {
 
   expect(stringArguments(fn)).toMatchInlineSnapshot(`
     [
-      "[store] domain/_$store 0",
+      "[store] domain/_$store [getState] 0",
       "[event] domain/event 5",
       "[store] domain/_$store 5",
       "[effect] domain/effect demo",
@@ -150,7 +146,7 @@ test('trace support', async () => {
 
   expect(stringArguments(fn)).toMatchInlineSnapshot(`
     [
-      "[store] $form 0",
+      "[store] $form [getState] 0",
     ]
   `);
 
@@ -158,11 +154,11 @@ test('trace support', async () => {
 
   expect(stringArguments(fn)).toMatchInlineSnapshot(`
     [
-      "[store] $form 0",
+      "[store] $form [getState] 0",
       "[store] $form 1",
       "[store] $form trace",
       "<- [store] $form 1",
-      "<- [$form.on] $form.on(inputChanged) 1",
+      "<- [on] $form.on(inputChanged) 1",
       "<- [event] inputChanged ",
     ]
   `);
@@ -171,11 +167,11 @@ test('trace support', async () => {
 
   expect(stringArguments(fn)).toMatchInlineSnapshot(`
     [
-      "[store] $form 0",
+      "[store] $form [getState] 0",
       "[store] $form 1",
       "[store] $form trace",
       "<- [store] $form 1",
-      "<- [$form.on] $form.on(inputChanged) 1",
+      "<- [on] $form.on(inputChanged) 1",
       "<- [event] inputChanged ",
       "[effect] submitFx 1",
       "[effect] submitFx trace",
@@ -186,12 +182,12 @@ test('trace support', async () => {
       "[store] $form 2",
       "[store] $form trace",
       "<- [store] $form 2",
-      "<- [$form.on] $form.on(submitFx.doneData) 2",
-      "<- [event] submitFx.doneData ",
+      "<- [on] $form.on(submitFx.doneData) 2",
+      "<- [effect] submitFx.doneData ",
       "<- [map]  ",
-      "<- [event] submitFx.done {"params":1}",
+      "<- [effect] submitFx.done {"params":1}",
       "<- [filterMap]  {"params":1}",
-      "<- [event] submitFx.finally {"status":"done","params":1}",
+      "<- [effect] submitFx.finally {"status":"done","params":1}",
     ]
   `);
 });
@@ -204,8 +200,8 @@ test('domain is traceable', async () => {
 
   sample({
     clock: $c,
-    target: fx
-  })
+    target: fx,
+  });
 
   debug({ trace: true }, d);
 
@@ -213,21 +209,21 @@ test('domain is traceable', async () => {
 
   expect(stringArguments(fn)).toMatchInlineSnapshot(`
     [
-      "[store] d/$c 0",
+      "[store] d/$c [getState] 0",
       "[event] d/up ",
       "[event] d/up trace",
       "<- [event] up ",
       "[store] d/$c 1",
       "[store] d/$c trace",
       "<- [store] $c 1",
-      "<- [$c.on] $c.on(up) 1",
+      "<- [on] $c.on(up) 1",
       "<- [event] up ",
       "[effect] d/fx 1",
       "[effect] d/fx trace",
       "<- [effect] fx 1",
       "<- [sample]  1",
       "<- [store] $c 1",
-      "<- [$c.on] $c.on(up) 1",
+      "<- [on] $c.on(up) 1",
       "<- [event] up ",
       "[effect] d/fx.done {"params":1}",
     ]
@@ -250,7 +246,7 @@ test('custom names basic support', () => {
 
   expect(stringArguments(fn)).toMatchInlineSnapshot(`
     [
-      "[store] $customName 0",
+      "[store] $customName [getState] 0",
       "[event] name 1",
       "[store] $customName 1",
       "[effect] nameFx 1",
@@ -274,14 +270,14 @@ test('custom names with traces support', () => {
 
   expect(stringArguments(fn)).toMatchInlineSnapshot(`
     [
-      "[store] $customName 0",
+      "[store] $customName [getState] 0",
       "[event] name 1",
       "[event] name trace",
       "<- [event] name 1",
       "[store] $customName 1",
       "[store] $customName trace",
       "<- [store] $customName 1",
-      "<- [$customName.on] $customName.on(name) 1",
+      "<- [on] $customName.on(name) 1",
       "<- [event] name 1",
       "[effect] nameFx 1",
       "[effect] nameFx trace",

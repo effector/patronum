@@ -6,7 +6,7 @@ import {
   createEvent,
   createEffect,
 } from 'effector';
-import { or } from '../src/or';
+import { or } from '../dist/or';
 
 // Returns always store with boolean
 {

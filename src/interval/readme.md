@@ -1,6 +1,11 @@
-# interval
+---
+title: interval
+slug: interval
+description: Creates a dynamic interval with any timeout.
+group: timeouts
+---
 
-:::note since
+:::note[since]
 patronum 1.7.0
 :::
 
@@ -78,3 +83,27 @@ setTimeout(() => stopCounter(), 5000);
 ```
 
 [Try it](https://share.effector.dev/EOVzc3df)
+
+### `@@trigger` protocol
+
+`interval` supports [`@@trigger` protocol](https://withease.pages.dev/protocols/trigger.html). It means that you can use `interval` whatever you can use `trigger` with, just do not pass `start` and `stop` options.
+
+```ts
+import { interval } from 'patronum';
+
+somethingThatRequiresTrigger({
+  trigger: interval({ timeout: 1000 }),
+});
+```
+
+For example, you can use `interval` to refresh data in the Query from the library [Farfetched](https://farfetched.pages.dev/tutorial/trigger_api.html#external-triggers) using `@@trigger` protocol.
+
+```ts
+import { keepFresh } from '@farfetched/core';
+import { interval } from 'patronum';
+
+keepFresh(someQuery, {
+  // 👇 Query will be refreshed each 1000 ms
+  triggers: [interval({ timeout: 1000 })],
+});
+```

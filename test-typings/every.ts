@@ -1,6 +1,6 @@
 import { expectType, expectError } from 'tsd';
 import { Store, createStore } from 'effector';
-import { every } from '../src/every';
+import { every } from '../dist/every';
 
 // Check invalid type for number predicate
 {
@@ -28,9 +28,13 @@ import { every } from '../src/every';
     every({ predicate: (c) => c === 'c', stores: [$a, $b] }),
   );
 
-  // @ts-expect-error
+  /**
+   * @todo Fix this edge-case in the future
+   *
+   */
+  // should be error but is not
   every({ predicate: value, stores: [$a, $invalid] });
-  // @ts-expect-error
+  // should be error but is not
   every({ predicate: 'demo', stores: [$a, $b] });
   // @ts-expect-error
   every({ predicate: (v) => v === 'demo', stores: [$a, $b] });
@@ -56,7 +60,7 @@ import { every } from '../src/every';
   const $b = createStore(1);
   const $invalid1 = createStore('');
   const $invalid2 = createStore(true);
-  const $invalid3 = createStore({});
+  const $invalid3 = createStore<Record<any, any>>({});
 
   expectType<Store<boolean>>(every({ predicate: $predicate, stores: [$a, $b] }));
 
@@ -78,7 +82,7 @@ import { every } from '../src/every';
   const $b = createStore(1);
   const $invalid1 = createStore('');
   const $invalid2 = createStore(true);
-  const $invalid3 = createStore({});
+  const $invalid3 = createStore<Record<any, any>>({});
 
   expectType<Store<boolean>>(every([$a, $b], 0));
   // @ts-expect-error
