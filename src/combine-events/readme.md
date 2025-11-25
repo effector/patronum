@@ -20,7 +20,14 @@ Use `combineEvents({ events })` with patronum < 2.1.0
 
 ### Motivation
 
-Method allows to trigger event when all of given events are triggered, with payloads of given events
+`combineEvents` is useful when you need to wait for **several independent events** and react only after **each of them has emitted at least once**.  
+You can think of it as a `Promise.all` for events. 
+
+This is helpful, when you need to:
+
+- wait for several API calls to finish (user profile, settings, feature flags),
+- collect values from different parts of the UI (step 1, step 2, step 3),
+- synchronise independent flows before continuing.
 
 :::note
 Consider using stores with combine in case of lazy-loaded modules, as they could miss some updates happened before module loaded
@@ -52,12 +59,20 @@ const target = combineEvents([event1, event2]);
 
 ### Motivation
 
-Object form which allow to pass `reset` unit or `target`
+This overload is useful when you:
+
+- already have a `target` unit (event, effect or store) that should receive the combined payload, and
+- want to control when `combineEvents` should **start collecting payloads from scratch** using a `reset` unit.
+
+Typical use-cases:
+
+- reuse an existing `target` event instead of creating a new one,
+- manually restart waiting for all events after an error or user action.
 
 ### Formulae
 
 ```ts
-const target = combineEvents({
+combineEvents({
   events: {
     key1: event1,
     key2: event2,
@@ -68,9 +83,10 @@ const target = combineEvents({
 ```
 
 - When all events are triggered, trigger `target` with `{key1: firstPayload, key2: secondPayload}`
+- When resetUnit is triggered, internal state is cleared and `combineEvents` starts waiting for all events again
 
 ```ts
-const target = combineEvents({
+combineEvents({
   events: [event1, event2],
   reset: resetUnit,
   target: targetUnit,
@@ -78,6 +94,7 @@ const target = combineEvents({
 ```
 
 - When all events are triggered, trigger `target` with `[firstPayload, secondPayload]`
+- When `resetUnit` is triggered, internal state is cleared and `combineEvents` starts waiting for all events again
 
 ### Arguments
 
@@ -87,7 +104,7 @@ const target = combineEvents({
 
 ### Returns
 
-- `target` — When `target` option is not defined, will return new event with the same shape as `events`, otherwise `target` unit will return
+- `target` — If `target` is not provided, a **new event** with the same shape as `events` is created and returned. If `target` is provided, the same unit is returned back.
 
 ### Example
 
