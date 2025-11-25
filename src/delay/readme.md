@@ -11,14 +11,16 @@ import { delay } from 'patronum';
 import { delay } from 'patronum/delay';
 ```
 
-Method for delaying triggering given unit for some amount of time. Can accept `number`, `Store<number>` or `(sourceValue) => number` (function for calculating timeout based on `source` payload) as timeout. Exists in two form: shorthand `delay(source, timeout)` and object form `delay({source, timeout, target})`, the first one needs to create new unit for this specific purpose, last one needs when `target` unit is already exists and the goal is just to call it after delay
-
 ## `delay(source, timeout: number)`
 
 :::note[since]
 patronum 2.1.0
 Use `delay({ source, timeout })` with patronum < 2.1.0
 :::
+
+### Motivation
+
+Method creates a new event that will be triggered after some time. It is useful for implementing timeouts, animations, or scheduling delayed operations.
 
 ### Formulae
 
@@ -54,6 +56,10 @@ trigger('hello');
 ```
 
 ## `delay({ source, timeout: number, target })`
+
+### Motivation
+
+This overload is useful when you already have a target unit that needs to be triggered with a delay.
 
 ### Formulae
 
