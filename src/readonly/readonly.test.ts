@@ -30,3 +30,32 @@ it('should return event as-is if it is already derived', () => {
 
   expect(result).toBe(mapped);
 });
+
+it('should convert non unit value to store', () => {
+  expect(is.store(readonly(1))).toBe(true);
+  expect(is.store(readonly('12'))).toBe(true);
+  expect(is.store(readonly(''))).toBe(true);
+  expect(is.store(readonly(true))).toBe(true);
+  expect(is.store(readonly(false))).toBe(true);
+  expect(is.store(readonly([]))).toBe(true);
+  expect(is.store(readonly({}))).toBe(true);
+  expect(is.store(readonly(null))).toBe(true);
+  expect(is.store(readonly(null))).toBe(true);
+
+  expect(is.targetable(readonly(1))).toBe(false);
+  expect(is.targetable(readonly('12'))).toBe(false);
+  expect(is.targetable(readonly(''))).toBe(false);
+  expect(is.targetable(readonly(true))).toBe(false);
+  expect(is.targetable(readonly(false))).toBe(false);
+  expect(is.targetable(readonly([]))).toBe(false);
+  expect(is.targetable(readonly({}))).toBe(false);
+  expect(is.targetable(readonly(null))).toBe(false);
+  expect(is.targetable(readonly(null))).toBe(false);
+});
+
+it('sould return value as-is if it is not unit and function or undefined', () => {
+  expect(is.store(readonly(() => {}))).toBe(false);
+  expect(is.store(readonly(undefined))).toBe(false);
+  expect(is.targetable(readonly(() => {}))).toBe(false);
+  expect(is.targetable(readonly(undefined))).toBe(false);
+});
