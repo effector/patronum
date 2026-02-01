@@ -247,6 +247,98 @@ const throttledStore: Event<number> = throttle({
 });
 ```
 
+## `throttle({ source, timeout, leading })`
+
+### Motivation
+
+By default, `throttle` triggers `target` at the **end** of the timeout (trailing edge). With `leading: true`, the first call triggers `target` **immediately**, and subsequent calls within the timeout period are throttled normally.
+
+This is useful when you want immediate feedback on the first interaction, while still preventing excessive calls.
+
+### Formulae
+
+```ts
+target = throttle({ source, timeout, leading: true });
+```
+
+- First trigger of `source` immediately triggers `target`
+- Subsequent triggers within `timeout` are collected, and only the last value triggers `target` after `timeout`
+
+### Arguments
+
+1. `source` ([_`Event`_] | [_`Store`_] | [_`Effect`_]) — Source unit, data from this unit used by the `target`
+2. `timeout` ([_`number`_] | `Store<number>`) — time to wait before trigger `target` after last trigger
+3. `leading` (`boolean`) — if `true`, first call triggers immediately. Default: `false`
+4. `target` ([_`Event`_] | [_`Store`_] | [_`Effect`_]) — (optional) Target unit
+
+### Returns
+
+- `target` ([_`Event`_]) — new event, that triggered on first call immediately (if `leading: true`) and after timeout with the last value
+
+### Usage
+
+```ts
+import { createEvent } from 'effector';
+import { throttle } from 'patronum';
+
+const buttonClicked = createEvent<number>();
+
+const throttled = throttle({
+  source: buttonClicked,
+  timeout: 200,
+  leading: true,
+});
+
+throttled.watch((payload) => {
+  console.info('clicked', payload);
+});
+
+buttonClicked(1); // => clicked 1 (immediately)
+buttonClicked(2); // (ignored, within timeout)
+buttonClicked(3); // (ignored, within timeout)
+buttonClicked(4); // (saved as last value)
+
+// after 200ms
+// => clicked 4
+```
+
+### Comparison: `leading: false` vs `leading: true`
+
+Given `timeout: 200ms`:
+
+#### `leading: false` (default behavior)
+
+| Time | Action | State | target fires? |
+|------|--------|-------|---------------|
+| 0ms | `source(1)` | Timer starts, saved=1 | ❌ No |
+| 50ms | `source(2)` | saved=2 | ❌ No |
+| 100ms | `source(3)` | saved=3 | ❌ No |
+| 200ms | Timer done | — | ✅ **target(3)** |
+| 200ms | `source(4)` | Timer starts, saved=4 | ❌ No |
+| 250ms | `source(5)` | saved=5 | ❌ No |
+| 400ms | Timer done | — | ✅ **target(5)** |
+
+**Result:** target fires **2 times** with values `3` and `5` (only trailing edge).
+
+#### `leading: true`
+
+| Time | Action | State | target fires? |
+|------|--------|-------|---------------|
+| 0ms | `source(1)` | Timer starts, saved=1 | ✅ **target(1)** (immediate!) |
+| 50ms | `source(2)` | saved=2 | ❌ No |
+| 100ms | `source(3)` | saved=3 | ❌ No |
+| 200ms | Timer done | — | ✅ **target(3)** |
+| 200ms | `source(4)` | Timer starts, saved=4 | ✅ **target(4)** (immediate!) |
+| 250ms | `source(5)` | saved=5 | ❌ No |
+| 400ms | Timer done | — | ✅ **target(5)** |
+
+**Result:** target fires **4 times** with values `1`, `3`, `4`, `5` (leading + trailing edges).
+
+#### Key difference
+
+- **`leading: false`**: User must wait for timeout before seeing any result
+- **`leading: true`**: User gets immediate feedback on first interaction, then throttled updates
+
 [_`event`_]: https://effector.dev/docs/api/effector/event
 [_`effect`_]: https://effector.dev/docs/api/effector/effect
 [_`store`_]: https://effector.dev/docs/api/effector/store
