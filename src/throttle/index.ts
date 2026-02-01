@@ -75,7 +75,8 @@ export function throttle<T>(
   sample({
     clock: source,
     source: [$canTrailingTick, $leading, $canLeadingTick],
-    filter: ([canTick, leading, canLeadingTick]) => (canTick && ((!canLeadingTick && leading) || !leading)),
+    filter: ([canTrailingTick, leading, canLeadingTick]) =>
+      canTrailingTick && ((!canLeadingTick && leading) || !leading),
     fn: (_, clock) => clock,
     target: trailingTick,
   });
@@ -83,7 +84,7 @@ export function throttle<T>(
   sample({
     clock: source,
     source: [$canTrailingTick, $canLeadingTick],
-    filter: ([canTick, canLeadingTick]) => canTick && canLeadingTick,
+    filter: ([canTrailingTick, canLeadingTick]) => canTrailingTick && canLeadingTick,
     fn: (_, clock) => clock,
     target: [target, leadingTick],
   });
