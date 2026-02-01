@@ -304,21 +304,40 @@ buttonClicked(4); // (saved as last value)
 
 ### Comparison: `leading: false` vs `leading: true`
 
-Given `timeout: 200ms` and calls at: `0ms(1)`, `50ms(2)`, `100ms(3)`, `150ms(4)`:
+Given `timeout: 200ms`:
 
-**`leading: false` (default):**
-- 0ms: source(1) → timer starts
-- 50ms: source(2) → saved
-- 100ms: source(3) → saved
-- 150ms: source(4) → saved
-- 200ms: **target(4)** ← only last value, after timeout
+#### `leading: false` (default behavior)
 
-**`leading: true`:**
-- 0ms: source(1) → **target(1)** ← immediate! + timer starts
-- 50ms: source(2) → saved
-- 100ms: source(3) → saved
-- 150ms: source(4) → saved
-- 200ms: **target(4)** ← last value, after timeout
+| Time | Action | State | target fires? |
+|------|--------|-------|---------------|
+| 0ms | `source(1)` | Timer starts, saved=1 | ❌ No |
+| 50ms | `source(2)` | saved=2 | ❌ No |
+| 100ms | `source(3)` | saved=3 | ❌ No |
+| 200ms | Timer done | — | ✅ **target(3)** |
+| 200ms | `source(4)` | Timer starts, saved=4 | ❌ No |
+| 250ms | `source(5)` | saved=5 | ❌ No |
+| 400ms | Timer done | — | ✅ **target(5)** |
+
+**Result:** target fires **2 times** with values `3` and `5` (only trailing edge).
+
+#### `leading: true`
+
+| Time | Action | State | target fires? |
+|------|--------|-------|---------------|
+| 0ms | `source(1)` | Timer starts, saved=1 | ✅ **target(1)** (immediate!) |
+| 50ms | `source(2)` | saved=2 | ❌ No |
+| 100ms | `source(3)` | saved=3 | ❌ No |
+| 200ms | Timer done | — | ✅ **target(3)** |
+| 200ms | `source(4)` | Timer starts, saved=4 | ✅ **target(4)** (immediate!) |
+| 250ms | `source(5)` | saved=5 | ❌ No |
+| 400ms | Timer done | — | ✅ **target(5)** |
+
+**Result:** target fires **4 times** with values `1`, `3`, `4`, `5` (leading + trailing edges).
+
+#### Key difference
+
+- **`leading: false`**: User must wait for timeout before seeing any result
+- **`leading: true`**: User gets immediate feedback on first interaction, then throttled updates
 
 [_`event`_]: https://effector.dev/docs/api/effector/event
 [_`effect`_]: https://effector.dev/docs/api/effector/effect
