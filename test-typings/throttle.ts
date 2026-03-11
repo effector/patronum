@@ -189,3 +189,48 @@ import { throttle } from '../dist/throttle';
   // @ts-expect-error
   throttle({ source, target, timeout: 10, name: [] });
 }
+
+// Leading argument should be boolean
+{
+  const source = createEvent<number>();
+  expectType<Event<number>>(throttle({ source, timeout: 10, leading: true }));
+  expectType<Event<number>>(throttle({ source, timeout: 10, leading: false }));
+  expectType<Event<number>>(throttle({ source, timeout: 10, leading: undefined }));
+
+  // @ts-expect-error
+  throttle({ source, timeout: 10, leading: null });
+  // @ts-expect-error
+  throttle({ source, timeout: 10, leading: 'true' });
+  // @ts-expect-error
+  throttle({ source, timeout: 10, leading: 1 });
+  // @ts-expect-error
+  throttle({ source, timeout: 10, leading: Symbol() });
+  // @ts-expect-error
+  throttle({ source, timeout: 10, leading: () => {} });
+  // @ts-expect-error
+  throttle({ source, timeout: 10, leading: {} });
+  // @ts-expect-error
+  throttle({ source, timeout: 10, leading: [] });
+}
+
+// Leading argument with target
+{
+  const source = createEvent<number>();
+  const target = createStore(0);
+  expectType<Store<number>>(throttle({ source, target, timeout: 10, leading: true }));
+  expectType<Store<number>>(throttle({ source, target, timeout: 10, leading: false }));
+
+  const targetEvent = createEvent<number>();
+  expectType<Event<number>>(throttle({ source, target: targetEvent, timeout: 10, leading: true }));
+
+  const targetEffect = createEffect<number, void>();
+  expectType<Effect<number, void>>(throttle({ source, target: targetEffect, timeout: 10, leading: true }));
+}
+
+// Leading argument with store timeout
+{
+  const source = createEvent<number>();
+  const $timeout = createStore(100);
+  expectType<Event<number>>(throttle({ source, timeout: $timeout, leading: true }));
+  expectType<Event<number>>(throttle({ source, timeout: $timeout, leading: false }));
+}

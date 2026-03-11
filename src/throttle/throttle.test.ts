@@ -597,3 +597,208 @@ test('source store, target effect', async () => {
     ]
   `);
 });
+
+describe('leading', () => {
+  test('leading throttle trigger on first call', async () => {
+    const watcher = jest.fn();
+
+    const trigger = createEvent();
+    const throttled = throttle({ source: trigger, timeout: 40, leading: true });
+
+    throttled.watch(watcher);
+
+    trigger();
+
+    expect(watcher).toBeCalledTimes(1);
+  });
+
+  test('leading throttle triggers on second call after timeout', async () => {
+    const watcher = jest.fn();
+
+    const trigger = createEvent<number>();
+    const throttled = throttle({ source: trigger, timeout: 40, leading: true });
+
+    throttled.watch(watcher);
+
+    trigger(1);
+    expect(watcher).toBeCalledTimes(1);
+    expect(watcher).toBeCalledWith(1);
+
+    trigger(2);
+    expect(watcher).toBeCalledTimes(1);
+
+    await wait(42);
+
+    expect(watcher).toBeCalledTimes(2);
+    expect(watcher).toBeCalledWith(2);
+  });
+
+  test('leading throttle with multiple rapid calls', async () => {
+    const watcher = jest.fn();
+
+    const trigger = createEvent<number>();
+    const throttled = throttle({ source: trigger, timeout: 40, leading: true });
+
+    throttled.watch(watcher);
+
+    trigger(1);
+    trigger(2);
+    trigger(3);
+    trigger(4);
+
+    expect(watcher).toBeCalledTimes(1);
+    expect(watcher).toBeCalledWith(1);
+
+    await wait(42);
+
+    expect(watcher).toBeCalledTimes(2);
+    expect(watcher).toBeCalledWith(4);
+  });
+
+  test('leading throttle works correctly after first cycle', async () => {
+    const watcher = jest.fn();
+
+    const trigger = createEvent<number>();
+    const throttled = throttle({ source: trigger, timeout: 40, leading: true });
+
+    throttled.watch(watcher);
+
+    // First cycle
+    trigger(1);
+    trigger(2);
+    trigger(3);
+
+    await wait(42);
+
+    expect(watcher).toBeCalledTimes(2);
+    expect(watcher).toHaveBeenNthCalledWith(1, 1);
+    expect(watcher).toHaveBeenNthCalledWith(2, 3);
+
+    // Second cycle - should behave the same way
+    trigger(3);
+    trigger(4);
+    trigger(5);
+
+    await wait(42);
+
+    expect(watcher).toBeCalledTimes(4);
+    expect(watcher).toHaveBeenNthCalledWith(3, 3);
+    expect(watcher).toHaveBeenNthCalledWith(4, 5);
+  });
+
+  test('leading throttle with target effect', async () => {
+    const watcher = jest.fn();
+
+    const source = createEvent<number>();
+    const target = createEffect<number, void>().use(() => undefined);
+
+    throttle({ source, timeout: 40, target, leading: true });
+
+    target.watch(watcher);
+
+    source(1);
+    source(2);
+    source(3);
+
+    expect(watcher).toBeCalledTimes(1);
+    expect(watcher).toBeCalledWith(1);
+
+    await wait(42);
+
+    expect(watcher).toBeCalledTimes(2);
+    expect(watcher).toBeCalledWith(3);
+  });
+
+  test('leading throttle with effect as source', async () => {
+    const watcher = jest.fn();
+
+    const trigger = createEffect<number, void>().use(() => undefined);
+    const throttled = throttle({ source: trigger, timeout: 40, leading: true });
+
+    throttled.watch(watcher);
+
+    trigger(1);
+    trigger(2);
+    trigger(3);
+
+    expect(watcher).toBeCalledTimes(1);
+    expect(watcher).toBeCalledWith(1);
+
+    await wait(42);
+
+    expect(watcher).toBeCalledTimes(2);
+    expect(watcher).toBeCalledWith(3);
+  });
+
+  test('leading throttle with store as source', async () => {
+    const watcher = jest.fn();
+
+    const change = createEvent<number>();
+    const $store = createStore(0).on(change, (_, value) => value);
+
+    const throttled = throttle({ source: $store, timeout: 40, leading: true });
+
+    throttled.watch(watcher);
+
+    change(1);
+    change(2);
+    change(3);
+
+    expect(watcher).toBeCalledTimes(1);
+    expect(watcher).toBeCalledWith(1);
+
+    await wait(42);
+
+    expect(watcher).toBeCalledTimes(2);
+    expect(watcher).toBeCalledWith(3);
+  });
+
+  test('leading throttle with store timeout', async () => {
+    const watcher = jest.fn();
+    const changeTimeout = createEvent<number>();
+    const $timeout = createStore(40).on(changeTimeout, (_, value) => value);
+
+    const trigger = createEvent<number>();
+    const throttled = throttle({ source: trigger, timeout: $timeout, leading: true });
+
+    throttled.watch(watcher);
+
+    trigger(1);
+    trigger(2);
+
+    expect(watcher).toBeCalledTimes(1);
+    expect(watcher).toBeCalledWith(1);
+
+    await wait(42);
+
+    expect(watcher).toBeCalledTimes(2);
+    expect(watcher).toBeCalledWith(2);
+
+    // Change timeout
+    changeTimeout(80);
+
+    trigger(3);
+    trigger(4);
+
+    await wait(42);
+    expect(watcher).toBeCalledTimes(3);
+    expect(watcher).toBeCalledWith(3);
+
+    await wait(35);
+    expect(watcher).toBeCalledTimes(3);
+    expect(watcher).toBeCalledWith(3);
+
+    await wait(10);
+    expect(watcher).toBeCalledTimes(4);
+    expect(watcher).toBeCalledWith(4);
+  });
+
+  test('leading throttle returns target when provided', async () => {
+    const source = createEvent();
+    const target = createEvent();
+
+    const result = throttle({ source, timeout: 40, target, leading: true });
+
+    expect(result).toBe(target);
+  });
+});
