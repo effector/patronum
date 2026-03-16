@@ -1,4 +1,11 @@
-import { createDomain, createEffect, createEvent, createStore, Store, Event } from 'effector';
+import {
+  createDomain,
+  createEffect,
+  createEvent,
+  createStore,
+  Store,
+  Event,
+} from 'effector';
 import { expectType } from 'tsd';
 import { readonly } from '../dist/readonly';
 
@@ -12,7 +19,7 @@ import { readonly } from '../dist/readonly';
 // Always returns the store
 {
   const $store = createStore<number>(1);
-  const $mapped = $store.map(store => store)
+  const $mapped = $store.map((store) => store);
 
   expectType<Store<number>>(readonly($mapped));
 }
@@ -27,7 +34,7 @@ import { readonly } from '../dist/readonly';
 // Always returns the event
 {
   const event = createEvent<void>();
-  const mapped = event.map(event => event)
+  const mapped = event.map((event) => event);
 
   expectType<Event<void>>(readonly(mapped));
 }
@@ -36,7 +43,7 @@ import { readonly } from '../dist/readonly';
 {
   // @ts-expect-error
   readonly(createEffect());
-  
+
   // @ts-expect-error
   readonly(createDomain());
 

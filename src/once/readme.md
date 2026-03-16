@@ -2,7 +2,7 @@
 title: once
 slug: once
 description: Runs only once.
-group: predicate
+group: control
 ---
 
 ```ts
@@ -15,8 +15,9 @@ import { once } from 'patronum/once';
 
 ### Motivation
 
-The method allows to do something only on the first ever trigger of `source`.
-It is useful to trigger effects or other logic only once per application's lifetime.
+The method allows to do something only on the first ever trigger of `source`. It
+is useful to trigger effects or other logic only once per application's
+lifetime.
 
 ### Formulae
 
@@ -24,15 +25,18 @@ It is useful to trigger effects or other logic only once per application's lifet
 target = once(source);
 ```
 
-- When `source` is triggered, launch `target` with data from `source`, but only once.
+- When `source` is triggered, launch `target` with data from `source`, but only
+  once.
 
 ### Arguments
 
-- `source` `(Event<T>` | `Effect<T>` | `Store<T>)` — Source unit, data from this unit is used by `target`.
+- `source` `(Event<T>` | `Effect<T>` | `Store<T>)` — Source unit, data from this
+  unit is used by `target`.
 
 ### Returns
 
-- `target` `Event<T>` — The event that will be triggered exactly once after `source` is triggered.
+- `target` `Event<T>` — The event that will be triggered exactly once after
+  `source` is triggered.
 
 ### Example
 
@@ -74,17 +78,22 @@ This overload may receive `reset` in addition to `source`. If `reset` is fired,
 target = once({ source, reset });
 ```
 
-- When `source` is triggered, launch `target` with data from `source`, but only once.
-- When `reset` is triggered, let `once` be reset to the initial state and allow `target` to be triggered again upon `source` being called.
+- When `source` is triggered, launch `target` with data from `source`, but only
+  once.
+- When `reset` is triggered, let `once` be reset to the initial state and allow
+  `target` to be triggered again upon `source` being called.
 
 ### Arguments
 
-- `source` `(Event<T>` | `Effect<T>` | `Store<T>)` — Source unit, data from this unit is used by `target`.
-- `reset` `(Event` | `Effect` | `Store)` — A unit that resets `once` to the initial state, allowing `target` to be triggered again.
+- `source` `(Event<T>` | `Effect<T>` | `Store<T>)` — Source unit, data from this
+  unit is used by `target`.
+- `reset` `(Event` | `Effect` | `Store)` — A unit that resets `once` to the
+  initial state, allowing `target` to be triggered again.
 
 ### Returns
 
-- `target` `Event<T>` — The event that will be triggered once after `source` is triggered, until `once` is reset by calling `reset`.
+- `target` `Event<T>` — The event that will be triggered once after `source` is
+  triggered, until `once` is reset by calling `reset`.
 
 ### Example
 
