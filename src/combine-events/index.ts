@@ -74,7 +74,7 @@ export function combineEvents<P>(
 
     if (reset) {
       sample({ source: reset, target: $counter.reinit });
-      $results.reset(reset);
+      sample({ source: reset, target: $results.reinit });
     }
 
     for (const key of keys) {
@@ -83,10 +83,11 @@ export function combineEvents<P>(
         .reset(target);
 
       if (reset) {
-        $isDone.reset(reset);
+        sample({ source: reset, target: $isDone.reinit });
       }
 
-      $counter.on($isDone, (value) => value - 1);
+      $counter.on($isDone, (value, isDone) => (isDone ? value - 1 : value));
+
       $results.on(events[key], (shape, payload) => {
         const newShape = (Array.isArray(shape) ? [...shape] : { ...shape }) as any;
         newShape[key] = payload;

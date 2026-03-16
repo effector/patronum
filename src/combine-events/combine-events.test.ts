@@ -1014,3 +1014,48 @@ test('target', () => {
     ]
   `);
 });
+
+test('bug: triggers correctly after reset', () => {
+  const fn = jest.fn();
+  const initArr = createEvent<number[]>();
+  const changeArr = createEvent<number[]>();
+  const anotherChangeArr = createEvent<number[]>();
+
+  const $arr = restore(initArr, []).on(anotherChangeArr, (_, arr) => arr);
+
+  const changedCombined = combineEvents({
+    events: { set: changeArr, updates: $arr.updates },
+    reset: initArr,
+  });
+
+  changedCombined.watch(fn);
+
+  changeArr([1]);
+  anotherChangeArr([2]);
+
+  initArr([]);
+
+  changeArr([3]);
+  anotherChangeArr([4]);
+
+  expect(argumentHistory(fn)).toMatchInlineSnapshot(`
+    [
+      {
+        "set": [
+          1,
+        ],
+        "updates": [
+          2,
+        ],
+      },
+      {
+        "set": [
+          3,
+        ],
+        "updates": [
+          4,
+        ],
+      },
+    ]
+  `);
+});
