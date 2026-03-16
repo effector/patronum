@@ -9,7 +9,14 @@ const operators = defineCollection({
     title: z.string(),
     description: z.string().optional(),
     slug: z.string(),
-    group: z.enum(['predicate', 'effect', 'timeouts', 'combination', 'debug']),
+    group: z.enum([
+      'predicate',
+      'control',
+      'effect',
+      'timeouts',
+      'combination',
+      'debug',
+    ]),
     badge: z
       .object({
         variant: z

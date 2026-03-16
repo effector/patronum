@@ -2,14 +2,20 @@
 title: xor
 slug: xor
 description: Logical XOR for multiple stores
-group: combination
+group: predicate
 ---
 
 ```ts
-import { xor } from 'patronum';
+import { xor } from "patronum";
 // or
-import { xor } from 'patronum/xor';
+import { xor } from "patronum/xor";
 ```
+
+:::note[since]
+
+patronum 2.4.0
+
+:::
 
 ### Motivation
 
@@ -22,23 +28,27 @@ $result = xor($first, $second);
 ```
 
 - `$result` will be `true`, if exactly one of the stores is truthy
-- `$result` will be `false`, if all stores are falsy or more than one store is truthy
+- `$result` will be `false`, if all stores are falsy or more than one store is
+  truthy
 
 ### Arguments
+
+The method receives any amount of arguments.
 
 - `stores: Array<Store<any>>` — Any number of stores to check through XOR
 
 ### Returns
 
-- `result: Store<boolean>` — Store with the result of the XOR operation
+- `$result: Store<boolean>` — The store contains `true` if exactly one of the
+  passed stores is truthy, otherwise `false`
 
 ### Example
 
 #### Basic usage
 
 ```ts
-import { createStore } from 'effector';
-import { xor } from 'patronum/xor';
+import { createStore } from "effector";
+import { xor } from "patronum/xor";
 
 const $isOnline = createStore(true);
 const $isProcessing = createStore(false);
@@ -52,3 +62,5 @@ const $result = xor($isOnline, $isProcessing, $hasError);
 console.assert(false === $result.getState());
 // $result === false, because multiple stores are truthy ($isOnline and $hasError)
 ```
+
+[Try it](https://share.effector.dev)
