@@ -21,7 +21,7 @@ Use `combineEvents({ events })` with patronum < 2.1.0
 ### Motivation
 
 `combineEvents` is useful when you need to wait for **several independent events** and react only after **each of them has emitted at least once**.  
-You can think of it as a `Promise.all` for events. 
+You can think of it as a `Promise.all` for events.
 
 This is helpful, when you need to:
 

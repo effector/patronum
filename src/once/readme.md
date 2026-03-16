@@ -6,9 +6,9 @@ group: control
 ---
 
 ```ts
-import { once } from "patronum";
+import { once } from 'patronum';
 // or
-import { once } from "patronum/once";
+import { once } from 'patronum/once';
 ```
 
 ## `target = once(source)`
@@ -45,17 +45,17 @@ const messageReceived = createEvent<string>();
 const firstMessageReceived = once(messageReceived);
 
 firstMessageReceived.watch((message) =>
-  console.log("First message received:", message)
+  console.log('First message received:', message),
 );
 
-messageReceived("Hello"); // First message received: Hello
-messageReceived("World");
+messageReceived('Hello'); // First message received: Hello
+messageReceived('World');
 ```
 
 #### Alternative
 
 ```ts
-import { createGate } from "effector-react";
+import { createGate } from 'effector-react';
 
 const PageGate = createGate();
 
@@ -98,7 +98,7 @@ target = once({ source, reset });
 ### Example
 
 ```ts
-import { createGate } from "effector-react";
+import { createGate } from 'effector-react';
 
 const PageGate = createGate();
 

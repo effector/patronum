@@ -8,9 +8,9 @@ group: control
 :::note[since] patronum 1.7.0 :::
 
 ```ts
-import { reset } from "patronum";
+import { reset } from 'patronum';
 // or
-import { reset } from "patronum/reset";
+import { reset } from 'patronum/reset';
 ```
 
 ## `reset({ clock, target })`
@@ -38,15 +38,15 @@ reset({ clock, target });
 ### Example
 
 ```ts
-import { createEvent, createStore } from "effector";
-import { reset } from "patronum/reset";
+import { createEvent, createStore } from 'effector';
+import { reset } from 'patronum/reset';
 
 const pageUnmounted = createEvent();
 const userSessionFinished = createEvent();
 
 const $post = createStore(null);
 const $comments = createStore([]);
-const $draftComment = createStore("");
+const $draftComment = createStore('');
 
 reset({
   clock: [pageUnmounted, userSessionFinished],
@@ -55,12 +55,12 @@ reset({
 ```
 
 ```ts
-import { createStore } from "effector";
-import { reset } from "patronum/reset";
+import { createStore } from 'effector';
+import { reset } from 'patronum/reset';
 
 const $post = createStore(null);
 const $comments = createStore([]);
-const $draftComment = createStore("");
+const $draftComment = createStore('');
 
 const resetEvent = reset({ target: [$post, $comments, $draftComment] });
 ```
@@ -80,12 +80,12 @@ $draftComment.reset([pageUnmounted, userSessionFinished]);
 There has another way — use domain:
 
 ```ts
-import { createDomain, createStore } from "effector";
+import { createDomain, createStore } from 'effector';
 const resetOnSomeCases = createDomain();
 
 const $post = resetOnSomeCases.createStore(null);
 const $comments = resetOnSomeCases.createStore([]);
-const $draftComment = resetOnSomeCases.createStore("");
+const $draftComment = resetOnSomeCases.createStore('');
 
 resetOnSomeCases.onCreateStore((store) => {
   store.reset([pageUnmounted, userSessionFinished]);
@@ -121,12 +121,12 @@ const resetEvent = reset({ target });
 ### Example
 
 ```ts
-import { createEvent, createStore } from "effector";
-import { reset } from "patronum/reset";
+import { createEvent, createStore } from 'effector';
+import { reset } from 'patronum/reset';
 
 const $post = createStore(null);
 const $comments = createStore([]);
-const $draftComment = createStore("");
+const $draftComment = createStore('');
 
 const resetEvent = reset({ target: [$post, $comments, $draftComment] });
 ```
@@ -136,12 +136,12 @@ const resetEvent = reset({ target: [$post, $comments, $draftComment] });
 Write reset event by yourself:
 
 ```ts
-import { createEvent, createStore } from "effector";
-import { reset } from "patronum/reset";
+import { createEvent, createStore } from 'effector';
+import { reset } from 'patronum/reset';
 
 const $post = createStore(null);
 const $comments = createStore([]);
-const $draftComment = createStore("");
+const $draftComment = createStore('');
 
 const resetEvent = createEvent();
 

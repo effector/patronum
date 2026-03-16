@@ -6,9 +6,9 @@ group: predicate
 ---
 
 ```ts
-import { xor } from "patronum";
+import { xor } from 'patronum';
 // or
-import { xor } from "patronum/xor";
+import { xor } from 'patronum/xor';
 ```
 
 :::note[since]
@@ -47,8 +47,8 @@ The method receives any amount of arguments.
 #### Basic usage
 
 ```ts
-import { createStore } from "effector";
-import { xor } from "patronum/xor";
+import { createStore } from 'effector';
+import { xor } from 'patronum/xor';
 
 const $isOnline = createStore(true);
 const $isProcessing = createStore(false);
