@@ -56,7 +56,7 @@ export function throttle<T>({
 
   const triggerTick = createEvent<T>();
 
-  const $leading = toStoreBoolean(leading, '$leading', false);
+  const $leading = toStoreBoolean(leading ?? false, '$leading');
   const $trailing = toStoreBoolean(trailing, '$trailing', true);
 
   const $neverCalled = createStore(true).on(target, () => false);
