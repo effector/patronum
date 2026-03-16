@@ -27,7 +27,8 @@
     "patronum/spread",
     "patronum/status",
     "patronum/throttle",
-    "patronum/time"
+    "patronum/time",
+    "patronum/xor"
   ],
   "mapping": {
     "and": "and",
@@ -56,6 +57,7 @@
     "spread": "spread",
     "status": "status",
     "throttle": "throttle",
-    "time": "time"
+    "time": "time",
+    "xor": "xor"
   }
 }
