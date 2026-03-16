@@ -86,7 +86,7 @@ setTimeout(() => stopCounter(), 5000);
 
 ### `@@trigger` protocol
 
-`interval` supports [`@@trigger` protocol](https://withease.pages.dev/protocols/trigger.html). It means that you can use `interval` whatever you can use `trigger` with, just do not pass `start` and `stop` options.
+`interval` supports [`@@trigger` protocol](https://withease.effector.dev/protocols/trigger.html). It means that you can use `interval` whatever you can use `trigger` with, just do not pass `start` and `stop` options.
 
 ```ts
 import { interval } from 'patronum';
@@ -96,7 +96,7 @@ somethingThatRequiresTrigger({
 });
 ```
 
-For example, you can use `interval` to refresh data in the Query from the library [Farfetched](https://farfetched.pages.dev/tutorial/trigger_api.html#external-triggers) using `@@trigger` protocol.
+For example, you can use `interval` to refresh data in the Query from the library [Farfetched](https://ff.effector.dev/tutorial/trigger_api.html#external-triggers) using `@@trigger` protocol.
 
 ```ts
 import { keepFresh } from '@farfetched/core';

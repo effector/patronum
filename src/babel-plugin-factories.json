@@ -18,6 +18,7 @@
     "patronum/or",
     "patronum/pending",
     "patronum/previous",
+    "patronum/readonly",
     "patronum/reset",
     "patronum/reshape",
     "patronum/snapshot",
@@ -26,7 +27,8 @@
     "patronum/spread",
     "patronum/status",
     "patronum/throttle",
-    "patronum/time"
+    "patronum/time",
+    "patronum/xor"
   ],
   "mapping": {
     "and": "and",
@@ -46,6 +48,7 @@
     "or": "or",
     "pending": "pending",
     "previous": "previous",
+    "readonly": "readonly",
     "reset": "reset",
     "reshape": "reshape",
     "snapshot": "snapshot",
@@ -54,6 +57,7 @@
     "spread": "spread",
     "status": "status",
     "throttle": "throttle",
-    "time": "time"
+    "time": "time",
+    "xor": "xor"
   }
 }

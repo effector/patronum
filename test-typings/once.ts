@@ -1,10 +1,5 @@
 import { expectType } from 'tsd';
-import {
-  Event,
-  createStore,
-  createEvent,
-  createEffect,
-} from 'effector';
+import { Event, createStore, createEvent, createEffect } from 'effector';
 import { once } from '../dist/once';
 
 // Supports Event, Effect and Store as an argument

@@ -214,21 +214,21 @@ describe('edge cases', () => {
 
     const listener = jest.fn();
     const triggerListener = jest.fn();
-    const scope = fork()
+    const scope = fork();
     createWatch({
       unit: db,
       fn: listener,
       scope,
-    })
+    });
     createWatch({
       unit: trigger,
       fn: triggerListener,
       scope,
-    })
+    });
 
     await allSettled(changeTimeout, { scope, params: 10 });
 
     expect(listener).toBeCalledTimes(0);
     expect(triggerListener).toBeCalledTimes(0);
-  })
+  });
 });

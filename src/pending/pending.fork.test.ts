@@ -50,7 +50,7 @@ test('concurrent run of different effects', async () => {
   });
   const $pending = pending({ effects: [effect1, effect2] });
   const run = app.createEvent();
-  sample({ clock: run, target: [effect1, effect2]  });
+  sample({ clock: run, target: [effect1, effect2] });
 
   const scope = fork();
   expect(scope.getState($pending)).toMatchInlineSnapshot(`false`);
@@ -72,7 +72,7 @@ test('concurrent run of different effects with domain', async () => {
   });
   const $pending = pending({ domain: app });
   const run = app.createEvent();
-  sample({ clock: run, target: [effect1, effect2]  });
+  sample({ clock: run, target: [effect1, effect2] });
 
   const scope = fork();
   expect(scope.getState($pending)).toMatchInlineSnapshot(`false`);
