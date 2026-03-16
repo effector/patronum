@@ -2,7 +2,7 @@ import {
   createEffect,
   createEvent,
   createStore,
-  Event,
+  EventCallable,
   is,
   sample,
   Store,
@@ -10,7 +10,7 @@ import {
   UnitTargetable,
 } from 'effector';
 
-type EventAsReturnType<Payload> = any extends Payload ? Event<Payload> : never;
+type EventAsReturnType<Payload> = any extends Payload ? EventCallable<Payload> : never;
 
 export function throttle<T>(
   source: Unit<T>,
@@ -47,7 +47,7 @@ export function throttle<T>(
   const $timeout = toStoreNumber(timeout);
 
   const timerFx = createEffect<number, void>({
-    name: `throttle(${(source as Event<T>).shortName || source.kind}) effect`,
+    name: `throttle(${(source as EventCallable<T>).shortName || source.kind}) effect`,
     handler: (timeout) => new Promise((resolve) => setTimeout(resolve, timeout)),
   });
 

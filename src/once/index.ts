@@ -1,4 +1,11 @@
-import { Unit, Event, EventAsReturnType, is, sample, createStore } from 'effector';
+import {
+  Unit,
+  EventCallable,
+  EventAsReturnType,
+  is,
+  sample,
+  createStore,
+} from 'effector';
 
 export function once<T>(config: {
   source: Unit<T>;
@@ -21,7 +28,7 @@ export function once<T>(
 
   const $canTrigger = createStore<boolean>(true);
 
-  const trigger: Event<T> = sample({
+  const trigger: EventCallable<T> = sample({
     source,
     filter: $canTrigger,
   });

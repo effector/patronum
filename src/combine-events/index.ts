@@ -2,7 +2,7 @@ import {
   createEvent,
   createStore,
   Effect,
-  Event,
+  EventCallable,
   EventAsReturnType,
   is,
   sample,
@@ -16,17 +16,17 @@ type Tuple<T = unknown> = [T] | T[];
 type Shape = Record<string, unknown> | Tuple;
 
 type Events<Result> = {
-  [Key in keyof Result]: Event<Result[Key]>;
+  [Key in keyof Result]: EventCallable<Result[Key]>;
 };
 
 type ReturnTarget<Result, Target> = Target extends Store<infer S>
   ? S extends Result
     ? Store<S>
     : Store<Result>
-  : Target extends Event<infer P>
+  : Target extends EventCallable<infer P>
   ? P extends Result
-    ? Event<P>
-    : Event<Result>
+    ? EventCallable<P>
+    : EventCallable<Result>
   : Target extends Effect<infer P, infer D, infer F>
   ? P extends Result
     ? Effect<P, D, F>
