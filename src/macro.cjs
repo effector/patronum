@@ -38,13 +38,13 @@ function patronum({
   instance.pre();
   babel.traverse(program.parent, instance.visitor, undefined, {
     ...instance,
-    ...state
+    ...state,
   });
   instance.post();
 }
 
 function addImport(t, path, specifierName, importPath) {
-  const programPath = path.find(path => path.isProgram())
+  const programPath = path.find((path) => path.isProgram());
 
   const [newPath] = programPath.unshiftContainer(
     'body',

@@ -7,7 +7,7 @@ async function getAllFiles(dir) {
     subdirs.map(async (subdir) => {
       const res = path.resolve(dir, subdir);
       return (await stat(res)).isDirectory() ? getAllFiles(res) : res;
-    })
+    }),
   );
   return files.reduce((a, f) => a.concat(f), []);
 }
@@ -24,9 +24,9 @@ function typesPlugin() {
           dtsFiles.map((file) => {
             const newFile = file.replace('.d.ts', '.d.cts');
             return copyFile(file, newFile);
-          })
+          }),
         );
-        
+
         console.log('Copied .d.ts files to .d.cts');
       } catch (error) {
         console.error('Error in afterBuild plugin:', error);
@@ -36,5 +36,5 @@ function typesPlugin() {
 }
 
 module.exports = {
-	typesPlugin
+  typesPlugin,
 };
