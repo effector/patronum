@@ -157,3 +157,67 @@ describe('edge cases', () => {
     expect(listener).toBeCalledWith('two');
   });
 });
+
+describe('leading option', () => {
+  test('leading throttle works in forked scope', async () => {
+    const app = createDomain();
+    const source = app.createEvent<number>();
+    const $counter = app.createStore(0);
+
+    const throttled = throttle({ source, timeout: 40, leading: true });
+
+    $counter.on(throttled, (value, payload) => value + payload);
+
+    const scope = fork();
+
+    await allSettled(source, { scope, params: 1 });
+
+    expect(serialize(scope)).toMatchObject({
+      [$counter.sid!]: 1,
+    });
+  });
+
+  test('leading throttle do not affect another forks', async () => {
+    const app = createDomain();
+    const $counter = app.createStore(0);
+    const trigger = app.createEvent<number>();
+
+    const throttled = throttle({ source: trigger, timeout: 40, leading: true });
+
+    $counter.on(throttled, (value, payload) => value + payload);
+
+    const scopeA = fork();
+    const scopeB = fork();
+
+    await allSettled(trigger, { scope: scopeA, params: 1 });
+    await allSettled(trigger, { scope: scopeB, params: 100 });
+
+    expect(serialize(scopeA)).toMatchObject({
+      [$counter.sid!]: 1,
+    });
+
+    expect(serialize(scopeB)).toMatchObject({
+      [$counter.sid!]: 100,
+    });
+  });
+
+  test('leading throttle do not affect original store value', async () => {
+    const app = createDomain();
+    const $counter = app.createStore(0);
+    const trigger = app.createEvent<number>();
+
+    const throttled = throttle({ source: trigger, timeout: 40, leading: true });
+
+    $counter.on(throttled, (value, payload) => value + payload);
+
+    const scope = fork();
+
+    await allSettled(trigger, { scope, params: 5 });
+
+    expect(serialize(scope)).toMatchObject({
+      [$counter.sid!]: 5,
+    });
+
+    expect($counter.getState()).toBe(0);
+  });
+});
