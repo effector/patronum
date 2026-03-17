@@ -246,3 +246,64 @@ test('does not trigger twice if branch change predicate state', () => {
   expect(onThen).toHaveBeenCalledTimes(1);
   expect(onElse).not.toHaveBeenCalled();
 });
+
+test('source: event, if: store, then: event, else: event[]', () => {
+  const source = createEvent<string>();
+  const $if = createStore(false);
+  const target = createEvent<string>();
+  const target2 = createEvent<string>();
+  const fn = jest.fn();
+  target2.watch(fn);
+
+  condition({
+    source,
+    if: $if,
+    then: target,
+    else: [target2, target2],
+  });
+
+  source('bar');
+  expect(argumentHistory(fn)).toMatchInlineSnapshot(`
+    [
+      "bar",
+      "bar",
+    ]
+  `);
+
+  source('foo');
+  expect(argumentHistory(fn)).toMatchInlineSnapshot(`
+    [
+      "bar",
+      "bar",
+      "foo",
+      "foo",
+    ]
+  `);
+});
+
+test('source: event, if: store, then: event[]', () => {
+  const source = createEvent<string>();
+  const $if = createStore(false);
+  const target = createEvent<string>();
+  const fn = jest.fn();
+  target.watch(fn);
+
+  condition({
+    source,
+    if: $if,
+    then: [target, target],
+  });
+
+  source('bar');
+  expect(argumentHistory(fn)).toMatchInlineSnapshot(`[]`);
+
+  // @ts-expect-error setState is internal
+  $if.setState(true);
+  source('foo');
+  expect(argumentHistory(fn)).toMatchInlineSnapshot(`
+    [
+      "foo",
+      "foo",
+    ]
+  `);
+});
