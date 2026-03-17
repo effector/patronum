@@ -251,51 +251,92 @@ test('source: event, if: store, then: event, else: event[]', () => {
   const source = createEvent<string>();
   const $if = createStore(false);
   const target = createEvent<string>();
-  const target2 = createEvent<string>();
-  const fn = jest.fn();
-  target2.watch(fn);
+  const elseTarget = createEvent<string>();
+  const elseTargetSecond = createEvent<string>();
+
+  const thenFn = jest.fn();
+  const elseFn = jest.fn();
+  const elseFnSecond = jest.fn();
+
+  target.watch(thenFn);
+  elseTarget.watch(elseFn);
+  elseTargetSecond.watch(elseFnSecond);
 
   condition({
     source,
     if: $if,
     then: target,
-    else: [target2, target2],
+    else: [elseTarget, elseTargetSecond],
   });
 
+  // @ts-expect-error setState is internal
+  $if.setState(true);
+  source('baz');
+  expect(argumentHistory(thenFn)).toMatchInlineSnapshot(`
+    [
+      "baz",
+    ]
+  `);
+  expect(argumentHistory(elseFn)).toMatchInlineSnapshot(`[]`);
+  expect(argumentHistory(elseFnSecond)).toMatchInlineSnapshot(`[]`);
+  expect(thenFn).toHaveBeenCalledTimes(1);
+  expect(elseFn).not.toHaveBeenCalled();
+  expect(elseFnSecond).not.toHaveBeenCalled();
+
+  // @ts-expect-error setState is internal
+  $if.setState(false);
   source('bar');
-  expect(argumentHistory(fn)).toMatchInlineSnapshot(`
+  expect(argumentHistory(elseFn)).toMatchInlineSnapshot(`
     [
       "bar",
+    ]
+  `);
+  expect(argumentHistory(elseFnSecond)).toMatchInlineSnapshot(`
+    [
       "bar",
     ]
   `);
 
   source('foo');
-  expect(argumentHistory(fn)).toMatchInlineSnapshot(`
-    [
-      "bar",
-      "bar",
-      "foo",
-      "foo",
-    ]
-  `);
+  expect(argumentHistory(elseFn)).toMatchInlineSnapshot(`
+      [
+        "bar",
+        "foo",
+      ]
+    `);
+  expect(argumentHistory(elseFnSecond)).toMatchInlineSnapshot(`
+      [
+        "bar",
+        "foo",
+      ]
+    `);
+
+  expect(thenFn).toHaveBeenCalledTimes(1);
+  expect(elseFn).toHaveBeenCalledTimes(2);
+  expect(elseFnSecond).toHaveBeenCalledTimes(2);
 });
 
 test('source: event, if: store, then: event[]', () => {
   const source = createEvent<string>();
   const $if = createStore(false);
   const target = createEvent<string>();
+  const targetSecond = createEvent<string>();
   const fn = jest.fn();
+  const fnSecond = jest.fn();
   target.watch(fn);
+  targetSecond.watch(fnSecond);
 
   condition({
     source,
     if: $if,
-    then: [target, target],
+    then: [target, targetSecond],
   });
 
   source('bar');
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`[]`);
+  expect(argumentHistory(fnSecond)).toMatchInlineSnapshot(`[]`);
+  expect(fn).not.toHaveBeenCalled();
+  expect(fnSecond).not.toHaveBeenCalled();
 
   // @ts-expect-error setState is internal
   $if.setState(true);
@@ -303,7 +344,17 @@ test('source: event, if: store, then: event[]', () => {
   expect(argumentHistory(fn)).toMatchInlineSnapshot(`
     [
       "foo",
+    ]
+  `);
+  expect(argumentHistory(fnSecond)).toMatchInlineSnapshot(`
+    [
       "foo",
     ]
   `);
+
+  expect(fn).toHaveBeenCalledTimes(1);
+  expect(fnSecond).toHaveBeenCalledTimes(1);
+
+  expect(fn).toHaveBeenCalledWith('foo');
+  expect(fnSecond).toHaveBeenCalledWith('foo');
 });
