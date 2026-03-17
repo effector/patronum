@@ -46,13 +46,18 @@ import { readonly } from '../dist/readonly';
 
   // @ts-expect-error
   readonly(createDomain());
+}
+
+// Should create store from non-store value except undefined and function
+{
+  expectType<Store<number>>(readonly(1));
+  expectType<Store<boolean>>(readonly(true));
+  expectType<Store<object>>(readonly({}));
+  expectType<Store<unknown[]>>(readonly([]));
+  expectType<Store<null>>(readonly(null));
 
   // @ts-expect-error
-  readonly(1);
-
+  expectType<Store<undefined>>(readonly(undefined));
   // @ts-expect-error
-  readonly(true);
-
-  // @ts-expect-error
-  readonly({});
+  expectType<Store<void>>(readonly(void 0));
 }

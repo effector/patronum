@@ -1,9 +1,16 @@
-import { Store, Event, is, createStore } from 'effector';
+import { Store, Event, Domain, is, createStore } from 'effector';
 
-export function readonly<T extends unknown>(source: T): Store<T>;
+type RejectUndefinedAndFunction<T> = T extends undefined
+  ? never
+  : T extends (...args: any[]) => any
+  ? never
+  : T extends Domain
+  ? never
+  : T;
+
 export function readonly<T extends unknown>(source: Store<T>): Store<T>;
 export function readonly<T extends unknown>(source: Event<T>): Event<T>;
-
+export function readonly<T>(source: RejectUndefinedAndFunction<T>): Store<T>;
 export function readonly<T extends unknown>(source: Store<T> | Event<T>) {
   if (!is.unit(source)) {
     if (typeof source === 'function' || source === undefined) {
