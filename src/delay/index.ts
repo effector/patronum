@@ -31,6 +31,12 @@ export function delay<Source extends Unit<any>>(config: {
   timeout: TimeoutType<UnitValue<Source>>;
 }): EventAsReturnType<UnitValue<Source>>;
 
+export function delay<Target extends TargetType>(config: {
+  source?: never;
+  timeout: TimeoutType<UnitValue<Target>>;
+  target: MultiTarget<Target, UnitValue<Target>>;
+}): EventAsReturnType<UnitValue<Target>>;
+
 export function delay<
   Source extends Unit<any>,
   Target extends TargetType = TargetType,
@@ -38,9 +44,9 @@ export function delay<
   ...args:
     | [
         {
-          source: Source;
-          timeout: TimeoutType<UnitValue<Source>>;
-          target?: MultiTarget<Target, UnitValue<Source>>;
+          source?: Source;
+          timeout: TimeoutType<UnitValue<Source> & UnitValue<Target>>;
+          target?: MultiTarget<Target, UnitValue<Source> & UnitValue<Target>>;
         },
       ]
     | [Source, TimeoutType<UnitValue<Source>>]
@@ -48,8 +54,20 @@ export function delay<
   const argsShape =
     args.length === 2 ? { source: args[0], timeout: args[1] } : args[0];
 
-  const { source, timeout, target = createEvent() as any } = argsShape;
-  const targets = Array.isArray(target) ? target : [target];
+  const { source, timeout, target } = argsShape as {
+    source?: Unit<any>;
+    timeout: TimeoutType<any>;
+    target?: MultiTarget<any, any>;
+  };
+
+  if (source === undefined && target !== undefined) {
+    return delayWithoutSource(timeout, target);
+  }
+
+  const effectiveTarget = target ?? (createEvent() as any);
+  const targets = Array.isArray(effectiveTarget)
+    ? effectiveTarget
+    : [effectiveTarget];
 
   if (!is.unit(source)) throw new TypeError('source must be a unit from effector');
   if (!targets.every((unit) => is.unit(unit)))
@@ -68,8 +86,6 @@ export function delay<
   );
 
   sample({
-    // ms can be Store<number> | number
-    // converts object of stores or object of values to store
     source: combine({ milliseconds: ms }),
     clock: source as Unit<any>,
     fn: ({ milliseconds }, payload) => ({
@@ -82,7 +98,38 @@ export function delay<
 
   sample({ clock: timerFx.doneData, target: targets as UnitTargetable<any>[] });
 
-  return target as any;
+  return effectiveTarget as any;
+}
+
+function delayWithoutSource(timeout: TimeoutType<any>, target: any) {
+  const targets = Array.isArray(target) ? target : [target];
+  if (!targets.every((unit: any) => is.unit(unit)))
+    throw new TypeError('target must be a unit from effector');
+
+  const ms = validateTimeout(timeout);
+  const trigger = createEvent<any>();
+
+  const timerFx = createEffect<{ payload: any; milliseconds: number }, any>(
+    ({ payload, milliseconds }) =>
+      new Promise((resolve) => {
+        setTimeout(resolve, milliseconds, payload);
+      }),
+  );
+
+  sample({
+    source: combine({ milliseconds: ms }),
+    clock: trigger,
+    fn: ({ milliseconds }, payload) => ({
+      payload,
+      milliseconds:
+        typeof milliseconds === 'function' ? milliseconds(payload) : milliseconds,
+    }),
+    target: timerFx,
+  });
+
+  sample({ clock: timerFx.doneData, target: targets as UnitTargetable<any>[] });
+
+  return trigger;
 }
 
 function validateTimeout<T>(
