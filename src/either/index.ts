@@ -32,8 +32,8 @@ export function either<Then, Other>(
     ? Store<T | O>
     : Store<T | Other>
   : Other extends Store<infer O>
-  ? Store<Then | O>
-  : Store<Then | Other>;
+    ? Store<Then | O>
+    : Store<Then | Other>;
 
 export function either<Then, Other>(
   config: EitherConfig<Then, Other>,
@@ -42,8 +42,8 @@ export function either<Then, Other>(
     ? Store<T | O>
     : Store<T | Other>
   : Other extends Store<infer O>
-  ? Store<Then | O>
-  : Store<Then | Other>;
+    ? Store<Then | O>
+    : Store<Then | Other>;
 
 export function either<Then, Other>(
   filterOptions: Store<boolean> | EitherConfig<Then, Other>,

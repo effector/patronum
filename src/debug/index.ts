@@ -389,13 +389,13 @@ function isEffectChild(node: Node | Unit<any>) {
 
   return Boolean(
     !sid &&
-      (named === 'finally' ||
-        named === 'done' ||
-        named === 'doneData' ||
-        named === 'fail' ||
-        named === 'failData' ||
-        named === 'inFlight' ||
-        named === 'pending'),
+    (named === 'finally' ||
+      named === 'done' ||
+      named === 'doneData' ||
+      named === 'fail' ||
+      named === 'failData' ||
+      named === 'inFlight' ||
+      named === 'pending'),
   );
 }
 

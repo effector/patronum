@@ -1,10 +1,7 @@
 import { combine, Store, Unit } from 'effector';
 
-type StoreOrValue<T> = T extends Store<infer U>
-  ? Store<U>
-  : T extends Unit<any>
-  ? never
-  : T;
+type StoreOrValue<T> =
+  T extends Store<infer U> ? Store<U> : T extends Unit<any> ? never : T;
 
 export function format(strings: TemplateStringsArray): Store<string>;
 export function format<Values extends StoreOrValue<any>[]>(
