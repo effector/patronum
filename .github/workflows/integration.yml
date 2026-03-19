@@ -7,7 +7,7 @@ on: [push]
 
 jobs:
   build:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
@@ -16,12 +16,12 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@v2
 
-      - name: Use Node.js v18.x
-        uses: actions/setup-node@v3
+      - name: Use Node.js
+        uses: actions/setup-node@v4
         with:
-          node-version: v18.x
-          registry-url: 'https://npm.pkg.github.com'
-          cache: 'pnpm'
+          node-version: v24.x
+          registry-url: "https://npm.pkg.github.com"
+          cache: "pnpm"
 
       - name: Install dependencies
         run: pnpm install
@@ -31,7 +31,7 @@ jobs:
       - name: Build package
         run: pnpm build
         env:
-          LIBRARY_NAME: '@effector/patronum'
+          LIBRARY_NAME: "@effector/patronum"
 
       - name: Fetch latest package version
         id: latest-package-json
@@ -56,14 +56,14 @@ jobs:
       - name: Set version to package from github release
         if: ${{ steps.latest-package.outputs.latest-release == '' }}
         run: npm version --force --no-git-tag-version ${{ steps.github-release.outputs.release }}
-        working-directory: './dist/'
+        working-directory: "./dist/"
 
       - name: Add commit SHA to package version
         run: npm version --force --no-git-tag-version prerelease --preid=${{ github.sha }}
-        working-directory: './dist/'
+        working-directory: "./dist/"
 
       - name: Publish to Github NPM registry
-        working-directory: './dist/'
+        working-directory: "./dist/"
         run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -72,7 +72,7 @@ jobs:
         uses: sergeysova/jq-action@v2
         id: version
         with:
-          cmd: 'jq .version dist/package.json -r'
+          cmd: "jq .version dist/package.json -r"
 
       - name: Published ${{ steps.version.outputs.value }}
         run: echo @effector/patronum@${{ steps.version.outputs.value }}
@@ -82,7 +82,7 @@ jobs:
 
   custom:
     needs: build
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
@@ -91,11 +91,11 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@v2
 
-      - name: Use Node.js 18.x
-        uses: actions/setup-node@v3
+      - name: Use Node.js
+        uses: actions/setup-node@v4
         with:
-          node-version: 18.x
-          registry-url: 'https://npm.pkg.github.com'
+          node-version: v24.x
+          registry-url: "https://npm.pkg.github.com"
 
       - name: Install integration dependencies
         run: pnpm install
@@ -115,7 +115,7 @@ jobs:
 
   cra:
     needs: build
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
@@ -124,11 +124,11 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@v2
 
-      - name: Use Node.js 18.x
-        uses: actions/setup-node@v3
+      - name: Use Node.js
+        uses: actions/setup-node@v4
         with:
-          node-version: 18.x
-          registry-url: 'https://npm.pkg.github.com'
+          node-version: v24.x
+          registry-url: "https://npm.pkg.github.com"
 
       - name: Install integration dependencies
         run: pnpm install
