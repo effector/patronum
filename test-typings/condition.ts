@@ -382,3 +382,47 @@ import { condition } from '../dist/condition';
     else: createEvent<number>(),
   });
 }
+
+// Correct pass type from source to then/then[], else/else[], and if
+{
+  const $source = createStore(0);
+
+  expectType<Store<number>>(
+    condition({
+      source: $source,
+      if: (a) => a === 1,
+      then: [createEvent<number>(), createEvent<number>()],
+    }),
+  );
+  expectType<Store<number>>(
+    condition({
+      source: $source,
+      if: (a) => a === 1,
+      else: [createEvent<number>(), createEvent<number>()],
+    }),
+  );
+  expectType<Store<number>>(
+    condition({
+      source: $source,
+      if: (a) => a === 1,
+      then: [createEvent<number>(), createEvent<number>()],
+      else: createEvent<number>(),
+    }),
+  );
+  expectType<Store<number>>(
+    condition({
+      source: $source,
+      if: (a) => a === 1,
+      then: createEvent<number>(),
+      else: [createEvent<number>(), createEvent<number>()],
+    }),
+  );
+  expectType<Store<number>>(
+    condition({
+      source: $source,
+      if: (a) => a === 1,
+      then: [createEvent<number>(), createEvent<number>()],
+      else: [createEvent<number>(), createEvent<number>()],
+    }),
+  );
+}

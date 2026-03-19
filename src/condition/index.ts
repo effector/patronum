@@ -17,12 +17,14 @@ type NonFalsy<T> = T extends null | undefined | false | 0 | 0n | '' ? never : T;
 
 type SourceUnit<T> = Store<T> | Event<T> | Effect<T, any, any>;
 
+type Targetable<T> = UnitTargetable<T> | ReadonlyArray<UnitTargetable<T>>;
+
 // -- Without `source`, with type guard --
 export function condition<Payload, Then extends Payload = Payload>(options: {
   source?: undefined;
   if: ((payload: Payload) => payload is Then) | Then;
-  then?: UnitTargetable<NoInfer<Then> | void>;
-  else?: UnitTargetable<Exclude<NoInfer<Payload>, Then> | void>;
+  then?: Targetable<NoInfer<Then> | void>;
+  else?: Targetable<Exclude<NoInfer<Payload>, Then> | void>;
 }): EventCallableAsReturnType<Payload>;
 
 // -- Without `source`, with BooleanConstructor --
@@ -32,16 +34,16 @@ export function condition<
 >(options: {
   source?: undefined;
   if: BooleanConstructor;
-  then?: UnitTargetable<NoInfer<Then> | void>;
-  else?: UnitTargetable<Exclude<NoInfer<Payload>, Then> | void>;
+  then?: Targetable<NoInfer<Then> | void>;
+  else?: Targetable<Exclude<NoInfer<Payload>, Then> | void>;
 }): EventCallableAsReturnType<Payload>;
 
 // -- Without `source` --
 export function condition<Payload>(options: {
   source?: undefined;
   if: ((payload: Payload) => boolean) | Store<boolean> | NoInfer<Payload>;
-  then?: UnitTargetable<NoInfer<Payload> | void>;
-  else?: UnitTargetable<NoInfer<Payload> | void>;
+  then?: Targetable<NoInfer<Payload> | void>;
+  else?: Targetable<NoInfer<Payload> | void>;
 }): EventCallableAsReturnType<Payload>;
 
 // -- With `source` and type guard --
@@ -52,8 +54,8 @@ export function condition<
 >(options: {
   source: Source;
   if: ((payload: Payload) => payload is Then) | Then;
-  then?: UnitTargetable<NoInfer<Then>>;
-  else?: UnitTargetable<Exclude<NoInfer<Payload>, Then>>;
+  then?: Targetable<NoInfer<Then>>;
+  else?: Targetable<Exclude<NoInfer<Payload>, Then>>;
 }): Source;
 
 // -- With `source` and BooleanConstructor --
@@ -64,8 +66,8 @@ export function condition<
 >(options: {
   source: Source;
   if: BooleanConstructor;
-  then?: UnitTargetable<NoInfer<Then> | void>;
-  else?: UnitTargetable<Exclude<NoInfer<Payload>, Then>>;
+  then?: Targetable<NoInfer<Then> | void>;
+  else?: Targetable<Exclude<NoInfer<Payload>, Then>>;
 }): EventCallable<Payload>;
 
 // -- With `source` --
@@ -75,8 +77,8 @@ export function condition<
 >(options: {
   source: SourceUnit<Payload>;
   if: ((payload: Payload) => boolean) | Store<boolean> | NoInfer<Payload>;
-  then?: UnitTargetable<NoInfer<Payload> | void>;
-  else?: UnitTargetable<NoInfer<Payload> | void>;
+  then?: Targetable<NoInfer<Payload> | void>;
+  else?: Targetable<NoInfer<Payload> | void>;
 }): Source;
 
 export function condition<Payload>({
@@ -87,8 +89,8 @@ export function condition<Payload>({
 }: {
   source?: SourceUnit<Payload>;
   if: ((payload: Payload) => boolean) | Store<boolean> | Payload;
-  then?: UnitTargetable<Payload | void>;
-  else?: UnitTargetable<Payload | void>;
+  then?: Targetable<Payload | void>;
+  else?: Targetable<Payload | void>;
 }) {
   const checker =
     is.unit(test) || isFunction(test) ? test : (value: Payload) => value === test;
