@@ -92,6 +92,10 @@ export function condition<Payload>({
   then?: Targetable<Payload | void>;
   else?: Targetable<Payload | void>;
 }) {
+  if (!thenBranch && !elseBranch) {
+    throw new Error('condition: at least one of then/else is required');
+  }
+
   const checker =
     is.unit(test) || isFunction(test) ? test : (value: Payload) => value === test;
 
@@ -106,20 +110,22 @@ export function condition<Payload>({
         then: thenBranch,
         else: elseBranch,
       },
+      // split overloads don't accept checker/inverse union types
     } as any);
   } else if (thenBranch) {
-    // @ts-expect-error
+    // @ts-expect-error - checker/target unions don't match sample overloads
     sample({
-      source: source,
+      source,
       filter: checker,
       target: thenBranch,
     });
-  } else if (elseBranch) {
-    // @ts-expect-error
+  } else {
+    // elseBranch is defined: we threw above if both were missing
+    // @ts-expect-error - checker/target unions don't match sample overloads
     sample({
       source,
       filter: inverse(checker as any),
-      target: elseBranch,
+      target: elseBranch!,
     });
   }
 
