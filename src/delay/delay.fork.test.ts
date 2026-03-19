@@ -127,3 +127,25 @@ test('throttle do not affect original store value', async () => {
 
   expect($counter.getState()).toMatchInlineSnapshot(`0`);
 });
+
+test('delay without source works in forked scope', async () => {
+  const app = createDomain();
+  const target = app.createEvent<number>();
+  const trigger = delay({ timeout: 40, target });
+
+  const $counter = app.createStore(0, { sid: '$counter' });
+  $counter.on(target, (value, payload) => value + payload);
+
+  const scope = fork();
+
+  await allSettled(trigger, {
+    scope,
+    params: 1,
+  });
+
+  expect(serialize(scope)).toMatchInlineSnapshot(`
+    {
+      "$counter": 1,
+    }
+  `);
+});

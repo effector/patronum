@@ -388,3 +388,75 @@ test('delay throws when source is not a unit', async () => {
     /source must be a unit/,
   );
 });
+
+describe('delay without source', () => {
+  test('triggers target after timeout when returned unit is called', async () => {
+    const target = createEvent();
+    const trigger = delay({ timeout: 100, target });
+    const fn = jest.fn();
+    target.watch(fn);
+
+    trigger('payload');
+    const start = time();
+    expect(fn).toBeCalledTimes(0);
+
+    await waitFor(target);
+    expect(start.diff()).toBeCloseWithThreshold(100, TIMER_THRESHOLD);
+    expect(fn).toBeCalledTimes(1);
+    expect(argumentHistory(fn)).toEqual(['payload']);
+  });
+
+  test('supports multiple targets', async () => {
+    const targetA = createEvent();
+    const targetB = createEvent();
+    const trigger = delay({ timeout: 100, target: [targetA, targetB] });
+    const fnA = jest.fn();
+    const fnB = jest.fn();
+    targetA.watch(fnA);
+    targetB.watch(fnB);
+
+    trigger(42);
+
+    await waitFor(targetA);
+    expect(fnA).toHaveBeenCalledTimes(1);
+    expect(fnB).toHaveBeenCalledTimes(1);
+    expect(fnA).toHaveBeenCalledWith(42);
+    expect(fnB).toHaveBeenCalledWith(42);
+  });
+
+  test('timeout as function of payload', async () => {
+    const target = createEvent();
+    const trigger = delay({
+      timeout: (payload) => payload * 50,
+      target,
+    });
+    const fn = jest.fn();
+    target.watch(fn);
+
+    trigger(2);
+    const start = time();
+    await waitFor(target);
+    expect(start.diff()).toBeCloseWithThreshold(100, TIMER_THRESHOLD);
+    expect(argumentHistory(fn)).toEqual([2]);
+  });
+
+  test('timeout from store', async () => {
+    const $timeout = createStore(80);
+    const target = createEvent();
+    const trigger = delay({ timeout: $timeout, target });
+    const fn = jest.fn();
+    target.watch(fn);
+
+    trigger('x');
+    const start = time();
+    await waitFor(target);
+    expect(start.diff()).toBeCloseWithThreshold(80, TIMER_THRESHOLD);
+    expect(argumentHistory(fn)).toEqual(['x']);
+  });
+
+  test('throws when target is not a unit', () => {
+    expect(() => delay({ timeout: 100, target: ['not a unit'] })).toThrow(
+      /target must be a unit/,
+    );
+  });
+});

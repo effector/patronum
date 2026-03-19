@@ -169,10 +169,10 @@ import { delay } from '../dist/delay';
   const source = createEvent<number>();
   const target = createEvent<1 | 2>();
 
+  // @ts-expect-error
   delay({
     source,
     timeout: 100,
-    // @ts-expect-error
     target,
   });
 }
@@ -242,9 +242,9 @@ import { delay } from '../dist/delay';
   });
 
   delay({
+    // @ts-expect-error
     source,
     timeout: 100,
-    // @ts-expect-error
     target: [
       createEvent<number>(),
       createEffect<number, void>(),
@@ -252,12 +252,25 @@ import { delay } from '../dist/delay';
     ],
   });
 
-  // @ts-expect-error
   delay({
     source,
     timeout: 100,
+    // @ts-expect-error
     target: [createEvent<string>(), 'non-unit'],
   });
+}
+
+// delay without source
+{
+  const pulseFx = createEvent<number>();
+  const delayedTrigger = delay({ timeout: 100, target: pulseFx });
+  expectType<Event<number>>(delayedTrigger);
+
+  const targetEvent = createEvent<string>();
+  expectType<Event<string>>(delay({ timeout: 50, target: targetEvent }));
+
+  const targetEffect = createEffect<string, void>();
+  expectType<Event<string>>(delay({ timeout: 50, target: targetEffect }));
 }
 
 // returns typeof target
