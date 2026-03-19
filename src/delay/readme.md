@@ -6,21 +6,20 @@ group: timeouts
 ---
 
 ```ts
-import { delay } from 'patronum';
+import { delay } from "patronum";
 // or
-import { delay } from 'patronum/delay';
+import { delay } from "patronum/delay";
 ```
 
 ## `delay(source, timeout: number)`
 
-:::note[since]
-patronum 2.1.0
-Use `delay({ source, timeout })` with patronum < 2.1.0
-:::
+:::note[since] patronum 2.1.0 Use `delay({ source, timeout })` with patronum <
+2.1.0 :::
 
 ### Motivation
 
-Method creates a new event that will be triggered after some time. It is useful for implementing timeouts, animations, or scheduling delayed operations.
+Method creates a new event that will be triggered after some time. It is useful
+for implementing timeouts, animations, or scheduling delayed operations.
 
 ### Formulae
 
@@ -28,29 +27,32 @@ Method creates a new event that will be triggered after some time. It is useful 
 target = delay(source, timeout);
 ```
 
-- When `source` is triggered, wait for `timeout`, then trigger `target` with payload of the `source`
+- When `source` is triggered, wait for `timeout`, then trigger `target` with
+  payload of the `source`
 
 ### Arguments
 
-1. `source` `(Event<T>` | `Store<T>` | `Effect<T>)` — Source unit, data from this unit used to trigger `target` with.
+1. `source` `(Event<T>` | `Store<T>` | `Effect<T>)` — Source unit, data from
+   this unit used to trigger `target` with.
 1. `timeout` `(number)` — time to wait before trigger `event`
 
 ### Returns
 
-- `target` `(Event<T>)` — New event which will receive `source` payload after `timeout` delay
+- `target` `(Event<T>)` — New event which will receive `source` payload after
+  `timeout` delay
 
 ### Example
 
 ```ts
-import { createEvent } from 'effector';
-import { delay } from 'patronum/delay';
+import { createEvent } from "effector";
+import { delay } from "patronum/delay";
 
 const trigger = createEvent<string>(); // createStore or createEffect
 const delayed = delay(trigger, 300);
 
-delayed.watch((payload) => console.info('triggered', payload));
+delayed.watch((payload) => console.info("triggered", payload));
 
-trigger('hello');
+trigger("hello");
 // after 300ms
 // => triggered hello
 ```
@@ -59,7 +61,8 @@ trigger('hello');
 
 ### Motivation
 
-This overload is useful when you already have a target unit that needs to be triggered with a delay.
+This overload is useful when you already have a target unit that needs to be
+triggered with a delay.
 
 ### Formulae
 
@@ -67,23 +70,27 @@ This overload is useful when you already have a target unit that needs to be tri
 target = delay({ source, timeout: number, target });
 ```
 
-- When `source` is triggered, wait for `timeout`, then trigger `target` with payload of the `source`
+- When `source` is triggered, wait for `timeout`, then trigger `target` with
+  payload of the `source`
 
 ### Arguments
 
-1. `source` `(Event<T>` | `Store<T>` | `Effect<T>)` — Source unit, data from this unit used to trigger `target` with.
+1. `source` `(Event<T>` | `Store<T>` | `Effect<T>)` — Source unit, data from
+   this unit used to trigger `target` with.
 2. `timeout` `(number)` — time to wait before trigger `event`
-3. `target` `(Unit<T>` | `Array<Unit<T>>)` — Optional. Target unit or array of units that will be called after delay.
+3. `target` `(Unit<T>` | `Array<Unit<T>>)` — Optional. Target unit or array of
+   units that will be called after delay.
 
 ### Returns
 
-- `target` `(Unit<T>` | `Array<Unit<T>>)` — Target unit or units that were passed to `delay`
+- `target` `(Unit<T>` | `Array<Unit<T>>)` — Target unit or units that were
+  passed to `delay`
 
 ### Example
 
 ```ts
-import { createEvent } from 'effector';
-import { delay } from 'patronum/delay';
+import { createEvent } from "effector";
+import { delay } from "patronum/delay";
 
 const trigger = createEvent<string>(); // createStore or createEffect
 const delayed = createEvent<string>();
@@ -93,24 +100,74 @@ delay({
   target: delayed,
 });
 
-delayed.watch((payload) => console.info('triggered', payload));
+delayed.watch((payload) => console.info("triggered", payload));
 
-trigger('hello');
+trigger("hello");
 // after 300ms
 // => triggered hello
 ```
 
-## `delay(source, timeout: Function)`
-
-:::note[since]
-patronum 2.1.0
-Use `delay({ source, timeout })` with patronum < 2.1.0
-:::
+## `delay({ timeout, target })` — without source
 
 ### Motivation
 
-This overload allows to calculate timeout from payload of `source`.
-It is useful when you know that calculations requires more time if you have more data for payload.
+Use this overload when you need a unit that triggers `target` after `timeout`,
+and you want to pass that unit as a target in `sample`. No separate `source` or
+clock: the returned unit is the entry point. When the returned unit is called
+with a payload, after `timeout` ms that payload is passed to `target`.
+
+### Formulae
+
+```ts
+trigger = delay({ timeout, target });
+```
+
+- When `trigger` is called with payload, wait for `timeout`, then trigger
+  `target` with that payload.
+
+### Arguments
+
+1. `timeout` `(number` | `Store<number>` | `(payload: T) => number)` — Delay in
+   milliseconds, or a store/function that provides it.
+2. `target` `(Unit<T>` | `Array<Unit<T>>)` — Unit or array of units to trigger
+   after the delay.
+
+### Returns
+
+- `trigger` `(Event<T>)` — Event you can use as a target in `sample`. Call it
+  with a payload to schedule `target` after `timeout`.
+
+### Example
+
+```ts
+import { createEffect, createEvent, createStore, sample } from "effector";
+import { delay } from "patronum/delay";
+
+const buttonPressed = createEvent<void>();
+const $element = createStore<HTMLElement | null>(null);
+const scrollIntoViewFx = createEffect((el: HTMLElement | null) => {});
+const pulseFx = createEvent<HTMLElement | null>();
+
+sample({
+  clock: buttonPressed,
+  source: $element,
+  target: [
+    scrollIntoViewFx,
+    delay({ timeout: 100, target: pulseFx }),
+  ],
+});
+```
+
+## `delay(source, timeout: Function)`
+
+:::note[since] patronum 2.1.0 Use `delay({ source, timeout })` with patronum <
+2.1.0 :::
+
+### Motivation
+
+This overload allows to calculate timeout from payload of `source`. It is useful
+when you know that calculations requires more time if you have more data for
+payload.
 
 ### Formulae
 
@@ -118,34 +175,39 @@ It is useful when you know that calculations requires more time if you have more
 target = delay(source, timeout);
 ```
 
-- When `source` is triggered, call `timeout` with payload to get the timeout for delay, then trigger `target` with payload of the `source`
+- When `source` is triggered, call `timeout` with payload to get the timeout for
+  delay, then trigger `target` with payload of the `source`
 
 ### Arguments
 
-1. `source` `(Event<T>` | `Store<T>` | `Effect<T>)` — Source unit, data from this unit used to trigger `target` with.
-2. `timeout` `((payload: T) => number)` — Calculate delay for each `source` call. Receives the payload of `source` as argument. Should return `number` — delay in milliseconds.
+1. `source` `(Event<T>` | `Store<T>` | `Effect<T>)` — Source unit, data from
+   this unit used to trigger `target` with.
+2. `timeout` `((payload: T) => number)` — Calculate delay for each `source`
+   call. Receives the payload of `source` as argument. Should return `number` —
+   delay in milliseconds.
 
 ### Returns
 
-- `target` `(Event<T>)` — New event which will receive `source` payload after `timeout` delay
+- `target` `(Event<T>)` — New event which will receive `source` payload after
+  `timeout` delay
 
 ### Example
 
 ```ts
-import { createEvent, createStore } from 'effector';
-import { delay } from 'patronum/delay';
+import { createEvent, createStore } from "effector";
+import { delay } from "patronum/delay";
 
 const update = createEvent<string>();
-const $data = createStore('');
+const $data = createStore("");
 const logDelayed = delay($data, (string) => string.length * 100);
 
-logDelayed.watch((data) => console.log('log', data));
+logDelayed.watch((data) => console.log("log", data));
 
-update('Hello');
+update("Hello");
 // after 500ms
 // => log Hello
 
-update('!');
+update("!");
 // after 100ms
 // => log !
 ```
@@ -154,8 +216,9 @@ update('!');
 
 ### Motivation
 
-This overload allows to calculate timeout from payload of `source`.
-It is useful when you know that calculations requires more time if you have more data for payload.
+This overload allows to calculate timeout from payload of `source`. It is useful
+when you know that calculations requires more time if you have more data for
+payload.
 
 ### Formulae
 
@@ -163,27 +226,33 @@ It is useful when you know that calculations requires more time if you have more
 target = delay({ source, timeout: Function, target });
 ```
 
-- When `source` is triggered, call `timeout` with payload to get the timeout for delay, then trigger `target` with payload of the `source`
+- When `source` is triggered, call `timeout` with payload to get the timeout for
+  delay, then trigger `target` with payload of the `source`
 
 ### Arguments
 
-1. `source` `(Event<T>` | `Store<T>` | `Effect<T>)` — Source unit, data from this unit used to trigger `target` with.
-2. `timeout` `((payload: T) => number)` — Calculate delay for each `source` call. Receives the payload of `source` as argument. Should return `number` — delay in milliseconds.
-3. `target` `(Unit<T>` | `Array<Unit<T>>)` — Optional. Target unit or array of units that will be called after delay.
+1. `source` `(Event<T>` | `Store<T>` | `Effect<T>)` — Source unit, data from
+   this unit used to trigger `target` with.
+2. `timeout` `((payload: T) => number)` — Calculate delay for each `source`
+   call. Receives the payload of `source` as argument. Should return `number` —
+   delay in milliseconds.
+3. `target` `(Unit<T>` | `Array<Unit<T>>)` — Optional. Target unit or array of
+   units that will be called after delay.
 
 ### Returns
 
-- `target` `(Unit<T>` | `Array<Unit<T>>)` — Target unit or units that were passed to `delay`
+- `target` `(Unit<T>` | `Array<Unit<T>>)` — Target unit or units that were
+  passed to `delay`
 
 ### Example
 
 ```ts
-import { createEvent, createStore } from 'effector';
-import { delay } from 'patronum/delay';
+import { createEvent, createStore } from "effector";
+import { delay } from "patronum/delay";
 
 const update = createEvent<string>();
 const logDelayed = createEvent<string>();
-const $data = createStore('');
+const $data = createStore("");
 
 delay({
   source: $data,
@@ -191,28 +260,26 @@ delay({
   target: logDelayed,
 });
 
-logDelayed.watch((data) => console.log('log', data));
+logDelayed.watch((data) => console.log("log", data));
 
-update('Hello');
+update("Hello");
 // after 500ms
 // => log Hello
 
-update('!');
+update("!");
 // after 100ms
 // => log !
 ```
 
 ## `delay(source, timeout: Store<T>)`
 
-:::note[since]
-patronum 2.1.0
-Use `delay({ source, timeout })` with patronum < 2.1.0
-:::
+:::note[since] patronum 2.1.0 Use `delay({ source, timeout })` with patronum <
+2.1.0 :::
 
 ### Motivation
 
-This overload allows you to read timeout from another store.
-It is useful when you write music editor and need dynamic delay for your events.
+This overload allows you to read timeout from another store. It is useful when
+you write music editor and need dynamic delay for your events.
 
 ### Formulae
 
@@ -220,31 +287,34 @@ It is useful when you write music editor and need dynamic delay for your events.
 target = delay(source, timeout);
 ```
 
-- When `source` is triggered, read timeout from `timeout` store, then trigger `target` with payload of the `source`
+- When `source` is triggered, read timeout from `timeout` store, then trigger
+  `target` with payload of the `source`
 
 ### Arguments
 
-1. `source` `(Event<T>` | `Store<T>` | `Effect<T>)` — Source unit, data from this unit used to trigger `target` with.
+1. `source` `(Event<T>` | `Store<T>` | `Effect<T>)` — Source unit, data from
+   this unit used to trigger `target` with.
 2. `timeout` `(Store<number>)` — Store with number — delay in milliseconds.
 
 ### Returns
 
-- `target` `(Event<T>)` — New event which will receive `source` payload after `timeout` delay
+- `target` `(Event<T>)` — New event which will receive `source` payload after
+  `timeout` delay
 
 ### Example
 
 ```ts
-import { createEvent, createStore } from 'effector';
-import { delay } from 'patronum/delay';
+import { createEvent, createStore } from "effector";
+import { delay } from "patronum/delay";
 
 const update = createEvent<string>();
 const $timeout = createStore(500);
 
 const logDelayed = delay(update, $timeout);
 
-logDelayed.watch((data) => console.log('log', data));
+logDelayed.watch((data) => console.log("log", data));
 
-update('Hello');
+update("Hello");
 // after 500ms
 // => log Hello
 ```
@@ -253,8 +323,8 @@ update('Hello');
 
 ### Motivation
 
-This overload allows you to read timeout from another store.
-It is useful when you write music editor and need dynamic delay for your events.
+This overload allows you to read timeout from another store. It is useful when
+you write music editor and need dynamic delay for your events.
 
 ### Formulae
 
@@ -262,23 +332,27 @@ It is useful when you write music editor and need dynamic delay for your events.
 target = delay({ source, timeout: $store, target });
 ```
 
-- When `source` is triggered, read timeout from `timeout` store, then trigger `target` with payload of the `source`
+- When `source` is triggered, read timeout from `timeout` store, then trigger
+  `target` with payload of the `source`
 
 ### Arguments
 
-1. `source` `(Event<T>` | `Store<T>` | `Effect<T>)` — Source unit, data from this unit used to trigger `target` with.
+1. `source` `(Event<T>` | `Store<T>` | `Effect<T>)` — Source unit, data from
+   this unit used to trigger `target` with.
 2. `timeout` `(Store<number>)` — Store with number — delay in milliseconds.
-3. `target` `(Unit<T>` | `Array<Unit<T>>)` — Optional. Target unit or array of units that will be called after delay.
+3. `target` `(Unit<T>` | `Array<Unit<T>>)` — Optional. Target unit or array of
+   units that will be called after delay.
 
 ### Returns
 
-- `target` `(Unit<T>` | `Array<Unit<T>>)` — Target unit or units that were passed to `delay`
+- `target` `(Unit<T>` | `Array<Unit<T>>)` — Target unit or units that were
+  passed to `delay`
 
 ### Example
 
 ```ts
-import { createEvent, createStore } from 'effector';
-import { delay } from 'patronum/delay';
+import { createEvent, createStore } from "effector";
+import { delay } from "patronum/delay";
 
 const update = createEvent<string>();
 const $timeout = createStore(500);
@@ -289,9 +363,9 @@ delay({
   target: logDelayed,
 });
 
-logDelayed.watch((data) => console.log('log', data));
+logDelayed.watch((data) => console.log("log", data));
 
-update('Hello');
+update("Hello");
 // after 500ms
 // => log Hello
 ```
