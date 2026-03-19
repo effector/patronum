@@ -6,18 +6,20 @@ group: predicate
 ---
 
 ```ts
-import { condition } from 'patronum';
+import { condition } from "patronum";
 // or
-import { condition } from 'patronum/condition';
+import { condition } from "patronum/condition";
 ```
 
 ## Motivation
 
-Condition is very similar to [`sample`], but allows you to have `else` branch along with simple `if` matcher.
+Condition is very similar to [`sample`], but allows you to have `else` branch
+along with simple `if` matcher. At least one of `then` or `else` is required;
+throws if both are omitted.
 
 [`sample`]: https://effector.dev/docs/api/effector/sample
 
-## `condition({ source: Unit, if: Store, then?: Unit, else?: Unit })`
+## `condition({ source: Unit, if: Store, then?: Unit | Unit[], else?: Unit | Unit[] })`
 
 ### Formulae
 
@@ -30,15 +32,27 @@ result = condition({
 });
 ```
 
-- When `source` is triggered, check value of `$checker`, if it equals `true`, trigger `then` with value from `source`, otherwise trigger `else` with value from `source`
-- `result` is the same unit as `source` allows to nest `condition` to another `condition` or `sample`
+- When `source` is triggered, check value of `$checker`, if it equals `true`,
+  trigger `then` with value from `source`, otherwise trigger `else` with value
+  from `source`
+- `result` is the same unit as `source` allows to nest `condition` to another
+  `condition` or `sample`
 
 ### Arguments
 
 1. `source` `(Unit<T>)` — Data from this unit will be passed to `then` or `else`
-1. `if` `(Store<boolean>)` — Updates of this store will not trigger `then` and `else`
-1. `then` `(Unit<T>)` — This unit will be triggered with data from `source` if `$checker` contains `true`. Required if `else` is not provided
-1. `else` `(Unit<T>)` — This unit will be triggered with data from `source` if `$checker` contains `false`. Required if `then` is not provided
+1. `if` `(Store<boolean>)` — Updates of this store will not trigger `then` and
+   `else`
+1. `then` `(UnitTargetable<T> | ReadonlyArray<UnitTargetable<T>>)` — Target
+   unit(s) triggered with data from `source` if `$checker` contains `true`.
+   Required if `else` is not provided
+1. `else` `(UnitTargetable<T> | ReadonlyArray<UnitTargetable<T>>)` — Target
+   unit(s) triggered with data from `source` if `$checker` contains `false`.
+   Required if `then` is not provided
+
+> If `then`/`else` is an array, every target in the array will be triggered. The
+> array is not deduplicated: the same unit repeated multiple times will be
+> triggered multiple times.
 
 ### Returns
 
@@ -48,13 +62,16 @@ result = condition({
 
 ```ts
 const change = createEvent();
-const $source = createStore('data').on(change, (_, payload) => payload);
+const $source = createStore("data");
 
 const toggle = createEvent();
-const $isEnabled = createStore(false).on(toggle, (is) => !is);
+const $isEnabled = createStore(false);
 
 const enabled = createEvent();
 const disabled = createEvent();
+
+$source.on(change, (_, payload) => payload);
+$isEnabled.on(toggle, (is) => !is);
 
 condition({
   source: $source,
@@ -62,18 +79,18 @@ condition({
   then: enabled,
   else: disabled,
 });
-enabled.watch((payload) => console.log('enabled -', payload));
-disabled.watch((payload) => console.log('disabled -', payload));
+enabled.watch((payload) => console.log("enabled -", payload));
+disabled.watch((payload) => console.log("disabled -", payload));
 
-change('newdata');
+change("newdata");
 // => disabled - newdata
 
 toggle();
-change('data');
+change("data");
 // => enabled - data
 ```
 
-## `condition({ source: Unit<T>, if: T, then?: Unit, else?: Unit })`
+## `condition({ source: Unit<T>, if: T, then?: Unit | Unit[], else?: Unit | Unit[] })`
 
 ### Formulae
 
@@ -86,15 +103,23 @@ result = condition({
 });
 ```
 
-- When `source` is triggered, compare `value` literal with `source` payload, if it equals trigger `then` with value from `source`, otherwise trigger `else` with value from `source`
-- `result` is the same unit as `source` allows to nest `condition` to another `condition` or `sample`
+- When `source` is triggered, compare `value` literal with `source` payload, if
+  it equals trigger `then` with value from `source`, otherwise trigger `else`
+  with value from `source`
+- `result` is the same unit as `source` allows to nest `condition` to another
+  `condition` or `sample`
 
 ### Arguments
 
 1. `source` `(Unit<T>)` — Data from this unit will be passed to `then` or `else`
-1. `if` `(T)` — Just value to compare with `source` payload. _Note: objects will be compared by reference_
-1. `then` `(Unit<T>)` — This unit will be triggered with data from `source` if `$checker` contains `true`. Required if `else` is not provided
-1. `else` `(Unit<T>)` — This unit will be triggered with data from `source` if `$checker` contains `false`. Required if `then` is not provided
+1. `if` `(T)` — Just value to compare with `source` payload. _Note: objects will
+   be compared by reference_
+1. `then` `(UnitTargetable<T> | ReadonlyArray<UnitTargetable<T>>)` — Target
+   unit(s) triggered with data from `source` if payload equals `if` value.
+   Required if `else` is not provided
+1. `else` `(UnitTargetable<T> | ReadonlyArray<UnitTargetable<T>>)` — Target
+   unit(s) triggered with data from `source` if payload does not equal `if`
+   value. Required if `then` is not provided
 
 ### Returns
 
@@ -104,12 +129,14 @@ result = condition({
 
 ```ts
 const increment = createEvent();
-const $source = createStore(0).on(increment, (state) => state + 1);
+const $source = createStore(0);
 
 const log = createEvent();
-const run = createEffect().use((data) => {
-  console.info('FAKE RUN EFFECT', data);
+const run = createEffect((data) => {
+  console.info("FAKE RUN EFFECT", data);
 });
+
+$source.on(increment, (state) => state + 1);
 
 condition({
   source: $source,
@@ -118,7 +145,7 @@ condition({
   else: log,
 });
 
-log.watch((payload) => console.log('LOG ABOUT IT', payload));
+log.watch((payload) => console.log("LOG ABOUT IT", payload));
 
 increment(); // => LOG ABOUT IT 1
 increment(); // => LOG ABOUT IT 2
@@ -127,7 +154,7 @@ increment(); // => FAKE RUN EFFECT 4
 increment(); // => LOG ABOUT IT 5
 ```
 
-## `condition({ source: Unit<T>, if: Function, then?: Unit, else?: Unit })`
+## `condition({ source: Unit<T>, if: Function, then?: Unit | Unit[], else?: Unit | Unit[] })`
 
 ### Formulae
 
@@ -140,15 +167,23 @@ result = condition({
 });
 ```
 
-- When `source` is triggered, call `if` with `source` payload, if it returns `true` trigger `then` with value from `source`, otherwise trigger `else` with value from `source`
-- `result` is the same unit as `source` allows to nest `condition` to another `condition` or `sample`
+- When `source` is triggered, call `if` with `source` payload, if it returns
+  `true` trigger `then` with value from `source`, otherwise trigger `else` with
+  value from `source`
+- `result` is the same unit as `source` allows to nest `condition` to another
+  `condition` or `sample`
 
 ### Arguments
 
 1. `source` `(Unit<T>)` — Data from this unit will be passed to `then` or `else`
-1. `if` `((payload: T) => boolean)` — Function comparator. It should return boolean
-1. `then` `(Unit<T>)` — This unit will be triggered with data from `source` if `$checker` contains `true`. Required if `else` is not provided
-1. `else` `(Unit<T>)` — This unit will be triggered with data from `source` if `$checker` contains `false`. Required if `then` is not provided
+1. `if` `((payload: T) => boolean)` — Function comparator. It should return
+   boolean
+1. `then` `(UnitTargetable<T> | ReadonlyArray<UnitTargetable<T>>)` — Target
+   unit(s) triggered with data from `source` if comparator returns `true`.
+   Required if `else` is not provided
+1. `else` `(UnitTargetable<T> | ReadonlyArray<UnitTargetable<T>>)` — Target
+   unit(s) triggered with data from `source` if comparator returns `false`.
+   Required if `then` is not provided
 
 ### Returns
 
@@ -158,9 +193,11 @@ result = condition({
 
 ```ts
 const change = createEvent();
-const $source = createStore('data').on(change, (_, payload) => payload);
+const $source = createStore("data");
 const target = createEvent();
 const another = createEvent();
+
+$source.on(change, (_, payload) => payload);
 
 condition({
   source: $source,
@@ -168,13 +205,13 @@ condition({
   then: target,
   else: another,
 });
-target.watch((payload) => console.log('triggered', payload));
-another.watch((payload) => console.log('condition else:', payload));
+target.watch((payload) => console.log("triggered", payload));
+another.watch((payload) => console.log("condition else:", payload));
 
-change('newdata');
+change("newdata");
 // => triggered newdata
 
-change('old');
+change("old");
 // => condition else: old
 ```
 
@@ -184,14 +221,15 @@ change('old');
 
 ```ts
 const inputChanged = createEvent();
-const $value = createStore('');
+const $value = createStore("");
 const $error = createStore(false);
 
 const setError = createEvent();
 const setValue = createEvent();
 
 $value.on(setValue, (_, value) => value);
-$error.on(setError, () => true).on(setValue, () => false);
+$error.on(setError, () => true);
+$error.on(setValue, () => false);
 
 condition({
   source: inputChanged,
@@ -208,15 +246,33 @@ function isValid(value) {
 ### Condition can be nested
 
 ```ts
-const $value = createStore('hello@world');
+const $value = createStore("hello@world");
 const updateEmail = createEvent<string>();
 
 condition({
   source: $value,
   if: (length) => length > 0,
   then: condition({
-    if: (string) => string.includes('@'),
+    if: (string) => string.includes("@"),
     then: updateEmail,
   }),
+});
+```
+
+### Multiple targets in `then`/`else`
+
+```ts
+const inputChanged = createEvent<string>();
+const $isValid = createStore(false);
+
+const save = createEvent<string>();
+const track = createEvent<string>();
+const showError = createEvent<string>();
+
+condition({
+  source: inputChanged,
+  if: $isValid,
+  then: [save, track],
+  else: [showError],
 });
 ```
