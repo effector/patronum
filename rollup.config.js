@@ -6,7 +6,7 @@ const { typesPlugin } = require('./scripts/generate-cts');
 const plugins = [
   nodeResolve({ jsnext: true, skip: ['effector'], extensions: ['.js', '.mjs'] }),
   commonjs({ extensions: ['.js', '.mjs'] }),
-  terser(),
+  terser({ sourceMap: true }),
   typesPlugin(),
 ];
 
