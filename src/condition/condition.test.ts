@@ -358,3 +358,15 @@ test('source: event, if: store, then: event[]', () => {
   expect(fn).toHaveBeenCalledWith('foo');
   expect(fnSecond).toHaveBeenCalledWith('foo');
 });
+
+test('throws if neither then nor else provided', () => {
+  const source = createEvent<string>();
+  const $if = createStore(true);
+
+  expect(() =>
+    condition({
+      source,
+      if: $if,
+    }),
+  ).toThrow('condition: at least one of then/else is required');
+});
