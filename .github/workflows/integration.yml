@@ -64,7 +64,7 @@ jobs:
 
       - name: Publish to Github NPM registry
         working-directory: "./dist/"
-        run: npm publish
+        run: npm publish --tag prerelease
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
