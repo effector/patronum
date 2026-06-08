@@ -140,7 +140,12 @@ export function interval<S extends unknown, F extends unknown>({
     clock: teardown,
     target: cleanupFx,
   });
-
+  
+  sample({
+    clock: $timeout,
+    target: [cleanupFx, timeoutFx],
+  });
+  
   return {
     tick,
     isRunning: $isRunning,
