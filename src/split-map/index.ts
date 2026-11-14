@@ -24,7 +24,7 @@ export function splitMap<
 
       result[key] = current.filterMap(fn);
       current = current.filter({
-        fn: (data) => !fn(data),
+        fn: (data) => fn(data) === undefined,
       });
     }
   }
