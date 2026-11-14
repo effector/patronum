@@ -202,3 +202,40 @@ test('from readme', () => {
   watchUpdate.mockClear();
   watchDefault.mockClear();
 });
+
+test('falsy values other than undefined match the case and stop fall through', () => {
+  const source = createEvent<{
+    count?: number;
+    name?: string;
+    flag?: boolean | null;
+  }>();
+  const out = splitMap({
+    source,
+    cases: {
+      count: (payload) => payload.count,
+      name: (payload) => payload.name,
+      flag: (payload) => payload.flag,
+    },
+  });
+
+  const fnCount = jest.fn();
+  const fnName = jest.fn();
+  const fnFlag = jest.fn();
+  const fnDefault = jest.fn();
+  out.count.watch(fnCount);
+  out.name.watch(fnName);
+  out.flag.watch(fnFlag);
+  // eslint-disable-next-line no-underscore-dangle
+  out.__.watch(fnDefault);
+
+  source({ count: 0, name: 'skipped' });
+  source({ name: '' });
+  source({ flag: false });
+  source({ flag: null });
+  source({});
+
+  expect(argumentHistory(fnCount)).toEqual([0]);
+  expect(argumentHistory(fnName)).toEqual(['']);
+  expect(argumentHistory(fnFlag)).toEqual([false, null]);
+  expect(argumentHistory(fnDefault)).toEqual([{}]);
+});
